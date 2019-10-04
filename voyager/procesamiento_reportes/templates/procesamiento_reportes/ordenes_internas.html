@@ -1,6 +1,9 @@
 {% extends 'root/base.html' %}
 
 {% block content %}
+<script>
+
+</script>
 <h1>Órdenes internas</h1>
 <div id="table">
     <table class="table table-bordered table-responsive-md table-striped text-center">
@@ -8,7 +11,7 @@
           <tr>
             <th class="text-center">Estatus</th>
             <th class="text-center">Orden Interna</th>
-            <th class="text-center">Empresaa</th>
+            <th class="text-center">Empresa</th>
             <th class="text-center">Usuario</th>
             <th class="text-center">Fecha</th>
             <th class="text-center">Visualizar</th>
@@ -18,26 +21,22 @@
         </thead>
         <tbody>
           <tr>
-            <td class="pt-3-half" contenteditable="true">Boceto</td>
-            <td class="pt-3-half" contenteditable="true">-1</td>
-            <td class="pt-3-half" contenteditable="true">IMPULSE</td>
-            <td class="pt-3-half" contenteditable="true">oswaldo</td>
-            <td class="pt-3-half" contenteditable="true">04/10/19</td>
+            <td class="pt-3-half">Boceto</td>
+            <td class="pt-3-half">-1</td>
+            <td class="pt-3-half">IMPULSE</td>
+            <td class="pt-3-half">oswaldo</td>
+            <td class="pt-3-half">04/10/19</td>
             <td>
-              <span class="table-remove"><button type="button"
-                  class="btn btn-primary btn-rounded btn-sm my-0">Visualizar</button></span>
+              <span class="table-view"><button type="button"
+                  class="btn btn-info btn-rounded btn-sm my-0"><i class="fa">&#xf002;</i></button></span>
             </td>
-          </tr>
-          <!-- This is our clonable table line -->
-          <tr>
-            <td class="pt-3-half" contenteditable="true">Guerra Cortez</td>
-            <td class="pt-3-half" contenteditable="true">45</td>
-            <td class="pt-3-half" contenteditable="true">Insectus</td>
-            <td class="pt-3-half" contenteditable="true">USA</td>
-            <td class="pt-3-half" contenteditable="true">San Francisco</td>
+            <td>
+              <span class="table-edit"><button type="button"
+                  class="btn btn-primary btn-rounded btn-sm my-0"><i class="fa">&#xf044;</i></button></span>
+            </td>
             <td>
               <span class="table-remove"><button type="button"
-                  class="btn btn-danger btn-rounded btn-sm my-0">Remove</button></span>
+                  class="btn btn-danger btn-rounded btn-sm my-0"><i class="fa">&#xf1f8;</i></button></span>
             </td>
           </tr>
           <!-- This is our clonable table line -->
