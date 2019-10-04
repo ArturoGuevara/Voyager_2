@@ -5,8 +5,6 @@ import json
 # Create your views here.
 
 def index(request):
-    
-    
     url = "https://api-eu.dhl.com/track/shipments"
 
     headers = {
@@ -15,21 +13,20 @@ def index(request):
         }
     payload = {
         'trackingNumber': '5551260643',
+        #8426939231
+        #5551260643
         'service': 'express'
     }
-
     # This url is for testing 
     url = 'https://api-eu.dhl.com/track/shipments'
     resp = requests.get(url, params=payload, headers=headers)
-    json_data = resp.json()
     
-
-    print(resp.content)
-    
-    
+    data = json.loads(resp.text)
     
     context = {
-        
+        'last_location' : data['shipments'][0]['events'][0]['location']['address']['addressLocality'],
+        'description' : data['shipments'][0]['events'][0]['description'],
+        'timestamp' : data['shipments'][0]['events'][0]['timestamp']
     }
-    return render(request, 'tracking/index.html', json_data)
-
+    
+    return render(request, 'tracking/index.html', context)
