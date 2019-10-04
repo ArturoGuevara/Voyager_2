@@ -7,21 +7,38 @@
 
 {% block content %}
 
-<h1>Información del solicitante</h1>
+<h2>Información del solicitante</h2>
 
-<div class="card">
-  <div class="card-body">
-    <h3 class="card-title">Card title</h3>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
-    <div class="dropdown">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown">
-        Dropdown button
-      </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Action</a>
-        <a class="dropdown-item" href="#">Another action</a>
-        <a class="dropdown-item" href="#">Something else here</a>
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-header">
+          <h4 class="card-title">Datos del Solicitante</h4>
+        </div>
+        <form>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                  <label>Nombre del Agricultor</label>
+                  <select class="form-control" id="" required>
+                    <option selected value="" disabled>Selecciona al agricultor...</option>
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </select>
+              </div>
+            </div>
+            <div class="col-md-7 pl-1">
+              <div class="form-group">
+                <label>Dirección</label>
+                <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="" required>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>
