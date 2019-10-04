@@ -3,5 +3,5 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def login(request):
-    return HttpResponse("Esta es la página de login")
+def loginView(request):
+    return render(request,'admin_usuarios/login.html')
