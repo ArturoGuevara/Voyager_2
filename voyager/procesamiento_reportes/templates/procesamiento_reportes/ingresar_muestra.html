@@ -9,10 +9,10 @@
 
 <h2>Información de muestra</h2>
 
-<div class="row">
-  <div class="col-md-12">
-    <form>
-      {% csrf_token %}
+<form method="post" action="{% url 'ingreso_cliente' %}" class="needs-validation">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-12">
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Producto</h4>
@@ -100,11 +100,11 @@
             <div class="col-md-5 pr-1">
               <div class="form-group">
                 <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">
-                        <span class="form-check-sign"></span>
-                        Análisis 5
-                    </label>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 5
+                  </label>
                 </div>
               </div>
             </div>
@@ -118,11 +118,11 @@
             <div class="col-md-5 pr-1">
               <div class="form-group">
                 <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">
-                        <span class="form-check-sign"></span>
-                        Análisis 1
-                    </label>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 1
+                  </label>
                 </div>
               </div>
             </div>
@@ -136,11 +136,11 @@
             <div class="col-md-5 pr-1">
               <div class="form-group">
                 <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">
-                        <span class="form-check-sign"></span>
-                        Análisis 4
-                    </label>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 4
+                  </label>
                 </div>
               </div>
             </div>
@@ -154,32 +154,32 @@
             <div class="col-md-5 pr-1">
               <div class="form-group">
                 <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">
-                        <span class="form-check-sign"></span>
-                        Otro
-                    </label>
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Otro
+                  </label>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </form>
+    </div>
   </div>
-</div>
-<div class="row">
+  <div class="row">
       <div class="col-md-5">
     </div>
     <div class="col-md-2">
-      <a href="#" class="btn btn-danger btn-block">Cancelar</a>
+      <a href="{% url 'ingreso_cliente' %}" class="btn btn-danger btn-block">Cancelar</a>
     </div>
     <div class="col-md-2">
-      <a href="#" class="btn btn-primary btn-block">Guardar</a>
+      <button type="submit" class="btn btn-primary btn-block">Guardar</button>
     </div>
     <div class="col-md-2">
       <button type="submit" class="btn btn-success btn-block">Enviar</button>
     </div>
-</div>
+  </div>
+</form>
 
 {% endblock content %}
