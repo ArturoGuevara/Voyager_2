@@ -3,6 +3,7 @@ from django.db import models
 
 
 class OrdenInterna(models.Model):
+    #Orden interna
     idOI = models.AutoField(primary_key=True)
     # empresa = models.Foreign
     # id_usuario = models.Foreign
@@ -13,6 +14,8 @@ class OrdenInterna(models.Model):
     guia_envio = models.CharField(max_length=50, blank=True)
     estatus = models.CharField(max_length=15, blank=True)
 
+
+    #Opciones de sí/no e idioma
     SN = (
         ('Sí', 'Sí'),
         ('No', 'No'),
@@ -21,6 +24,8 @@ class OrdenInterna(models.Model):
         ('8809 ES', '8809 ES'),
         ('8992 EN', '8992 EN'),
     )
+
+    #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
     idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
     mrl = models.CharField(max_length=200, blank=True)
@@ -31,10 +36,11 @@ class OrdenInterna(models.Model):
     envio_ti = models.CharField(max_length=2, choices=SN, blank=True)
     cliente_cr = models.CharField(max_length=2, choices=SN, blank=True)
 
+    #Info general factura
     resp_pago = models.CharField(max_length=50, blank=True)
     correo = models.EmailField(max_length=2, blank=True)
-    telefono = models.CharField(max_length=13)
-    
+    telefono = models.CharField(max_length=13, blank=True)
+
 
     class Meta:
         verbose_name = 'Orden Interna'
