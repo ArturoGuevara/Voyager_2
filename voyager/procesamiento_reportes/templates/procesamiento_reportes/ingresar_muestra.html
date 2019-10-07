@@ -13,158 +13,158 @@
   {% csrf_token %}
   <div class="row">
     <div class="col-md-12">
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Producto</h4>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Producto</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <label>Nombre</label>
+                <select class="form-control" id="" required>
+                  <option selected value="" disabled>Selecciona el producto...</option>
+                  <option>Aguacate</option>
+                  <option>Tomate</option>
+                  <option>Limón</option>
+                  <option>Manzana</option>
+                  <option>Plátano</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-7 pl-1">
+              <div class="form-group">
+                <label>Variedad</label>
+                <select class="form-control" id="" required>
+                  <option selected value="" disabled>Selecciona la variedad...</option>
+                  <option>Variedad 1</option>
+                  <option>Variedad 2</option>
+                  <option>Variedad 3</option>
+                  <option>Variedad 4</option>
+                  <option>Variedad 5</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <label>Nombre</label>
-                  <select class="form-control" id="" required>
-                    <option selected value="" disabled>Selecciona el producto...</option>
-                    <option>Aguacate</option>
-                    <option>Tomate</option>
-                    <option>Limón</option>
-                    <option>Manzana</option>
-                    <option>Plátano</option>
-                  </select>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Datos de la muestra</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <div class="form-group">
+                <label>Parcela</label>
+                <input type="text" class="form-control" placeholder="Parcela" value="" id="" required>
+              </div>
+            </div>
+            <div class="col-md-7 pl-1">
+              <div class="form-group">
+                <label>País destino</label>
+                <select class="form-control" id="" required>
+                  <option selected value="" disabled>Selecciona un país...</option>
+                  <option>Albania</option>
+                  <option>Bulgaria</option>
+                  <option>Costa de Marfil</option>
+                  <option>Djibouti</option>
+                  <option>El Salvador</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <label>Clave de muestra</label>
+                <input type="text" class="form-control" placeholder="Clave de muestra" value="" id="" required>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Análisis a Aplicar</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-5 pr-1">
+            </div>
+            <div class="col-md-3 pl-1">
+              <label>Análisis restantes</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 5
+                  </label>
                 </div>
               </div>
-              <div class="col-md-7 pl-1">
-                <div class="form-group">
-                  <label>Variedad</label>
-                  <select class="form-control" id="" required>
-                    <option selected value="" disabled>Selecciona la variedad...</option>
-                    <option>Variedad 1</option>
-                    <option>Variedad 2</option>
-                    <option>Variedad 3</option>
-                    <option>Variedad 4</option>
-                    <option>Variedad 5</option>
-                  </select>
+            </div>
+            <div class="col-md-3 pl-1">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Clave de muestra" value="5" id="" required disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 1
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 pl-1">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Clave de muestra" value="2" id="" required disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Análisis 4
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3 pl-1">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Clave de muestra" value="3" id="" required disabled>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" value="">
+                    <span class="form-check-sign"></span>
+                    Otro
+                  </label>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Datos de la muestra</h4>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-3 pr-1">
-                <div class="form-group">
-                  <label>Parcela</label>
-                  <input type="text" class="form-control" placeholder="Parcela" value="" id="" required>
-                </div>
-              </div>
-              <div class="col-md-7 pl-1">
-                <div class="form-group">
-                  <label>País destino</label>
-                  <select class="form-control" id="" required>
-                    <option selected value="" disabled>Selecciona un país...</option>
-                    <option>Albania</option>
-                    <option>Bulgaria</option>
-                    <option>Costa de Marfil</option>
-                    <option>Djibouti</option>
-                    <option>El Salvador</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <label>Clave de muestra</label>
-                  <input type="text" class="form-control" placeholder="Clave de muestra" value="" id="" required>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <h4 class="card-title">Análisis a Aplicar</h4>
-          </div>
-          <div class="card-body">
-            <div class="row">
-              <div class="col-md-5 pr-1">
-              </div>
-              <div class="col-md-3 pl-1">
-                <label>Análisis restantes</label>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <div class="form-check">
-                      <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="">
-                          <span class="form-check-sign"></span>
-                          Análisis 5
-                      </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 pl-1">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Clave de muestra" value="5" id="" required disabled>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <div class="form-check">
-                      <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="">
-                          <span class="form-check-sign"></span>
-                          Análisis 1
-                      </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 pl-1">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Clave de muestra" value="2" id="" required disabled>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <div class="form-check">
-                      <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="">
-                          <span class="form-check-sign"></span>
-                          Análisis 4
-                      </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-3 pl-1">
-                <div class="form-group">
-                  <input type="text" class="form-control" placeholder="Clave de muestra" value="3" id="" required disabled>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-5 pr-1">
-                <div class="form-group">
-                  <div class="form-check">
-                      <label class="form-check-label">
-                          <input class="form-check-input" type="checkbox" value="">
-                          <span class="form-check-sign"></span>
-                          Otro
-                      </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+      </div>
     </div>
   </div>
   <div class="row">
