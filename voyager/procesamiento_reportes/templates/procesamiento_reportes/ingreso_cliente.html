@@ -1,0 +1,159 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+<script>
+{% block jquery %}
+// Example starter JavaScript for disabling form submissions if there are invalid fields
+(function() {
+  'use strict';
+  window.addEventListener('load', function() {
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.getElementsByClassName('needs-validation');
+    // Loop over them and prevent submission
+    var validation = Array.prototype.filter.call(forms, function(form) {
+      form.addEventListener('submit', function(event) {
+        if (form.checkValidity() === false) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    });
+  }, false);
+})();
+{% endblock %}
+</script>
+
+{% block content %}
+
+<h2 class="mb-3 mt-3">Información del solicitante</h2>
+
+<form action="{% url 'ingresar_muestras' %}" method="post" class="needs-validation" novalidate>
+  {% csrf_token %}
+  <div class="row mt-0 pt-0 mb-0 pb-0">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-header">
+            <h4 class="card-title">Datos del Solicitante</h4>
+          </div>
+          <br>
+            <div class="row">
+              <div class="col-md-5 pr-1">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Agricultor</label>
+                    <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1" required>
+                    <div class="invalid-feedback">
+                      Por favor, escribe un nombre.
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-7 pl-1">
+                <div class="form-group">
+                  <label>Dirección</label>
+                  <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion" required>
+                  <div class="invalid-feedback">
+                    Por favor, escribe un nombre.
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                    <label>Estado de Origen</label>
+                    <select class="form-control" id="" required>
+                      <option selected value="" disabled>Selecciona el estado...</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Por favor, escribe un nombre.
+                    </div>
+                </div>
+              </div>
+              <div class="col-md-4 px-1">
+                <div class="form-group">
+                    <label>País de Origen</label>
+                    <select class="form-control" id="" required>
+                      <option selected value="" disabled>Selecciona el país...</option>
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Por favor, escribe un nombre.
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-0 pt-0 mb-0 pb-0">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body">
+          <div class="card-header">
+            <h4 class="card-title">Datos del los resultados</h4>
+          </div>
+          <br>
+            <div class="row">
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                    <label>Idioma de los Resultados</label>
+                    <select class="form-control" id="" required>
+                      <option selected value="" disabled>Selecciona el idioma...</option>
+                      <option>Español</option>
+                      <option>Inglés</option>
+                    </select>
+                    <div class="invalid-feedback">
+                      Por favor, escribe un nombre.
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-1 pt-1 pb-5">
+    <div class="col-md-7">
+    </div>
+    <div class="col-md-2">
+      <a href="#" class="btn btn-danger btn-block">Cancelar</a>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-success btn-block">Continuar</button>
+    </div>
+  </div>
+</form>
+
+<script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (function() {
+    'use strict';
+    window.addEventListener('load', function() {
+      // Fetch all the forms we want to apply custom Bootstrap validation styles to
+      var forms = document.getElementsByClassName('needs-validation');
+      // Loop over them and prevent submission
+      var validation = Array.prototype.filter.call(forms, function(form) {
+        form.addEventListener('submit', function(event) {
+          if (form.checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          form.classList.add('was-validated');
+        }, false);
+      });
+    }, false);
+  })();
+</script>
+
+{% endblock content %}
