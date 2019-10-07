@@ -9,11 +9,10 @@
 
 <h2>Información de muestra</h2>
 
-<h3>Muestra 1</h3>
-
 <div class="row">
   <div class="col-md-12">
     <form>
+      {% csrf_token %}
       <div class="card">
         <div class="card-header">
           <h4 class="card-title">Producto</h4>
@@ -92,6 +91,13 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-5 pr-1">
+            </div>
+            <div class="col-md-3 pl-1">
+              <label>Análisis restantes</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
               <div class="form-group">
                 <div class="form-check">
                     <label class="form-check-label">
@@ -144,10 +150,36 @@
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="">
+                        <span class="form-check-sign"></span>
+                        Otro
+                    </label>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </form>
   </div>
+</div>
+<div class="row">
+      <div class="col-md-5">
+    </div>
+    <div class="col-md-2">
+      <a href="#" class="btn btn-danger btn-block">Cancelar</a>
+    </div>
+    <div class="col-md-2">
+      <a href="#" class="btn btn-primary btn-block">Guardar</a>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-success btn-block">Enviar</button>
+    </div>
 </div>
 
 {% endblock content %}
