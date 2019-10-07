@@ -1,8 +1,16 @@
 {% extends 'root/base.html' %}
 
 {% block content %}
-    {{ last_location }} <br>
-    {{ description }}<br>
-    {{ timestamp }}<br>
-
+    <div class="text-md-right text-center">
+        <button class="btn btn-warning" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Crear Paquete</button>
+    </div>
+    <div class="row">
+        
+    </div>
+    <div class="row">
+        {{ last_location }} <br>
+        {{ description }}<br>
+        {{ timestamp }}<br>
+    </div>
+    {% include './modals/paquete.html' %}
 {% endblock %}
