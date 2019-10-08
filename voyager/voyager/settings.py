@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'root.apps.RootConfig',
     'procesamiento_reportes.apps.ProcesamientoReportesConfig',
+    'ventas.apps.VentasConfig',
 ]
 
 MIDDLEWARE = [
