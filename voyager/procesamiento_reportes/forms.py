@@ -1,5 +1,5 @@
 from django import forms
-from procesamiento_reportes.models import OrdenInterna
+from .models import OrdenInterna
 from django.utils.translation import ugettext_lazy as _
 
 class DateInput(forms.DateInput):
@@ -15,3 +15,4 @@ class OrdenInternaF(forms.ModelForm):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
+

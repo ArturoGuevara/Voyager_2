@@ -1,0 +1,207 @@
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              
+              <!--<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>-->
+              <!-- Nav tabs -->
+      
+              <ul class="nav nav-tabs">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#ordenInterna" data-toggle="tab">Orden Interna</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#muestras" data-toggle="tab">Muestras</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#observaciones" data-toggle="tab">Observaciones</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="#facturacion" data-toggle="tab">Facturación</a>
+                  </li>
+                </ul>
+        
+      
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+      
+            <div class="modal-body">
+              <!-- Tab panes -->
+              <div class="tab-content">
+                  
+                
+      
+                  <div class="tab-pane container active" id="ordenInterna">
+                      
+                      <div class="form-group row">
+                        <label for="fecha_muestreo" class="col-sm-4 col-form-label">Fecha de muestreo</label>
+                        <div class="col-sm-8">
+                          <input type="date" class="form-control" id="fecha_muestreo">
+                        </div>
+                      </div>             
+                      
+                      <div class="form-group row">
+                        <label for="localidad" class="col-sm-4 col-form-label">Localidad</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="localidad" placeholder="Localidad">
+                        </div>
+                      </div>
+      
+                      <div class="form-group row">
+                        <label for="fecha_h_recibo_muestra" class="col-sm-4 col-form-label">Fecha y hora de recibo de muestra</label>
+                        <div class="col-sm-8">
+                          <input type="date" class="form-control" id="fecha_h_recibo_muestra">
+                        </div>
+                      </div>  
+      
+                      <div class="form-group row">
+                        <label for="fecha_envio" class="col-sm-4 col-form-label">Fecha de envío</label>
+                        <div class="col-sm-8">
+                          <input type="date" class="form-control" id="fecha_envio">
+                        </div>
+                      </div>  
+      
+                      <div class="form-group row">
+                        <label for="guia_envio_lab" class="col-sm-4 col-form-label">Guía de envío del Lab</label>
+                        <div class="col-sm-8">
+                          <input type="number" class="form-control" id="guia_envio_lab">
+                        </div>
+                      </div>
+      
+      
+                  </div>
+      
+                  <div class="tab-pane container fade" id="muestras">
+                    
+      
+                      <div class="form-group row">
+                          <label for="formato_ingreso_muestra" class="col-sm-4 col-form-label">Formato de ingreso de muestra</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="formato_ingreso_muestra">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="mrl" class="col-sm-4 col-form-label">MRL</label>
+                            <div class="col-sm-8">
+                              <input type="text" class="form-control" id="mrl">
+                            </div>
+                          </div>
+                          <div class="form-group row">
+                            <label for="fecha_llegada_lab" class="col-sm-4 col-form-label">Fecha de llegada al lab</label>
+                            <div class="col-sm-8">
+                              <input type="date" class="form-control" id="fecha_llegada_lab">
+                            </div>
+                          </div>  
+                          <div class="form-group row">
+                            <label for="fecha_envio_lab" class="col-sm-4 col-form-label">Fecha de envío al lab</label>
+                            <div class="col-sm-8">
+                              <input type="date" class="form-control" id="fecha_envio_lab">
+                            </div>
+                          </div>  
+                          <div class="form-group row">
+                            <label for="fecha_recibo_informes" class="col-sm-4 col-form-label">Fecha de recibo de informes</label>
+                            <div class="col-sm-8">
+                              <input type="date" class="form-control" id="fecha_recibo_informes">
+                            </div>
+                          </div>  
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="notificacion_envio_cliente">
+                            <label class="form-check-label" for="notificacion_envio_cliente">
+                              Notificación de envío al cliente
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="envio_todos_informes">
+                            <label class="form-check-label" for="envio_todos_informes">
+                              Envío de todos los informes
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="cliente_recibido">
+                            <label class="form-check-label" for="cliente_recibido">
+                              El cliente confirmó de recibido
+                            </label>
+                          </div>
+        
+      
+                  </div>
+      
+                  <div class="tab-pane container fade" id="observaciones">
+                      <div class="form-group row">
+                        <label for="formato_ingreso_muestra" class="col-sm-4 col-form-label">Formato de ingreso de muestra</label>
+                        <div class="col-sm-8">
+                          <input type="text" class="form-control" id="formato_ingreso_muestra">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                          <label for="mrl" class="col-sm-4 col-form-label">MRL</label>
+                          <div class="col-sm-8">
+                            <input type="text" class="form-control" id="mrl">
+                          </div>
+                        </div>
+                        <div class="form-group row">
+                          <label for="fecha_llegada_lab" class="col-sm-4 col-form-label">Fecha de llegada al lab</label>
+                          <div class="col-sm-8">
+                            <input type="date" class="form-control" id="fecha_llegada_lab">
+                          </div>
+                        </div>  
+                        <div class="form-group row">
+                          <label for="fecha_envio_lab" class="col-sm-4 col-form-label">Fecha de envío al lab</label>
+                          <div class="col-sm-8">
+                            <input type="date" class="form-control" id="fecha_envio_lab">
+                          </div>
+                        </div>  
+                        <div class="form-group row">
+                          <label for="fecha_recibo_informes" class="col-sm-4 col-form-label">Fecha de recibo de informes</label>
+                          <div class="col-sm-8">
+                            <input type="date" class="form-control" id="fecha_recibo_informes">
+                          </div>
+                        </div>  
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="notificacion_envio_cliente">
+                          <label class="form-check-label" for="notificacion_envio_cliente">
+                            Notificación de envío al cliente
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="envio_todos_informes">
+                          <label class="form-check-label" for="envio_todos_informes">
+                            Envío de todos los informes
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="cliente_recibido">
+                          <label class="form-check-label" for="cliente_recibido">
+                            El cliente confirmó de recibido
+                          </label>
+                        </div>
+      
+      
+                  </div>
+      
+                  <div role="tabpanel" class="tab-pane fade" id="facturacion">
+                    
+      
+      
+      
+      
+                  </div>
+      
+      
+        
+              </div>
+            
+            
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--End Modal-->
