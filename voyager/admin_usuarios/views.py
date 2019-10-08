@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 # Create your views here.
 
 #Vista de Login
@@ -17,25 +18,29 @@ def verifyLogin(request):
     print(password)
     try:
         u = User.objects.get(email=mail)
-        print(u)
         user = authenticate(request,username=u.username,password=password)
         if user is not None:
             login(request, user)
             print('Login exitoso \n\n')
-            return redirect('home/')
+            return redirect('/cuentas/home/')
         else:
             #Redireccionar error
-            print('Mal contraseña \n\n')
             return render(request,'admin_usuarios/login.html', {
-                'error': 1
+                'error': 'Correo y/o contraseña incorrectos'
             })
     except:
         #Redireccionar error
-        print('No existe el correo \n\n')
         return render(request,'admin_usuarios/login.html', {
-            'error': 1
+            'error': 'Correo y/o contraseña incorrectos'
         })
-    return 0;
+        return 0
 
+
+@login_required
 def homeView(request):
     return render(request,'admin_usuarios/home.html')
+
+@login_required
+def logoutControler(request):
+    logout(request)
+    return redirect('/cuentas/login/')
