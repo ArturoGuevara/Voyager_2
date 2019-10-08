@@ -1,0 +1,33 @@
+
+
+.login_padding{
+    padding-top: 15%;
+    padding-bottom: 0%;
+}
+
+.card_padding{
+    padding-left:10%;
+    padding-right: 10%;
+}
+
+.card_color{
+    background-color: #F0F0F0;
+    opacity: 0.95;
+}
+
+.content_login{
+    padding-top: 15%;
+}
+.back_image{
+    /* The image used */
+    background-image: url("../img/login/ifc_placeholder2.jpg");
+
+   height: 100vmin;
+
+   background-position: center;
+   background-repeat: no-repeat;
+   -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+   /*background-size: cover;*/
+}

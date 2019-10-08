@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'root.apps.RootConfig',
     'procesamiento_reportes.apps.ProcesamientoReportesConfig',
+    'admin_usuarios.apps.AdminUsuariosConfig',
 ]
 
 MIDDLEWARE = [
@@ -70,8 +71,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'voyager.wsgi.application'
-
-
+LOGIN_REDIRECT_URL = 'cuentas/home/'
+LOGOUT_REDIRECT_URL = 'cuenas/login/'
+LOGIN_URL = '/cuentas/login'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
