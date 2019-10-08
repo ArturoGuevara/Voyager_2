@@ -8,7 +8,7 @@ class DateInput(forms.DateInput):
 class OrdenInternaF(forms.ModelForm):
     class Meta:
         model = OrdenInterna
-
+        exclude = ('idOI',)
         widgets = {
             'birth_date': DateInput(),
         }
