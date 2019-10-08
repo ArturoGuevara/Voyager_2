@@ -6,12 +6,12 @@
         <div class="logo">
             <a href="#" class="simple-text">
                 <!-- Name Dashboard Here -->
-                IFC
+                Voyager
             </a>
         </div>
         <ul class="nav">
 
-
+            {% if user.rol.nombre == 'Director' or user.rol.nombre == 'Ventas' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
@@ -27,6 +27,7 @@
                     </ul>
                 </div>
             </li>
+            {% endif %}
 
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">

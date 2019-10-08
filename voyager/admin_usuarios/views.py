@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from .models import IFCUsuario
 # Create your views here.
 
 #Vista de Login
@@ -38,7 +39,10 @@ def verifyLogin(request):
 
 @login_required
 def homeView(request):
-    return render(request,'admin_usuarios/home.html')
+    ifc_user = IFCUsuario.objects.get(user = request.user)
+    return render(request,'admin_usuarios/home.html', {
+            'user': ifc_user
+    })
 
 @login_required
 def logoutControler(request):
