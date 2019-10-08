@@ -8,12 +8,17 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div id="checkboxes_container">
+                <form>
+                    <div class="form-group my-3">
+                        <label for="exampleInputEmail1">Código Rastreo DHL:</label>
+                        <input type="text" class="form-control" id="dhl_code" aria-describedby="codigo_dhl" placeholder="1023456789">
+                    </div> 
+                <div id="checkboxes_container" class="py-3">
                     <div class="row mx-0">
                         <div class="col-6">
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="">
+                                    <input class="form-check-input" type="checkbox" value="" minlength="10" maxlength="10" >
                                     <span class="form-check-sign"></span>
                                     Unchecked
                                 </label>
@@ -101,10 +106,11 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer mt-3">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-success">Guardar</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
             </div>
+            </form>
         </div>
     </div>
 </div>
