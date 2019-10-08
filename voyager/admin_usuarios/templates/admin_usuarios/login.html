@@ -1,0 +1,40 @@
+{% extends 'root/base_login.html' %}
+<script>
+  {% block jquery%}
+  {% endblock %}
+</script>
+
+<!--Este es el front end de la forma de login-->
+{% block content %}
+
+<div class="back_image w-100 position-relative">
+        <div class="login_padding d-flex justify-content-center position-absolute">
+            <div class="col-md-8">
+                <div class="card card_color w-50 mx-auto">
+                    <div class="card-body">
+                        <div class="text-center">
+                            <h1 class="card-title">Iniciar Sesión</h1>
+                            {% if error %}
+                                {{ error }}
+                            {% endif %}
+                        </div> <!--Cerrar card-header -->
+                        <form action="../verify_login/" method="post">
+                            {% csrf_token %}
+                            <div class="card_padding">
+                                <div class="form-group text-left">
+                                    <label for="login_email">Correo</label>
+                                    <input type="email" class="form-control" placeholder="correo@ejemplo.com" name="mail">
+                                    <label for="password">Contraseña</label>
+                                    <input type="password" class="form-control" name="password">
+                                </div>  <!--Cerrar form-group -->
+                                <div class="text-center">
+                                    <input type="submit" class="btn btn-secondary align-center" value="Ingresar">
+                                </div>
+                            </div> <!-- Cerrar text left-->
+                        </form>
+                    </div><!-- Cerrar card-body-->
+                </div><!-- Cerrar card card_color-->
+            </div>
+        </div>
+</div>
+{% endblock %}
