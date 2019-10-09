@@ -6,4 +6,4 @@ urlpatterns = [
     path('verify_login/', views.verifyLogin, name='backend_login'),
     path('home/', views.homeView, name='home'),
     path('logout/', views.logoutControler, name='logout'),
-]
+    ]
