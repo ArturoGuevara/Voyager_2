@@ -31,15 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'root.apps.RootConfig',
+    'tracking.apps.TrackingConfig',
+    'reportes.apps.ReportesConfig',
+    'ventas.apps.VentasConfig',
+    'cuentas.apps.CuentasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'root.apps.RootConfig',
-    'procesamiento_reportes.apps.ProcesamientoReportesConfig',
-    'cuentas.apps.CuentasConfig',
 ]
 
 MIDDLEWARE = [
@@ -79,8 +81,12 @@ LOGIN_URL = '/cuentas/login'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'voyager',
+        'USER': 'hockey',
+        'PASSWORD': 'lalocura',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
@@ -122,3 +128,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
