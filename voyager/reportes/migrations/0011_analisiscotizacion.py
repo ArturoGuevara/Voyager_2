@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('procesamiento_reportes', '0010_cotizacion'),
+        ('reportes', '0010_cotizacion'),
     ]
 
     operations = [

@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('admin_usuarios', '0001_initial'),
-        ('procesamiento_reportes', '0005_ordeninterna_fecha_envio'),
+        ('reportes', '0005_ordeninterna_fecha_envio'),
     ]
 
     operations = [

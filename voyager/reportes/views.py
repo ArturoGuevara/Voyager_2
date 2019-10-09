@@ -8,12 +8,12 @@ from admin_usuarios.models import IFCUsuario
 
 # Create your views here.
 def ingreso_cliente(request):
-    return render(request, 'procesamiento_reportes/ingreso_cliente.html')
+    return render(request, 'reportes/ingreso_cliente.html')
 
 def ingresar_muestras(request):
     u1=IFCUsuario.objects.get(id=1)
     all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=u1)
-    return  render(request, 'procesamiento_reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
+    return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
 
 def indexView(request):
     return render(request, 'reportes/index.html')
@@ -48,8 +48,4 @@ def oi_actualizar(request, pk):
         form = OrdenInternaF(request.POST, instance=oi)
     else:
         form = OrdenInterna(instance=oi)
-<<<<<<< HEAD:voyager/procesamiento_reportes/views.py
-    return oi_guardar(request, form, 'procesamiento_reportes/modals/oi_actualizar.html')
-=======
     return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
->>>>>>> UST07-49:voyager/reportes/views.py

@@ -20,13 +20,8 @@ from django.urls import include,path
 urlpatterns = [
     path('root/', include('root.urls')),
     path('admin/', admin.site.urls),
-<<<<<<< HEAD
-    path('procesamiento_reportes/', include('procesamiento_reportes.urls')),
     path('ventas/', include('ventas.urls')),
     path('cuentas/', include('admin_usuarios.urls')),
-]
-=======
     path('tracking/', include('tracking.urls')),
     path('reportes/', include('reportes.urls')),
 ]
->>>>>>> UST07-49
