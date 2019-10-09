@@ -8,12 +8,6 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.core import serializers
 from .models import OrdenInterna
-from bootstrap_modal_forms.generic import (BSModalCreateView,
-                                           BSModalUpdateView,
-                                           BSModalReadView,
-                                           BSModalDeleteView)
-
-
 
 # Create your views here.
 def indexView(request):

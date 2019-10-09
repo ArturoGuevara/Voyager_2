@@ -1,7 +1,6 @@
 from django import forms
 from .models import OrdenInterna
 from django.utils.translation import ugettext_lazy as _
-from bootstrap_modal_forms.forms import BSModalForm
 
 
 
