@@ -4,7 +4,7 @@ import json
 
 # Create your views here.
 
-def index(request):
+def index(request,codigo):
     url = "https://api-eu.dhl.com/track/shipments"
 
     headers = {
@@ -12,7 +12,7 @@ def index(request):
         'DHL-API-Key': 'dGmqZ7RmVGHGkLWYR8y28C7qMsDtiMmn'
         }
     payload = {
-        'trackingNumber': '5551260643',
+        'trackingNumber': "'"+ codigo + "'",
         #8426939231
         #5551260643
         'service': 'express'
@@ -29,4 +29,8 @@ def index(request):
         'timestamp' : data['shipments'][0]['events'][0]['timestamp']
     }
     
-    return render(request, 'tracking/index.html', context)
+    if(resp == 200):
+        return 1
+    else:
+        return 0
+

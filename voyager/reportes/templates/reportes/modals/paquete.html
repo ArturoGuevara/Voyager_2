@@ -8,10 +8,12 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form>
+                <form method="post" action="{% url 'validacion_codigo' %}" >
+                    {% csrf_token %}
                     <div class="form-group my-3">
                         <label for="exampleInputEmail1">Código Rastreo DHL:</label>
-                        <input type="text" class="form-control" id="dhl_code" aria-describedby="codigo_dhl" placeholder="1023456789">
+                        {{form.codigo_dhl}}
+                        <!--<input type="text" class="form-control" id="dhl_code" aria-describedby="codigo_dhl" placeholder="1023456789">  -->
                     </div> 
                 <div id="checkboxes_container" class="py-3">
                     <div class="row mx-0">
@@ -29,12 +31,13 @@
                        {% endfor %}
                     </div>
                 </div>
-                </form>
+                
             </div>
             <div class="modal-footer mt-3">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                 <button type="submit" class="btn btn-success">Guardar</button>
             </div>
+        </form>
         </div>
     </div>
 </div>
