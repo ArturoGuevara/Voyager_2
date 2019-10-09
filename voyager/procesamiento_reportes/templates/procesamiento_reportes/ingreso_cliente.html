@@ -34,29 +34,19 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-md-4 pr-1">
-                <div class="form-group">
-                    <label>Estado de Origen</label>
-                    <select class="form-control" id="" required>
-                      <option selected value="" disabled>Selecciona el estado...</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                    </select>
-                </div>
-              </div>
               <div class="col-md-4 px-1">
                 <div class="form-group">
                     <label>País de Origen</label>
-                    <select class="form-control" id="" required>
+                    <select name="country" class="form-control countries" id="countryId" required>
                       <option selected value="" disabled>Selecciona el país...</option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
+                    </select>
+                </div>
+              </div>
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                    <label>Estado de Origen</label>
+                    <select name="state" class="form-control states" id="stateId" required>
+                      <option selected value="" disabled>Selecciona el estado...</option>
                     </select>
                 </div>
               </div>
@@ -102,3 +92,7 @@
 </form>
 
 {% endblock content %}
+
+{% block opcionalJS %}
+  <script src="//geodata.solutions/includes/countrystatecity.js"></script>
+{% endblock %}

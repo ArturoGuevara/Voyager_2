@@ -5,7 +5,9 @@
 {% endblock %}
 </script>
 
+
 {% block content %}
+
 
 <h2>Información de muestra</h2>
 
@@ -96,60 +98,28 @@
               <label>Análisis restantes</label>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-5 pr-1">
-              <div class="form-group">
-                <div class="form-check">
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="">
-                    <span class="form-check-sign"></span>
-                    Análisis 5
-                  </label>
+          {% if all_analysis %}
+            {% for analysis in all_analysis %}
+              <div class="row">
+                <div class="col-md-5 pr-1">
+                  <div class="form-group">
+                    <div class="form-check">
+                      <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" value="">
+                        <span class="form-check-sign"></span>
+                        {{ analysis.analisis.nombre }}
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3 pl-1">
+                  <div class="form-group">
+                    <input type="number" class="form-control" value={{analysis.cantidad}} id="" required disabled>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="col-md-3 pl-1">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Clave de muestra" value="5" id="" required disabled>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-5 pr-1">
-              <div class="form-group">
-                <div class="form-check">
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="">
-                    <span class="form-check-sign"></span>
-                    Análisis 1
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 pl-1">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Clave de muestra" value="2" id="" required disabled>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-5 pr-1">
-              <div class="form-group">
-                <div class="form-check">
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="">
-                    <span class="form-check-sign"></span>
-                    Análisis 4
-                  </label>
-                </div>
-              </div>
-            </div>
-            <div class="col-md-3 pl-1">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Clave de muestra" value="3" id="" required disabled>
-              </div>
-            </div>
-          </div>
+            {% endfor %}
+          {% endif %}
           <div class="row">
             <div class="col-md-5 pr-1">
               <div class="form-group">
@@ -171,7 +141,7 @@
       <div class="col-md-5">
     </div>
     <div class="col-md-2">
-      <a href="{% url 'ingreso_cliente' %}" class="btn btn-danger btn-block">Cancelar</a>
+      <a href="{% url 'ingreso_cliente' %}" class="btn btn-danger btn-block">Atrás</a>
     </div>
     <div class="col-md-2">
       <button type="submit" class="btn btn-primary btn-block">Guardar</button>

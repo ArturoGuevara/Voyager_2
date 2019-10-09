@@ -3,13 +3,17 @@ from .models import OrdenInterna
 from .forms import OrdenInternaF
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from .models import AnalisisCotizacion,Cotizacion
+from admin_usuarios.models import IFCUsuario
 
 # Create your views here.
 def ingreso_cliente(request):
     return render(request, 'procesamiento_reportes/ingreso_cliente.html')
 
 def ingresar_muestras(request):
-    return  render(request, 'procesamiento_reportes/ingresar_muestra.html')
+    u1=IFCUsuario.objects.get(id=1)
+    all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=u1)
+    return  render(request, 'procesamiento_reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
 
 def indexView(request):
     return render(request, 'procesamiento_reportes/index.html')
