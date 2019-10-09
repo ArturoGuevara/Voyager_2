@@ -9,13 +9,16 @@
 
 <div class="back_image w-100 position-relative">
         <div class="login_padding d-flex justify-content-center position-absolute">
-            <div class="col-md-8">
-                <div class="card card_color w-50 mx-auto">
+            <div class="col-sm-12 col-md-8 col-lg-6 mx-auto">
+                <div class="card card_color">
                     <div class="card-body">
                         <div class="text-center">
-                            <h1 class="card-title">Iniciar Sesión</h1>
+                            <h2 class="px-sm-auto px-md-2 h1-sm-50">Iniciar Sesión</h2>
                             {% if error %}
-                                {{ error }}
+                                <div class="alert alert-danger alert-dismissible fade show">
+                                    {{ error }}
+                                     <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div> <!-- Cerrar alert warning -->
                             {% endif %}
                         </div> <!--Cerrar card-header -->
                         <form action="../verify_login/" method="post">
