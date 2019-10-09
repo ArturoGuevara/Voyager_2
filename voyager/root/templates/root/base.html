@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 {% include './header.html' %}
+{% block optionalCSS %}{% endblock %}
+</head>
 <body>
     <div class="wrapper">
         {% include './sidebar.html' %}
@@ -17,9 +20,14 @@
     </div> <!-- Close wrapper -->
 </body>
 {% include './js.html' %}
+<<<<<<< HEAD
 <script>
     $(document).ready(function(){
       {% block jquery %}{% endblock %}
     })
 </script>
 </html>
+=======
+{% block optionalJS %}{% endblock %}
+</html>
+>>>>>>> UST07-49
