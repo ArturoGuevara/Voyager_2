@@ -5,7 +5,7 @@ from admin_usuarios.models import IFCUsuario
 
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
+    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
     fecha_muestreo = models.DateField(null=True, blank=True)
     localidad = models.CharField(max_length=50, blank=True)
     fechah_recibo = models.DateTimeField(null=True, blank=True)
@@ -77,3 +77,12 @@ class Cotizacion(models.Model):
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField()
+
+
+class Analisis(models.Model):
+    id_analisis = models.AutoField(primary_key=True)
+    codigo = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=30,decimal_places=2)
+    tiempo=models.IntegerField()
