@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'root.apps.RootConfig',
     'procesamiento_reportes.apps.ProcesamientoReportesConfig',
     'ventas.apps.VentasConfig',
+    'admin_usuarios.apps.AdminUsuariosConfig',
 ]
 
 MIDDLEWARE = [
@@ -71,15 +72,20 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'voyager.wsgi.application'
-
-
+LOGIN_REDIRECT_URL = 'cuentas/home/'
+LOGOUT_REDIRECT_URL = 'cuenas/login/'
+LOGIN_URL = '/cuentas/login'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'voyager',
+        'USER': 'hockey',
+        'PASSWORD': 'lalocura',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
