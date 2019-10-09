@@ -1,6 +1,6 @@
-from django.shortcuts import get_object_or_404
-from django.shortcuts import render
-from procesamiento_reportes.models import OrdenInterna
+from django.shortcuts import render, get_object_or_404
+from .models import OrdenInterna
+from .forms import OrdenInternaF
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .forms import infoForma, observacionesForma
@@ -71,42 +71,13 @@ def oi_guardar(request, form, template_name):
         if form.is_valid():
             form.save()
             data['form_is_valid'] = True
-            ordenes_internas = OrdenInterna.objects.all()
-            data['html_book_list'] = render_to_string('books/includes/partial_book_list.html', {
-                'books': ordenes_internas
-            })
+            ordenes = OrdenInterna.objects.all()
+            context = {
+                'ordenes': ordenes,
+            }
+            data['html_oi_list'] = render_to_string('procesamiento_reportes/modals/oi_lista.html', context)
         else:
             data['form_is_valid'] = False
     context = {'form': form}
+    data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
-
-
-
-class oi_info_actualizar2(BSModalUpdateView):
-    model = OrdenInterna
-    template_name = 'procesamiento_reportes/modals/actualizar_info_forma.html'
-    form_class = infoForma
-    success_message = 'Éxito! Orden Interna actualizada!'
-    success_url = reverse_lazy('ordenes_internas')
-
-
-def oi_info_actualizar(request, pk):
-    oi = get_object_or_404(OrdenInterna, pk=pk)
-    if request.method == 'POST':
-        form = infoForma(request.POST, instance=oi)
-    else:
-        form = infoForma(instance=oi)
-    return oi_guardar(request, form, 'books/includes/partial_book_update.html')
-
-
-
-
-
-def oi_observaciones_actualizar(request, pk):
-    oi = get_object_or_404(OrdenInterna, pk=pk)
-    if request.method == 'POST':
-        form = observacionesForma(request.POST, instance=oi)
-    else:
-        form = observacionesForma(instance=oi)
-    return oi_guardar(request, form, 'books/includes/partial_book_update.html')
-

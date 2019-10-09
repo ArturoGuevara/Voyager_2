@@ -53,7 +53,7 @@
         </td>
         <td>
           <span class="table-edit"><button type="button"
-              class="btn oi_info_actualizar3 btn-primary btn-rounded btn-sm my-0" id="{{ o.idOI }}" data-id="{% url 'oi_info_actualizar2' o.pk %}"><i class="fa">&#xf044;</i></button></span>
+              class="btn oi_info_actualizar3 btn-primary btn-rounded btn-sm my-0" id="{{ o.idOI }}"><i class="fa">&#xf044;</i></button></span>
         </td>
         <td>
           <span class="table-remove"><button type="button"
@@ -178,6 +178,4 @@ $('.asd').on('click', function() {
 </script>
 
 {% include './modals/editar_orden_interna.html' %}
-
-
 {% endblock content %}

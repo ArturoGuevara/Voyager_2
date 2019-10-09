@@ -7,7 +7,4 @@ urlpatterns = [
     path('busqueda/<int:id>', views.busqueda, name='busqueda'),
     path('busqueda2/<int:id>', views.busqueda2, name='busqueda2'),
    	#path(r'^(?P<pk>\d+)/update/$', views.oi_actualizar, name='book_update'),
-
-    path('oi_info_actualizar2/<int:pk>', views.oi_info_actualizar2.as_view(), name='oi_info_actualizar2'),
-
 ]
