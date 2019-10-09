@@ -62,7 +62,7 @@ class Muestra(models.Model):
     ubicacion = models.CharField(max_length=75)
     estado = models.CharField(max_length=20)
     parcela = models.CharField(max_length=50)
-    fecha_muestreo =  models.DateField()
+    fecha_muestreo = models.DateField()
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
@@ -85,4 +85,12 @@ class Analisis(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    tiempo=models.IntegerField()
+    tiempo = models.IntegerField() #numero de dias que toma el análisis
+
+
+class AnalisisCotizacion(models.Model):
+    id_analisis_cotizacion = models.AutoField(primary_key=True)
+    analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
+    cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
+    cantidad = models.IntegerField()
+    fecha = models.DateField()
