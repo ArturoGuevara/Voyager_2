@@ -2,7 +2,6 @@ from django.db import models
 from admin_usuarios.models import IFCUsuario
 
 # Create your models here.
-
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
@@ -37,9 +36,8 @@ class OrdenInterna(models.Model):
 
     #Info general factura
     resp_pago = models.CharField(max_length=50, blank=True)
-    correo = models.EmailField(max_length=2, blank=True)
+    correo = models.EmailField(max_length=50, blank=True)
     telefono = models.CharField(max_length=13, blank=True)
-
 
     class Meta:
         verbose_name = 'Orden Interna'
