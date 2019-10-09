@@ -1,6 +1,5 @@
 {% load static %}
-<<<<<<< HEAD
-<div class="sidebar" data-image="img/sidebar-5.jpg">
+<div class="sidebar" data-image="https://demos.creative-tim.com/light-bootstrap-dashboard/assets/img/sidebar-5.jpg">
 <!--Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
 =======
 <div class="sidebar" data-image="https://demos.creative-tim.com/light-bootstrap-dashboard/assets/img/sidebar-5.jpg">
@@ -11,15 +10,11 @@
         <div class="logo">
             <a href="#" class="simple-text">
                 <!-- Name Dashboard Here -->
-                IFC
+                Voyager
             </a>
         </div>
         <ul class="nav">
-<<<<<<< HEAD
-
-
-=======
->>>>>>> UST07-49
+            {% if user.rol.nombre == 'Director' or user.rol.nombre == 'Ventas' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
@@ -35,6 +30,7 @@
                     </ul>
                 </div>
             </li>
+            {% endif %}
 
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">

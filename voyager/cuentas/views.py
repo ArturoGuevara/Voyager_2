@@ -4,11 +4,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from .models import IFCUsuario
 # Create your views here.
 
 #Vista de Login
 def loginView(request):
-    return render(request,'admin_usuarios/login.html')
+    return render(request,'cuentas/login.html')
 
 #Controlador login
 def verifyLogin(request):
@@ -25,12 +26,12 @@ def verifyLogin(request):
             return redirect('/cuentas/home/')
         else:
             #Redireccionar error
-            return render(request,'admin_usuarios/login.html', {
+            return render(request,'cuentas/login.html', {
                 'error': 'Correo y/o contraseña incorrectos'
             })
     except:
         #Redireccionar error
-        return render(request,'admin_usuarios/login.html', {
+        return render(request,'cuentas/login.html', {
             'error': 'Correo y/o contraseña incorrectos'
         })
         return 0
@@ -38,7 +39,10 @@ def verifyLogin(request):
 
 @login_required
 def homeView(request):
-    return render(request,'admin_usuarios/home.html')
+    ifc_user = IFCUsuario.objects.get(user = request.user)
+    return render(request,'cuentas/home.html', {
+            'user': ifc_user
+    })
 
 @login_required
 def logoutControler(request):

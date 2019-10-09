@@ -2,7 +2,7 @@
 
 .login_padding{
     padding-top: 15%;
-    padding-bottom: 0%;
+    padding-bottom: 5%;
 }
 
 .card_padding{
@@ -22,12 +22,30 @@
     /* The image used */
     background-image: url("../img/login/ifc_placeholder2.jpg");
 
-   height: 100vmin;
+    height: 200vmin;
 
    background-position: center;
    background-repeat: no-repeat;
-   -moz-background-size: cover;
-    -o-background-size: cover;
     background-size: cover;
-   /*background-size: cover;*/
+}
+
+/* MEDIA QUERIES */
+/*  Device = Tablets, Ipads (portrait) Screen = B/w 768px to 1024px | iPad Pro Portrait */
+@media (min-width: 768px) and (max-width: 1024px) {
+
+}
+
+/*  Device = Tablets, Ipads (landscape) Screen = B/w 768px to 1024px | iPad, Pixel LG 2 y iPhone X Landscape */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+
+}
+
+/* Device = Low Resolution Tablets, Mobiles (Landscape) Screen = B/w 481px to 767px | iPad Portrait, Celulares Landscape */
+@media (min-width: 575px) and (max-width: 768px) {
+
+}
+
+/* Device = Most of the Smartphones Mobiles (Portrait) Screen = B/w 320px to 479px | Celulares Portrait */
+@media (min-width: 320px) and (max-width: 575px) {
+
 }

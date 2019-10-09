@@ -31,17 +31,17 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'tracking.apps.TrackingConfig',
     'root.apps.RootConfig',
+    'tracking.apps.TrackingConfig',
     'reportes.apps.ReportesConfig',
     'ventas.apps.VentasConfig',
+    'cuentas.apps.CuentasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin_usuarios.apps.AdminUsuariosConfig',
 ]
 
 MIDDLEWARE = [
