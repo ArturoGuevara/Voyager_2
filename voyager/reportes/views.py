@@ -6,14 +6,14 @@ from django.http import JsonResponse
 
 # Create your views here.
 def indexView(request):
-    return render(request, 'procesamiento_reportes/index.html')
+    return render(request, 'reportes/index.html')
 
 def ordenes_internas(request):
     ordenes = OrdenInterna.objects.all()
     context = {
         'ordenes': ordenes,
     }
-    return render(request, 'procesamiento_reportes/ordenes_internas.html', context)
+    return render(request, 'reportes/ordenes_internas.html', context)
 
 def oi_guardar(request, form, template_name):
     data = dict()
@@ -25,7 +25,7 @@ def oi_guardar(request, form, template_name):
             context = {
                 'ordenes': ordenes,
             }
-            data['html_oi_list'] = render_to_string('procesamiento_reportes/modals/oi_lista.html', context)
+            data['html_oi_list'] = render_to_string('reportes/modals/oi_lista.html', context)
         else:
             data['form_is_valid'] = False
     context = {'form': form}
@@ -38,4 +38,4 @@ def oi_actualizar(request, pk):
         form = OrdenInternaF(request.POST, instance=oi)
     else:
         form = OrdenInterna(instance=oi)
-    return oi_guardar(request, form, 'procesamiento_reportes/modals/oi_actualizar.html')
+    return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')

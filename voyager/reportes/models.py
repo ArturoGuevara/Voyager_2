@@ -1,7 +1,5 @@
 from django.db import models
 
-
-
 class OrdenInterna(models.Model):
     #Orden interna
     idOI = models.AutoField(primary_key=True)
@@ -27,7 +25,7 @@ class OrdenInterna(models.Model):
 
     #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
-    idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
+    idioma_reporte = models.CharField(max_length=7,choices=IDIOMA, blank=True)
     mrl = models.CharField(max_length=200, blank=True) 
     fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
     notif_e = models.CharField(max_length=2, choices=SN, blank=True) #notificación de envío
@@ -38,9 +36,8 @@ class OrdenInterna(models.Model):
 
     #Info general factura
     resp_pago = models.CharField(max_length=50, blank=True)
-    correo = models.EmailField(max_length=2, blank=True)
+    correo = models.EmailField(max_length=50, blank=True)
     telefono = models.CharField(max_length=13, blank=True)
-
 
     class Meta:
         verbose_name = 'Orden Interna'

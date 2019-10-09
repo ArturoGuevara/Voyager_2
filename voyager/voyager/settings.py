@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'tracking.apps.TrackingConfig',
     'root.apps.RootConfig',
-    'procesamiento_reportes.apps.ProcesamientoReportesConfig',
+    'reportes.apps.ReportesConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
