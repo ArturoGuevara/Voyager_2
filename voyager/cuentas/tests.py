@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
-from admin_usuarios.models import*
+from cuentas.models import*
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
