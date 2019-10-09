@@ -3,7 +3,16 @@ from django.shortcuts import render
 from procesamiento_reportes.models import OrdenInterna
 from django.template.loader import render_to_string
 from django.http import JsonResponse
-from .forms import *
+from .forms import infoForma, observacionesForma
+from django.urls import reverse_lazy
+from django.views import generic
+from django.core import serializers
+from .models import OrdenInterna
+from bootstrap_modal_forms.generic import (BSModalCreateView,
+                                           BSModalUpdateView,
+                                           BSModalReadView,
+                                           BSModalDeleteView)
+
 
 
 # Create your views here.
@@ -16,6 +25,43 @@ def ordenes_internas(request):
         'ordenes': ordenes,
     }
     return render(request, 'procesamiento_reportes/ordenes_internas.html', context)
+
+def busqueda(request, id):
+    if request.method == 'POST':
+        id = id
+        oi = OrdenInterna.objects.get(idOI=id)
+        if oi:
+            data = serializers.serialize("json", [oi], ensure_ascii=False)
+            data = data[1:-1]
+            return JsonResponse({"data": data})
+        else:
+            #objeto ya no existe
+            data = 'null'
+            return JsonResponse({"data": data})
+
+
+
+def busqueda2(request, id):
+    if request.method == 'POST':
+        id = id
+        oi = OrdenInterna.objects.get(idOI=id)
+        if oi:
+            data = serializers.serialize("json", [oi], ensure_ascii=False)
+            data = data[1:-1]
+            iform = infoForma(request.POST, instance= oi)
+            oform = observacionesForma(request.POST, instance= oi)
+            context = {
+                'data': data,
+                'iform': iform,
+                'oform': oform,
+                'oi': oi,
+            }
+            return render(request, 'procesamiento_reportes/modals/actualizar_info_forma.html', context)
+            #return JsonResponse({"data": data})
+        else:
+            #objeto ya no existe
+            data = 'null'
+            #return JsonResponse({"data": data})
 
 
 
@@ -34,6 +80,14 @@ def oi_guardar(request, form, template_name):
     context = {'form': form}
     return JsonResponse(data)
 
+
+
+class oi_info_actualizar2(BSModalUpdateView):
+    model = OrdenInterna
+    template_name = 'procesamiento_reportes/modals/actualizar_info_forma.html'
+    form_class = infoForma
+    success_message = 'Éxito! Orden Interna actualizada!'
+    success_url = reverse_lazy('ordenes_internas')
 
 
 def oi_info_actualizar(request, pk):

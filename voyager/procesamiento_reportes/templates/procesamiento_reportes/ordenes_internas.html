@@ -1,9 +1,10 @@
 {% extends 'root/base.html' %}
 
-{% block content %}
-<script>
 
-</script>
+{% block content %}
+{% load static %}
+
+
 <h1>Órdenes internas</h1>
 <div id="table">
   <table class="table tabl e-bordered table-responsive-md table-striped text-center">
@@ -52,7 +53,7 @@
         </td>
         <td>
           <span class="table-edit"><button type="button"
-              class="btn btn-primary btn-rounded btn-sm my-0" data-toggle="modal" data-target="#myModal"><i class="fa">&#xf044;</i></button></span>
+              class="btn oi_info_actualizar3 btn-primary btn-rounded btn-sm my-0" id="{{ o.idOI }}" data-id="{% url 'oi_info_actualizar2' o.pk %}"><i class="fa">&#xf044;</i></button></span>
         </td>
         <td>
           <span class="table-remove"><button type="button"
@@ -64,6 +65,117 @@
     </tbody>
   </table>
 </div>
+
+
+
+<!--<button type="button" class="btn asd btn-primary btn-rounded btn-sm my-0" id="3"><i class="fa">&#xf044;</i></button>-->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="modal33">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+
+        <div id="receive_form">
+          <h1>jhjvyguu</h1>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+
+$('.asd').on('click', function() {
+   var id = $(this).attr('id');// `this` here refers to the current p you clicked on
+   if (id) {
+        alert(id); 
+    }
+})
+
+</script>  
+
+
+<script type="text/javascript">
+  
+  $(function () {
+
+    // Update book buttons
+/*    $(".oi_info_actualizar2").each(function () {
+      //$(this).modalForm({formURL: $(this).data('id')});
+      alert(this.data('id'))
+    });*/
+
+    $('.oi_info_actualizar2').on('click', function(){
+      var id = $(this).attr('id')
+//      alert(id);
+      
+      $.ajax({
+            type: "POST",
+            url: "busqueda/"+id,
+            dataType: 'json',
+            data: {
+              'id': id,
+              'csrfmiddlewaretoken':"{{ csrf_token }}"
+            },
+            success : function(response) {
+                //$('#getResultsNews').html(data);
+                console.log(response.data)
+                
+                if(response){
+                  alert(response.data)
+                }else{
+                }
+            }
+        })
+
+    })
+
+
+
+
+
+
+
+    $('.oi_info_actualizar3').on('click', function(){
+      var id = $(this).attr('id')
+//      alert(id);
+      
+      $.ajax({
+            type: "POST",
+            url: "busqueda2/"+id,
+            data: {
+              'id': id,
+              'csrfmiddlewaretoken':"{{ csrf_token }}"
+            },
+            success : function(data) {
+                $('#receive_form').html(data);
+                
+                $('#modal33').modal('show');
+
+            }
+        })
+
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+  });
+  
+</script>
 
 {% include './modals/editar_orden_interna.html' %}
 
