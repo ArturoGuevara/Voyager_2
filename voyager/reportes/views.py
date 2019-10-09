@@ -4,7 +4,7 @@ from .forms import OrdenInternaF
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .models import AnalisisCotizacion,Cotizacion
-from admin_usuarios.models import IFCUsuario
+from cuentas.models import IFCUsuario
 
 # Create your views here.
 def ingreso_cliente(request):

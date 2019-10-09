@@ -1,5 +1,5 @@
 from django.db import models
-from admin_usuarios.models import IFCUsuario
+from cuentas.models import IFCUsuario
 
 # Create your models here.
 class OrdenInterna(models.Model):
