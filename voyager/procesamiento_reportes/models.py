@@ -27,7 +27,7 @@ class OrdenInterna(models.Model):
     #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
     idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
-    mrl = models.CharField(max_length=200, blank=True) 
+    mrl = models.CharField(max_length=200, blank=True)
     fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
     notif_e = models.CharField(max_length=2, choices=SN, blank=True) #notificación de envío
     fecha_lab = models.DateField(null=True, blank=True) #fecha de llegada al lab
@@ -66,3 +66,14 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+
+
+class Cotizacion(models.Model):
+    id_cotizacion = models.AutoField(primary_key=True)
+    usuario_c = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='cliente')
+    usuario_v = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='ventas')
+    descuento = models.DecimalField(max_digits=100, decimal_places=4)
+    subtotal = models.DecimalField(max_digits=100, decimal_places=2)
+    iva = models.DecimalField(max_digits=100, decimal_places=2)
+    total = models.DecimalField(max_digits=100, decimal_places=2)
+    status = models.BooleanField()
