@@ -12,10 +12,10 @@
                 <div class="d-block m-4" id="ver_info">
                     <div class="row my-3">
                         <div class="col-sm-12 col-md-6 font-weight-bold">
-                            Código: <span id="codigo_analisis" class="text-justify font-weight-normal">A1</span>    
+                            Código: <span id="codigo_analisis" class="text-justify font-weight-normal">A1</span>
                         </div>
                         <div class="col-sm-12 col-md-6 font-weight-bold">
-                            Nombre: <span id="nombre_analisis" class="text-justify font-weight-normal">Análisis A1</span>    
+                            Nombre: <span id="nombre_analisis" class="text-justify font-weight-normal">Análisis A1</span>
                         </div>
                     </div>
                     <div class="row my-3">
@@ -32,13 +32,39 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-none" id="editar_info">
-                    
+                <div class="d-none m-4" id="editar_info">
+                    <form>
+                    {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Código</label>
+                                <input type="text" class="form-control" id="editar_codigo_analisis" placeholder="1">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Nombre</label>
+                                <input type="text" class="form-control" id="editar_nombre_analisis" placeholder="Análisis 1">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="inputEmail4">Precio</label>
+                                <input type="text" class="form-control" id="editar_precio_analisis" placeholder="3500">
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="inputPassword4">Fecha</label>
+                                <input type="text" class="form-control" id="editar_fecha_analisis" placeholder="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputAddress">Descripción</label>
+                            <input type="text" class="form-control" id="editar_desc_analisis" placeholder="Descripción de Análisis">
+                        </div>
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
+                <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none">Guardar</button>
             </div>
         </div>
     </div>
