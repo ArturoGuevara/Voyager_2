@@ -8,7 +8,7 @@ from django.urls import reverse
 from urllib.parse import urlencode
 import requests
 import json
-import base64
+
 
 # Create your views here.
 def indexView(request):
@@ -99,8 +99,8 @@ def validacion_codigo(request):
             codigo = form.cleaned_data['codigo_dhl']
             resp = validacion_dhl(codigo)
             print(str(resp))
-            #request.session['successcode'] = resp
-
+            
+            #Pasar una variable por url
             baseurl = reverse('ordenes_internas')
             querystring = urlencode({'successcode': resp})
             url = '{}?{}'.format(baseurl, querystring)

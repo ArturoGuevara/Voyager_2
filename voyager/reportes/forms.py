@@ -33,6 +33,6 @@ class observacionesForma(forms.ModelForm):
         model = OrdenInterna
         fields = ['formato_ingreso_muestra', 'idioma_reporte', 'mrl', 'fecha_lab', 'fecha_ei', 'notif_e', 'envio_ti', 'cliente_cr']
 
-
+#Form de crear paquete DHL
 class codigoDHL(forms.Form):
-    codigo_dhl = forms.CharField(max_length=10)
+    codigo_dhl = forms.CharField(label="",max_length=10)

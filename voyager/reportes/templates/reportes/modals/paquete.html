@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLongTitle">Paquete de Envío</h5>
+                <h5 class="modal-title w-100 text-center" id="exampleModalLongTitle">Crear Paquete</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -12,8 +12,8 @@
                     {% csrf_token %}
                     <div class="form-group my-3">
                         <label for="exampleInputEmail1">Código Rastreo DHL:</label>
-                        {{form.codigo_dhl}}
-                        <!--<input type="text" class="form-control" id="dhl_code" aria-describedby="codigo_dhl" placeholder="1023456789">  -->
+                        <!--{{form.as_p}} -->
+                        <input type="text" class="form-control" id="codigo_dhl" aria-describedby="codigo_dhl" placeholder="1023456789" name="codigo_dhl">  
                     </div> 
                 <div id="checkboxes_container" class="py-3">
                     <div class="row mx-0">
