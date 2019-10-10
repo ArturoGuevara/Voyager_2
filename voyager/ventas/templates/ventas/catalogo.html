@@ -31,7 +31,7 @@
                 <td>${{ a.precio }}</td>
                 <td>{{ a.tiempo }}</td>
                 <td>
-                    <button type="button" class="btn btn-info border-0" onclick="ver_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis">
+                    <button type="button" class="btn btn-info border-0" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis">
                         <i class="fa fa-eye tabla-icon"></i>
                     </button>
                     <button type="button" class="btn btn-danger border-0" onclick="borrar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#borrar_analisis">
