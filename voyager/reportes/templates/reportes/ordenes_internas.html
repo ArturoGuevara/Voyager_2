@@ -8,14 +8,14 @@
    
 {% block content %}
 
-    {% if successcode == "1" %}
+    {% if successcode == "200" %}
       <div class="alert alert-success alert-dismissible fade show" role="alert">
         <strong>Paquete creado exitosamente</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-    {% elif successcode == "0" %}
+    {% elif successcode == "404" %}
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <strong>Paquete no pudo ser creado</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">

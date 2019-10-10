@@ -36,3 +36,5 @@ class observacionesForma(forms.ModelForm):
 #Form de crear paquete DHL
 class codigoDHL(forms.Form):
     codigo_dhl = forms.CharField(label="",max_length=10)
+    
+    

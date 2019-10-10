@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import OrdenInterna
+from .models import OrdenInterna, Paquete
 from .forms import OrdenInternaF,codigoDHL
 from django.template.loader import render_to_string
 from django.http import JsonResponse
@@ -18,10 +18,7 @@ def ordenes_internas(request):
     ordenes = OrdenInterna.objects.all()
     form = codigoDHL()
 
-    #if 'successcode' in request.session:
-    #    response = request.session['successcode']
-    #    print("Respuesta alert:" + str(response))
-
+    #Recibe codigo de validacion_codigo view
     response = request.GET.get('successcode')
     print("Respuesta alert:" + str(response))
 
@@ -73,34 +70,58 @@ def validacion_dhl(codigo):
         #5551260643
         'service': 'express'
     }
-    # This url is for testing 
+     
     url = 'https://api-eu.dhl.com/track/shipments'
     resp = requests.get(url, params=payload, headers=headers)
     
-    if(resp.status_code == 200):
-        '''data = json.loads(resp.text)
-        
-        context = {
-            'last_location' : data['shipments'][0]['events'][0]['location']['address']['addressLocality'],
-            'description' : data['shipments'][0]['events'][0]['description'],
-            'timestamp' : data['shipments'][0]['events'][0]['timestamp']
-        }'''
     
+    return resp.status_code
     
-        return 1
-    else:
-        return 0
+#Guarda codigo en BD y relaciona a O.I
+def guardar_paquete(codigoDHL, idOrdI):
+
+    #Guardar codigo de DHL
+    codigo = Paquete(codigo_dhl=codigoDHL)
+    codigo.save()
+
+    try:
+        #Guardar referencia de codigo de DHL en O.I
+        referencia = OrdenInterna.objects.get(idOI = idOrdI)
+    except:
+        referencia = None
+
+    #Valida si existe la O.I    
+    if(referencia != None):
+        cod_dhl = Paquete.objects.filter(codigo_dhl = codigoDHL).first()
+    
+        referencia.paquete_id = cod_dhl.id_paquete
+        referencia.save()
+
+        return True
+    
+    return False
+
+    
 
 #Obtención de codigo y verificación de Form
 def validacion_codigo(request):
+
+    idOrdI = 1
+
     if request.method == 'POST':
         form = codigoDHL(request.POST)
         if form.is_valid():
             codigo = form.cleaned_data['codigo_dhl']
             resp = validacion_dhl(codigo)
             print(str(resp))
-            
-            #Pasar una variable por url
+
+            #Guardar codigo si es valido
+            if(resp == 200):
+                if(guardar_paquete(codigo,idOrdI) == False):
+                    resp = 404
+            elif(resp != 200):
+                resp = 404    
+            #Pasar una variable por url de exito o fallo
             baseurl = reverse('ordenes_internas')
             querystring = urlencode({'successcode': resp})
             url = '{}?{}'.format(baseurl, querystring)
