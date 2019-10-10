@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import IFCUsuario
+from django.urls import reverse
 # Create your views here.
 
 #Vista de Login
@@ -47,4 +48,9 @@ def homeView(request):
 @login_required
 def logoutControler(request):
     logout(request)
-    return redirect('/cuentas/login/')
+    return redirect('/cuentas/logged_out/')
+
+def loggedOut(request):
+    return render(request,'cuentas/login.html', {
+        'success': 'Sesión cerrada correctamente'
+    })
