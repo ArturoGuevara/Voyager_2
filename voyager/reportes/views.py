@@ -24,8 +24,8 @@ def ingresar_muestras(request):
         return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,
                                                                   'nombre': request.POST.get('nombre'),
                                                                   'direccion': request.POST.get('direccion'),
-                                                                  #'pais': request.POST.get('pais'),
-                                                                  #'estado': request.POST.get('estado'),
+                                                                  'pais': request.POST.get('pais'),
+                                                                  'estado': request.POST.get('estado'),
                                                                   'idioma': request.POST.get('idioma'),})
     else:
         raise Http404
@@ -68,8 +68,33 @@ def oi_actualizar(request, pk):
 def muestra_enviar(request):
     if request.session._session:
         if request.method=='POST':
-            if request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma') and request.POST.get('analisis') and request.POST.get('curso') and request.POST.get('curso') and request.POST.get('curso') and request.POST.get('curso'):
-                return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
+            if (request.POST.get('nombre')
+                    and request.POST.get('direccion')
+                    and request.POST.get('pais')
+                    and request.POST.get('estado')
+                    and request.POST.get('idioma')
+                    and request.POST.get('producto')
+                    and request.POST.get('variedad')
+                    and request.POST.get('parcela')
+                    and request.POST.get('pais_destino')
+                    and request.POST.get('pais_destino')
+                    and request.POST.get('clave_muestra')
+                    and request.POST.get('enviar')
+            ):
+                #obtener usuario fantasma
+                phantom_user = IFCUsuario.objects.get(id=2)
+                # guardar orden interna
+                oi = OrdenInterna()
+                oi.usuario = phantom_user
+                if request.POST.get('enviar')==1:
+                    oi.estatus = 'fantasma'
+                    #disminuir cantidad de analisis
+                else:
+                    oi.estatus = 'invisible'
+                oi.idioma_reporte = request.POST.get('idioma')
+                oi.save()
+                #guardar en tabla analisis_muestra
+                #guardar muestra
             else:
                 raise Http404
         else:
