@@ -23,28 +23,14 @@
           <div class="row">
             <div class="col-md-5 pr-1">
               <div class="form-group">
-                <label>Nombre</label>
-                <select class="form-control" id="" required>
-                  <option selected value="" disabled>Selecciona el producto...</option>
-                  <option>Aguacate</option>
-                  <option>Tomate</option>
-                  <option>Limón</option>
-                  <option>Manzana</option>
-                  <option>Plátano</option>
-                </select>
+                <label>Producto</label>
+                <input type="text" class="form-control" placeholder="Producto" name="producto" id="producto" required>
               </div>
             </div>
             <div class="col-md-7 pl-1">
               <div class="form-group">
                 <label>Variedad</label>
-                <select class="form-control" id="" required>
-                  <option selected value="" disabled>Selecciona la variedad...</option>
-                  <option>Variedad 1</option>
-                  <option>Variedad 2</option>
-                  <option>Variedad 3</option>
-                  <option>Variedad 4</option>
-                  <option>Variedad 5</option>
-                </select>
+                <input type="text" class="form-control" placeholder="Variedad" name="variedad" id="variedad" required>
               </div>
             </div>
           </div>
@@ -59,20 +45,17 @@
             <div class="col-md-3 pr-1">
               <div class="form-group">
                 <label>Parcela</label>
-                <input type="text" class="form-control" placeholder="Parcela" value="" id="" required>
+                <input type="text" class="form-control" placeholder="Parcela" id="parcela" name="parcela" required>
               </div>
             </div>
             <div class="col-md-7 pl-1">
               <div class="form-group">
-                <label>País destino</label>
-                <select class="form-control" id="" required>
-                  <option selected value="" disabled>Selecciona un país...</option>
-                  <option>Albania</option>
-                  <option>Bulgaria</option>
-                  <option>Costa de Marfil</option>
-                  <option>Djibouti</option>
-                  <option>El Salvador</option>
-                </select>
+                  <div class="form-group">
+                    <label>País destino</label>
+                    <select name="country" class="form-control countries" id="countryId" required>
+                      <option selected value="" disabled>Selecciona el país...</option>
+                    </select>
+                  </div>
               </div>
             </div>
           </div>
@@ -80,7 +63,7 @@
             <div class="col-md-5 pr-1">
               <div class="form-group">
                 <label>Clave de muestra</label>
-                <input type="text" class="form-control" placeholder="Clave de muestra" value="" id="" required>
+                <input type="text" class="form-control" placeholder="Clave de muestra" value="" name="clave_muestra" id="clave_muestra" required>
               </div>
             </div>
           </div>
@@ -125,7 +108,7 @@
               <div class="form-group">
                 <div class="form-check">
                   <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" value="">
+                    <input class="form-check-input" type="checkbox" name="otro" id="otro">
                     <span class="form-check-sign"></span>
                     Otro
                   </label>
@@ -153,3 +136,7 @@
 </form>
 
 {% endblock content %}
+
+{% block optionalJS %}
+  <script src="//geodata.solutions/includes/countrystatecity.js"></script>
+{% endblock %}

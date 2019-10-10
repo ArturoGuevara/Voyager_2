@@ -5,15 +5,19 @@ from django.template.loader import render_to_string
 from django.http import JsonResponse
 from .models import AnalisisCotizacion,Cotizacion
 from cuentas.models import IFCUsuario
+from django.http import Http404
 
 # Create your views here.
 def ingreso_cliente(request):
     return render(request, 'reportes/ingreso_cliente.html')
 
 def ingresar_muestras(request):
-    u1=IFCUsuario.objects.get(id=1)
-    all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=u1)
-    return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
+    if request.session._session:
+        u1 = IFCUsuario.objects.get(user = request.user)
+        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=u1)
+        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
+    else:
+        raise Http404
 
 def indexView(request):
     return render(request, 'reportes/index.html')
