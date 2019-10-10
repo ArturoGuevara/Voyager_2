@@ -7,12 +7,6 @@
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#agregar_analisis">
         <i class="nc-icon nc-simple-add"></i> Agregar análisis
     </button>
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#borrar_analisis">
-        <i class="nc-icon nc-simple-delete"></i> Análisis
-    </button>
-    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#ver_analisis">
-        <i class="nc-icon nc-simple-delete"></i> Análisis
-    </button>
 </div>
 <div class="table-responsive table-full-width">
     <table class="table table-hover table-striped" id="tabla_analisis">
@@ -25,14 +19,23 @@
             <th></th>
         </thead>
         <tbody>
+        {% for a in analisis %}
             <tr>
-                <td>A1</td>
-                <td>Dakota Rice</td>
-                <td>Niger</td>
-                <td>$36,738</td>
-                <td>Oud-Turnhout</td>
-                <td><i class="fa fa-eye"> </i><i class="fa fa-trash"></i></td>
+                <td>{{ a.codigo }}</td>
+                <td>{{ a.nombre }}</td>
+                <td>{{ a.descripcion }}</td>
+                <td>${{ a.precio }}</td>
+                <td>{{ a.tiempo }}</td>
+                <td>
+                    <button type="button" class="btn btn-info border-0" data-toggle="modal" data-target="#ver_analisis">
+                        <i class="fa fa-eye" style="font-size: 35px;"></i>
+                    </button>
+                    <button type="button" class="btn btn-danger border-0" data-toggle="modal" data-target="#borrar_analisis">
+                        <i class="fa fa-trash" style="font-size: 35px;"></i>
+                    </button>
+                </td>
             </tr>
+        {% endfor %}
         </tbody>
     </table>
 </div>
