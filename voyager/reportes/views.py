@@ -12,10 +12,21 @@ def ingreso_cliente(request):
     return render(request, 'reportes/ingreso_cliente.html')
 
 def ingresar_muestras(request):
-    if request.session._session:
-        u1 = IFCUsuario.objects.get(user = request.user)
-        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=u1)
-        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis})
+    if (request.session._session
+            and request.POST.get('nombre')
+            and request.POST.get('direccion')
+            #and request.POST.get('pais')
+            #and request.POST.get('estado')
+            and request.POST.get('idioma')
+    ):
+        user_logged = IFCUsuario.objects.get(user = request.user)
+        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)
+        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,
+                                                                  'nombre': request.POST.get('nombre'),
+                                                                  'direccion': request.POST.get('direccion'),
+                                                                  #'pais': request.POST.get('pais'),
+                                                                  #'estado': request.POST.get('estado'),
+                                                                  'idioma': request.POST.get('idioma'),})
     else:
         raise Http404
 

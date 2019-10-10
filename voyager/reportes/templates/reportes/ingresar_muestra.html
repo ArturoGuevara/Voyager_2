@@ -13,6 +13,11 @@
 
 <form method="post" action="{% url 'ingreso_cliente' %}" class="needs-validation">
   {% csrf_token %}
+  <input type="text" class="form-control" id="nombre" name="nombre" value={{nombre}} required hidden>
+  <input type="text" class="form-control" id="direccion" name="nombre" value={{direccion}} required hidden>
+  <!--<input type="text" class="form-control" id="pais" name="nombre" value={{pais}} required hidden>-->
+  <!--<input type="text" class="form-control" id="estado" name="nombre" value={{estado}} required hidden>-->
+  <input type="text" class="form-control" id="idioma" name="idioma" value={{idioma}} required hidden>
   <div class="row">
     <div class="col-md-12">
       <div class="card">
@@ -111,6 +116,26 @@
                     <input class="form-check-input" type="checkbox" name="otro" id="otro">
                     <span class="form-check-sign"></span>
                     Otro
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title">Enviar solicitud de muestra</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <div class="form-check">
+                  <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" name="enviar" id="enviar">
+                    <span class="form-check-sign"></span>
+                    Enviar
                   </label>
                 </div>
               </div>
