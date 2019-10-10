@@ -7,4 +7,5 @@ urlpatterns = [
     path('', views.indexView, name='index'),
     path('ordenes_internas', views.ordenes_internas, name='ordenes_internas'),
     path('<int:idOI>/actualizar/', views.oi_actualizar, name='oi_actualizar'),
+    path('muestra_enviar',views.muestra_enviar,name='muestra_enviar')
 ]

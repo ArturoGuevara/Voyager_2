@@ -60,7 +60,6 @@ class Muestra(models.Model):
     variedad = models.CharField(max_length=50)
     pais_origen = models.CharField(max_length=50)
     codigo_muestra = models.CharField(max_length=50)
-    codigo_interno = models.CharField(max_length=50)
     agricultor = models.CharField(max_length=50)
     ubicacion = models.CharField(max_length=75)
     estado = models.CharField(max_length=20)
