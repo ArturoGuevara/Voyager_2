@@ -64,3 +64,15 @@ def oi_actualizar(request, pk):
     else:
         form = OrdenInterna(instance=oi)
     return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
+
+def muestra_enviar(request):
+    if request.session._session:
+        if request.method=='POST':
+            if request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma') and request.POST.get('analisis') and request.POST.get('curso') and request.POST.get('curso') and request.POST.get('curso') and request.POST.get('curso'):
+                return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
+            else:
+                raise Http404
+        else:
+            raise Http404
+    else:
+        raise Http404
