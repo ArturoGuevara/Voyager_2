@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
 {% include './header.html' %}
+{% block optionalCSS %}{% endblock %}
+</head>
 <body>
     <div class="wrapper">
         {% include './sidebar.html' %}
@@ -17,4 +20,4 @@
     </div> <!-- Close wrapper -->
 </body>
 {% include './js.html' %}
-</html>
+{% block optionalJS %}{% endblock %}

@@ -1,0 +1,34 @@
+{% for o in ordenes %}
+      <tr>
+        <td class="pt-3-half">{{ o.idOI }}</td>
+        <td class="pt-3-half">{{ o.estatus }}</td>
+        <td class="pt-3-half">{{ o.empresa }}</td>
+        <td class="pt-3-half">{{ o.usuario }}</td>
+        <td class="pt-3-half">{{ o.fecha_muestreo }}</td>
+        <td>
+          <span class="table-view"><button type="button"
+              class="btn btn-info btn-rounded btn-sm my-0"><i class="fa">&#xf002;</i></button></span>
+        </td>
+        <!--<td>
+          <span class="table-edit"><button type="button"
+              class="btn btn-primary btn-rounded btn-sm my-0" data-toggle="modal" data-target="#myModal">
+              <i class="fa">&#xf044;</i>
+          </button></span>
+        </td>-->
+        <td>
+            <button type="button"
+                class="btn btn-warning btn-sm js-update-book"
+                data-url="{% url 'oi_actualizar' o.idOI %}">
+                <span class="glyphicon glyphicon-pencil"></span> Edit
+            </button>
+        </td>
+        <td>
+          <span class="table-remove"><button type="button"
+              class="btn btn-danger btn-rounded btn-sm my-0"><i class="fa">&#xf1f8;</i></button></span>
+        </td>
+      </tr>
+{% empty %}
+    <tr>
+        <td colspan="8">No hay órdenes internas</td>
+    </tr>
+{% endfor %}
