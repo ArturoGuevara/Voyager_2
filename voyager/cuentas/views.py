@@ -15,15 +15,24 @@ def loginView(request):
 def verifyLogin(request):
     mail = request.POST['mail']
     password = request.POST['password']
-    print(mail)
-    print(password)
+    #print(mail)
+    #print(password)
     try:
         u = User.objects.get(email=mail)
+        usr = IFCUsuario.objects.get(user=u)
+        state = usr.estado
+        #print(state)
+
         user = authenticate(request,username=u.username,password=password)
         if user is not None:
-            login(request, user)
-            print('Login exitoso \n\n')
-            return redirect('/cuentas/home/')
+            if state is True:
+                login(request, user)
+                #print('Login exitoso \n\n')
+                return redirect('/cuentas/home/')
+            else:
+                return render(request,'cuentas/login.html', {
+                    'error': 'Correo y/o contraseña incorrectos'
+                })
         else:
             #Redireccionar error
             return render(request,'cuentas/login.html', {
