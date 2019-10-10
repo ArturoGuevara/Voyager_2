@@ -23,3 +23,12 @@ function estado(){
     estado.value = "";
   }
 }
+
+function guardar_muestra(){
+    var enviar = document.getElementById("enviar").value;
+    document.getElementById("enviar").value=0;
+}
+function enviar_muestra(){
+    var enviar = document.getElementById("enviar").value;
+    document.getElementById("enviar").value=1;
+}
