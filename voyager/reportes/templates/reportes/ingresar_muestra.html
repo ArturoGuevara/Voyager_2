@@ -93,7 +93,7 @@
                   <div class="form-group">
                     <div class="form-check">
                       <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" value="">
+                        <input class="form-check-input" type="checkbox" name="analisis{{analysis.analisis.id_analisis}}">
                         <span class="form-check-sign"></span>
                         {{ analysis.analisis.nombre }}
                       </label>
@@ -123,26 +123,7 @@
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header">
-          <h4 class="card-title">Enviar solicitud de muestra</h4>
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-5 pr-1">
-              <div class="form-group">
-                <div class="form-check">
-                  <label class="form-check-label">
-                    <input class="form-check-input" type="checkbox" name="enviar" id="enviar">
-                    <span class="form-check-sign"></span>
-                    Enviar
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <input type="number" name="enviar" id="enviar" value=0 hidden>
     </div>
   </div>
   <div class="row">
@@ -152,10 +133,10 @@
       <a href="{% url 'ingreso_cliente' %}" class="btn btn-danger btn-block">Atrás</a>
     </div>
     <div class="col-md-2">
-      <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+      <button onclick="guardar_muestra()" type="submit" class="btn btn-primary btn-block">Guardar</button>
     </div>
     <div class="col-md-2">
-      <button type="submit" class="btn btn-success btn-block">Enviar</button>
+      <button onclick="enviar_muestra()" type="submit" class="btn btn-success btn-block">Enviar</button>
     </div>
   </div>
 </form>
@@ -164,4 +145,14 @@
 
 {% block optionalJS %}
   <script src="//geodata.solutions/includes/countrystatecity.js"></script>
+  <script>
+    function guardar_muestra(){
+        var enviar = document.getElementById("enviar").value;
+        document.getElementById("enviar").value=0;
+    }
+    function enviar_muestra(){
+        var enviar = document.getElementById("enviar").value;
+        document.getElementById("enviar").value=1;
+    }
+  </script>
 {% endblock %}
