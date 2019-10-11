@@ -14,6 +14,9 @@ from django.http import HttpResponse
 # Create your views here.
 def ingreso_cliente(request):
     if request.session._session:
+        user_logged = IFCUsuario.objects.get(user = request.user)
+        if not user_logged.rol.nombre=="Cliente":
+            raise Http404
         return render(request, 'reportes/ingreso_cliente.html')
     else:
         raise Http404
