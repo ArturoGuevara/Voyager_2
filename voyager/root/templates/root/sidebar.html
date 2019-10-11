@@ -79,7 +79,23 @@
                     </ul>
                 </div>
             </li>
-
+            <!-- perfil -->
+            <li class="nav-item d-block d-sm-none">
+                <a class="nav-link" data-toggle="collapse" href="#profileDropdown">
+                    <i class="nc-icon nc-circle-09"></i>
+                    <p>{{ request.session.user }}<b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="profileDropdown">
+                    <ul class="nav">
+                        <!-- cerrar sesion -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cuentas/logout/">
+                                <span>Cerrar sesión</span><i class="nc-icon nc-button-power"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <!-- More Links Here -->
         </ul>
     </div>
