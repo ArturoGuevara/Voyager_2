@@ -1,9 +1,9 @@
 from django.shortcuts import render
 import requests
 import json
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
-
+@login_required
 def index(request):
     url = "https://api-eu.dhl.com/track/shipments"
 

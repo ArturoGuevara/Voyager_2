@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import IFCUsuario
+from django.urls import reverse
 # Create your views here.
 
 #Vista de Login
@@ -15,15 +16,21 @@ def loginView(request):
 def verifyLogin(request):
     mail = request.POST['mail']
     password = request.POST['password']
-    print(mail)
-    print(password)
     try:
         u = User.objects.get(email=mail)
+        usr = IFCUsuario.objects.get(user=u)
+        state = usr.estado
         user = authenticate(request,username=u.username,password=password)
         if user is not None:
-            login(request, user)
-            print('Login exitoso \n\n')
-            return redirect('/cuentas/home/')
+            if state is True:
+                login(request, user)
+                ifc_user = IFCUsuario.objects.get(user = request.user)
+                request.session['user'] = ifc_user.nombre
+                return redirect('/cuentas/home/')
+            else:
+                return render(request,'cuentas/login.html', {
+                    'error': 'Correo y/o contraseña incorrectos'
+                })
         else:
             #Redireccionar error
             return render(request,'cuentas/login.html', {
@@ -39,12 +46,19 @@ def verifyLogin(request):
 
 @login_required
 def homeView(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user)
+    #Aquí se genera la vista de la pagina home del usuario
     return render(request,'cuentas/home.html', {
-            'user': ifc_user
+            #'user': ifc_user
     })
 
 @login_required
 def logoutControler(request):
+    #Controlador del logout
     logout(request)
-    return redirect('/cuentas/login/')
+    return redirect('/cuentas/logged_out/')
+
+def loggedOut(request):
+    # Funcion encargada de mostar la vista para
+    return render(request,'cuentas/login.html', {
+        'success': 'Sesión cerrada correctamente'
+    })
