@@ -17,6 +17,26 @@ class TestAnalisis(TestCase):
         contador = Analisis.objects.all().count()
         self.assertEqual(contador, 3)
     
-    def test_anadir_analisis(self):
+    #def test_anadir_analisis(self):
+        #analisis = Analisis.objects.first()
+        #self.assertEqual("Analisis 1", analisis.nombre)
+        
+    def test_edit_analisis_1(self):
         analisis = Analisis.objects.first()
-        self.assertEqual("Analisis 1", analisis.nombre)
+        auxCodigo = analisis.codigo
+        analisis.codigo = 12
+        analisis.save()
+        
+        self.assertNotEquals(analisis.codigo, auxCodigo)
+    
+    # Si truena está bien, porque el analisis no existe
+    def test_edit_analisis_2(self):
+        var = False
+        try: 
+            analisis = Analisis.objects.get(id=4)
+            auxCodigo = analisis.codigo
+            analisis.codigo = 12
+            analisis.save()
+        except:
+            var = True
+            self.assertEquals(var, True)
