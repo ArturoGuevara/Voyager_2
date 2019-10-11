@@ -96,36 +96,6 @@ class testLogin(TestCase):
     def test_login_acceso_denegado(self):
         #Esta prueba simula a un usuario que quiere entrar a algún acceso de la página sin acceder con su cuenta
         response = self.client.get('/cuentas/home/')
-<<<<<<< HEAD
-        print("\n"+response['location'])
-        self.assertEqual(response.status_code, 302)
-
-
-class TestLogout(TestCase):
-
-    def setUp(self):
-        # Con esta funcion se crea un usuario para que se pueda probar el cierre de sesion
-        user_dir = User.objects.create_user('dir', 'dirtest@testuser.com', 'testpassword')  # Se crea el objeto User
-        rol_dir = Rol.objects.create(nombre='Director')                                     # Se crea el objeto del rol para el usuario
-
-        director = IFCUsuario.objects.create(                                               # Se crea el objeto del usuario de IFC
-                                                        rol = rol_dir,
-                                                        user = user_dir,
-                                                        nombre = 'director',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono = '1234567',
-                                                        puesto = 'Director',
-                                                        estado = True
-                                                      )
-        director.save()                                                                     # Se guarda el usuario en la base de datos volatil
-
-    def test_logout_exitoso(self):
-        # El usuario se redirecciona al login nuevamente despues de cerrar sesion
-        self.client.post('/cuentas/verify_login/', {'mail':'dirtest@testuser.com','password':'testpassword'})   # Se inicia sesion
-        response = self.client.post('/cuentas/logout/')                                                         # Se cierra la sesion                                                                # Se intenta acceder a home sin iniciar sesion
-        self.assertRedirects(response, '/cuentas/logged_out/')
-=======
         self.assertRedirects(response, '/cuentas/login?next=/cuentas/home/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_director(self):
@@ -162,4 +132,3 @@ class TestLogout(TestCase):
         #Esta prueba simula a una usuario con el rol de soporte que accede que no puede acceder, ya que su cuenta fue eliminada
         response = self.client.post('/cuentas/verify_login/', {'mail':'exsoportetest@testuser.com','password':'testpassword'})
         self.assertContains(response, "Correo y/o contraseña incorrectos")
->>>>>>> 2b2cceeebbaeb7c93abe71d0b6218f1f5626d4b2
