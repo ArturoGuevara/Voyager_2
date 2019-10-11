@@ -60,7 +60,69 @@
                             <p>Aki va la wea de muestras</p>
                         </div>
                         <div class="tab-pane container fade" id="observaciones">
-                            Aki va wea de observaciones
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="formato_ingreso_muestra">Formato de ingreso de muestra</label>
+                                    <input type="text" class="form-control" id="formato_ingreso_muestra" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="idioma_reporte">Idioma del reporte: </label>
+                                    <p>
+                                        <input type="radio" name="idioma_reporte" value="8809 ES">8809 ES
+                                        <input type="radio" name="idioma_reporte" value="8992 EN">8992 EN<br>                                      
+                                    </p>
+                                </div>
+                            </div>
+
+                            
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="mrl">MRL</label>
+                                    <input type="text" class="form-control" id="mrl" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="fecha_eri">Fecha esperada de recibo de informes</label>
+                                    <input type="text" class="form-control" id="fecha_eri" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="fecha_lab">Fecha de llegada al lab</label>
+                                    <input type="text" class="form-control" id="fecha_lab" placeholder="">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="fecha_ei">Fecha de envío de informes</label>
+                                    <input type="text" class="form-control" id="fecha_ei" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="notif_e">
+                                    <span class="form-check-sign"></span>
+                                    Notificación de envío al cliente
+                                </label>
+                            </div>
+
+
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="envio_ti">
+                                    <span class="form-check-sign"></span>
+                                    Envío de todos los informes
+                                </label>
+                            </div>
+
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="cliente_cr">
+                                    <span class="form-check-sign"></span>
+                                    El cliente confirmó de recibido
+                                </label>
+                            </div>
+    
+
                         </div>
                         <div class="tab-pane container fade" id="facturacion">
                             <p>Aki va la wea de facturación</p>
