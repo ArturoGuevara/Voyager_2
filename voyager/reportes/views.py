@@ -76,7 +76,12 @@ def validacion_dhl(codigo):
     
     
     return resp.status_code
-    
+
+
+def obtener_OI():
+    return True
+
+
 #Guarda codigo en BD y relaciona a O.I
 def guardar_paquete(codigoDHL, idOrdI):
 
@@ -112,9 +117,11 @@ def validacion_codigo(request):
         form = codigoDHL(request.POST)
         if form.is_valid():
             codigo = form.cleaned_data['codigo_dhl']
+            oiseleccionadas = request.POST.getlist('oiselected')
             resp = validacion_dhl(codigo)
             print(str(resp))
-
+            for i in oiseleccionadas:
+                print("OIS:" + str(i))
             #Guardar codigo si es valido
             if(resp == 200):
                 if(guardar_paquete(codigo,idOrdI) == False):

@@ -12,7 +12,7 @@
                     {% csrf_token %}
                     <div class="form-group my-3">
                         <label for="exampleInputEmail1">Código Rastreo DHL:</label>
-                        <!--{{form.as_p}} -->
+                        <!--{{form.as_p}} --> 
                         <input type="text" class="form-control" id="codigo_dhl" aria-describedby="codigo_dhl" placeholder="1023456789" name="codigo_dhl">  
                     </div> 
                 <div id="checkboxes_container" class="py-3">
@@ -21,7 +21,7 @@
                         {% for o in ordenes %}
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="" minlength="10" maxlength="10" >
+                                    <input class="form-check-input" type="checkbox" value="" minlength="10" maxlength="10" name="oiselected" id="oiselected" value="{{ o.idOI }}" >
                                     <span class="form-check-sign"></span>
                                     {{ o.idOI }}
                                 </label>

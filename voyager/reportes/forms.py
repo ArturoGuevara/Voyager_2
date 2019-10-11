@@ -37,4 +37,14 @@ class observacionesForma(forms.ModelForm):
 class codigoDHL(forms.Form):
     codigo_dhl = forms.CharField(label="",max_length=10)
     
+    features = forms.ModelMultipleChoiceField(
+        queryset = OrdenInterna.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False
+    )
+    
+
+
+
+
     
