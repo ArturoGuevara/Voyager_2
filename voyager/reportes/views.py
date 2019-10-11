@@ -13,7 +13,10 @@ from django.http import HttpResponse
 
 # Create your views here.
 def ingreso_cliente(request):
-    return render(request, 'reportes/ingreso_cliente.html')
+    if request.session._session:
+        return render(request, 'reportes/ingreso_cliente.html')
+    else:
+        raise Http404
 
 def ingresar_muestras(request):
     if (request.session._session
