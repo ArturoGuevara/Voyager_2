@@ -2,8 +2,6 @@ from django import forms
 from .models import OrdenInterna
 from django.utils.translation import ugettext_lazy as _
 
-
-
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -11,12 +9,9 @@ class OrdenInternaF(forms.ModelForm):
     class Meta:
         model = OrdenInterna
         fields = '__all__'
-
-
         widgets = {
             'birth_date': DateInput(),
         }
-
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
 
@@ -28,16 +23,7 @@ class infoForma(forms.ModelForm):
             'fecha_muestreo', 'localidad', 'fechah_recibo', 'fecha_envio', 'guia_envio',
             'link_resultados', 'estatus',
         ]
-
-
-
-
-
-#Esperar a los camaradas de ingreso de muestras
-# class muestrasForma(forms.ModelForm):
-    
-
-
+        
 class observacionesForma(forms.ModelForm):
     class Meta:
         model = OrdenInterna

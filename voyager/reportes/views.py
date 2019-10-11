@@ -41,7 +41,6 @@ def busqueda(request, id):
 
 
 def busqueda2(request, id):
-
     if request.method == 'POST':
         id = id
         oi = OrdenInterna.objects.get(idOI=id)
@@ -58,7 +57,5 @@ def busqueda2(request, id):
             }
             return render(request, 'reportes/modals/actualizar_info_forma.html', context)
         else:
-            #objeto ya no existe
             data = 'null'
             return render(request, 'reportes/modals/actualizar_info_forma.html', data)
-            #return JsonResponse({"data": data})
