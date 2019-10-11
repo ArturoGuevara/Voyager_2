@@ -20,5 +20,8 @@
     </div> <!-- Close wrapper -->
 </body>
 {% include './js.html' %}
+<script>
+    var csrftoken = '{{ csrf_token }}';
+</script>
 {% block optionalJS %}{% endblock %}
 </html>
