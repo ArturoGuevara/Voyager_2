@@ -10,14 +10,17 @@ import datetime
 
 # Create your views here.
 def ingreso_cliente(request):
-    return render(request, 'reportes/ingreso_cliente.html')
+    if request.session._session:
+        return render(request, 'reportes/ingreso_cliente.html')
+    else:
+        raise Http404
 
 def ingresar_muestras(request):
     if (request.session._session
             and request.POST.get('nombre')
             and request.POST.get('direccion')
             and request.POST.get('pais')
-            and request.POST.get('estado')
+            #and request.POST.get('estado')
             and request.POST.get('idioma')
     ):
         user_logged = IFCUsuario.objects.get(user = request.user)
