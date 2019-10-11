@@ -15,19 +15,14 @@ def loginView(request):
 def verifyLogin(request):
     mail = request.POST['mail']
     password = request.POST['password']
-    #print(mail)
-    #print(password)
     try:
         u = User.objects.get(email=mail)
         usr = IFCUsuario.objects.get(user=u)
         state = usr.estado
-        #print(state)
-
         user = authenticate(request,username=u.username,password=password)
         if user is not None:
             if state is True:
                 login(request, user)
-                #print('Login exitoso \n\n')
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -48,6 +43,7 @@ def verifyLogin(request):
 
 @login_required
 def homeView(request):
+    #Aquí se genera la vista de la pagina home del usuario
     ifc_user = IFCUsuario.objects.get(user = request.user)
     return render(request,'cuentas/home.html', {
             'user': ifc_user
@@ -55,5 +51,6 @@ def homeView(request):
 
 @login_required
 def logoutControler(request):
+    #Controlador del logout
     logout(request)
     return redirect('/cuentas/login/')

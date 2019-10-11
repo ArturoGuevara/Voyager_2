@@ -4,6 +4,7 @@ from cuentas.models import*
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
+    #Aquí se crea la base de datos dentro del ambiente de prueba
     def setUp(self):
         user_dir = User.objects.create_user('dir', 'dirtest@testuser.com', 'testpassword')
         user_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
@@ -93,33 +94,41 @@ class testLogin(TestCase):
 
 
     def test_login_acceso_denegado(self):
+        #Esta prueba simula a un usuario que quiere entrar a algún acceso de la página sin acceder con su cuenta
         response = self.client.get('/cuentas/home/')
         self.assertRedirects(response, '/cuentas/login?next=/cuentas/home/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_director(self):
+        #Esta prueba simula a una usuario con el rol de director que accede correctamente con su usuario y contraseña
         response = self.client.post('/cuentas/verify_login/', {'mail':'dirtest@testuser.com','password':'testpassword'})
         self.assertRedirects(response, '/cuentas/home/', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_no_director(self):
+        #Esta prueba simula a una usuario con el rol de director que no accede correctamente a su cuenta por tener datos incorrectos
         response = self.client.post('/cuentas/verify_login/', {'mail':'dirtest@testuser.com','password':'testpasswords'})
         self.assertContains(response, "Correo y/o contraseña incorrectos")
 
     def test_login_exitoso_ventas(self):
+        #Esta prueba simula a una usuario con el rol de ventas que accede correctamente con su usuario y contraseña
         response = self.client.post('/cuentas/verify_login/', {'mail':'venttest@testuser.com','password':'testpassword'})
         self.assertRedirects(response, '/cuentas/home/', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_facturacion(self):
+        #Esta prueba simula a una usuario con el rol de facturacion que accede correctamente con su usuario y contraseña
         response = self.client.post('/cuentas/verify_login/', {'mail':'facttest@testuser.com','password':'testpassword'})
         self.assertRedirects(response, '/cuentas/home/', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_clientes(self):
+        #Esta prueba simula a una usuario con el rol de director que accede correctamente con su usuario y contraseña
         response = self.client.post('/cuentas/verify_login/', {'mail':'clienttest@testuser.com','password':'testpassword'})
         self.assertRedirects(response, '/cuentas/home/', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_exitoso_soporte(self):
+        #Esta prueba simula a una usuario con el rol de soporte que accede correctamente con su usuario y contraseña
         response = self.client.post('/cuentas/verify_login/', {'mail':'soportetest@testuser.com','password':'testpassword'})
         self.assertRedirects(response, '/cuentas/home/', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
     def test_login_estado_innactivo(self):
+        #Esta prueba simula a una usuario con el rol de soporte que accede que no puede acceder, ya que su cuenta fue eliminada
         response = self.client.post('/cuentas/verify_login/', {'mail':'exsoportetest@testuser.com','password':'testpassword'})
         self.assertContains(response, "Correo y/o contraseña incorrectos")
