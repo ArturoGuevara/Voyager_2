@@ -40,7 +40,7 @@ def busqueda(request, id):
             return JsonResponse({"data": data})
 
 
-def busqueda2(request,id):
+def busqueda2(request, id):
 
     if request.method == 'POST':
         id = id

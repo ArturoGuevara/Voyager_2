@@ -87,6 +87,10 @@
         </div>
       </div>
 
+      <div class="modal-footer">
+        <input id="submitForm" class="btn btn-success" type="button" onclick="return confirm('¿Deseas confirmar tu inscripción?')" value="Guardar"/>
+      </div>
+
     </div>
   </div>
 </div>
@@ -95,17 +99,9 @@
 <script type="text/javascript">
   
   $(function () {
-
-    // Update book buttons
-/*    $(".oi_info_actualizar2").each(function () {
-      //$(this).modalForm({formURL: $(this).data('id')});
-      alert(this.data('id'))
-    });*/
-
     $('.oi_info_actualizar2').on('click', function(){
       var id = $(this).attr('id')
-      //alert(3);
-      
+      //alert(3)
       $.ajax({
             type: "POST",
             url: "busqueda/"+id,
@@ -117,15 +113,14 @@
             success : function(response) {
                 //$('#getResultsNews').html(data);
                 console.log(response.data)
-                
-                if(response){
+              if(response){
                   alert(response.data)
-                }else{
-                }
+              }else{
+              }
             }
         })
-
     })
+
 
 
     $('.oi_info_actualizar3').on('click', function(){
@@ -142,11 +137,20 @@
                 $('#receive_form').html(data);
                 
                 $('#modal33').modal('show');
-
             }
         })
-
     })
+
+    $('#submitForm').on('click', function(){
+      //Código que carga todas las variables para mandarlas al deste
+      var mrl = $('#id_mrl').val();
+      alert(mrl);
+    })
+
+
+
+
+
 
   });
   
