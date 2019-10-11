@@ -1,0 +1,11 @@
+{% extends 'root/base.html' %}
+<script>
+  {% block jquery%}
+  {% endblock %}
+</script>
+
+<!--Este es el front end de la forma de login-->
+{% block content %}
+    <h1>Bienvenido {{ user.nombre }}</h1>
+
+{% endblock %}
