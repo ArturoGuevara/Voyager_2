@@ -7,11 +7,15 @@ from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analis
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
+@login_required
 def ingreso_cliente(request):
     return render(request, 'reportes/ingreso_cliente.html')
 
+@login_required
 def ingresar_muestras(request):
     if (request.session._session
             and request.POST.get('nombre')
@@ -31,9 +35,12 @@ def ingresar_muestras(request):
     else:
         raise Http404
 
+@login_required
 def indexView(request):
     return render(request, 'reportes/index.html')
 
+
+@login_required
 def ordenes_internas(request):
     ordenes = OrdenInterna.objects.all()
     context = {
@@ -41,6 +48,8 @@ def ordenes_internas(request):
     }
     return render(request, 'reportes/ordenes_internas.html', context)
 
+
+@login_required
 def oi_guardar(request, form, template_name):
     data = dict()
     if request.method == 'POST':
@@ -58,6 +67,8 @@ def oi_guardar(request, form, template_name):
     data['html_form'] = render_to_string(template_name, context, request=request)
     return JsonResponse(data)
 
+
+@login_required
 def oi_actualizar(request, pk):
     oi = get_object_or_404(OrdenInterna, pk=pk)
     if request.method == 'POST':
@@ -66,6 +77,8 @@ def oi_actualizar(request, pk):
         form = OrdenInterna(instance=oi)
     return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
 
+
+@login_required
 def muestra_enviar(request):
     if request.session._session:
         if request.method=='POST':
