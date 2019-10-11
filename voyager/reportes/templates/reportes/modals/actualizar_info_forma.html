@@ -1,5 +1,4 @@
 {% load widget_tweaks %}
-
 <ul class="nav nav-tabs">
     <li class="nav-item">
         <a class="nav-link active" data-toggle="tab" href="#info">Orden Interna</a>
@@ -14,7 +13,6 @@
         <a class="nav-link" data-toggle="tab" href="#facturacion">Facturación</a>
     </li>
 </ul>
-
 <form>
     <div class="tab-content">
         <div class="tab-pane container active" id="info">
@@ -32,7 +30,6 @@
         <div class="tab-pane container fade" id="muestras">
             <p>Aki va la wea de muestras</p>
         </div>
-
         <div class="tab-pane container fade" id="observaciones">
             <table>
                 <tr>
@@ -56,24 +53,12 @@
                     <td>{{ iform.link_resultados }}</td>
                 </tr>
             </table>
-
         </div>
-
-
         <div class="tab-pane container fade" id="facturacion">
             <p>Aki va la wea de facturación</p>
         </div>
-
     </div>
-
 </form>
-
-
-
-
-
-
-
 
 <script type="text/javascript">
     $('#id_localidad').val('{{ oi.localidad }}')
@@ -83,8 +68,6 @@
     $('#id_guia_envio').val('{{ oi.guia_envio }}')
     $('#id_link_resultados').val('{{ oi.link_resultados }}')
     $('#id_estatus').val('{{ oi.estatus }}')
-
-
 
     $("#iF").submit(function(event) {
         alert("{{ oi.idOI }}");
