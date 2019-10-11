@@ -15,7 +15,11 @@ def indexView(request):
     return render(request, 'reportes/index.html')
 
 def ordenes_internas(request):
+    #Estatus a buscar de OI para crear paquete
+    estatus_OI_paquetes = "activo"
+
     ordenes = OrdenInterna.objects.all()
+    ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
     #Recibe codigo de validacion_codigo view
@@ -24,6 +28,7 @@ def ordenes_internas(request):
 
     context = {
         'ordenes': ordenes,
+        'ordenes_activas': ordenes_activas,
         'form': form,
         'successcode': response,
     }
@@ -78,40 +83,48 @@ def validacion_dhl(codigo):
     return resp.status_code
 
 
-def obtener_OI():
+def codigo_repetido(codigoDHL):
+
+    try:
+        cod_test = Paquete.objects.get(codigo_dhl = codigoDHL)
+    except:
+        cod_test = None
+    
+    if(cod_test == None):
+        return False
+
     return True
 
 
 #Guarda codigo en BD y relaciona a O.I
-def guardar_paquete(codigoDHL, idOrdI):
+def guardar_paquete(codigoDHL, idsOrdI):
 
     #Guardar codigo de DHL
-    codigo = Paquete(codigo_dhl=codigoDHL)
-    codigo.save()
+    if(codigo_repetido(codigoDHL) == False):
+        codigo = Paquete(codigo_dhl=codigoDHL)
+        codigo.save()
+    #Asignar codigo DHL   
+    for id in idsOrdI:
+        try:
+            #Obtener objeto de O.I
+            referencia = OrdenInterna.objects.get(idOI = id)
+        except:
+            referencia = None
+            return False
 
-    try:
-        #Guardar referencia de codigo de DHL en O.I
-        referencia = OrdenInterna.objects.get(idOI = idOrdI)
-    except:
-        referencia = None
+        #Valida si existe la O.I    
+        if(referencia != None):
+            cod_dhl = Paquete.objects.filter(codigo_dhl = codigoDHL).first()
+            #Asigna codigo
+            referencia.paquete_id = cod_dhl.id_paquete
+            referencia.save()
 
-    #Valida si existe la O.I    
-    if(referencia != None):
-        cod_dhl = Paquete.objects.filter(codigo_dhl = codigoDHL).first()
-    
-        referencia.paquete_id = cod_dhl.id_paquete
-        referencia.save()
-
-        return True
-    
-    return False
+    return True
 
     
 
 #Obtención de codigo y verificación de Form
 def validacion_codigo(request):
-
-    idOrdI = 1
 
     if request.method == 'POST':
         form = codigoDHL(request.POST)
@@ -124,7 +137,7 @@ def validacion_codigo(request):
                 print("OIS:" + str(i))
             #Guardar codigo si es valido
             if(resp == 200):
-                if(guardar_paquete(codigo,idOrdI) == False):
+                if(guardar_paquete(codigo,oiseleccionadas) == False):
                     resp = 404
             elif(resp != 200):
                 resp = 404    

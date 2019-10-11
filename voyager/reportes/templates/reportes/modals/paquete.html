@@ -18,10 +18,10 @@
                 <div id="checkboxes_container" class="py-3">
                     <div class="row mx-0">
                         <!-- Falta agregar los col-6 para que se divida en dos columnas -->
-                        {% for o in ordenes %}
+                        {% for o in ordenes_activas %}
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="" minlength="10" maxlength="10" name="oiselected" id="oiselected" value="{{ o.idOI }}" >
+                                    <input class="form-check-input" type="checkbox" minlength="10" maxlength="10" name="oiselected" id="oiselected" value="{{ o.idOI }}" >
                                     <span class="form-check-sign"></span>
                                     {{ o.idOI }}
                                 </label>
