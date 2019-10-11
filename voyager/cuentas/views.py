@@ -24,6 +24,8 @@ def verifyLogin(request):
         if user is not None:
             if state is True:
                 login(request, user)
+                ifc_user = IFCUsuario.objects.get(user = request.user)
+                request.session['user'] = ifc_user.nombre
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -45,8 +47,6 @@ def verifyLogin(request):
 @login_required
 def homeView(request):
     #Aquí se genera la vista de la pagina home del usuario
-    ifc_user = IFCUsuario.objects.get(user = request.user)
-    request.session['user'] = ifc_user.nombre
     return render(request,'cuentas/home.html', {
             #'user': ifc_user
     })
