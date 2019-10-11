@@ -2,11 +2,9 @@ from django.shortcuts import render
 import requests
 import json
 from django.contrib.auth.decorators import login_required
-from cuentas.models import IFCUsuario
 # Create your views here.
 @login_required
 def index(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
     url = "https://api-eu.dhl.com/track/shipments"
 
     headers = {
@@ -26,7 +24,6 @@ def index(request):
     data = json.loads(resp.text)
 
     context = {
-        'user': ifc_user,
         'last_location' : data['shipments'][0]['events'][0]['location']['address']['addressLocality'],
         'description' : data['shipments'][0]['events'][0]['description'],
         'timestamp' : data['shipments'][0]['events'][0]['timestamp']

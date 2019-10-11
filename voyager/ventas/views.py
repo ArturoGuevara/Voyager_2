@@ -10,11 +10,9 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
 def ver_catalogo(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
     analisis = Analisis.objects.all()
     context = {
         'analisis': analisis,
-        'user': ifc_user
     }
     return render(request, 'ventas/catalogo.html', context)
 

@@ -13,12 +13,10 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 @login_required
 def ingreso_cliente(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
-    return render(request, 'reportes/ingreso_cliente.html',{'user': ifc_user})
+    return render(request, 'reportes/ingreso_cliente.html')
 
 @login_required
 def ingresar_muestras(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
     if (request.session._session
             and request.POST.get('nombre')
             and request.POST.get('direccion')
@@ -33,24 +31,20 @@ def ingresar_muestras(request):
                                                                   'direccion': request.POST.get('direccion'),
                                                                   'pais': request.POST.get('pais'),
                                                                   'estado': request.POST.get('estado'),
-                                                                  'idioma': request.POST.get('idioma'),
-                                                                  'user': ifc_user,})
+                                                                  'idioma': request.POST.get('idioma'),})
     else:
         raise Http404
 
 @login_required
 def indexView(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
-    return render(request, 'reportes/index.html',{'user': ifc_user})
+    return render(request, 'reportes/index.html')
 
 
 @login_required
 def ordenes_internas(request):
-    ifc_user = IFCUsuario.objects.get(user = request.user) # Esto es para mostrar el nombre de usuario en navbar
     ordenes = OrdenInterna.objects.all()
     context = {
         'ordenes': ordenes,
-        'user': ifc_user,
     }
     return render(request, 'reportes/ordenes_internas.html', context)
 
