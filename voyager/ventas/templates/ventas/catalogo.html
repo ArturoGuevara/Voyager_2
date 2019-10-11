@@ -25,12 +25,12 @@
         <tbody>
         {% for a in analisis %}
             <tr>
-                <td>{{ a.codigo }}</td>
-                <td>{{ a.nombre }}</td>
-                <td>{{ a.descripcion }}</td>
-                <td>${{ a.precio }}</td>
-                <td>{{ a.tiempo }}</td>
-                <td>
+                <td class="analisis-codigo" data-id="{{ a.id_analisis }}">{{ a.codigo }}</td>
+                <td class="analisis-nombre" data-id="{{ a.id_analisis }}">{{ a.nombre }}</td>
+                <td class="analisis-desc" data-id="{{ a.id_analisis }}">{{ a.descripcion }}</td>
+                <td class="analisis-precio" data-id="{{ a.id_analisis }}">${{ a.precio }}</td>
+                <td class="analisis-tiempo" data-id="{{ a.id_analisis }}">{{ a.tiempo }}</td>
+                <td class="analisis-acciones" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-info border-0" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis">
                         <i class="fa fa-eye tabla-icon"></i>
                     </button>
