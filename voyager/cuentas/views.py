@@ -41,8 +41,9 @@ def verifyLogin(request):
 @login_required
 def homeView(request):
     ifc_user = IFCUsuario.objects.get(user = request.user)
+    request.session['user'] = ifc_user.nombre
     return render(request,'cuentas/home.html', {
-            'user': ifc_user
+            #'user': ifc_user
     })
 
 @login_required

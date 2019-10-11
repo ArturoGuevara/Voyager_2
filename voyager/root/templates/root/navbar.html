@@ -13,7 +13,7 @@
             <ul class="navbar-nav mr-5 d-sm-none d-md-block">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="no-icon">{{ user.nombre }}</span>
+                        <span class="no-icon">{{ request.session.user }}</span>
                     </a>
                     <!-- Cerrar sesion -->
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
