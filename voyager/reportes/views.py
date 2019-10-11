@@ -10,21 +10,20 @@ import requests
 import json
 
 
-# Create your views here.
 def indexView(request):
     return render(request, 'reportes/index.html')
 
 def ordenes_internas(request):
-    #Estatus a buscar de OI para crear paquete
-    estatus_OI_paquetes = "activo"
+    
+    estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
     ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
-    #Recibe codigo de validacion_codigo view
-    response = request.GET.get('successcode')
-    print("Respuesta alert:" + str(response))
+    
+    response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
+    
 
     context = {
         'ordenes': ordenes,
@@ -61,9 +60,11 @@ def oi_actualizar(request, pk):
     return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
 
 
-#Validación del codigo de paquete de DHL en API
+
 def validacion_dhl(codigo):
-    url = "https://api-eu.dhl.com/track/shipments"
+    #Validación del codigo de paquete de DHL en API
+
+    url = "https://api-eu.dhl.com/track/shipments"  
 
     headers = {
         'Accept': 'application/json',
@@ -76,14 +77,14 @@ def validacion_dhl(codigo):
         'service': 'express'
     }
      
-    url = 'https://api-eu.dhl.com/track/shipments'
-    resp = requests.get(url, params=payload, headers=headers)
+    resp = requests.get(url, params=payload, headers=headers) #Manda informacion de paquete y obtiene response de API
     
     
     return resp.status_code
 
 
-def codigo_repetido(codigoDHL):
+def codigo_repetido(codigo_DHL):
+    #Checa si el codigo de DHL ya existe
 
     try:
         cod_test = Paquete.objects.get(codigo_dhl = codigoDHL)
@@ -96,59 +97,65 @@ def codigo_repetido(codigoDHL):
     return True
 
 
-#Guarda codigo en BD y relaciona a O.I
-def guardar_paquete(codigoDHL, idsOrdI):
 
-    #Guardar codigo de DHL
-    if(codigo_repetido(codigoDHL) == False):
-        codigo = Paquete(codigo_dhl=codigoDHL)
+def guardar_paquete(codigo_DHL, ids_OrdI):
+    #Guarda codigo en BD y relaciona a O.I
+
+    
+    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de O.I
+        return 204
+
+    if not codigo_repetido(codigo_DHL): #Verifica si el codigo no existe
+        codigo = Paquete(codigo_dhl=codigo_DHL)  #Introduce nuevo codigo a BD
         codigo.save()
-    #Asignar codigo DHL   
-    for id in idsOrdI:
+      
+    for id in ids_OrdI: #Asignar codigo DHL 
         try:
-            #Obtener objeto de O.I
-            referencia = OrdenInterna.objects.get(idOI = id)
+            referencia = OrdenInterna.objects.get(idOI = id) #Obtener objeto de O.I
         except:
             referencia = None
-            return False
-
-        #Valida si existe la O.I    
-        if(referencia != None):
-            cod_dhl = Paquete.objects.filter(codigo_dhl = codigoDHL).first()
-            #Asigna codigo
-            referencia.paquete_id = cod_dhl.id_paquete
+            
+        if(referencia != None): #Valida si existe la O.I 
+            cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
+            referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
             referencia.save()
+        else:
+            return False
 
     return True
 
     
 
-#Obtención de codigo y verificación de Form
 def validacion_codigo(request):
+    #Obtención de codigo y verificación de Form
 
     if request.method == 'POST':
         form = codigoDHL(request.POST)
         if form.is_valid():
-            codigo = form.cleaned_data['codigo_dhl']
-            oiseleccionadas = request.POST.getlist('oiselected')
-            resp = validacion_dhl(codigo)
-            print(str(resp))
-            for i in oiseleccionadas:
-                print("OIS:" + str(i))
-            #Guardar codigo si es valido
-            if(resp == 200):
-                if(guardar_paquete(codigo,oiseleccionadas) == False):
+            
+            codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
+            oi_seleccionadas = request.POST.getlist('oiselected')    #Obtiene datos de la form
+            
+            resp = validacion_dhl(codigo)   #Valida codigo ingresado en Form
+            
+            
+            if(resp == 200):    #Guardar codigo si es valido
+                if not guardar_paquete(codigo,oi_seleccionadas):
                     resp = 404
-            elif(resp != 200):
+                elif guardar_paquete(codigo,oi_seleccionadas) == 204:
+                    resp = 204
+            else:
                 resp = 404    
+
             #Pasar una variable por url de exito o fallo
             baseurl = reverse('ordenes_internas')
             querystring = urlencode({'successcode': resp})
             url = '{}?{}'.format(baseurl, querystring)
 
             return redirect(url)
+    
     else:
-        form = codigoDHL()
+        form = codigoDHL()  #Se manda Form vacia
 
     return redirect('ordenes_internas')
         

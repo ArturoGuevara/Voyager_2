@@ -16,12 +16,20 @@
         </button>
       </div>
     {% elif successcode == "404" %}
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>Paquete no pudo ser creado</strong>
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" >
+        <strong>Código de rastreo no existe</strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+
+    {% elif successcode == "204" %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert" id="success-alert">
+      <strong>No se encontró la Orden Interna.</strong>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
 
     {% else %}
     {% endif %}
@@ -58,4 +66,5 @@
 
 {% block optionalJS %}
     <script src="{% static 'reportes/js/validacion.js' %}" type="text/javascript"></script>
+    
 {% endblock %}
