@@ -47,10 +47,12 @@ def homeView(request):
 
 @login_required
 def logoutControler(request):
+    # Funcion encargada del controlador para cerrar la sesion
     logout(request)
     return redirect('/cuentas/logged_out/')
 
 def loggedOut(request):
+    # Funcion encargada de mostar la vista para
     return render(request,'cuentas/login.html', {
         'success': 'Sesión cerrada correctamente'
     })
