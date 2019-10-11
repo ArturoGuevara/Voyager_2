@@ -7,6 +7,9 @@ from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analis
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
+from django.http import HttpResponseRedirect
+from django.http import HttpResponse
+
 
 # Create your views here.
 def ingreso_cliente(request):
@@ -17,17 +20,25 @@ def ingresar_muestras(request):
             and request.POST.get('nombre')
             and request.POST.get('direccion')
             and request.POST.get('pais')
-            and request.POST.get('estado')
             and request.POST.get('idioma')
+            and (request.POST.get('estado1') or (request.POST.get('estado2'))
+)
     ):
         user_logged = IFCUsuario.objects.get(user = request.user)
+        if not user_logged.rol.nombre=="Cliente":
+            raise Http404
+        if request.POST.get('pais')=="México":
+            estado = request.POST.get('estado1')
+        else:
+            estado = request.POST.get('estado2')
         all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)
         return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,
                                                                   'nombre': request.POST.get('nombre'),
                                                                   'direccion': request.POST.get('direccion'),
                                                                   'pais': request.POST.get('pais'),
-                                                                  'estado': request.POST.get('estado'),
-                                                                  'idioma': request.POST.get('idioma'),})
+                                                                  'estado': estado,
+                                                                  'idioma': request.POST.get('idioma'),
+                                                                  })
     else:
         raise Http404
 
@@ -83,18 +94,20 @@ def muestra_enviar(request):
                     and request.POST.get('fecha_muestreo')
             ):
                 user_logged = IFCUsuario.objects.get(user=request.user)
+                if not user_logged.rol.nombre == "Cliente":
+                    raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged)
                 #obtener usuario fantasma
-                phantom_user = IFCUsuario.objects.get(id=2)
-                muestras_hoy=Muestra.objects.filter(fecha=datetime.now().date())
+                phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")
+                muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date())
                 #guardar orden interna
                 if muestras_hoy:
                     oi = muestras_hoy[0].oi
                 else:
                     oi = OrdenInterna()
                     oi.usuario = phantom_user
-                    if request.POST.get('enviar') == 1:
+                    if request.POST.get('enviar') == "1":
                         oi.estatus = 'fantasma'
                     else:
                         oi.estatus = 'invisible'
@@ -115,10 +128,12 @@ def muestra_enviar(request):
                 muestra.fecha_muestreo = request.POST.get('fecha_muestreo')
                 muestra.destino = request.POST.get('pais_destino')
                 muestra.idioma = request.POST.get('idioma')
-                if request.POST.get('enviar')==1:
+                if request.POST.get('enviar')=="1":
                     muestra.estado_muestra = True
                 else:
                     muestra.estado_muestra = False
+                muestra.fecha_forma = datetime.datetime.now().date()
+                muestra.save()
                 #guardar en tabla analisis_muestra
                 prefix = "analisis"
                 for key,value in request.POST.items():
@@ -130,7 +145,7 @@ def muestra_enviar(request):
                             am.analisis = analisis
                             am.muestra = muestra
                             am.fecha = datetime.datetime.now()
-                            if request.POST.get('enviar')==1:
+                            if request.POST.get('enviar')=="1":
                                 am.estado = True
                                 a = all_analysis_cot.get(analisis__id_analisis=id_analisis)
                                 a.cantidad = a.cantidad-1
@@ -138,6 +153,17 @@ def muestra_enviar(request):
                             else:
                                 am.estado = False
                             am.save()
+                if request.POST.get('otro'):
+                    am=AnalisisMuestra()
+                    am.analisis=Analisis.objects.get(nombre='Otro')
+                    am.muestra=muestra
+                    am.fecha = datetime.datetime.now()
+                    if request.POST.get('enviar') == "1":
+                        am.estado = True
+                    else:
+                        am.estado = False
+                    am.save()
+                return HttpResponseRedirect("ingreso_cliente")
             else:
                 raise Http404
         else:
