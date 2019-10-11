@@ -17,16 +17,16 @@ def index(request):
         #5551260643
         'service': 'express'
     }
-    # This url is for testing 
+    # This url is for testing
     url = 'https://api-eu.dhl.com/track/shipments'
     resp = requests.get(url, params=payload, headers=headers)
-    
+
     data = json.loads(resp.text)
-    
+
     context = {
         'last_location' : data['shipments'][0]['events'][0]['location']['address']['addressLocality'],
         'description' : data['shipments'][0]['events'][0]['description'],
         'timestamp' : data['shipments'][0]['events'][0]['timestamp']
     }
-    
+
     return render(request, 'tracking/index.html', context)

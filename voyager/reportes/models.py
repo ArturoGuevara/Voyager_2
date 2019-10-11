@@ -11,7 +11,6 @@ class OrdenInterna(models.Model):
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
-    estatus = models.CharField(max_length=15, blank=True)
 
     #Opciones de sí/no e idioma
     SN = (
@@ -22,11 +21,17 @@ class OrdenInterna(models.Model):
         ('8809 ES', '8809 ES'),
         ('8992 EN', '8992 EN'),
     )
+    ESTADOS = (
+        ('invisible', 'invisible'),
+        ('fantasma', 'fantasma'),
+        ('activo', 'activo'),
+    )
 
     #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
     idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
     mrl = models.CharField(max_length=200, blank=True)
+    estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
     notif_e = models.CharField(max_length=2, choices=SN, blank=True) #notificación de envío
     fecha_lab = models.DateField(null=True, blank=True) #fecha de llegada al lab
@@ -55,7 +60,6 @@ class Muestra(models.Model):
     variedad = models.CharField(max_length=50)
     pais_origen = models.CharField(max_length=50)
     codigo_muestra = models.CharField(max_length=50)
-    codigo_interno = models.CharField(max_length=50)
     agricultor = models.CharField(max_length=50)
     ubicacion = models.CharField(max_length=75)
     estado = models.CharField(max_length=20)
@@ -91,4 +95,12 @@ class AnalisisCotizacion(models.Model):
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    fecha = models.DateField()
+
+
+class AnalisisMuestra(models.Model):
+    id_analisis_muestra = models.AutoField(primary_key=True)
+    analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
+    muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
+    estado = models.BooleanField()
     fecha = models.DateField()
