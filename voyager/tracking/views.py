@@ -1,10 +1,12 @@
 from django.shortcuts import render
 import requests
 import json
-
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
-def index(request,codigo):
+@login_required
+def index(request):
+
     url = "https://api-eu.dhl.com/track/shipments"
 
     headers = {
@@ -17,12 +19,12 @@ def index(request,codigo):
         #5551260643
         'service': 'express'
     }
-    # This url is for testing 
+    # This url is for testing
     url = 'https://api-eu.dhl.com/track/shipments'
     resp = requests.get(url, params=payload, headers=headers)
-    
+
     data = json.loads(resp.text)
-    
+
     context = {
         'last_location' : data['shipments'][0]['events'][0]['location']['address']['addressLocality'],
         'description' : data['shipments'][0]['events'][0]['description'],
@@ -34,3 +36,4 @@ def index(request,codigo):
     else:
         return 0
 
+    return render(request, 'tracking/index.html', context)

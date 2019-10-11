@@ -31,9 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'tracking.apps.TrackingConfig',
     'root.apps.RootConfig',
+    'tracking.apps.TrackingConfig',
     'reportes.apps.ReportesConfig',
+    'ventas.apps.VentasConfig',
+    'cuentas.apps.CuentasConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -73,8 +75,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'voyager.wsgi.application'
-
-
+LOGIN_REDIRECT_URL = 'cuentas/home/'
+LOGOUT_REDIRECT_URL = 'cuenas/login/'
+LOGIN_URL = '/cuentas/login'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 

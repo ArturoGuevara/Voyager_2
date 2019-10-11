@@ -1,14 +1,20 @@
 {% load static %}
 <div class="sidebar" data-image="https://demos.creative-tim.com/light-bootstrap-dashboard/assets/img/sidebar-5.jpg">
-<!--Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red" 
+<!--Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+=======
+<div class="sidebar" data-image="https://demos.creative-tim.com/light-bootstrap-dashboard/assets/img/sidebar-5.jpg">
+<!--Tip 1: You can change the color of the sidebar using: data-color="purple | blue | green | orange | red"
+>>>>>>> UST07-49
     Tip 2: you can also add an image using data-image tag -->
     <div class="sidebar-wrapper">
         <div class="logo">
             <a href="#" class="simple-text">
                 <!-- Name Dashboard Here -->
+                Voyager
             </a>
         </div>
         <ul class="nav">
+            {% if user.rol.nombre == 'Director' or user.rol.nombre == 'Ventas' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
@@ -24,7 +30,8 @@
                     </ul>
                 </div>
             </li>
-            
+            {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">
                     <i class="nc-icon nc-delivery-fast"></i>
@@ -40,7 +47,7 @@
                     </ul>
                 </div>
             </li>
-            
+
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                     <i class="nc-icon nc-notes"></i>
@@ -72,7 +79,23 @@
                     </ul>
                 </div>
             </li>
-            
+            <!-- perfil -->
+            <li class="nav-item d-block d-sm-none">
+                <a class="nav-link" data-toggle="collapse" href="#profileDropdown">
+                    <i class="nc-icon nc-circle-09"></i>
+                    <p>{{ request.session.user }}<b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="profileDropdown">
+                    <ul class="nav">
+                        <!-- cerrar sesion -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cuentas/logout/">
+                                <span>Cerrar sesión</span><i class="nc-icon nc-button-power"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <!-- More Links Here -->
         </ul>
     </div>
