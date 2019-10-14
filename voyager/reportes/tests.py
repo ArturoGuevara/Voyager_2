@@ -231,7 +231,7 @@ class MuestraEnviarTests(TestCase):
                                                                   })
         self.assertEqual(response.status_code,404)
 
-    def test_select_single_analysis_correct(self): #probar que se ha enviado la información correcta para registrar una muestra para un solo análisi
+    def test_select_single_analysis_correct(self): #probar que se ha enviado la información correcta para registrar una muestra para un solo análisis
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -264,7 +264,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
 
-    def test_select_other_correct(self):
+    def test_select_other_correct(self): #probar que la funcionalidad sea correcta si se registra la opción de "otros" para análisis
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -293,7 +293,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
 
-    def test_select_all_analysis_correct(self):
+    def test_select_all_analysis_correct(self): #probar que la funcionalidad sea correcta si se registran todos los análisis y se envían
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -332,7 +332,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
 
-    def test_select_all_analysis_correct_save(self):
+    def test_select_all_analysis_correct_save(self): #probar que la funcionalidad sea correcta si se registran todos los análisis y se guardan sin enviar
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -372,7 +372,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,False) #verificar que la muestra está inactiva
 
-    def test_no_analysis_correct(self):
+    def test_no_analysis_correct(self): #probar que la funcionalidad sea correcta si no se eligen análisis para la muestra
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -402,7 +402,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
 
-    def test_analysis_two_same_day(self):
+    def test_analysis_two_same_day(self): #probar que la funcionalidad sea correcta si se registran 2 análisis el mismo día
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
