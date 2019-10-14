@@ -19,10 +19,8 @@ function cargar_info_oi(id) {
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
-            $('#editar_fecha_muestreo').val(data.fecha_muestreo);
             $('#editar_localidad').val(data.localidad);
             $('#editar_fecha_envio').val(data.fecha_envio);
-            $('#editar_fechah_recibo').val(data.fechah_recibo);
             $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_link_resultados').val(data.link_resultados);
 
