@@ -7,12 +7,12 @@
 
 <h2>Información de muestra</h2>
 
-<form method="post" action="{% url 'ingreso_cliente' %}" class="needs-validation">
+<form method="post" action="{% url 'muestra_enviar' %}" class="needs-validation">
   {% csrf_token %}
   <input type="text" class="form-control" id="nombre" name="nombre" value={{nombre}} required hidden>
-  <input type="text" class="form-control" id="direccion" name="nombre" value={{direccion}} required hidden>
-  <input type="text" class="form-control" id="pais" name="nombre" value={{pais}} required hidden>
-  <input type="text" class="form-control" id="estado" name="nombre" value={{estado}} required hidden>
+  <input type="text" class="form-control" id="direccion" name="direccion" value={{direccion}} required hidden>
+  <input type="text" class="form-control" id="pais" name="pais" value={{pais}} required hidden>
+  <input type="text" class="form-control" id="estado" name="estado" value={{estado}} required hidden>
   <input type="text" class="form-control" id="idioma" name="idioma" value={{idioma}} required hidden>
   <div class="row">
     <div class="col-md-12">
@@ -391,9 +391,9 @@
     </div>
   </div>
 </form>
-
 {% endblock content %}
 
 {% block optionalJS %}
   <script src="{% static 'reportes/js/muestras.js' %}" type="text/javascript"></script>
+  <script src="{% static 'reportes/js/muestra_valid.js' %}" type="text/javascript"></script>
 {% endblock %}

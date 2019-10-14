@@ -1,6 +1,10 @@
 from django.db import models
 from cuentas.models import IFCUsuario
 
+class Paquete(models.Model):
+    id_paquete = models.AutoField(primary_key=True)
+    codigo_dhl = models.CharField(max_length=10,blank=True,null=True)
+
 # Create your models here.
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
@@ -11,6 +15,8 @@ class OrdenInterna(models.Model):
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
+    estatus = models.CharField(max_length=15, blank=True)
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
     #Opciones de sí/no e idioma
     SN = (
@@ -29,7 +35,7 @@ class OrdenInterna(models.Model):
 
     #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
-    idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
+    idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
     mrl = models.CharField(max_length=200, blank=True)
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
@@ -51,7 +57,6 @@ class OrdenInterna(models.Model):
     def __str__(self):
         return "%s %s" % (self.idOI, self.estatus)
 
-
 class Muestra(models.Model):
     id_muestra = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
@@ -68,6 +73,7 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+    fecha_forma = models.DateField()
 
 
 class Cotizacion(models.Model):
@@ -104,3 +110,4 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
+
