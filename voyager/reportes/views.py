@@ -105,6 +105,7 @@ def actualizar_orden(request):
         if oi:
             #Actualizar campos
             oi.estatus = request.POST['estatus']
+
             oi.localidad = request.POST['localidad']
 
             #Para las fechas checar si están vacías o formato incorrecto
