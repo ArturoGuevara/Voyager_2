@@ -66,57 +66,55 @@ function editar_analisis(){
         var tiempo =  $('#editar_fecha_analisis').val();
         
         // Validar que los inputs no estén vacíos
-        var flag = 0;
-        if(check_is_not_empty(nombre,'Nombre')){
-            if(check_is_not_empty(codigo,'Código')){
-                if(check_is_not_empty(descripcion,'Descripción')){
-                    if(check_is_not_empty(precio,'Precio')){
-                        if(check_is_not_empty(tiempo,'Tiempo')){
-                            flag = 1;
-                        }
-                    }
-                }
+        check_is_not_empty(nombre,'Nombre','#editar_nombre_analisis');
+        check_is_not_empty(codigo,'Código','#editar_codigo_analisis');
+        check_is_not_empty(descripcion,'Descripción','#editar_desc_analisis');
+        check_is_not_empty(precio,'Precio','#editar_precio_analisis');
+        check_is_not_empty(tiempo,'Tiempo','#editar_fecha_analisis');
+
+        $.ajax({
+            url: "editar_analisis/"+id,
+            dataType: 'json',
+            // Seleccionar información que se mandara al controlador
+            data: {
+                id:id,
+                nombre: nombre,
+                codigo: codigo,
+                descripcion: descripcion,
+                precio: precio,
+                tiempo: tiempo,
+                'csrfmiddlewaretoken': token
+            },
+            type: "POST",
+            success: function(response){
+                // Obtener la info que se regresa del controlador
+                var data = JSON.parse(response.data);
+                // Actualizar los valores en la tabla donde están todos los análisis
+                cambiar_valores_analisis_tabla('.analisis-codigo', data.fields.codigo, id);
+                cambiar_valores_analisis_tabla('.analisis-nombre', data.fields.nombre, id);
+                cambiar_valores_analisis_tabla('.analisis-desc', data.fields.descripcion, id);
+                cambiar_valores_analisis_tabla('.analisis-precio', data.fields.precio, id);
+                cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
+                // Actualizar información en bloque de visualización de análisis
+                cargar_info_modal_ver(data.fields.codigo, data.fields.nombre, data.fields.precio, data.fields.tiempo, data.fields.descripcion);
+
+                // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
+                $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
+                $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
+                $('#ver_info').removeClass('d-none').addClass('d-block');
+                $('#editar_info').removeClass('d-block').addClass('d-none');
+
+                // Si hubo algún input introducido mal pero luego se envío correctamente, escondemos la alerta
+                $('#edit-analisis-error').addClass('d-none');
+
+                // Damos retroalimentación de que se guardó correctamente
+                showNotification('top','right','Cambios guardados correctamente');
             }
-        }
-        // Si los campos no están vacíos
-        if(flag == 1){
-            $.ajax({
-                url: "editar_analisis/"+id,
-                dataType: 'json',
-                // Seleccionar información que se mandara al controlador
-                data: {
-                    id:id,
-                    nombre: nombre,
-                    codigo: codigo,
-                    descripcion: descripcion,
-                    precio: precio,
-                    tiempo: tiempo,
-                    'csrfmiddlewaretoken': token
-                },
-                type: "POST",
-                success: function(response){
-                    // Obtener la info que se regresa del controlador
-                    var data = JSON.parse(response.data);
-                    // Actualizar los valores en la tabla donde están todos los análisis
-                    cambiar_valores_analisis_tabla('.analisis-codigo', data.fields.codigo, id);
-                    cambiar_valores_analisis_tabla('.analisis-nombre', data.fields.nombre, id);
-                    cambiar_valores_analisis_tabla('.analisis-desc', data.fields.descripcion, id);
-                    cambiar_valores_analisis_tabla('.analisis-precio', data.fields.precio, id);
-                    cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
-                    // Actualizar información en bloque de visualización de análisis
-                    cargar_info_modal_ver(data.fields.codigo, data.fields.nombre, data.fields.precio, data.fields.tiempo, data.fields.descripcion);
-                    
-                    // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
-                    $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
-                    $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
-                    $('#ver_info').removeClass('d-none').addClass('d-block');
-                    $('#editar_info').removeClass('d-block').addClass('d-none');
-                }
-            });
-        }
+        });
     }
 }
 
+// Función para reemplazar valores en la tabla e inputs
 function cargar_info_modal_ver(codigo, nombre, precio, tiempo, descripcion){
     $('#codigo_analisis').html(codigo);
     $('#nombre_analisis').html(nombre);
@@ -137,4 +135,18 @@ function cambiar_valores_analisis_tabla(clase,value,id){
            $(e).html(value);
        }
     });
+}
+// Función que crea y muestra alerta
+function showNotification(from, align, msg){
+	color = Math.floor((Math.random() * 4) + 1);
+	$.notify({
+		icon: "nc-icon nc-app",
+		message: msg
+	},{
+		timer: 4000,
+		placement: {
+			from: from,
+			align: align
+		}
+	});
 }

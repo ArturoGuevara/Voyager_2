@@ -9,11 +9,10 @@ $(document).ready(function(){
     $("#editar_fecha_analisis").on("keypress", justNumbers);
 });
 // Función para checar que no estén vacíos los campos
-var check_is_not_empty = function(auxiliar, name){
+var check_is_not_empty = function(auxiliar, name, id){
     if(auxiliar == '' || auxiliar == null){
-        var msg = 'Por favor completa el campo de: ' + name;
-        alert(msg);
-        return false;
+        $(id).addClass('is-invalid');
+    }else{
+        $(id).removeClass('is-invalid');
     }
-    return true;
 }
