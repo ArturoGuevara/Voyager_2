@@ -35,7 +35,7 @@ class OrdenInterna(models.Model):
 
     #Observaciones
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
-    idioma_reporte = models.CharField(max_length=2, choices=IDIOMA, blank=True)
+    idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
     mrl = models.CharField(max_length=200, blank=True)
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
@@ -73,6 +73,7 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+    fecha_forma = models.DateField()
 
 
 class Cotizacion(models.Model):
