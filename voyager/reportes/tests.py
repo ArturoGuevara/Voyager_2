@@ -8,141 +8,140 @@ from django.test.client import Client
 import datetime
 
 # Create your tests here.
-class IngresoClienteTests(TestCase):
-    def create_role_client(self):
+class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso_cliente
+    def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
         role.save()
         return role
 
-    def create_user_django(self):
+    def create_user_django(self):   #Crear usuario en tabla usuario de Django
         user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
         user.save()
         return user
 
-    def create_IFCUsuario(self):
+    def create_IFCUsuario(self):   #Crear usuario de IFC
         i_user = IFCUsuario()
-        i_user.user = self.create_user_django()
-        i_user.rol = self.create_role_client()
+        i_user.user = self.create_user_django()   #Asignar usuario de la tabla User
+        i_user.rol = self.create_role_client()   #Asignar rol creado
         i_user.nombre = "Hockey"
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
         i_user.puesto = "puesto"
         i_user.estado = True
-        i_user.save()
+        i_user.save()   #Guardar usuario de IFC
 
-    def test_no_login(self):
-        self.create_role_client()
+    def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
+        self.create_role_client()   #Llamar función para crear rol
+        response = self.client.get(reverse('ingreso_cliente'))   #Ir a página de ingreso de cliente
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    def test_login(self):   #Pruena si el usuario ya inició sesión
+        self.create_IFCUsuario()   #Llamar la función para crear usuario de IFC
+        self.client.login(username='hockey',password='lalocura')   #Hacer inicio de sesión
         response = self.client.get(reverse('ingreso_cliente'))
-        self.assertEqual(response.status_code,302)
+        self.assertEqual(response.status_code,200)   #Todo debe de salir correctamente
 
-    def test_login(self):
-        self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('ingreso_cliente'))
-        self.assertEqual(response.status_code,200)
-
-class IngresoMuestrasTests(TestCase):
-    def create_role_client(self):
+class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingresar_muestras
+    def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
         role.save()
         return role
 
-    def create_user_django(self):
+    def create_user_django(self):   #Crear usuario en tabla usuario de Django
         user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
         user.save()
         return user
 
-    def create_IFCUsuario(self):
+    def create_IFCUsuario(self):   #Crear usuario de IFC
         i_user = IFCUsuario()
-        i_user.user = self.create_user_django()
-        i_user.rol = self.create_role_client()
+        i_user.user = self.create_user_django()   #Asignar usuario de la tabla User
+        i_user.rol = self.create_role_client()   #Asignar rol creado
         i_user.nombre = "Hockey"
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
         i_user.puesto = "puesto"
         i_user.estado = True
-        i_user.save()
+        i_user.save() #Guardar usuario de IFC
 
-
-    def test_no_login(self):
+    def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
         response = self.client.get(reverse('ingresar_muestras'))
         self.assertEqual(response.status_code,302)
 
-    def test_login_no_post(self):
+    def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('ingresar_muestras'))
-        self.assertEqual(response.status_code,404)
+        response = self.client.get(reverse('ingresar_muestras'))   #Cambia de página sin método post
+        self.assertEqual(response.status_code,404)   #Mostrar 404
 
-    def test_login_post_empty(self):
+    def test_post_empty(self):   #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{})
-        self.assertEqual(response.status_code,404)
+        response = self.client.post(reverse('ingresar_muestras'),{})   #El post va vacío
+        self.assertEqual(response.status_code,404)   #Mostrar 404
 
-    def test_login_post_incomplete(self):
+    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{'nombre':"Impulse",
+        response = self.client.post(reverse('ingresar_muestras'),{'nombre':"Impulse",   #Las variables de post no están completas
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado1':"Zacatecas"
                                                                   })
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,404)   #Mostrar 404
 
-    def test_login_post_empty_field(self):
+    def test_post_empty_field(self):   #Prueba si algún post manda algo vacío
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': '',
+        response = self.client.post(reverse('ingresar_muestras'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
                                                                    'estado1': "Saint John's"
                                                                    })
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,404)   #Mostrar 404
 
-    def test_login_post_complete(self):
+    def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': "Impulse",
+        response = self.client.post(reverse('ingresar_muestras'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
                                                                    'estado1': "Saint John's"
                                                                    })
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code,200)   #Todo correcto
 
-class MuestraEnviarTests(TestCase):
-    def create_role_client(self):
+class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_muestra
+    def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
         role.save()
         return role
 
-    def create_user_django(self):
+    def create_user_django(self):   #Crear usuario en tabla usuario de Django
         user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
         user.save()
         return user
 
-    def create_IFCUsuario(self):
+    def create_IFCUsuario(self):   #Crear usuario de IFC
         i_user = IFCUsuario()
-        i_user.user = self.create_user_django()
-        i_user.rol = self.create_role_client()
+        i_user.user = self.create_user_django()   #Asignar usuario de la tabla User
+        i_user.rol = self.create_role_client()   #Asignar rol creado
         i_user.nombre = "Hockey"
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
         i_user.puesto = "puesto"
         i_user.estado = True
-        i_user.save()
+        i_user.save()   #Guardar usuario de IFC
 
-    def create_phantom(self):
+    def create_phantom(self):   #Función para crear al usuario fantasma quien creará las ordenes internas
         user = User.objects.create_user('danny_phantom', 'danny@phantom.com', 'phantom')
-        user.save()
+        user.save()   #Guardar objeto de usuario
         user_phantom = IFCUsuario()
         user_phantom.user = user
         user_phantom.rol = self.create_role_client()
@@ -152,14 +151,14 @@ class MuestraEnviarTests(TestCase):
         user_phantom.telefono = "9114364"
         user_phantom.puesto = "puesto"
         user_phantom.estado = True
-        user_phantom.save()
+        user_phantom.save()   #Guardar usuario de IFC
 
 
-    def setup(self):
+    def setup(self):   #Función de setUp que crea lo necesario en la base de datos de pruebas para funcionar correctamente
         u1 = IFCUsuario.objects.all().first()
         self.create_phantom()
         u2 = IFCUsuario.objects.all().last()
-        c = Cotizacion()
+        c = Cotizacion()   #Crear un objeto de Cotizacion
         c.usuario_c = u1
         c.usuario_v = u2
         c.descuento = 10.00
@@ -167,59 +166,59 @@ class MuestraEnviarTests(TestCase):
         c.iva = 100.00
         c.total = 1234235.00
         c.status = True
-        c.save()
-        a1 = Analisis()
+        c.save()   #Guardar la cotización
+        a1 = Analisis()   #Crear un objeto de Analisis
         a1.codigo = "A1"
         a1.nombre = "Pest"
         a1.descripcion = "agropecuario"
         a1.precio = 213132423.12
         a1.tiempo = 1
-        a1.save()
-        a2 = Analisis()
+        a1.save()   #Guardar el análisis
+        a2 = Analisis()   #Crear un objeto de Analisis
         a2.codigo = "A2"
         a2.nombre = "icida"
         a2.descripcion = "agro"
         a2.precio = 2132423.12
         a2.tiempo = 2
-        a2.save()
-        ac1 = AnalisisCotizacion()
+        a2.save()   #Guardar el análisis
+        ac1 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac1.analisis = a1
         ac1.cotizacion = c
         ac1.cantidad = 10000
         ac1.fecha = datetime.datetime.now().date()
-        ac1.save()
-        ac2 = AnalisisCotizacion()
+        ac1.save()   #Guardar conexión
+        ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac2.analisis = a2
         ac2.cotizacion = c
         ac2.cantidad = 100
         ac2.fecha = datetime.datetime.now().date()
-        ac2.save()
-        otro = Analisis()
+        ac2.save()   #Guardar conexión
+        otro = Analisis()   #Crear un objeto de Analisis
         otro.codigo = "Otro"
         otro.nombre = "Otro"
         otro.descripcion = "Otro"
         otro.precio = 0.00
         otro.tiempo = 0
-        otro.save()
+        otro.save()   #Guardar el análisis
 
-    def test_no_login(self):
+    def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
         response = self.client.get(reverse('muestra_enviar'))
         self.assertEqual(response.status_code,302)
 
-    def test_no_post(self):
+    def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.get(reverse('muestra_enviar'))
         self.assertEqual(response.status_code,404)
 
-    def test_post_empty(self):
+    def test_post_empty(self):    #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.post(reverse('muestra_enviar'),{})
         self.assertEqual(response.status_code,404)
 
-    def test_post_incomplete(self):
+    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
