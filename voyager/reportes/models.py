@@ -5,9 +5,7 @@ from cuentas.models import IFCUsuario
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
-    fecha_muestreo = models.DateField(null=True, blank=True)
     localidad = models.CharField(max_length=50, blank=True)
-    fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
@@ -68,6 +66,7 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+    fechah_recibo = models.DateTimeField(null=True, blank=True)
 
 
 class Cotizacion(models.Model):
