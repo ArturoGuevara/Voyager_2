@@ -1,0 +1,59 @@
+{% extends 'root/base.html' %}
+
+{% load static %}
+
+{% block optionalCSS %}
+    <link href="{% static 'reportes/css/styles.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+
+    
+        {% if successcode == "200" %}
+        <div class="alert alert-success alert-dismissible fade show d-none" data-show="{{ request.session.alerta }}" role="alert" id="success-alert">
+          <strong>Paquete creado exitosamente</strong>
+        </div>
+        {% elif successcode == "404" %}
+        <div class="alert alert-danger alert-dismissible fade show d-none" data-show="{{ request.session.alerta }}" role="alert" id="success-alert">
+          <strong>Código de rastreo no existe</strong>
+        </div>
+        {% elif successcode == "204" %}
+        <div class="alert alert-danger alert-dismissible fade show d-none" data-show="{{ request.session.alerta }}" role="alert" id="success-alert">
+          <strong>No se encontró la Orden Interna.</strong>
+        </div>
+        {% endif %}
+        
+        
+    <h1>Órdenes internas</h1>
+    <div class="text-md-right text-center">
+        <button class="btn btn-warning" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Crear Paquete</button>
+        <button class="btn btn-success" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Orden Interna</button>
+    </div>
+    <div class="row mx-0">
+        <div id="table" class="w-100">
+            <table class="table table-responsive table-striped text-center">
+                <thead>
+                    <tr>
+                        <th class="text-center">Orden Interna</th>
+                        <th class="text-center">Estatus</th>
+                        <th class="text-center">Empresa</th>
+                        <th class="text-center">Usuario</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Visualizar</th>
+                        <th class="text-center">Modificar</th>
+                        <th class="text-center">Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% include './modals/oi_lista.html' %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% include './modals/editar_orden_interna.html' %}
+    {% include './modals/paquete.html' %}
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'reportes/js/validacion.js' %}" type="text/javascript"></script>
+    {% endblock %}
