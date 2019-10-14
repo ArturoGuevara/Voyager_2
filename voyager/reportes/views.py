@@ -12,35 +12,35 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
-@login_required
+@login_required   #Redireccionar a login si no ha iniciado sesión
 def ingreso_cliente(request):
-    if request.session._session:
-        user_logged = IFCUsuario.objects.get(user = request.user)
-        if not user_logged.rol.nombre=="Cliente":
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        return render(request, 'reportes/ingreso_cliente.html')
+        return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
         raise Http404
 
-@login_required
+@login_required   #Redireccionar a login si no ha iniciado sesión
 def ingresar_muestras(request):
-    if (request.session._session
-            and request.POST.get('nombre')
-            and request.POST.get('direccion')
+    if (request.session._session   #Revisión de sesión iniciada
+            and request.POST.get('nombre')   #Los post son enviados desde la página anterior
+            and request.POST.get('direccion')   #Checar todos los post necesarios para continuar con la forma
             and request.POST.get('pais')
             and request.POST.get('idioma')
             and (request.POST.get('estado1') or (request.POST.get('estado2'))
 )
     ):
-        user_logged = IFCUsuario.objects.get(user = request.user)
-        if not user_logged.rol.nombre=="Cliente":
+        user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
+        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if request.POST.get('pais')=="México":
+        if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
         else:
             estado = request.POST.get('estado2')
-        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)
-        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,
+        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)   #Obtener todas las cotizaciones del usuario loggeado
+        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,   #Cargar todas las variables POST dentro de la siguiente plantilla
                                                                   'nombre': request.POST.get('nombre'),
                                                                   'direccion': request.POST.get('direccion'),
                                                                   'pais': request.POST.get('pais'),
