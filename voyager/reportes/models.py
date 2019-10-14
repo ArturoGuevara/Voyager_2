@@ -1,6 +1,10 @@
 from django.db import models
 from cuentas.models import IFCUsuario
 
+class Paquete(models.Model):
+    id_paquete = models.AutoField(primary_key=True)
+    codigo_dhl = models.CharField(max_length=10,blank=True,null=True)
+
 # Create your models here.
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
@@ -11,6 +15,8 @@ class OrdenInterna(models.Model):
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
+    estatus = models.CharField(max_length=15, blank=True)
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
     #Opciones de sí/no e idioma
     SN = (
@@ -50,7 +56,6 @@ class OrdenInterna(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.idOI, self.estatus)
-
 
 class Muestra(models.Model):
     id_muestra = models.AutoField(primary_key=True)
@@ -105,3 +110,4 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
+
