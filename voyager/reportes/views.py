@@ -107,7 +107,6 @@ def actualizar_orden(request):
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_lab = request.POST['fecha_lab']
 
-
             #Para las fechas checar si están vacías o formato incorrecto
             if request.POST['fecha_ei'] == "":
                 oi.fecha_ei = None    
