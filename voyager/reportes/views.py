@@ -69,10 +69,19 @@ def oi_guardar(request, form, template_name):
 def consultar_orden(request, id):
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI=id)
+        #muestras = Muestra.objects.get(oi = oi)
         if oi:
             data = serializers.serialize("json", [oi], ensure_ascii=False)
             data = data[1:-1]
-            return JsonResponse({"data": data})
+
+        """   
+        if muestras:
+            muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
+            muestras = muestras[1:-1]
+        else: 
+            muestras = {'fields': None}
+        """
+        return JsonResponse({"data": data})
 
 def actualizar_orden(request):
     if request.method == 'POST':

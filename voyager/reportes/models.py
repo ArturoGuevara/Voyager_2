@@ -68,7 +68,6 @@ class Muestra(models.Model):
     estado_muestra = models.BooleanField()
     fechah_recibo = models.DateTimeField(null=True, blank=True)
 
-
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
     usuario_c = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='cliente')

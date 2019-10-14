@@ -15,7 +15,7 @@
                 <th class="text-center">Estatus</th>
                 <th class="text-center">Empresa</th>
                 <th class="text-center">Usuario</th>
-                <th class="text-center">Fecha</th>
+                <th class="text-center">Localidad</th>
                 <th class="text-center">Acciones</th>
             </tr>
         </thead>
@@ -25,8 +25,8 @@
                 <td class="pt-3-half oiData oi_idOI">{{ o.idOI }}</td>
                 <td class="pt-3-half oiData oi_estatus">{{ o.estatus }}</td>
                 <td class="pt-3-half oiData oi_empresa">{{ o.empresa }}</td>
-                <td class="pt-3-half oiData oi_usuario">{{ o.usuario }}</td>
-                <td class="pt-3-half oiData oi_fecha_muestreo">{{ o.fecha_muestreo }}</td>
+                <td class="pt-3-half oiData oi_usuario">{{ o.usuario.user.email }}</td>
+                <td class="pt-3-half oiData oi_localidad">{{ o.localidad }}</td>
                 <td colspan="2">
                     <button type="button" class="btn btn-primary" onclick="cargar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-orden-interna">
                         adsa
