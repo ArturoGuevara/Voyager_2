@@ -25,18 +25,22 @@ def verifyLogin(request):
                 login(request, user)
                 return redirect('/cuentas/home/')
             else:
+                print("Datos incorrectos")
                 return render(request,'cuentas/login.html', {
                     'error': 'Correo y/o contraseña incorrectos'
                 })
         else:
             #Redireccionar error
+            print("No existe la cuenta")
             return render(request,'cuentas/login.html', {
                 'error': 'Correo y/o contraseña incorrectos'
+
             })
     except:
         #Redireccionar error
         return render(request,'cuentas/login.html', {
             'error': 'Correo y/o contraseña incorrectos'
+
         })
         return 0
 
