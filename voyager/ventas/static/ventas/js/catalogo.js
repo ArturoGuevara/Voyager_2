@@ -1,61 +1,15 @@
+// Variable que guarda la id de análisis a cargar
 var id_analisis;
 
-// Función para mostrar notificación
-function showNotification(from, align, message_user){
-	color = Math.floor((Math.random() * 4) + 1);
-	$.notify({
-		icon: "pe-7s-gift",
-		message: message_user
-	},{
-		type: type[color],
-		timer: 4000,
-		placement: {
-			from: from,
-			align: align
-		}
-	});
-}
-// Función para checar que no estén vacíos los campos
-var checkIsNotEmpty = function(auxiliar, name){
-    if(auxiliar == '' || auxiliar == null){
-        var msg = 'Por favor completa el campo de: ' + name;
-        showNotification('top', 'center', msg)
-        return false;
-    }
-    return true;
-}
-// Función para checar si un campo tiene números en su strings
-var checkHasNoNumbers = function(auxiliar, name){
-    if(/\d/.test(auxiliar)){
-        var msg = 'Por favor remueve los números del campo de: ' + name;
-        showNotification('top', 'center', msg)
-        return false;
-    }
-    return true;
-}
-// Función para checar si un campo tiene letras en su string de puros números
-var checkHasNumbers = function(auxiliar, name){
-    if(/[^0-9]/.test(auxiliar)){
-        var msg = 'Por favor remueve cualquier caracter que no sea número del campo de: ' + name;
-        showNotification('top', 'center', msg)
-        return false;
-    }
-    return true;
-}
-
 $(document).ready(function() {
+    // Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
     $('#btn-editar-analisis').click(function(){
         $(this).removeClass('d-block').addClass('d-none');
         $('#btn-guardar-cambios').removeClass('d-none').addClass('d-block');
         $('#ver_info').removeClass('d-block').addClass('d-none');
         $('#editar_info').removeClass('d-none').addClass('d-block');
     });
-    $('#btn-guardar-cambios').click(function(){
-        $(this).removeClass('d-block').addClass('d-none');
-        $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
-        $('#ver_info').removeClass('d-none').addClass('d-block');
-        $('#editar_info').removeClass('d-block').addClass('d-none');
-    });
+    // Cuando se cierra el modal de bootstrap por dar click afuera, esconder bloque de inputs y mostrar el de info
     $('#ver_analisis').on('hidden.bs.modal', function () {
         $('#ver_info').removeClass('d-none').addClass('d-block');
         $('#editar_info').removeClass('d-block').addClass('d-none');
@@ -65,58 +19,71 @@ $(document).ready(function() {
 });
 
 function cargar_analisis(id){
+    // El id de análisis tiene que existir
     if(id > 0){
-        console.log(id);
+        // Obtenemos el token de django para el ajax y el id guardada previamente al cargar el modal
         var token = csrftoken;
         $.ajax({
             url: "cargar_analisis/"+id,
             dataType: 'json',
+            // Seleccionar información que se mandara al controlador
             data: {
                 id:id,
                 'csrfmiddlewaretoken': token
             },
             type: "POST",
             success: function(response){
+                // Obtener la info que se regresa del controlador
                 var data = JSON.parse(response.data);
-                
                 // Precargamos los datos en los span
                 cargar_info_modal_ver(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
-                
                 // Precargamos los datos en los input
                 cargar_info_modal_editar(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
-                
+                // Guardamos en la variable global la id del análisis que se está visualizando por si se quiere modificar
                 id_analisis = id;
+            },
+            error: function(response){
+                // Código de error
+                alert(data.status); 
+                // Mensaje de error
+                alert(data.responseJSON.error);
             }
         });
     }
 }
 
 function editar_analisis(){
-    var token = csrftoken;
+    // Obtenemos la id guardada previamente al cargar el modal para checar que existe
     var id = id_analisis;
     if(id > 0){
+        // Obtenemos el token de django para el ajax
+        var token = csrftoken;
+        // Obtener valor de los inputs
         var nombre = $('#editar_nombre_analisis').val();
         var codigo = $('#editar_codigo_analisis').val();
         var descripcion = $('#editar_desc_analisis').val();
         var precio = $('#editar_precio_analisis').val();
         var tiempo =  $('#editar_fecha_analisis').val();
         
+        // Validar que los inputs no estén vacíos
         var flag = 0;
-        if(checkIsNotEmpty(name,'Nombre')){
-            if(checkIsNotEmpty(codigo,'Código')){
-                if(checkIsNotEmpty(descripcion,'Descripción')){
-                    if(checkIsNotEmpty(precio,'Precio')){
-                        if(checkIsNotEmpty(tiempo,'Tiempo')){
+        if(check_is_not_empty(nombre,'Nombre')){
+            if(check_is_not_empty(codigo,'Código')){
+                if(check_is_not_empty(descripcion,'Descripción')){
+                    if(check_is_not_empty(precio,'Precio')){
+                        if(check_is_not_empty(tiempo,'Tiempo')){
                             flag = 1;
                         }
                     }
                 }
             }
         }
+        // Si los campos no están vacíos
         if(flag == 1){
             $.ajax({
                 url: "editar_analisis/"+id,
                 dataType: 'json',
+                // Seleccionar información que se mandara al controlador
                 data: {
                     id:id,
                     nombre: nombre,
@@ -128,16 +95,22 @@ function editar_analisis(){
                 },
                 type: "POST",
                 success: function(response){
+                    // Obtener la info que se regresa del controlador
                     var data = JSON.parse(response.data);
-                    console.log(data);
-
+                    // Actualizar los valores en la tabla donde están todos los análisis
                     cambiar_valores_analisis_tabla('.analisis-codigo', data.fields.codigo, id);
                     cambiar_valores_analisis_tabla('.analisis-nombre', data.fields.nombre, id);
                     cambiar_valores_analisis_tabla('.analisis-desc', data.fields.descripcion, id);
                     cambiar_valores_analisis_tabla('.analisis-precio', data.fields.precio, id);
                     cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
-
+                    // Actualizar información en bloque de visualización de análisis
                     cargar_info_modal_ver(data.fields.codigo, data.fields.nombre, data.fields.precio, data.fields.tiempo, data.fields.descripcion);
+                    
+                    // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
+                    $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
+                    $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
+                    $('#ver_info').removeClass('d-none').addClass('d-block');
+                    $('#editar_info').removeClass('d-block').addClass('d-none');
                 }
             });
         }
