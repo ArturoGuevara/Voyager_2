@@ -28,13 +28,11 @@ def verifyLogin(request):
                 request.session['user'] = ifc_user.nombre
                 return redirect('/cuentas/home/')
             else:
-                print("Datos incorrectos")
                 return render(request,'cuentas/login.html', {
                     'error': 'Correo y/o contraseña incorrectos'
                 })
         else:
             #Redireccionar error
-            print("No existe la cuenta")
             return render(request,'cuentas/login.html', {
                 'error': 'Correo y/o contraseña incorrectos'
 
