@@ -94,7 +94,7 @@ def oi_actualizar(request, pk):
 
 
 @login_required
-def muestra_enviar(request):
+def muestra_enviar(request): #guia para guardar muestras
     if request.session._session:
         if request.method=='POST':
             if (request.POST.get('nombre')
@@ -109,29 +109,26 @@ def muestra_enviar(request):
                     and request.POST.get('clave_muestra')
                     and request.POST.get('enviar')
                     and request.POST.get('fecha_muestreo')
-            ):
-                user_logged = IFCUsuario.objects.get(user=request.user)
-                if not user_logged.rol.nombre == "Cliente":
+            ): #verificar que toda la información necesaria se envíe por POST
+                user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
+                if not user_logged.rol.nombre == "Cliente": #verificar que el usuario pertenezca al grupo con permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
-                                                                       cotizacion__usuario_c=user_logged)
-                #obtener usuario fantasma
-                phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")
-                muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date())
-                #guardar orden interna
+                                                                       cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
+                phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")#obtener usuario fantasma (dummy) para crear las ordenes internas
+                muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
                 if muestras_hoy:
-                    oi = muestras_hoy[0].oi
-                else:
+                    oi = muestras_hoy[0].oi #si se ha registrado una muestra en el mismo día, usar la misma orden interna
+                else: #crear orden interna si no se ha registrado una
                     oi = OrdenInterna()
                     oi.usuario = phantom_user
-                    if request.POST.get('enviar') == "1":
+                    if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
                         oi.estatus = 'fantasma'
                     else:
                         oi.estatus = 'invisible'
                     oi.idioma_reporte = request.POST.get('idioma')
                     oi.save()
-                #guardar muestra
-                muestra = Muestra()
+                muestra = Muestra() #crear muestra a guardar
                 muestra.usuario = IFCUsuario.objects.get(user = request.user)
                 muestra.oi = oi
                 muestra.producto = request.POST.get('producto')
@@ -145,7 +142,7 @@ def muestra_enviar(request):
                 muestra.fecha_muestreo = request.POST.get('fecha_muestreo')
                 muestra.destino = request.POST.get('pais_destino')
                 muestra.idioma = request.POST.get('idioma')
-                if request.POST.get('enviar')=="1":
+                if request.POST.get('enviar')=="1": #verificar si se envió información para guardar o para enviar
                     muestra.estado_muestra = True
                 else:
                     muestra.estado_muestra = False
@@ -153,34 +150,34 @@ def muestra_enviar(request):
                 muestra.save()
                 #guardar en tabla analisis_muestra
                 prefix = "analisis"
-                for key,value in request.POST.items():
-                    if key.startswith(prefix):
-                        if request.POST.get(key,'') == 'on':
-                            id_analisis = int(key[len(prefix):])
-                            analisis = Analisis.objects.get(id_analisis=id_analisis)
-                            am = AnalisisMuestra()
+                for key,value in request.POST.items(): #iterar para toda la información enviada para buscar análisis
+                    if key.startswith(prefix): #buscar todos los campos relacionados con análisis (todos los campos que empiezan con análisis)
+                        if request.POST.get(key,'') == 'on': #verificar que se ha seleccionado el análisis
+                            id_analisis = int(key[len(prefix):]) #obtener id del análisis
+                            analisis = Analisis.objects.get(id_analisis=id_analisis) #obtener análisis a partir del id
+                            am = AnalisisMuestra() #crear una nueva entrada en la tabla análisis muestra
                             am.analisis = analisis
                             am.muestra = muestra
                             am.fecha = datetime.datetime.now()
-                            if request.POST.get('enviar')=="1":
+                            if request.POST.get('enviar')=="1": #verificar que la información se haya enviado para guardar o enviar
                                 am.estado = True
                                 a = all_analysis_cot.get(analisis__id_analisis=id_analisis)
-                                a.cantidad = a.cantidad-1
+                                a.cantidad = a.cantidad-1 #disminuir cantidad de análisis disponibles
                                 a.save()
                             else:
                                 am.estado = False
                             am.save()
-                if request.POST.get('otro'):
-                    am=AnalisisMuestra()
+                if request.POST.get('otro'): #verificar si se seleccionó la opción otro análisis
+                    am=AnalisisMuestra() #crear nueva entrada con el tipo de análisis otro
                     am.analisis=Analisis.objects.get(nombre='Otro')
                     am.muestra=muestra
                     am.fecha = datetime.datetime.now()
-                    if request.POST.get('enviar') == "1":
+                    if request.POST.get('enviar') == "1": #verificar que la información se haya enviado para guardar o enviar
                         am.estado = True
                     else:
                         am.estado = False
                     am.save()
-                return HttpResponseRedirect("ingreso_cliente")
+                return HttpResponseRedirect("ingreso_cliente") #redireccionar para volver a ingresar muestra
             else:
                 raise Http404
         else:
