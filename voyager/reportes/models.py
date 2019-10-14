@@ -67,6 +67,7 @@ class Muestra(models.Model):
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
     fechah_recibo = models.DateTimeField(null=True, blank=True)
+    fecha_forma = models.DateField()
 
 
 class Cotizacion(models.Model):

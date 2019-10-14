@@ -1,5 +1,11 @@
 var token = csrftoken;
 
+//cargar datos del usuario en el modal
+function cargar_info_usuario(id){
+    $.ajax({
+
+    })
+}
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(id) {
@@ -15,7 +21,6 @@ function cargar_info_oi(id) {
             var data = JSON.parse(response.data);
             data = data.fields;
             console.log(data);
-            //console.log(data);
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
@@ -23,7 +28,6 @@ function cargar_info_oi(id) {
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_link_resultados').val(data.link_resultados);
-
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
             
@@ -42,6 +46,7 @@ function cargar_info_oi(id) {
             $('#editar_fecha_eri').val(data.fecha_eri);
             $('#editar_fecha_lab').val(data.fecha_lab);
             $('#editar_fecha_ei').val(data.fecha_ei);
+            
 
 
             //Hacer check a las checkboxes
@@ -54,16 +59,16 @@ function cargar_info_oi(id) {
             if(data.cliente_cr ="Sí"){
                 $('#editar_cliente_cr').prop('checked', true)
             }
+
+/*
             //Información general
             $('#editar_estatus_orden').val(data.fields.estatus)
-            $('#editar_fecha_muestra_orden').val(data.fields.fecha_muestreo)
             $('#editar_localidad_orden').val(data.fields.localidad)
             $('#editar_fecha_envio_orden').val(data.fields.fecha_envio)
-            $('#editar_fecha_recibo_orden').val(data.fields.fechah_recibo)
             $('#editar_guia_orden').val(data.fields.guia_envio)
             $('#editar_link_orden').val(data.fields.link_resultados)
             //Observaciones
-            /*$('#').val(data.fields.formato_ingreso_muestra)
+            $('#').val(data.fields.formato_ingreso_muestra)
             $('#').val(data.fields.idioma_reporte)
             $('#').val(data.fields.mrl)
             $('#').val(data.fields.fecha_eri)
@@ -75,7 +80,8 @@ function cargar_info_oi(id) {
             //Facturacion
             $('#').val(data.fields.resp_pago)
             $('#').val(data.fields.correo)
-            $('#').val(data.fields.telefono)*/
+            $('#').val(data.fields.telefono)
+            */
         }
     })
 }
