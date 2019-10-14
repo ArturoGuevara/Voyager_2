@@ -109,4 +109,4 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
->>>>>>> develop
+

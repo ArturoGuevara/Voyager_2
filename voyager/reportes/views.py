@@ -162,7 +162,7 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
     return True
 
     
-
+@login_required
 def validacion_codigo(request):
     #Obtención de codigo y verificación de Form
 
