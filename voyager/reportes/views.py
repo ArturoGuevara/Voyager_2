@@ -81,12 +81,6 @@ def actualizar_orden(request):
             #Actualizar campos
             oi.estatus = request.POST['estatus']
 
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_muestreo'] == "":
-                oi.fecha_muestreo = None    
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_muestreo = request.POST['fecha_muestreo']
-
             oi.localidad = request.POST['localidad']
 
             #Para las fechas checar si están vacías o formato incorrecto
@@ -94,12 +88,6 @@ def actualizar_orden(request):
                 oi.fecha_envio = None    
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_envio = request.POST['fecha_envio']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fechah_recibo'] == "":
-                oi.fechah_recibo = None    
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fechah_recibo = request.POST['fechah_recibo']
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']

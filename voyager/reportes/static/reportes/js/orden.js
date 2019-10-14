@@ -88,10 +88,8 @@ $('#submitForm').on('click', function () {
     //pestaña de info
     var idOI = $('#editar_idOI').val();
     var estatus = $('#editar_estatus').val();
-    var fecha_muestreo = $('#editar_fecha_muestreo').val();
     var localidad = $('#editar_localidad').val();
     var fecha_envio = $('#editar_fecha_envio').val();
-    var fechah_recibo = $('#editar_fechah_recibo').val();
     var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
 
@@ -136,10 +134,8 @@ $('#submitForm').on('click', function () {
         data: {
             'idOI': idOI,
             'estatus': estatus,
-            'fecha_muestreo': fecha_muestreo,
             'localidad': localidad,
             'fecha_envio': fecha_envio,
-            'fechah_recibo': fechah_recibo,
             'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
