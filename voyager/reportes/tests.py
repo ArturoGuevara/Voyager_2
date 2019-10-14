@@ -35,7 +35,7 @@ class IngresoClienteTests(TestCase):
     def test_no_login(self):
         self.create_role_client()
         response = self.client.get(reverse('ingreso_cliente'))
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,302)
 
     def test_login(self):
         self.create_IFCUsuario()
@@ -71,7 +71,7 @@ class IngresoMuestrasTests(TestCase):
     def test_no_login(self):
         self.create_role_client()
         response = self.client.get(reverse('ingresar_muestras'))
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,302)
 
     def test_login_no_post(self):
         self.create_IFCUsuario()
@@ -188,7 +188,6 @@ class MuestraEnviarTests(TestCase):
         ac1.cantidad = 10000
         ac1.fecha = datetime.datetime.now().date()
         ac1.save()
-        ac1 = AnalisisCotizacion()
         ac2 = AnalisisCotizacion()
         ac2.analisis = a2
         ac2.cotizacion = c
@@ -206,21 +205,21 @@ class MuestraEnviarTests(TestCase):
     def test_no_login(self):
         self.create_role_client()
         response = self.client.get(reverse('muestra_enviar'))
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,302)
 
-    def test_login_no_post(self):
+    def test_no_post(self):
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.get(reverse('muestra_enviar'))
         self.assertEqual(response.status_code,404)
 
-    def test_login_post_empty(self):
+    def test_post_empty(self):
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.post(reverse('muestra_enviar'),{})
         self.assertEqual(response.status_code,404)
 
-    def test_login_post_incomplete(self):
+    def test_post_incomplete(self):
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
         response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
@@ -232,7 +231,7 @@ class MuestraEnviarTests(TestCase):
                                                                   })
         self.assertEqual(response.status_code,404)
 
-    def test_login_select_single_analysis_correct(self):
+    def test_select_single_analysis_correct(self):
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -265,7 +264,7 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1)
         self.assertEqual(all_samples.first().estado_muestra,True)
 
-    def test_login_select_other_correct(self):
+    def test_select_other_correct(self):
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
@@ -294,15 +293,14 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_samples.count(),1)
         self.assertEqual(all_samples.first().estado_muestra,True)
 
-    '''def test_login_select_all_analysis_correct(self):
+    def test_select_all_analysis_correct(self):
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
         number_analysis = AnalisisCotizacion.objects.all().first().cantidad
         number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad
-        analysis_id = Analisis.objects.all().first().id_analisis
-        analysis_id2 = Analisis.objects.all().last().id_analisis
-        self.assertEqual(True,True)
+        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis
+        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis
         response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
@@ -332,4 +330,74 @@ class MuestraEnviarTests(TestCase):
         self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2 - 1)
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),1)
-        self.assertEqual(all_samples.first().estado_muestra,True)'''
+        self.assertEqual(all_samples.first().estado_muestra,True)
+
+    def test_select_all_analysis_correct_save(self):
+        self.create_IFCUsuario()
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        number_analysis = AnalisisCotizacion.objects.all().first().cantidad
+        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad
+        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis
+        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis
+        self.assertEqual(True,True)
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Antigua y Barbuda",
+                                                                  'estado':"Saint John's",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"fritas",
+                                                                  'parcela':"parcelin",
+                                                                  'pais_destino':"Albania",
+                                                                  'clave_muestra':"CLAVE",
+                                                                  'enviar': "0",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  'analisis'+str(analysis_id):"on",
+                                                                  'analisis'+str(analysis_id2):"on",
+                                                                  'otro':"on",
+                                                                  })
+        self.assertEqual(response.status_code, 302)
+        all_analysis_samples = AnalisisMuestra.objects.all()
+        self.assertEqual(all_analysis_samples.count(),3)
+        for ansamp in all_analysis_samples:
+            self.assertEqual(ansamp.estado,False)
+        all_internal_orders = OrdenInterna.objects.all()
+        self.assertEqual(all_internal_orders.count(),1)
+        self.assertEqual(all_internal_orders.first().estatus,'invisible')
+        all_analysis_cot = AnalisisCotizacion.objects.all()
+        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis)
+        self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2)
+        all_samples = Muestra.objects.all()
+        self.assertEqual(all_samples.count(),1)
+        self.assertEqual(all_samples.first().estado_muestra,False)
+
+    def test_no_analysis_correct(self):
+        self.create_IFCUsuario()
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        number_analysis = AnalisisCotizacion.objects.all().first().cantidad
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Antigua y Barbuda",
+                                                                  'estado':"Saint John's",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"fritas",
+                                                                  'parcela':"parcelin",
+                                                                  'pais_destino':"Albania",
+                                                                  'clave_muestra':"CLAVE",
+                                                                  'enviar': "1",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  })
+        self.assertEqual(response.status_code, 302)
+        all_analysis_samples = AnalisisMuestra.objects.all()
+        self.assertEqual(all_analysis_samples.count(),0)
+        all_internal_orders = OrdenInterna.objects.all()
+        self.assertEqual(all_internal_orders.count(),1)
+        self.assertEqual(all_internal_orders.first().estatus,'fantasma')
+        all_analysis_cot = AnalisisCotizacion.objects.all()
+        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis)
+        all_samples = Muestra.objects.all()
+        self.assertEqual(all_samples.count(),1)
+        self.assertEqual(all_samples.first().estado_muestra,True)
