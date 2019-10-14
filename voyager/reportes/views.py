@@ -13,6 +13,7 @@ from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 
 
 # Create your views here.
@@ -189,11 +190,12 @@ def validacion_codigo(request):
             querystring = urlencode({'successcode': resp})
             url = '{}?{}'.format(baseurl, querystring)
 
+            request.session['alerta'] = 1
+            
             return redirect(url)
     
     else:
         form = codigoDHL()  #Se manda Form vacia
-
     return redirect('ordenes_internas')
         
 @login_required

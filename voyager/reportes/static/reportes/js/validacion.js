@@ -11,10 +11,10 @@ function justNumbers(e){
 
 
 $(document).ready(function() {
-  $("#success-alert").hide();
-  $("#alertmss").click(function showAlert() {
-    $("#success-alert").fadeTo(5000, 500).slideUp(500, function() {
-      $("#success-alert").slideUp(500);
-    });
-  });
+   if($("#success-alert").data("show") == 1){
+      $("#success-alert").removeClass('d-none');
+      setTimeout(function(){
+         $("#success-alert").hide();
+      }, 3000);
+   }
 });
