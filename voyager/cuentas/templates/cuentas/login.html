@@ -14,6 +14,12 @@
                     <div class="card-body ">
                         <div class="text-center">
                             <h2 class="px-sm-1 px-md-2 h1-sm-50">Iniciar Sesión</h2>
+                            {% if success %}
+                                <div class="alert alert-success alert-dismissible fade show">
+                                    {{ success }}
+                                     <button type="button" class="close" data-dismiss="alert">&times;</button>
+                                </div> <!-- Cerrar alert warning -->
+                            {% endif %}
                             {% if error %}
                                 <div class="alert alert-danger alert-dismissible fade show">
                                     {{ error }}
@@ -28,7 +34,7 @@
                                     <label for="login_email">Correo</label>
                                     <input type="email" class="form-control" placeholder="correo@ejemplo.com" name="mail">
                                     <label for="password">Contraseña</label>
-                                    <input type="password" class="form-control" name="password">
+                                    <input type="password" class="form-control" name="password"  min_length=8 >
                                 </div>  <!--Cerrar form-group -->
                                 <br>
                                 <div class="text-center">
