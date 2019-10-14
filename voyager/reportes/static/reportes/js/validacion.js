@@ -1,16 +1,18 @@
 const regexNumber = /[0-9]{1}/;
 const time = 5;
 
-$(document).ready(function(){
+
+$(document).ready(function(){ //Se llama cuando se presiona una tecla en textbox de DHL code
    $("#dhl_code").on("keypress", justNumbers);
 });
 
-function justNumbers(e){
+
+function justNumbers(e){   //Solo permite numeros en textbox
    return regexNumber.test(e.originalEvent.key);
 }
 
 
-$(document).ready(function() {
+$(document).ready(function() {   //Esconde alert de retroalimentación de DHL una vez que se muestra
    if($("#success-alert").data("show") == 1){
       $("#success-alert").removeClass('d-none');
       setTimeout(function(){
