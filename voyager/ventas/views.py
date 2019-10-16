@@ -26,6 +26,16 @@ def cargar_analisis(request, id):
             data = serializers.serialize("json", [analisis], ensure_ascii = False)
             data = data[1:-1]
             return JsonResponse({"data": data})
+        else:
+            response = JsonResponse({"error": "No existe ese análisis"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else:
+        response = JsonResponse({"error": "No se mandó por el método correcto"})
+        response.status_code = 500
+        # Regresamos la respuesta de error interno del servidor
+        return response
     
 @login_required
 def editar_analisis(request, id):
