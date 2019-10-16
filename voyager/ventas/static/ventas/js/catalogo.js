@@ -16,6 +16,10 @@ $(document).ready(function() {
         $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
         $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
     });
+    // Cuando se cierra el modal de bootstrap por dar click afuera, esconder bloque de inputs y mostrar el de info
+    $('#borrar_analisis').on('hidden.bs.modal', function () {
+       id_analisis = 0;
+    });
 });
 
 function cargar_analisis(id){
@@ -136,6 +140,13 @@ function cambiar_valores_analisis_tabla(clase,value,id){
        }
     });
 }
+function borrar_analisis_tabla(clase,id){
+    $(clase).each(function(i,e){
+       if( $(e).data('id') == id ){
+           $(e).remove();
+       }
+    });
+}
 // Función que crea y muestra alerta
 function showNotification(from, align, msg){
 	color = Math.floor((Math.random() * 4) + 1);
@@ -149,4 +160,32 @@ function showNotification(from, align, msg){
 			align: align
 		}
 	});
+}
+function borrar_analisis(id){
+   id_analisis = id;
+   if( id>0 ) {
+       id_analisis = id;
+   }
+}
+
+function confirmar_borrar(){
+    if(id_analisis>0){
+        var id = id_analisis;
+        var token = csrftoken;
+        $.ajax({
+            url: "borrar_analisis/"+id,
+            // Seleccionar información que se mandara al controlador
+            data: {
+                id:id,
+                'csrfmiddlewaretoken': token
+            },
+            type: "POST",
+            success: function(){
+                borrar_analisis_tabla('.analisis-row',id);
+                showNotification('top','right','Tu análisis ha sido borrado exitosamente');
+                id_analisis = 0;
+                $('#borrar_analisis').modal('toggle');
+            },
+        });
+    }
 }

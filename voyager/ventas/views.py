@@ -3,6 +3,7 @@ from reportes.models import Analisis
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
@@ -54,6 +55,26 @@ def editar_analisis(request, id):
                 response.status_code = 500
                 # Regresamos la respuesta de error interno del servidor
                 return response
+        else:
+            response = JsonResponse({"error": "No existe ese análisis"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else:
+        response = JsonResponse({"error": "No se mandó por el método correcto"})
+        response.status_code = 500
+        # Regresamos la respuesta de error interno del servidor
+        return response
+
+@login_required
+def borrar_analisis(request, id):
+    # Checamos que el método sea POST
+    if request.method == 'POST':
+        # Obtenemos el objeto de análisis
+        analisis = Analisis.objects.get(id_analisis = id)
+        if analisis:
+            analisis.delete()
+            return HttpResponse('OK')
         else:
             response = JsonResponse({"error": "No existe ese análisis"})
             response.status_code = 500
