@@ -26,6 +26,7 @@ def verifyLogin(request):
                 login(request, user)
                 ifc_user = IFCUsuario.objects.get(user = request.user)
                 request.session['username'] = ifc_user.nombre
+                request.session['userrole'] = ifc_user.rol.nombre
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
