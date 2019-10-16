@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import IFCUsuario
 from django.urls import reverse
+from .forms import ClientForm
 # Create your views here.
 
 #Vista de Login
@@ -62,3 +63,8 @@ def loggedOut(request):
     return render(request,'cuentas/login.html', {
         'success': 'Sesión cerrada correctamente'
     })
+
+
+def crear_cliente(request):
+    form = ClientForm()
+    return render(request, 'cuentas/crear_cliente.html', {'form' : form})

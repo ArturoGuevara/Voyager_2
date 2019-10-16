@@ -1,0 +1,12 @@
+{% extends 'root/base.html' %}
+<script>
+  {% block jquery %}
+  {% endblock %}
+</script>
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+    </form>
+{% endblock %}
