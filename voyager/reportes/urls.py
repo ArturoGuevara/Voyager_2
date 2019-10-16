@@ -10,6 +10,7 @@ urlpatterns = [
     path('<int:idOI>/actualizar/', views.oi_actualizar, name='oi_actualizar'),
     path('muestra_enviar',views.muestra_enviar,name='muestra_enviar'),
     path('validacionDhl', views.validacion_codigo, name='validacion_codigo'),
+    #path('envio_resultados/<int:idOI>/', views.envio_resultados, name='enviar_resultados'),    
 
 ]
 

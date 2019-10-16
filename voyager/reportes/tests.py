@@ -31,7 +31,7 @@ class DHLTests(TestCase):
         form_data = {'codigo_dhl': '123456789111'}
         form = codigoDHL(data=form_data)
         self.assertFalse(form.is_valid())
-
+        
 # View testing
     def test_view_dhl_error_numerico(self):
         codigo = "8426939232"

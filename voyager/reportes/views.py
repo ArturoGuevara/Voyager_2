@@ -304,3 +304,34 @@ def muestra_enviar(request): #guia para guardar muestras
             raise Http404
     else:
         raise Http404
+
+
+
+def validacion_pago(id_oi):
+    #Validar si O.I está pagada
+
+    estado_pagado = "pagado"
+
+    try:
+        orden = OrdenInterna.objects.get(idOI = id_oi) #Obtener objeto de O.I
+    except:
+        orden = None
+
+    if orden != None:   #Verifica que existe la O.I
+        estado_orden = orden.estatus
+        if estado_orden == estado_pagado:   #Compara estatus de O.I y el de pagado
+            return True
+        else:
+            return False
+    else:
+        return False
+
+def enviar_correo(id_oi,id_usuario):
+    return True
+
+'''@login_required
+def envio_resultados(request, id_OI):
+    if request.method == 'POST':
+        print("id_oi:" + str(id_OI))  
+
+    return redirect('ordenes_internas')'''
