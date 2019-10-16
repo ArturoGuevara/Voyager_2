@@ -49,7 +49,7 @@ class TestAnalisis(TestCase):
         self.assertEquals(2, contador)
     
     # Si truena está bien, porque el analisis no existe
-    def test_edit_analisis_2(self):
+    def test_delete_analisis_2(self):
         var = False
         try: 
             analisis = Analisis.objects.get(id=3)
