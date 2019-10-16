@@ -25,7 +25,7 @@ def verifyLogin(request):
             if state is True:
                 login(request, user)
                 ifc_user = IFCUsuario.objects.get(user = request.user)
-                request.session['user'] = ifc_user.nombre
+                request.session['username'] = ifc_user.nombre
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
