@@ -8,5 +8,7 @@ urlpatterns = [
     path('home/', views.homeView, name='home'),
     path('logout/', views.logoutControler, name='logout'),
     path('logged_out/', views.loggedOut, name='logged_out'),
-    path('crear_cliente/', views.crear_cliente, name='crear_cliente')
+    path('crear_cliente/', views.crear_cliente, name='crear_cliente'),
+    path('guardar_cliente/', views.guardar_cliente, name='guardar_cliente'),
+    path('verificar_correo/',views.verificar_correo, name='verificar_correo'),
 ]
