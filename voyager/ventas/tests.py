@@ -40,3 +40,23 @@ class TestAnalisis(TestCase):
         except:
             var = True
             self.assertEquals(var, True)
+            
+    def test_delete_analisis_1(self):
+        analisis = Analisis.objects.first()
+        analisis.delete()
+        contador = Analisis.objects.all().count()
+        
+        self.assertEquals(2, contador)
+    
+    # Si truena está bien, porque el analisis no existe
+    def test_delete_analisis_2(self):
+        var = False
+        try: 
+            analisis = Analisis.objects.get(id=3)
+            analisis.delete()
+            contador = Analisis.objects.all().count()
+
+            self.assertNotEquals(3, contador)
+        except:
+            var = True
+            self.assertEquals(var, True)

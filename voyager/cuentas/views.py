@@ -36,11 +36,13 @@ def verifyLogin(request):
             #Redireccionar error
             return render(request,'cuentas/login.html', {
                 'error': 'Correo y/o contraseña incorrectos'
+
             })
     except:
         #Redireccionar error
         return render(request,'cuentas/login.html', {
             'error': 'Correo y/o contraseña incorrectos'
+
         })
         return 0
 

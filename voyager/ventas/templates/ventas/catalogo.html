@@ -24,7 +24,7 @@
         </thead>
         <tbody>
         {% for a in analisis %}
-            <tr>
+            <tr class="analisis-row" data-id="{{ a.id_analisis }}">
                 <td class="analisis-codigo" data-id="{{ a.id_analisis }}">{{ a.codigo }}</td>
                 <td class="analisis-nombre" data-id="{{ a.id_analisis }}">{{ a.nombre }}</td>
                 <td class="analisis-desc" data-id="{{ a.id_analisis }}">{{ a.descripcion }}</td>
