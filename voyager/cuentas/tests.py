@@ -20,6 +20,8 @@ class testLogin(TestCase):
         rol_clientes = Rol.objects.create(nombre='Clientes')
         rol_soporte = Rol.objects.create(nombre='Soporte')
 
+        empresa =  Empresa.objects.create(empresa='TestInc')
+
         director = IFCUsuario.objects.create(
                                                         rol = rol_dir,
                                                         user = user_dir,
@@ -28,7 +30,9 @@ class testLogin(TestCase):
                                                         apellido_materno ='test',
                                                         telefono = '1234567',
                                                         puesto = 'Director',
-                                                        estado = True
+                                                        estado = True,
+                                                        empresa = empresa,
+                                                        contactos='test'
                                                       )
         director.save()
 
@@ -40,7 +44,9 @@ class testLogin(TestCase):
                                                         apellido_materno = 'test',
                                                         telefono = '3234567',
                                                         puesto = 'Ventas',
-                                                        estado = True
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                        contactos='test'
                                                       )
         ventas.save()
 
@@ -52,7 +58,9 @@ class testLogin(TestCase):
                                                         apellido_materno ='test',
                                                         telefono ='4234567',
                                                         puesto ='Facturacion',
-                                                        estado =True
+                                                        estado =True,
+                                                        empresa=empresa,
+                                                        contactos='test'
                                                       )
         facturacion.save()
 
@@ -64,7 +72,9 @@ class testLogin(TestCase):
                                                         apellido_materno ='test',
                                                         telefono = '5234567',
                                                         puesto = 'Clientes',
-                                                        estado = True
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                        contactos='test'
                                                       )
         clientes.save()
 
@@ -76,7 +86,9 @@ class testLogin(TestCase):
                                                         apellido_materno ='test',
                                                         telefono ='5234567',
                                                         puesto = 'Soporte',
-                                                        estado = True
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                        contactos='test'
                                                       )
         soporte.save()
 
@@ -88,7 +100,9 @@ class testLogin(TestCase):
                                                         apellido_materno ='test',
                                                         telefono = '5234567',
                                                         puesto = 'Soporte',
-                                                        estado = False
+                                                        estado = False,
+                                                        empresa=empresa,
+                                                        contactos='test'
                                                       )
         soporte.save()
 
