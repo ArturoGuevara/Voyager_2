@@ -71,3 +71,8 @@ def is_not_empty(data):
         return True
     else:
         return False
+
+@login_required
+def ver_cotizaciones(request):
+    context = {}
+    return render(request, 'ventas/cotizaciones.html', context)
