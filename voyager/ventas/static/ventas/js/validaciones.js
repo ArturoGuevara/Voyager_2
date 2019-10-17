@@ -6,7 +6,7 @@ function justNumbers(e){
 // Al cargar el documento se le dice que a esos inputs con X id ejecuten la función de sólo números
 $(document).ready(function(){
     $("#editar_precio_analisis").on("keypress", justNumbers);
-    $("#editar_fecha_analisis").on("keypress", justNumbers);
+//    $("#editar_fecha_analisis").on("keypress", justNumbers);
 });
 // Función para checar que no estén vacíos los campos
 var check_is_not_empty = function(auxiliar, name, id){
