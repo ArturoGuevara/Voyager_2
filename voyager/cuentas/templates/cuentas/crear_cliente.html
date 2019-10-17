@@ -12,59 +12,59 @@
             {% csrf_token %}
 
             <div class="row">
-                <div class="fieldWrapper col-4">
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
                     <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
                     {{ form.nombre }}
                 </div>
 
-                <div class="fieldWrapper col-4">
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
                     <label for="{{ form.apellido_paterno.id_for_label }}">Apellido Paterno:</label>
                     {{ form.apellido_paterno }}
                 </div>
 
-                <div class="fieldWrapper col-4">
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
                     <label for="{{ form.apellido_materno.id_for_label }}">Apellido Paterno:</label>
                     {{ form.apellido_materno }}
                 </div>
             </div>
 
             <div class="row">
-                <div class="fieldWrapper col-6">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.correo.id_for_label }}">Correo electrónico:</label>
                     {{ form.correo }}
                 </div>
 
-                <div class="fieldWrapper col-6">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
                     {{ form.telefono }}
                 </div>
             </div>
             <div class="row">
-                <div class="fieldWrapper col-6">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.contraseña.id_for_label }}">Contraseña:</label>
                     {{ form.contraseña }}
                 </div>
-                <div class="fieldWrapper col-6">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.contraseña2.id_for_label }}">Confirmar Contraseña:</label>
                     {{ form.contraseña2 }}
                 </div>
             </div>
 
             <div class="row">
-                <div class="fieldWrapper col-6">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.empresa.id_for_label }}">Empresa:</label>
                     {{ form.empresa }}
                 </div>
 
             </div>
-              <div class="row mt-1 pt-1 pb-5">
+                <div class="row mt-1 pt-1 pb-5">
                 <div class="col-md-7">
                 </div>
-                <div class="col-md-2">
-                  <a href="#" class="btn btn-danger btn-block">Cancelar</a>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <a href="#" class="btn btn-danger btn-block">Cancelar</a>
                 </div>
-                <div class="col-md-2">
-                  <button type="submit" class="btn btn-success btn-block">Continuar</button>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <button type="submit" class="btn btn-success btn-block">Continuar</button>
                 </div>
               </div>
         </form>
