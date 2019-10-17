@@ -88,11 +88,11 @@ class Cotizacion(models.Model):
     fecha_creada = models.DateField(default=date.today())
 
     class Meta:
-        verbose_name = 'Orden Interna'
-        verbose_name_plural = 'Órdenes Internas'
+        verbose_name = 'Cotización'
+        verbose_name_plural = 'Cotizaciones'
 
     def __str__(self):
-        return "%s %s " (self.id_cotizacion, self.usuario_c)
+        return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
 
 
 class Analisis(models.Model):

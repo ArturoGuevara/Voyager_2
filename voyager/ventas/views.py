@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 # Create your views here.
 @login_required
@@ -107,8 +108,11 @@ def is_not_empty(data):
 @login_required
 def ver_cotizaciones(request):
     if request.session._session:
-        #cotizaciones = Cotizacion.objects.filter(usuario_c=request.user)
+        user_logged = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not user_logged.rol.nombre == "Cliente": #Verificar que el rol sea válido
+            raise Http404
+        cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged)
         context = {
-            #'cotizaciones': cotizaciones,
+            'cotizaciones': cotizaciones,
         }
     return render(request, 'ventas/cotizaciones.html', context)
