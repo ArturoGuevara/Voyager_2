@@ -6,6 +6,6 @@
 
 <!--Este es el front end de la forma de login-->
 {% block content %}
-    <h1>Bienvenido {{ user.nombre }}</h1>
+    <h1>Bienvenido {{ user.nombre }} ({{ request.session.userrole }})</h1>
 
 {% endblock %}
