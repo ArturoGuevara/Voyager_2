@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis
+from reportes.models import Analisis, Cotizacion
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -65,6 +65,7 @@ def editar_analisis(request, id):
         # Regresamos la respuesta de error interno del servidor
         return response
 
+
 # Funciones para validar campos
 def is_not_empty(data):
     if data != "":
@@ -72,7 +73,12 @@ def is_not_empty(data):
     else:
         return False
 
+
 @login_required
 def ver_cotizaciones(request):
-    context = {}
+    if request.session._session:
+        #cotizaciones = Cotizacion.objects.filter(usuario_c=request.user)
+        context = {
+            #'cotizaciones': cotizaciones,
+        }
     return render(request, 'ventas/cotizaciones.html', context)

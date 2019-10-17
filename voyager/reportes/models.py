@@ -1,5 +1,6 @@
 from django.db import models
 from cuentas.models import IFCUsuario
+from datetime import datetime, date
 
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
@@ -84,6 +85,14 @@ class Cotizacion(models.Model):
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField()
+    fecha_creada = models.DateField(default=date.today())
+
+    class Meta:
+        verbose_name = 'Orden Interna'
+        verbose_name_plural = 'Órdenes Internas'
+
+    def __str__(self):
+        return "%s %s " (self.id_cotizacion, self.usuario_c)
 
 
 class Analisis(models.Model):
