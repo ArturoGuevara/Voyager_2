@@ -26,7 +26,8 @@ def verifyLogin(request):
             if state is True:
                 login(request, user)
                 ifc_user = IFCUsuario.objects.get(user = request.user)
-                request.session['user'] = ifc_user.nombre
+                request.session['username'] = ifc_user.nombre
+                request.session['userrole'] = ifc_user.rol.nombre
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -36,11 +37,13 @@ def verifyLogin(request):
             #Redireccionar error
             return render(request,'cuentas/login.html', {
                 'error': 'Correo y/o contraseña incorrectos'
+
             })
     except:
         #Redireccionar error
         return render(request,'cuentas/login.html', {
             'error': 'Correo y/o contraseña incorrectos'
+
         })
         return 0
 

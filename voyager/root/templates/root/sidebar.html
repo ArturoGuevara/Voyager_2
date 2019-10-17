@@ -63,7 +63,7 @@
                     </ul>
                 </div>
             </li>
-
+            {% if request.session.userrole == 'Ventas' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#ventasDropdown">
                     <i class="nc-icon nc-cart-simple"></i>
@@ -72,18 +72,19 @@
                 <div class="collapse" id="ventasDropdown">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span>Link 1 Ventas</span>
+                            <a class="nav-link" href="/ventas/ver_catalogo">
+                                <span>Catálogo de análisis</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
+            {% endif %}
             <!-- perfil -->
             <li class="nav-item d-block d-sm-none">
                 <a class="nav-link" data-toggle="collapse" href="#profileDropdown">
                     <i class="nc-icon nc-circle-09"></i>
-                    <p>{{ request.session.user }}<b class="caret"></b></p>
+                    <p>{{ request.session.username }}<b class="caret"></b></p>
                 </a>
                 <div class="collapse" id="profileDropdown">
                     <ul class="nav">
