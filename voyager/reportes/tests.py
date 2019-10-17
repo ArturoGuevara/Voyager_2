@@ -21,7 +21,7 @@ class DHLTests(TestCase):
         )
         self.assertTrue(Paquete.objects.filter(id_paquete=1))
 
-#Form testing  
+#Form testing
     def test_form_dhl_valido(self):
         form_data = {'codigo_dhl': '1234567891'}
         form = codigoDHL(data=form_data)
@@ -59,7 +59,7 @@ class DHLTests(TestCase):
         self.assertEquals(resolve(url).func,validacion_codigo)
 
     def test_paquete_rastreo(self):
-        #Crear un paquete y revisar su código de rastreo. 
+        #Crear un paquete y revisar su código de rastreo.
         paquete = Paquete.objects.create(
         id_paquete = 2,
         codigo_dhl = "8426939231"
@@ -90,7 +90,6 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
-        i_user.puesto = "puesto"
         i_user.estado = True
         i_user.save()   #Guardar usuario de IFC
 
@@ -125,7 +124,6 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
-        i_user.puesto = "puesto"
         i_user.estado = True
         i_user.save() #Guardar usuario de IFC
 
@@ -197,7 +195,6 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         i_user.apellido_paterno = "Lalo"
         i_user.apellido_materno = "Cura"
         i_user.telefono = "9114364"
-        i_user.puesto = "puesto"
         i_user.estado = True
         i_user.save()   #Guardar usuario de IFC
 
@@ -211,7 +208,6 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         user_phantom.apellido_paterno = "Phantom"
         user_phantom.apellido_materno = "Phantom"
         user_phantom.telefono = "9114364"
-        user_phantom.puesto = "puesto"
         user_phantom.estado = True
         user_phantom.save()   #Guardar usuario de IFC
 
