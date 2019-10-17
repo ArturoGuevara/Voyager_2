@@ -37,7 +37,7 @@ class IFCUsuario(models.Model):
     telefono = models.CharField(max_length = 15)
     puesto = models.CharField(max_length = 20)
     estado = models.BooleanField(default = True)
-    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE)
+    empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True)
     contactos = models.TextField(blank=True)
 
     class Meta:
