@@ -23,7 +23,7 @@ from django.template import RequestContext
 def ingreso_cliente(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
+        if not user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
@@ -40,7 +40,7 @@ def ingresar_muestras(request):
     )
         ):
         user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
-        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
+        if not user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
@@ -59,11 +59,17 @@ def ingresar_muestras(request):
 
 @login_required
 def indexView(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     return render(request, 'reportes/index.html')
 
 
 @login_required
 def ordenes_internas(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
 
     estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
 
@@ -86,6 +92,9 @@ def ordenes_internas(request):
 
 @login_required
 def oi_guardar(request, form, template_name):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     data = dict()
     if request.method == 'POST':
         id = id
@@ -99,8 +108,11 @@ def oi_guardar(request, form, template_name):
             data = 'null'
             return JsonResponse({"data": data})
 
-
+@login_required
 def consultar_orden(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI=id)
         #muestras = Muestra.objects.get(oi = oi)
@@ -108,16 +120,20 @@ def consultar_orden(request, id):
             data = serializers.serialize("json", [oi], ensure_ascii=False)
             data = data[1:-1]
 
-        """   
+        """
         if muestras:
             muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
             muestras = muestras[1:-1]
-        else: 
+        else:
             muestras = {'fields': None}
         """
         return JsonResponse({"data": data})
 
+@login_required
 def actualizar_orden(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI = request.POST['idOI'])
         if oi:
@@ -169,8 +185,11 @@ def actualizar_orden(request):
             # Regresamos información actualizada
             return JsonResponse({"data": data})
 
-
+@login_required
 def validacion_dhl(codigo):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     #Validación del codigo de paquete de DHL en API
 
     url = "https://api-eu.dhl.com/track/shipments"
@@ -191,8 +210,11 @@ def validacion_dhl(codigo):
 
     return resp.status_code
 
-
+@login_required
 def codigo_repetido(codigo_DHL):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     #Checa si el codigo de DHL ya existe
 
     try:
@@ -206,8 +228,11 @@ def codigo_repetido(codigo_DHL):
     return True
 
 
-
+@login_required
 def guardar_paquete(codigo_DHL, ids_OrdI):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     #Guarda codigo en BD y relaciona a O.I
 
 
@@ -236,6 +261,9 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
 @login_required
 def validacion_codigo(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser":   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     #Obtención de codigo y verificación de Form
 
     if request.method == 'POST':
@@ -287,7 +315,7 @@ def muestra_enviar(request): #guia para guardar muestras
                     and request.POST.get('fecha_muestreo')
             ): #verificar que toda la información necesaria se envíe por POST
                 user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
-                if not user_logged.rol.nombre == "Cliente": #verificar que el usuario pertenezca al grupo con permisos
+                if not user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser": #verificar que el usuario pertenezca al grupo con permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
@@ -360,4 +388,3 @@ def muestra_enviar(request): #guia para guardar muestras
             raise Http404
     else:
         raise Http404
-
