@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis
+from reportes.models import Analisis, Cotizacion
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -8,6 +8,7 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 # Create your views here.
 @login_required
@@ -118,3 +119,19 @@ def is_not_empty(data):
         return True
     else:
         return False
+
+
+@login_required
+def ver_cotizaciones(request):
+    #Vista de cotizaciones del cliente
+    context = {}
+
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
+            raise Http404
+        cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario
+        context = {
+            'cotizaciones': cotizaciones,
+        }
+    return render(request, 'ventas/cotizaciones.html', context)
