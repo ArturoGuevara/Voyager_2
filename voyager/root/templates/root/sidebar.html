@@ -41,13 +41,13 @@
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span>Link 1 Tracking</span>
+                                <span>Consultar tacking</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
-
+            {% if request.session.userrole == 'Soporte' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                     <i class="nc-icon nc-notes"></i>
@@ -56,13 +56,14 @@
                 <div class="collapse" id="procesamientoDropdown">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span>Link 1 Procesamiento</span>
+                            <a class="nav-link" href="/reportes/ordenes_internas">
+                                <span>Órdenes internas</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
+            {% endif %}
             {% if request.session.userrole == 'Ventas' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#ventasDropdown">
