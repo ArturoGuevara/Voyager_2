@@ -70,19 +70,30 @@ class TestCotizaciones(TestCase):
         rol_clientes = Rol.objects.create(nombre='Cliente')
         user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
         empresa =  Empresa.objects.create(empresa='TestInc')
-        clientes = IFCUsuario.objects.create(
+        clientes1 = IFCUsuario.objects.create(
                                                         rol =rol_clientes,
                                                         user = user_clientes,
                                                         nombre = 'clientes',
                                                         apellido_paterno = 'test',
                                                         apellido_materno ='test',
                                                         telefono = '5234567',
-                                                        puesto = 'Clientes',
                                                         estado = True,
                                                         empresa=empresa,
-                                                        contactos='test'
                                                       )
-        clientes.save()
+        clientes1.save()
+
+        user_clientes = User.objects.create_user('otro', 'otro@testuser.com', 'testpassword')
+        clientes2 = IFCUsuario.objects.create(
+                                                        rol =rol_clientes,
+                                                        user = user_clientes,
+                                                        nombre = 'otro',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes2.save()
 
 
         user_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
@@ -95,25 +106,45 @@ class TestCotizaciones(TestCase):
                                                         apellido_paterno = 'test',
                                                         apellido_materno = 'test',
                                                         telefono = '3234567',
-                                                        puesto = 'Ventas',
                                                         estado = True,
                                                         empresa=empresa,
-                                                        contactos='test'
                                                       )
         ventas.save()
 
 
         cotizacion = Cotizacion.objects.create(
-                                                    usuario_c = clientes,
+                                                    usuario_c = clientes1,
                                                     usuario_v = ventas,
                                                     descuento = 5,
                                                     subtotal = 5000,
                                                     iva = 150,
-                                                    total = 50000,
+                                                    total = 123,
                                                     status = True,
                                                     fecha_creada = date.today()
                                                 )
         cotizacion.save()
+        cotizacion2 = Cotizacion.objects.create(
+                                                    usuario_c = clientes2,
+                                                    usuario_v = ventas,
+                                                    descuento = 10,
+                                                    subtotal = 5000,
+                                                    iva = 150,
+                                                    total = 456,
+                                                    status = True,
+                                                    fecha_creada = date.today()
+                                                )
+        cotizacion2.save()
+        cotizacion3 = Cotizacion.objects.create(
+                                                    usuario_c = clientes1,
+                                                    usuario_v = ventas,
+                                                    descuento = 5,
+                                                    subtotal = 5000,
+                                                    iva = 150,
+                                                    total = 789,
+                                                    status = True,
+                                                    fecha_creada = date.today()
+                                                )
+        cotizacion3.save()
         
     def test_controlador_acceso_denegado(self):
         #Test de acceso a url sin Log In
@@ -134,5 +165,17 @@ class TestCotizaciones(TestCase):
         self.client.login(username='client',password='testpassword')
         response = self.client.get('/ventas/cotizaciones')
         self.assertEqual(response.status_code,200)
-    #def test_controlador_ver_cotizaciones(self):
+
+    def test_template(self):
+        #Test de creacion de ordenes internas para usuario
+        self.set_up_Users()
+        self.client.login(username='client',password='testpassword')
+        response = self.client.get('/ventas/cotizaciones')
+
+        self.assertContains(response, "123")
+        self.assertNotContains(response, "456")
+        self.assertContains(response, "789")
+    
+
+
 
