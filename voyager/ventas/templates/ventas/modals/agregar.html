@@ -9,28 +9,40 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{% url 'agregar_analisis' %}" method="POST">
+                <form action="{% url 'agregar_analisis' %}" method="POST" id="submit-analisis-form">
                     {% csrf_token %}
                     <div class="form-row">
                         <div class="col">
                             <label for="nombre">Nombre</label>
                             <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Nombre" name="nombre">
+                            <div class="invalid-feedback">
+                                Por favor introduce un nombre
+                            </div>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <label for="codigo">Código</label>
                             <input type="text" maxlength="50" class="form-control" id="codigo" placeholder="H-DPL001" name="codigo">
+                            <div class="invalid-feedback">
+                                Por favor introduce un código
+                            </div>
                         </div>
                         <div class="col">
                                 <label for="precio">Precio</label>
                                 <input type="number" class="form-control" id="precio" placeholder="$100.00" name="precio">
+                                <div class="invalid-feedback">
+                                    Por favor introduce un precio
+                                </div>
                         </div>
                     </div>
                     <div class="form-row">
                             <div class="col">
                                 <label for="descripcion">Descripción</label>
                                 <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripcion" name="descripcion" placeholder="Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit. "></textarea>
+                                <div class="invalid-feedback">
+                                    Por favor introduce una descripción
+                                </div>
                             </div>
                     </div>
                     <div class="form-row">
@@ -41,7 +53,7 @@
                             </div>
                     </div>
                     <div class="modal-footer" align-items-center>
-                        <button type="submit" class="btn btn-success">Guardar</button>
+                        <button type="button" class="btn btn-success" id="submit-analisis-button">Guardar</button>
                     </div>
                 </form>
             </div>

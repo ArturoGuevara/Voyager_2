@@ -21,6 +21,8 @@ $(document).ready(function() {
     $('#borrar_analisis').on('hidden.bs.modal', function () {
        id_analisis = 0;
     });
+
+    // Cerrar alert de retroalimentación en caso de hacer un registro de analisis
     setTimeout(function(){
        $("#alert").hide();
     }, 3000);
@@ -75,11 +77,11 @@ function editar_analisis(){
         var tiempo =  $('#editar_fecha_analisis').val();
 
         // Validar que los inputs no estén vacíos
-        check_is_not_empty(nombre,'Nombre','#editar_nombre_analisis');
-        check_is_not_empty(codigo,'Código','#editar_codigo_analisis');
-        check_is_not_empty(descripcion,'Descripción','#editar_desc_analisis');
-        check_is_not_empty(precio,'Precio','#editar_precio_analisis');
-        check_is_not_empty(tiempo,'Tiempo','#editar_fecha_analisis');
+        check_is_not_empty(nombre,'#editar_nombre_analisis');
+        check_is_not_empty(codigo,'#editar_codigo_analisis');
+        check_is_not_empty(descripcion,'#editar_desc_analisis');
+        check_is_not_empty(precio,'#editar_precio_analisis');
+        check_is_not_empty(tiempo,'#editar_fecha_analisis');
 
         $.ajax({
             url: "editar_analisis/"+id,
