@@ -77,7 +77,6 @@ class TestCotizaciones(TestCase):
                                                         apellido_paterno = 'test',
                                                         apellido_materno ='test',
                                                         telefono = '5234567',
-                                                        puesto = 'Clientes',
                                                         estado = True,
                                                         empresa=empresa,
                                                         contactos='test'
@@ -95,7 +94,6 @@ class TestCotizaciones(TestCase):
                                                         apellido_paterno = 'test',
                                                         apellido_materno = 'test',
                                                         telefono = '3234567',
-                                                        puesto = 'Ventas',
                                                         estado = True,
                                                         empresa=empresa,
                                                         contactos='test'
