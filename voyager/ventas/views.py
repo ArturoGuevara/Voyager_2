@@ -14,6 +14,8 @@ from .forms import AnalisisForma
 # Create your views here.
 @login_required
 def ver_catalogo(request):
+    if request.session.get('name', None) == None:
+        request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
         analisis = Analisis.objects.all()
@@ -21,8 +23,7 @@ def ver_catalogo(request):
             'analisis': analisis,
             'success_code' : request.session['success_code']
         }
-        if request.session['success_code']:
-            request.session['success_code'] = 0
+        request.session['success_code'] = 0
         return render(request, 'ventas/catalogo.html', context)
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
