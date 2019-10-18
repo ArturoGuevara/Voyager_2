@@ -6,7 +6,6 @@ from django.test import TestCase,TransactionTestCase
 from django.contrib.auth.models import User
 from cuentas.models import IFCUsuario,Rol
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna
-from django.urls import reverse
 from django.http import HttpResponse
 from django.test.client import Client
 import datetime

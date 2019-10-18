@@ -1,5 +1,6 @@
 from django.db import models
 from cuentas.models import IFCUsuario
+from datetime import datetime, date
 
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
@@ -84,6 +85,14 @@ class Cotizacion(models.Model):
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField()
+    fecha_creada = models.DateField(default=date.today())
+
+    class Meta:
+        verbose_name = 'Cotización'
+        verbose_name_plural = 'Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
 
 
 class Analisis(models.Model):
@@ -92,7 +101,7 @@ class Analisis(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    tiempo = models.IntegerField() #numero de dias que toma el análisis
+    tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
 
 
 class AnalisisCotizacion(models.Model):
@@ -109,4 +118,3 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
-

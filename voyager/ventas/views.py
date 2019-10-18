@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis
+from reportes.models import Analisis, Cotizacion
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -8,16 +8,22 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from .forms import AnalisisForma
 
 # Create your views here.
 @login_required
 def ver_catalogo(request):
+    if request.session.get('success_code', None) == None:
+        request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
         analisis = Analisis.objects.all()
         context = {
             'analisis': analisis,
+            'success_code' : request.session['success_code']
         }
+        request.session['success_code'] = 0
         return render(request, 'ventas/catalogo.html', context)
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
@@ -44,7 +50,7 @@ def cargar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-    
+
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -87,7 +93,7 @@ def editar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -118,3 +124,48 @@ def is_not_empty(data):
         return True
     else:
         return False
+
+#US V10-10
+@login_required
+def agregar_analisis(request):
+    if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+        form = AnalisisForma(request.POST)
+
+        if form.is_valid():         # Verificar si los datos de la forma son validos
+            n_nombre = form.cleaned_data['nombre']            # Tomar los datos por su nombre en el HTML
+            n_codigo = form.cleaned_data['codigo']
+            n_precio = form.cleaned_data['precio']
+            n_descripcion = form.cleaned_data['descripcion']
+            n_duracion = form.cleaned_data['duracion']
+
+            newAnalisis = Analisis.objects.create(
+                codigo = n_codigo,
+                nombre = n_nombre,
+                descripcion = n_descripcion,
+                precio = n_precio,
+                tiempo = n_duracion
+            )
+            newAnalisis.save()      # Guardar objeto
+            request.session['success_code'] = 1
+            return redirect('/ventas/ver_catalogo')
+        else:
+            request.session['success_code'] = -1
+            return redirect('/ventas/ver_catalogo')
+    else:
+        return redirect('/ventas/ver_catalogo')
+
+@login_required
+def ver_cotizaciones(request):
+    #Vista de cotizaciones del cliente
+    context = {}
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
+            raise Http404
+        cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario
+        context = {
+            'cotizaciones': cotizaciones,
+        }
+    return render(request, 'ventas/cotizaciones.html', context)
+
+
