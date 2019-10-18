@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis
+from reportes.models import Analisis, Cotizacion, AnalisisCotizacion
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -10,6 +10,8 @@ from django.views import generic
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
+
+# CÁTALOGO DE ANÁLISIS
 @login_required
 def ver_catalogo(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -113,6 +115,20 @@ def borrar_analisis(request, id):
         raise Http404
 
 # Funciones para validar campos
+
+# COTIZACIONES
+def cotizaciones(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        cotizaciones = Cotizacion.objects.all()
+        context = {
+            'cotizaciones': cotizaciones
+        }
+        return render(request, 'ventas/cotizaciones.html', context)
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+        
+# FUNCIONES EXTRA
 def is_not_empty(data):
     if data != "":
         return True
