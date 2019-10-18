@@ -16,7 +16,10 @@ def ver_catalogo(request):
     analisis = Analisis.objects.all()
     context = {
         'analisis': analisis,
+        'success_code' : request.session['success_code']
     }
+    if request.session['success_code']:
+        request.session['success_code'] = 0
     return render(request, 'ventas/catalogo.html', context)
 
 
@@ -126,8 +129,10 @@ def agregar_analisis(request):
                 tiempo = n_duracion
             )
             newAnalisis.save()      # Guardar objeto
+            request.session['success_code'] = 1
             return redirect('/ventas/ver_catalogo')
         else:
+            request.session['success_code'] = -1
             return redirect('/ventas/ver_catalogo')
     else:
         return redirect('/ventas/ver_catalogo')
