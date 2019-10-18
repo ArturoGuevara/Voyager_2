@@ -74,8 +74,8 @@ def loggedOut(request):
 def crear_cliente(request):
     form = ClientForm()
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    #if not user_logged.rol.nombre == "Ventas":  # verificar que el usuario pertenezca al grupo con permisos
-        #raise Http404
+    if not user_logged.rol.nombre == "Ventas":  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
     return render(request, 'cuentas/crear_cliente.html', {'form' : form})
 
 @login_required
