@@ -125,7 +125,7 @@ def is_not_empty(data):
     else:
         return False
 
-
+#US V10-10
 @login_required
 def agregar_analisis(request):
     if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
@@ -167,3 +167,5 @@ def ver_cotizaciones(request):
             'cotizaciones': cotizaciones,
         }
     return render(request, 'ventas/cotizaciones.html', context)
+
+
