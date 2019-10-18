@@ -117,6 +117,8 @@ def borrar_analisis(request, id):
 # Funciones para validar campos
 
 # COTIZACIONES
+
+# COTIZACIONES
 def cotizaciones(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
