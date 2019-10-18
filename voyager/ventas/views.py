@@ -107,11 +107,14 @@ def is_not_empty(data):
 
 @login_required
 def ver_cotizaciones(request):
+    #Vista de cotizaciones del cliente
+    context = {}
+
     if request.session._session:
-        user_logged = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if not user_logged.rol.nombre == "Cliente": #Verificar que el rol sea válido
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
             raise Http404
-        cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged)
+        cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario
         context = {
             'cotizaciones': cotizaciones,
         }
