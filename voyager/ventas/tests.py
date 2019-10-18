@@ -1,4 +1,7 @@
 from django.test import TestCase
+from ventas.forms import AnalisisForma
+from django.urls import reverse, resolve
+from .views import agregar_analisis
 from reportes.models import Analisis,Cotizacion
 from cuentas.models import Rol,IFCUsuario,Empresa
 from django.contrib.auth.models import User
@@ -9,33 +12,54 @@ class TestAnalisis(TestCase):
     def setUp(self):
         analisis1 = Analisis(codigo="1", nombre="Analisis 1", descripcion="Descripcion 1", precio="1500", tiempo="3")
         analisis1.save()
-        
+
         analisis2 = Analisis(codigo="2", nombre="Analisis 2", descripcion="Descripcion 2", precio="2500", tiempo="5")
         analisis2.save()
-        
+
         analisis3 = Analisis(codigo="3", nombre="Analisis 3", descripcion="Descripcion 3", precio="3500", tiempo="7")
         analisis3.save()
-        
+
+#Unit tests de US06-06 añadir análisis.
+    def test_crear_analisis(self):
+        self.assertTrue(Analisis.objects.filter(codigo="1"))
+        self.assertTrue(Analisis.objects.filter(codigo="2"))
+        self.assertTrue(Analisis.objects.filter(codigo="3"))
+
+    def test_url_anadir_analisis(self):
+        url = reverse('agregar_analisis')
+        self.assertEquals(resolve(url).func,agregar_analisis)
+
     def test_contar_analisis(self):
         contador = Analisis.objects.all().count()
         self.assertEqual(contador, 3)
-    
+
+    def test_analisis_forma(self):
+        form_data = {
+        'codigo': 'H-091233',
+        'nombre': 'Pesticida',
+        'descripcion': 'Análisis para detección de pesticida en cultivos',
+        'precio': 2000.00,
+        'duracion': '5-8 días'
+        }
+        form = AnalisisForma(data = form_data)
+        self.assertTrue(form.is_valid())
+
     #def test_anadir_analisis(self):
         #analisis = Analisis.objects.first()
         #self.assertEqual("Analisis 1", analisis.nombre)
-        
+
     def test_edit_analisis_1(self):
         analisis = Analisis.objects.first()
         auxCodigo = analisis.codigo
         analisis.codigo = 12
         analisis.save()
-        
+
         self.assertNotEquals(analisis.codigo, auxCodigo)
-    
+
     # Si truena está bien, porque el analisis no existe
     def test_edit_analisis_2(self):
         var = False
-        try: 
+        try:
             analisis = Analisis.objects.get(id=4)
             auxCodigo = analisis.codigo
             analisis.codigo = 12
@@ -43,18 +67,18 @@ class TestAnalisis(TestCase):
         except:
             var = True
             self.assertEquals(var, True)
-            
+
     def test_delete_analisis_1(self):
         analisis = Analisis.objects.first()
         analisis.delete()
         contador = Analisis.objects.all().count()
-        
+
         self.assertEquals(2, contador)
-    
+
     # Si truena está bien, porque el analisis no existe
     def test_delete_analisis_2(self):
         var = False
-        try: 
+        try:
             analisis = Analisis.objects.get(id=3)
             analisis.delete()
             contador = Analisis.objects.all().count()
@@ -145,7 +169,7 @@ class TestCotizaciones(TestCase):
                                                     fecha_creada = date.today()
                                                 )
         cotizacion3.save()
-        
+
     def test_controlador_acceso_denegado(self):
         #Test de acceso a url sin Log In
         response = self.client.get('/ventas/cotizaciones')
@@ -175,7 +199,3 @@ class TestCotizaciones(TestCase):
         self.assertContains(response, "123")
         self.assertNotContains(response, "456")
         self.assertContains(response, "789")
-    
-
-
-

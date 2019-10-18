@@ -21,6 +21,12 @@ $(document).ready(function() {
     $('#borrar_analisis').on('hidden.bs.modal', function () {
        id_analisis = 0;
     });
+
+    // Cerrar alert de retroalimentación en caso de hacer un registro de analisis
+    setTimeout(function(){
+       $("#alert").hide();
+    }, 3000);
+
 });
 
 /* Funciones para ver y editar análisis */
@@ -50,7 +56,7 @@ function cargar_analisis(id){
             },
             error: function(data){
                 // Código de error
-                alert(data.status); 
+                alert(data.status);
                 // Mensaje de error
                 alert(data.responseJSON.error);
             }
@@ -69,13 +75,13 @@ function editar_analisis(){
         var descripcion = $('#editar_desc_analisis').val();
         var precio = $('#editar_precio_analisis').val();
         var tiempo =  $('#editar_fecha_analisis').val();
-        
+
         // Validar que los inputs no estén vacíos
-        check_is_not_empty(nombre,'Nombre','#editar_nombre_analisis');
-        check_is_not_empty(codigo,'Código','#editar_codigo_analisis');
-        check_is_not_empty(descripcion,'Descripción','#editar_desc_analisis');
-        check_is_not_empty(precio,'Precio','#editar_precio_analisis');
-        check_is_not_empty(tiempo,'Tiempo','#editar_fecha_analisis');
+        check_is_not_empty(nombre,'#editar_nombre_analisis');
+        check_is_not_empty(codigo,'#editar_codigo_analisis');
+        check_is_not_empty(descripcion,'#editar_desc_analisis');
+        check_is_not_empty(precio,'#editar_precio_analisis');
+        check_is_not_empty(tiempo,'#editar_fecha_analisis');
 
         $.ajax({
             url: "editar_analisis/"+id,
@@ -111,12 +117,12 @@ function editar_analisis(){
 
                 // Damos retroalimentación de que se guardó correctamente
                 showNotification('top','right','Cambios guardados correctamente');
-                
+
                 id_analisis = 0;
             },
             error: function(data){
                 // Código de error
-                alert(data.status); 
+                alert(data.status);
                 // Mensaje de error
                 alert(data.responseJSON.error);
             }
