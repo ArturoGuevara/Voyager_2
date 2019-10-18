@@ -115,9 +115,6 @@ function editar_analisis(){
                 $('#ver_info').removeClass('d-none').addClass('d-block');
                 $('#editar_info').removeClass('d-block').addClass('d-none');
 
-                // Si hubo algún input introducido mal pero luego se envío correctamente, escondemos la alerta
-                $('#edit-analisis-error').addClass('d-none');
-
                 // Damos retroalimentación de que se guardó correctamente
                 showNotification('top','right','Cambios guardados correctamente');
 
