@@ -9,40 +9,41 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="#" method="POST">
+                <form action="{% url 'agregar_analisis' %}" method="POST">
+                    {% csrf_token %}
                     <div class="form-row">
                         <div class="col">
                             <label for="nombre">Nombre</label>
-                            <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Nombre">
+                            <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Nombre" name="nombre">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
                             <label for="codigo">Código</label>
-                            <input type="text" maxlength="50" class="form-control" id="codigo" placeholder="H-DPL001">
+                            <input type="text" maxlength="50" class="form-control" id="codigo" placeholder="H-DPL001" name="codigo">
                         </div>
                         <div class="col">
                                 <label for="precio">Precio</label>
-                                <input type="number" class="form-control" id="precio" placeholder="$100.00">
+                                <input type="number" class="form-control" id="precio" placeholder="$100.00" name="precio">
                         </div>
                     </div>
                     <div class="form-row">
                             <div class="col">
                                 <label for="descripcion">Descripción</label>
-                                <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripción" placeholder="Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit. "></textarea>
+                                <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripcion" name="descripcion" placeholder="Now that there is the Tec-9, a crappy spray gun from South Miami. This gun is advertised as the most popular gun in American crime. Do you believe that shit? It actually says that in the little book that comes with it: the most popular gun in American crime. Like they're actually proud of that shit. "></textarea>
                             </div>
                     </div>
                     <div class="form-row">
                             <div class="col-5">
                                     <label for="duracion">Duración aproximada</label>
-                                    <input type="text" class="form-control" readonly id="duracion" >
-                                    <div id="slider-range"></div>    
+                                    <input type="text" class="form-control" readonly id="duracion" name="duracion" >
+                                    <div id="slider-range"></div>
                             </div>
                     </div>
+                    <div class="modal-footer" align-items-center>
+                        <button type="submit" class="btn btn-success">Guardar</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer" align-items-center>
-                <button type="submit" class="btn btn-success">Guardar</button>
             </div>
         </div>
     </div>

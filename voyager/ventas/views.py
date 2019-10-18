@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
+from .forms import AnalisisForma
 
 # Create your views here.
 @login_required
@@ -36,7 +38,7 @@ def cargar_analisis(request, id):
         response.status_code = 500
         # Regresamos la respuesta de error interno del servidor
         return response
-    
+
 @login_required
 def editar_analisis(request, id):
     # Checamos que el método sea POST
@@ -102,3 +104,30 @@ def is_not_empty(data):
         return True
     else:
         return False
+
+
+@login_required
+def agregar_analisis(request):
+    if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+        form = AnalisisForma(request.POST)
+
+        if form.is_valid():         # Verificar si los datos de la forma son validos
+            n_nombre = form.cleaned_data['nombre']            # Tomar los datos por su nombre en el HTML
+            n_codigo = form.cleaned_data['codigo']
+            n_precio = form.cleaned_data['precio']
+            n_descripcion = form.cleaned_data['descripcion']
+            n_duracion = form.cleaned_data['duracion']
+
+            newAnalisis = Analisis.objects.create(
+                codigo = n_codigo,
+                nombre = n_nombre,
+                descripcion = n_descripcion,
+                precio = n_precio,
+                tiempo = n_duracion
+            )
+            newAnalisis.save()      # Guardar objeto
+            return redirect('/ventas/ver_catalogo')
+        else:
+            return redirect('/ventas/ver_catalogo')
+    else:
+        return redirect('/ventas/ver_catalogo')
