@@ -1,8 +1,11 @@
 from django.test import TestCase
 from reportes.models import Analisis,Cotizacion
 from cuentas.models import Rol,IFCUsuario,Empresa
+from .views import ver_cotizaciones
 from django.contrib.auth.models import User
 from datetime import datetime, date
+from django.urls import reverse, resolve
+
 
 # Create your tests here.
 class TestAnalisis(TestCase):
@@ -70,6 +73,8 @@ class TestCotizaciones(TestCase):
         rol_clientes = Rol.objects.create(nombre='Cliente')
         user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
         empresa =  Empresa.objects.create(empresa='TestInc')
+
+        #Crea usuarios Clientes
         clientes1 = IFCUsuario.objects.create(
                                                         rol =rol_clientes,
                                                         user = user_clientes,
@@ -95,7 +100,24 @@ class TestCotizaciones(TestCase):
                                                       )
         clientes2.save()
 
+        #Crea usuario Director
+        user_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
+        rol_dir = Rol.objects.create(nombre='Director')
 
+        dir = IFCUsuario.objects.create(
+                                                        rol = rol_dir,
+                                                        user = user_dir,
+                                                        nombre = 'dir',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno = 'test',
+                                                        telefono = '3234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        dir.save()
+
+
+        #Crea usuario Ventas
         user_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
         rol_ventas = Rol.objects.create(nombre='Ventas')
 
@@ -107,11 +129,11 @@ class TestCotizaciones(TestCase):
                                                         apellido_materno = 'test',
                                                         telefono = '3234567',
                                                         estado = True,
-                                                        empresa=empresa,
+                                                        empresa=empresa
                                                       )
         ventas.save()
 
-
+        #Crea cotizaciones
         cotizacion = Cotizacion.objects.create(
                                                     usuario_c = clientes1,
                                                     usuario_v = ventas,
@@ -126,8 +148,8 @@ class TestCotizaciones(TestCase):
         cotizacion2 = Cotizacion.objects.create(
                                                     usuario_c = clientes2,
                                                     usuario_v = ventas,
-                                                    descuento = 10,
-                                                    subtotal = 5000,
+                                                    descuento = 6,
+                                                    subtotal = 24,
                                                     iva = 150,
                                                     total = 456,
                                                     status = True,
@@ -137,11 +159,11 @@ class TestCotizaciones(TestCase):
         cotizacion3 = Cotizacion.objects.create(
                                                     usuario_c = clientes1,
                                                     usuario_v = ventas,
-                                                    descuento = 5,
+                                                    descuento = 7,
                                                     subtotal = 5000,
                                                     iva = 150,
                                                     total = 789,
-                                                    status = True,
+                                                    status = False,
                                                     fecha_creada = date.today()
                                                 )
         cotizacion3.save()
@@ -152,12 +174,11 @@ class TestCotizaciones(TestCase):
         self.assertRedirects(response, '/cuentas/login?next=/ventas/cotizaciones', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
 
     def test_controlador_acceso_denegado_rol(self):
-        #Test de acceso a url con Log In como Ventas
+        #Test de acceso a url con Log In como Director
         self.set_up_Users()
-        self.client.login(username='vent',password='testpassword')
+        self.client.login(username='direc',password='testpassword')
         response = self.client.get('/ventas/cotizaciones')
         self.assertEqual(response.status_code,404)
-        #self.assertRedirects(response, '/ventas/cotizaciones', status_code=302, target_status_code=404, msg_prefix='', fetch_redirect_response=True)
 
     def test_controlador_acceso_permitido(self):
         #Test de acceso a url con Log In como Cliente
@@ -175,6 +196,24 @@ class TestCotizaciones(TestCase):
         self.assertContains(response, "123")
         self.assertNotContains(response, "456")
         self.assertContains(response, "789")
+    
+    def test_model(self):
+        #Test del model de Cotizaciones
+        self.set_up_Users()
+
+        cotizacion1 = Cotizacion.objects.filter(total=123).first()
+        cotizacion2 = Cotizacion.objects.filter(total=456).first()
+        cotizacion3 = Cotizacion.objects.filter(total=789).first()
+
+        self.assertEqual(cotizacion1.descuento,5)
+        self.assertEqual(cotizacion2.subtotal,24)
+        self.assertEqual(cotizacion3.status,False)
+
+    def test_url_resolved_validacion_codigo(self):
+        #URL testing.
+        url = reverse('cotizaciones')
+        self.assertEquals(resolve(url).func,ver_cotizaciones)
+
     
 
 
