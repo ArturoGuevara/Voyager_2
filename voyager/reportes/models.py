@@ -101,7 +101,7 @@ class Analisis(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    tiempo = models.IntegerField() #numero de dias que toma el análisis
+    tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
 
 
 class AnalisisCotizacion(models.Model):
@@ -118,4 +118,3 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
-
