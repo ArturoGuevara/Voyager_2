@@ -8,7 +8,7 @@
 
 <h1>Crear Usuario</h1>
     <div class="card col-12">
-        <form method="post" id="form_client">
+        <form action="../guardar_cliente/" method="post" id="form_client">
             {% csrf_token %}
 
             <div class="row">
@@ -23,7 +23,7 @@
                 </div>
 
                 <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
-                    <label for="{{ form.apellido_materno.id_for_label }}">Apellido Paterno:</label>
+                    <label for="{{ form.apellido_materno.id_for_label }}">Apellido Materno:</label>
                     {{ form.apellido_materno }}
                 </div>
             </div>
@@ -32,8 +32,8 @@
                 <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
                     <label for="{{ form.correo.id_for_label }}">Correo electrónico:</label>
                     {{ form.correo }}
-                    <div class="invalid_mail" hidden>
-                        <p>Este correo ha sido usado</p>
+                    <div class="invalid_mail p-3" hidden>
+                        <p style="color:red">Este correo ha sido usado</p>
                     </div>
                 </div>
 
@@ -52,6 +52,11 @@
                     {{ form.contraseña2 }}
                 </div>
             </div>
+            <div class="row">
+                <div class="invalid_password p-3" hidden>
+                    <p style="color:red">Las contraseñas no coinciden</p>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
@@ -64,7 +69,7 @@
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
-                    <a href="#" class="btn btn-danger btn-block">Cancelar</a>
+                    <a href="{% url 'home' %}" class="btn btn-danger btn-block">Cancelar</a>
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
                     <button type="submit" id="submit" class="btn btn-success btn-block">Continuar</button>
@@ -79,6 +84,8 @@
       var token = csrftoken;
       $(document).ready(function () {
           $("#correo").on("keyup",val_mail);
+          $("#contraseña").on("keyup",val_passwords);
+          $("#contraseña2").on("keyup",val_passwords);
       });
       function val_mail(e){   //Solo permite numeros en textbox
           $.ajax({
@@ -102,6 +109,16 @@
                  }
               }
           });
+      }
+      function val_passwords(e){
+          if($("#contraseña").val()!=$("#contraseña2").val()){
+              $("#submit").prop('disabled', true);
+              $(".invalid_password").prop('hidden', false);
+          }
+          else{
+              $("#submit").prop('disabled', false);
+              $(".invalid_password").prop('hidden', true);
+          }
       }
   </script>
 {% endblock %}
