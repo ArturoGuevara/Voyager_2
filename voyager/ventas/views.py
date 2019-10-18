@@ -9,6 +9,11 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 
+# Vista del index
+@login_required
+def indexView(request):
+    return render(request, 'ventas/index.html')
+
 # Create your views here.
 @login_required
 def ver_catalogo(request):
@@ -44,7 +49,7 @@ def cargar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-    
+
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -87,7 +92,7 @@ def editar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
