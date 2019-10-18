@@ -8,6 +8,7 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 
 # Create your views here.
 
@@ -119,17 +120,37 @@ def borrar_analisis(request, id):
 # COTIZACIONES
 
 # COTIZACIONES
-def cotizaciones(request):
-    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
-        cotizaciones = Cotizacion.objects.all()
-        context = {
-            'cotizaciones': cotizaciones
-        }
-        return render(request, 'ventas/cotizaciones.html', context)
-    else: # Si el rol del usuario no es ventas no puede entrar a la página
-        raise Http404
-        
+
+
+
+
+# Cotizaciones
+@login_required
+def ver_cotizaciones(request):
+    #Vista de cotizaciones del cliente
+    context = {}
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if usuario_log.rol.nombre == "Ventas":
+                cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            elif usuario_log.rol.nombre == "Cliente":
+                cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            elif usuario_log.rol.nombre == "SuperUser":
+                cotizaciones = Cotizacion.objects.all()
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            return render(request, 'ventas/cotizaciones.html', context)
+        else:
+            raise Http404
+
 # FUNCIONES EXTRA
 def is_not_empty(data):
     if data != "":
