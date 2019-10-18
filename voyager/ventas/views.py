@@ -120,12 +120,11 @@ def is_not_empty(data):
     else:
         return False
 
-
+#US V10-10
 @login_required
 def ver_cotizaciones(request):
     #Vista de cotizaciones del cliente
     context = {}
-
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
@@ -135,3 +134,5 @@ def ver_cotizaciones(request):
             'cotizaciones': cotizaciones,
         }
     return render(request, 'ventas/cotizaciones.html', context)
+
+
