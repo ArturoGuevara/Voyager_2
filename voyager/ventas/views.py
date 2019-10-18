@@ -14,7 +14,7 @@ from .forms import AnalisisForma
 # Create your views here.
 @login_required
 def ver_catalogo(request):
-    if request.session.get('name', None) == None:
+    if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
