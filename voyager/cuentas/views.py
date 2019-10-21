@@ -65,3 +65,13 @@ def loggedOut(request):
     return render(request,'cuentas/login.html', {
         'success': 'Sesión cerrada correctamente'
     })
+
+
+def lista_usuarios(request):
+    #View de lista de usuarios
+
+    context = {
+        'usuarios': usuarios,
+    }
+
+    return render(request, 'cuentas/usuarios.html', context)
