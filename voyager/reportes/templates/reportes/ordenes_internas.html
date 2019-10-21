@@ -19,11 +19,15 @@
     <strong>No se encontró la Orden Interna.</strong>
     </div>
     {% endif %}
-    <div class="text-md-right text-center">
-        <h2>Órdenes internas
-            <button class="btn btn-warning" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Crear Paquete</button>
-            <button class="btn btn-success" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Orden Interna</button>
-        </h2>
+    <div class="row">
+      <div class="col-md-4">
+          <h2>Órdenes internas</h2>
+      </div>
+      <div class="col-md-6">
+      </div>
+      <div class="col-md-2 mt-3 pt-3">
+        <button class="btn btn-warning" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-app"></i> Crear Paquete</button>
+      </div>
     </div>
     <div id="table" class="table-responsive table-full-width">
         <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_ordenes_internas">

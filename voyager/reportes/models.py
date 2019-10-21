@@ -105,13 +105,13 @@ class Analisis(models.Model):
     precio = models.DecimalField(max_digits=30,decimal_places=2)
     unidad_min = models.CharField(max_length=50)
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
-    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais')    
+    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais')
 
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
-    
+
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
@@ -126,4 +126,3 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
-
