@@ -103,9 +103,9 @@ class Analisis(models.Model):
     codigo = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    unidad_min = models.CharField(max_length=50)
+    unidad_min = models.CharField(max_length=50, default='')
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
-    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais')
+    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais', default='')
 
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
