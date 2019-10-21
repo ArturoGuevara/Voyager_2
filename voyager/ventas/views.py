@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+import json
 
 # Create your views here.
 
@@ -125,6 +126,7 @@ def borrar_analisis(request, id):
 
 
 # Cotizaciones
+
 @login_required
 def ver_cotizaciones(request):
     #Vista de cotizaciones del cliente
@@ -134,8 +136,10 @@ def ver_cotizaciones(request):
         if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
             if usuario_log.rol.nombre == "Ventas":
                 cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                analisis = Analisis.objects.all()
                 context = {
-                    'cotizaciones': cotizaciones,
+                    'analisis': analisis,
+                    'cotizaciones': cotizaciones
                 }
             elif usuario_log.rol.nombre == "Cliente":
                 cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
@@ -144,14 +148,51 @@ def ver_cotizaciones(request):
                 }
             elif usuario_log.rol.nombre == "SuperUser":
                 cotizaciones = Cotizacion.objects.all()
+                analisis = Analisis.objects.all()
                 context = {
-                    'cotizaciones': cotizaciones,
+                    'analisis': analisis,
+                    'cotizaciones': cotizaciones
                 }
             return render(request, 'ventas/cotizaciones.html', context)
         else:
             raise Http404
 
 # FUNCIONES EXTRA
+
+
+
+def cargar_cot(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            # Obtenemos el arreglo de análisis seleccionados para crear cotización
+            checked = request.POST.getlist('checked[]')
+            if checked:
+                # Iteramos en los análisis seleccionados
+                for id in checked: #Asignar codigo DHL
+                    analisis = Analisis.objects.get(id_analisis = id)
+                    if analisis: #Valida si existe
+                        serializers.serialize("json", [analisis], ensure_ascii = False)
+                    else:
+                        response = JsonResponse({"error": "No existe ese análisis"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                data = data[1:-1]
+                return JsonResponse({"data": data})
+            else:
+                response = JsonResponse({"error": "No llegaron análisis seleccionados"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+    
 def is_not_empty(data):
     if data != "":
         return True

@@ -49,10 +49,8 @@ function cargar_analisis(id){
                 id_analisis = id;
             },
             error: function(data){
-                // Código de error
-                alert(data.status); 
-                // Mensaje de error
-                alert(data.responseJSON.error);
+                // Código de error alert(data.status); 
+                // Mensaje de error alert(data.responseJSON.error);
             }
         });
     }
@@ -115,18 +113,15 @@ function editar_analisis(){
                 id_analisis = 0;
             },
             error: function(data){
-                // Código de error
-                alert(data.status); 
-                // Mensaje de error
-                alert(data.responseJSON.error);
+                // Código de error alert(data.status);
+                // Mensaje de error alert(data.responseJSON.error);
             }
         });
     }
 }
 /* Funciones para borrar análisis */
 function borrar_analisis(id){
-   id_analisis = id;
-   if( id>0 ) {
+   if(id > 0){
        id_analisis = id;
    }
 }
@@ -148,6 +143,10 @@ function confirmar_borrar(){
                 id_analisis = 0;
                 $('#borrar_analisis').modal('toggle');
             },
+            error: function(data){
+                // Código de error alert(data.status);
+                // Mensaje de error alert(data.responseJSON.error);
+            }
         });
     }
 }

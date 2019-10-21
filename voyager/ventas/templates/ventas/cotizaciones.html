@@ -10,10 +10,11 @@
         <h2>Cotizaciones</h2>
     </div>
     <div class="text-center text-md-right">
-        <button>pica aquí</button>
+        <button id="btn-agregar-cot" class="btn btn-success d-inline">Crear Cotización</button>
+        <button id="btn-continuar-cot" class="btn btn-info d-none" data-toggle="modal" data-target="#agregar-cot" onclick="cargar_cot()">Continuar</button>
     </div>
-    <div id="table" class="table-responsive table-full-width">
-        <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_cotizaciones">
+    <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
+        <table class="table table-hover table-responsive-md table-striped" id="tabla_cotizaciones">
             <thead>
                 <th class="text-center">#</th>
                 <th class="text-center">Estatus</th>
@@ -41,9 +42,42 @@
             </tbody>
         </table>
     </div>
-    
+    <div id="container-analisis" class="table-responsive table-full-width d-none">
+        <table class="table table-hover table-responsive-md table-striped" id="tabla_analisis_2">
+        <thead>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Tiempo Aprox.</th>
+            <th>Acciones</th>
+            <th>Checkbox</th>
+        </thead>
+        <tbody>
+        {% for a in analisis %}
+            <tr class="analisis-row" data-id="{{ a.id_analisis }}">
+                <td class="analisis-codigo" data-id="{{ a.id_analisis }}">{{ a.codigo }}</td>
+                <td class="analisis-nombre" data-id="{{ a.id_analisis }}">{{ a.nombre }}</td>
+                <td class="analisis-desc" data-id="{{ a.id_analisis }}">{{ a.descripcion }}</td>
+                <td class="analisis-precio" data-id="{{ a.id_analisis }}">${{ a.precio }}</td>
+                <td class="analisis-tiempo" data-id="{{ a.id_analisis }}">{{ a.tiempo }}</td>
+                <td class="analisis-ver" data-id="{{ a.id_analisis }}">
+                    <button type="button" class="btn btn-info border-0" data-toggle="modal" data-target="#ver_analisis">
+                        <i class="fa fa-eye tabla-icon"></i>
+                    </button>
+                </td>
+                <td class="analisis-seleccionar" data-id="{{ a.id_analisis }}">    
+                    <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    {% include './modals/agregar-cot.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
     <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones.js' %}" type="text/javascript"></script>
 {% endblock %}
