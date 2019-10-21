@@ -94,16 +94,24 @@ class Cotizacion(models.Model):
     def __str__(self):
         return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
 
+class Pais(models.Model):
+    id_pais = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50)
 
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     codigo = models.CharField(max_length=50)
-    nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    tiempo = models.IntegerField() #numero de dias que toma el análisis
+    unidad_min = models.CharField(max_length=50)
+    tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
+    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais')    
 
-
+class Nota(models.Model):
+    id_nota = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
+    
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
