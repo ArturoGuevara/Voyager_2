@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from cuentas.models import*
-from cuentas.models import Rol,IFCUsuario
+from cuentas.models import Rol,IFCUsuario,Empresa
 from django.urls import reverse
 
 #Esta prueba revisa que un usuario pueda entrar al login
@@ -178,3 +178,142 @@ class testCrearCliente(TestCase):
         self.client.login(username='padrino', password='padrino')
         response = self.client.get(reverse('crear_cliente'))
         self.assertEqual(response.status_code, 404)
+
+    def test_login(self):
+        self.setup()
+        self.client.login(username='hockey',password='lalocura')
+        response = self.client.get(reverse('crear_cliente'))
+        self.assertEqual(response.status_code,200)
+
+class testGuardarCliente(TestCase):
+    def setup(self):
+        role = Rol()
+        role.nombre = "Ventas"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura')
+        user.save()
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        i_user = IFCUsuario()
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+        e = Empresa()
+        e.empresa = "IFC"
+        e.save()
+
+    def test_no_login_form(self):
+        self.setup()
+        response = self.client.get(reverse('guardar_cliente'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_no_login_different_role(self):
+        self.setup()
+        self.client.login(username='padrino', password='padrino')
+        response = self.client.get(reverse('guardar_cliente'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_no_post(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        response = self.client.get(reverse('guardar_cliente'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_empty(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        response = self.client.post(reverse('guardar_cliente'),{})
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_incomplete(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
+                                                                'apellido_paterno':"Impulsado",
+                                                                'apellido_materno': "Impulsadin",
+                                                                'contraseña': "lalocura",
+                                                                'contraseña2': "lalocura",
+                                                                'correo': "voyager@impulse.com",
+                                                                })
+        self.assertEqual(response.status_code, 404)
+
+    def test_different_passwords(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        empresa = Empresa.objects.get(empresa="IFC")
+        response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
+                                                                'apellido_paterno':"Impulsado",
+                                                                'apellido_materno': "Impulsadin",
+                                                                'contraseña': "lalocura",
+                                                                'contraseña2': "laslocuras",
+                                                                'empresa': empresa.id,
+                                                                'correo': "voyager@impulse.com",
+                                                                'telefono': "35345436346",
+                                                                })
+        self.assertEqual(response.status_code, 404)
+
+    def test_repeated_mail(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        empresa = Empresa.objects.get(empresa="IFC")
+        response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
+                                                                'apellido_paterno':"Impulsado",
+                                                                'apellido_materno': "Impulsadin",
+                                                                'contraseña': "lalocura",
+                                                                'contraseña2': "lalocura",
+                                                                'empresa': empresa.id,
+                                                                'correo': "padrino@lalocura.com",
+                                                                'telefono': "35345436346",
+                                                                })
+        self.assertEqual(response.status_code, 404)
+
+    def test_no_company(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        empresa = Empresa.objects.get(empresa="IFC")
+        response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
+                                                                'apellido_paterno':"Impulsado",
+                                                                'apellido_materno': "Impulsadin",
+                                                                'contraseña': "lalocura",
+                                                                'contraseña2': "lalocura",
+                                                                'empresa': empresa.id+1,
+                                                                'correo': "voyager@impulse.com",
+                                                                'telefono': "35345436346",
+                                                                })
+        self.assertEqual(response.status_code, 404)
+
+    def test_all_correct(self):
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        empresa = Empresa.objects.get(empresa="IFC")
+        client = Rol.objects.get(nombre="Cliente")
+        num_clients_before = IFCUsuario.objects.filter(rol=client).count()
+        response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
+                                                                'apellido_paterno':"Impulsado",
+                                                                'apellido_materno': "Impulsadin",
+                                                                'contraseña': "lalocura",
+                                                                'contraseña2': "lalocura",
+                                                                'empresa': empresa.id,
+                                                                'correo': "voyager@impulse.com",
+                                                                'telefono': "35345436346",
+                                                                })
+        self.assertEqual(response.status_code, 302)
+        num_clients_after = IFCUsuario.objects.filter(rol=client).count()
+        self.assertEqual(num_clients_before+1,num_clients_after)
