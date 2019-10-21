@@ -12,6 +12,14 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 # Create your views here.
 
+#Vista del Index
+@login_required
+def indexView(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        return render(request,'cuentas/home.html')
+    return render(request, 'cuentas/index.html')
+
 #Vista de Login
 def loginView(request):
     return render(request,'cuentas/login.html')

@@ -11,4 +11,5 @@ urlpatterns = [
     path('crear_cliente/', views.crear_cliente, name='crear_cliente'),
     path('guardar_cliente/', views.guardar_cliente, name='guardar_cliente'),
     path('verificar_correo/',views.verificar_correo, name='verificar_correo'),
+    path('', views.indexView, name=''),
 ]

@@ -11,6 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 
+# Vista del index
+@login_required
+def indexView(request):
+    return render(request, 'ventas/index.html')
+
 # Create your views here.
 @login_required
 def ver_catalogo(request):
@@ -167,5 +172,3 @@ def ver_cotizaciones(request):
             'cotizaciones': cotizaciones,
         }
     return render(request, 'ventas/cotizaciones.html', context)
-
-

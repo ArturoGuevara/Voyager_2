@@ -20,7 +20,7 @@ class DHLTests(TestCase):
         )
         self.assertTrue(Paquete.objects.filter(id_paquete=1))
 
-#Form testing  
+#Form testing
     def test_form_dhl_valido(self):
         form_data = {'codigo_dhl': '1234567891'}
         form = codigoDHL(data=form_data)
@@ -58,7 +58,7 @@ class DHLTests(TestCase):
         self.assertEquals(resolve(url).func,validacion_codigo)
 
     def test_paquete_rastreo(self):
-        #Crear un paquete y revisar su código de rastreo. 
+        #Crear un paquete y revisar su código de rastreo.
         paquete = Paquete.objects.create(
         id_paquete = 2,
         codigo_dhl = "8426939231"
