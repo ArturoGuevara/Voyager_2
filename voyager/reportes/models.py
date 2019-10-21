@@ -106,6 +106,7 @@ class Analisis(models.Model):
     unidad_min = models.CharField(max_length=50, default='')
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
     pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais', default='')
+    acreditacion = models.BooleanField(default=False)
 
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
