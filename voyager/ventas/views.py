@@ -160,11 +160,7 @@ def ver_cotizaciones(request):
             return render(request, 'ventas/cotizaciones.html', context)
         else:
             raise Http404
-
-# FUNCIONES EXTRA
-
-
-
+            
 def cargar_cot(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
@@ -197,7 +193,8 @@ def cargar_cot(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-    
+
+# FUNCIONES EXTRA
 def is_not_empty(data):
     if data != "":
         return True

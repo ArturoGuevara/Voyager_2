@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="form-group col-12">
                             <label>Cliente</label>
-                            <select name="cliente" class="form-control" id="cliente" required>
+                            <select name="cliente" class="form-control" id="cliente">
                                 {% for cl in clientes %}
                                     <option value="{{ cl.id }}">{{ cl.nombre }}</option>
                                 {% endfor %}
@@ -55,7 +55,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success">Guardar</button>
+                <button type="button" class="btn btn-success" onclick="crear_cotizacion()">Guardar</button>
             </div>
         </div>
     </div>

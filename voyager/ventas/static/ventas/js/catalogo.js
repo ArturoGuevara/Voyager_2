@@ -119,6 +119,7 @@ function editar_analisis(){
         });
     }
 }
+
 /* Funciones para borrar análisis */
 function borrar_analisis(id){
    if(id > 0){
@@ -179,19 +180,4 @@ function borrar_analisis_tabla(clase,id){
            $(e).remove();
        }
     });
-}
-
-// Función que crea y muestra alerta
-function showNotification(from, align, msg){
-	color = Math.floor((Math.random() * 4) + 1);
-	$.notify({
-		icon: "nc-icon nc-app",
-		message: msg
-	},{
-		timer: 4000,
-		placement: {
-			from: from,
-			align: align
-		}
-	});
 }
