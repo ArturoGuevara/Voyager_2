@@ -5,7 +5,7 @@ from .models import Paquete
 from django.test import TestCase,TransactionTestCase
 from django.contrib.auth.models import User
 from cuentas.models import IFCUsuario,Rol
-from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna
+from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna,Pais
 from django.http import HttpResponse
 from django.test.client import Client
 import datetime
@@ -224,19 +224,26 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         c.total = 1234235.00
         c.status = True
         c.save()   #Guardar la cotización
+        pais = Pais() # Crear un pais para los analisis
+        pais.nombre = "México"
+        pais.save()
         a1 = Analisis()   #Crear un objeto de Analisis
         a1.codigo = "A1"
         a1.nombre = "Pest"
         a1.descripcion = "agropecuario"
         a1.precio = 213132423.12
-        a1.tiempo = 1
+        a1.unidad_min = "500 gr"
+        a1.tiempo = "1 - 2 días"
+        a1.pais = pais
         a1.save()   #Guardar el análisis
         a2 = Analisis()   #Crear un objeto de Analisis
         a2.codigo = "A2"
         a2.nombre = "icida"
         a2.descripcion = "agro"
         a2.precio = 2132423.12
-        a2.tiempo = 2
+        a2.unidad_min = "1 kg."
+        a2.tiempo = "3 - 5 días"
+        a2.pais = pais
         a2.save()   #Guardar el análisis
         ac1 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac1.analisis = a1
@@ -255,7 +262,9 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         otro.nombre = "Otro"
         otro.descripcion = "Otro"
         otro.precio = 0.00
-        otro.tiempo = 0
+        otro.unidad_min = "10 gr."
+        otro.tiempo = "10 - 12 días"
+        otro.pais = pais
         otro.save()   #Guardar el análisis
 
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
