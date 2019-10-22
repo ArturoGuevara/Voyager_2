@@ -98,16 +98,22 @@ class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
 
+    def __str__(self):
+        return "%s" % (self.nombre)
+
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, default='')
     codigo = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=500)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
     unidad_min = models.CharField(max_length=50, default='')
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
     pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais', default='')
     acreditacion = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "%s %s %s" % (self.id_analisis, self.codigo, self.descripcion)
 
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
