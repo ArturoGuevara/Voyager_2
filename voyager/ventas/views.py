@@ -137,9 +137,11 @@ def ver_cotizaciones(request):
             if usuario_log.rol.nombre == "Ventas":
                 cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
                 analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                 context = {
                     'analisis': analisis,
-                    'cotizaciones': cotizaciones
+                    'cotizaciones': cotizaciones,
+                    'clientes': clientes
                 }
             elif usuario_log.rol.nombre == "Cliente":
                 cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
@@ -149,9 +151,11 @@ def ver_cotizaciones(request):
             elif usuario_log.rol.nombre == "SuperUser":
                 cotizaciones = Cotizacion.objects.all()
                 analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                 context = {
                     'analisis': analisis,
-                    'cotizaciones': cotizaciones
+                    'cotizaciones': cotizaciones,
+                    'clientes': clientes
                 }
             return render(request, 'ventas/cotizaciones.html', context)
         else:
@@ -173,14 +177,12 @@ def cargar_cot(request):
                 for id in checked: #Asignar codigo DHL
                     analisis = Analisis.objects.get(id_analisis = id)
                     if analisis: #Valida si existe y lo añade al array
-                        print(analisis.nombre)
                         data.append(analisis)
                     else:
                         response = JsonResponse({"error": "No existe ese análisis"})
                         response.status_code = 500
                         # Regresamos la respuesta de error interno del servidor
                         return response
-                #return HttpResponse(json.dumps(data), content_type='application/json')
                 info = serializers.serialize("json", data, ensure_ascii = False)
                 return JsonResponse({"info": info})
             else:

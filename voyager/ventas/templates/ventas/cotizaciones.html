@@ -2,7 +2,11 @@
 {% load static %}
 
 {% block optionalCSS %}
-
+<style>
+    #agregar-cot table th{
+        text-align: center!important;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -14,7 +18,7 @@
         <button id="btn-continuar-cot" class="btn btn-info d-none" data-toggle="modal" data-target="#agregar-cot" onclick="cargar_cot()">Continuar</button>
     </div>
     <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
-        <table class="table table-hover table-responsive-md table-striped" id="tabla_cotizaciones">
+        <table class="table table-hover table-responsive table-striped" id="tabla_cotizaciones">
             <thead>
                 <th class="text-center">#</th>
                 <th class="text-center">Estatus</th>
@@ -30,10 +34,10 @@
                     <td class="pt-3-half oiData cotizaciones_total">{{ c.total }}</td>
                     <td class="pt-3-half oiData cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="" data-toggle="modal" data-target="">
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="">
                             <i class='fas fa-trash'></i>
                         </button>
                     </td>
@@ -43,7 +47,7 @@
         </table>
     </div>
     <div id="container-analisis" class="table-responsive table-full-width d-none">
-        <table class="table table-hover table-responsive-md table-striped" id="tabla_analisis_2">
+        <table class="table table-hover table-responsive table-striped" id="tabla_analisis_2">
         <thead>
             <th>Código</th>
             <th>Nombre</th>
