@@ -42,11 +42,9 @@ function cargar_cot(){
                 var nombre = data[i].fields.nombre;
                 var precio = data[i].fields.precio;
                 $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td></tr>');
-                subtotal+= precio;
+                subtotal+= parseFloat(precio);
             }
             total = subtotal;
-            console.log(total);
-            console.log(subtotal);
             // Asignar valores al input de subtotal y total
             $('#subtotal').val(subtotal);
             $('#total').val(total);
