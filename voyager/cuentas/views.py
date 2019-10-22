@@ -93,9 +93,7 @@ def consultar_usuario(request, id):
                 data_ordenes_int.append(o)
             else:
                 print("Not exists")
-        print(data_ordenes_int)
         data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
-        print(data_ordenes)
         return JsonResponse({"data": data, "data_ordenes":data_ordenes})
 
 
