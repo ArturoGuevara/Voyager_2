@@ -14,11 +14,20 @@
                     <div class="form-row">
                         <div class="col">
                             <label for="nombre">Nombre corto</label>
-                            <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Nombre" name="nombre">
+                            <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Pesticidas" name="nombre">
                             <div class="invalid-feedback">
-                                Por favor introduce un nombre
+                                Por favor introduce un nombre corto
                             </div>
                         </div>
+                    </div>
+                    <div class="form-row">
+                            <div class="col">
+                                <label for="descripcion">Descripción</label>
+                                <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripcion" name="descripcion" placeholder="Introduce una descripción."></textarea>
+                                <div class="invalid-feedback">
+                                    Por favor introduce una descripción
+                                </div>
+                            </div>
                     </div>
                     <div class="form-row">
                         <div class="col">
@@ -37,20 +46,42 @@
                         </div>
                     </div>
                     <div class="form-row">
-                            <div class="col">
-                                <label for="descripcion">Descripción</label>
-                                <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripcion" name="descripcion" placeholder="Introduce una descripción."></textarea>
-                                <div class="invalid-feedback">
-                                    Por favor introduce una descripción
-                                </div>
-                            </div>
+                        <div class="col">
+                            <label for="unidad_min">Unidad mínima</label>
+                            <input type="text" maxlength="50" class="form-control" id="unidad_min" placeholder="500 gr." name="unidad_min">
+                        </div>
+                        <div class="col">
+                                <label for="pais">País</label>
+                                <select class="form-control" id="pais" name="pais">
+                                    {% for pais in paises %}
+                                        <option value="{{pais.id_pais}}">{{pais.nombre}}</option>
+                                    {% endfor%}
+                                </select>
+                        </div>
                     </div>
                     <div class="form-row">
-                            <div class="col-5">
-                                    <label for="duracion">Duración aproximada</label>
-                                    <input type="text" class="form-control" readonly id="duracion" name="duracion" >
-                                    <div id="slider-range"></div>
+                        <div class="col-5">
+                                <label for="duracion">Duración aproximada</label>
+                                <input type="text" class="form-control" readonly id="duracion" name="duracion" >
+                                <div id="slider-range"></div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-3 mt-lg-5">
+                        Acreditación
+                        <div class="col">
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="1">
+                                <label class="form-check-label" for="acreditacion">
+                                Si
+                                </label>
                             </div>
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="0"  checked>
+                                <label class="form-check-label" for="acreditacion">
+                                No
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer" align-items-center>
                         <button type="button" class="btn btn-success" id="submit-analisis-button">Guardar</button>

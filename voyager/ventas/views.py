@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion
+from reportes.models import Analisis, Cotizacion, Pais
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -24,9 +24,11 @@ def ver_catalogo(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
         analisis = Analisis.objects.all()
+        paises = Pais.objects.all()
         context = {
             'analisis': analisis,
-            'success_code' : request.session['success_code']
+            'success_code' : request.session['success_code'],
+            'paises' : paises
         }
         request.session['success_code'] = 0
         return render(request, 'ventas/catalogo.html', context)
@@ -135,20 +137,32 @@ def is_not_empty(data):
 def agregar_analisis(request):
     if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
         form = AnalisisForma(request.POST)
-
         if form.is_valid():         # Verificar si los datos de la forma son validos
-            n_nombre = form.cleaned_data['nombre']            # Tomar los datos por su nombre en el HTML
+           # Tomar los datos por su nombre en el HTML
+            n_nombre = form.cleaned_data['nombre']
             n_codigo = form.cleaned_data['codigo']
             n_precio = form.cleaned_data['precio']
             n_descripcion = form.cleaned_data['descripcion']
             n_duracion = form.cleaned_data['duracion']
+            n_pais = form.cleaned_data['pais']
+            n_unidad_min = form.cleaned_data['unidad_min']
+            n_acreditacion = form.cleaned_data['acreditacion']
+
+            n_pais = Pais.objects.get(id_pais=n_pais)
+            if n_acreditacion == "0":
+                n_acreditacion = False
+            else:
+                n_acreditacion = True
 
             newAnalisis = Analisis.objects.create(
-                codigo = n_codigo,
                 nombre = n_nombre,
+                codigo = n_codigo,
                 descripcion = n_descripcion,
                 precio = n_precio,
-                tiempo = n_duracion
+                tiempo = n_duracion,
+                pais = n_pais,
+                unidad_min = n_unidad_min,
+                acreditacion = n_acreditacion
             )
             newAnalisis.save()      # Guardar objeto
             request.session['success_code'] = 1
