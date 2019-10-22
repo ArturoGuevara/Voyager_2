@@ -2,7 +2,6 @@
 {% load static %}
 
 {% block optionalCSS %}
-
 {% endblock %}
 
 {% block content %}
@@ -29,12 +28,6 @@
                         <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <!--<button type="button" class="btn btn-warning" onclick="" data-toggle="modal" data-target="">
-                            <i class='fas fa-edit'></i>
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
-                            <i class='fas fa-paper-plane'></i>
-                        </button>-->
                         <button type="button" class="btn btn-danger" onclick="" data-toggle="modal" data-target="">
                             <i class='fas fa-trash'></i>
                         </button>
@@ -47,6 +40,5 @@
 {% endblock content %}
 
 {% block optionalJS %}
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
 {% endblock %}
