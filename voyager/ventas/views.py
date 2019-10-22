@@ -11,6 +11,11 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 
+# Vista del index
+@login_required
+def indexView(request):
+    return render(request, 'ventas/index.html')
+
 # Create your views here.
 @login_required
 def ver_catalogo(request):
@@ -127,7 +132,7 @@ def is_not_empty(data):
     else:
         return False
 
-
+#US V10-10
 @login_required
 def agregar_analisis(request):
     if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST

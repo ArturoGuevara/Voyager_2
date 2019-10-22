@@ -8,4 +8,5 @@ urlpatterns = [
     path('cotizaciones', views.ver_cotizaciones, name='cotizaciones'),
     path('borrar_analisis/<int:id>', views.borrar_analisis, name='borrar_analisis'),
     path('agregar_analisis/', views.agregar_analisis, name='agregar_analisis'),
+    path('', views.indexView, name=''),
 ]
