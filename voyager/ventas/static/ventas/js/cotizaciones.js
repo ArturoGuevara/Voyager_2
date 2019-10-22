@@ -42,11 +42,11 @@ function cargar_cot(){
                 var total = 0;
                 // Agregamos uno por uno los análisis seleccionados
                 for(var i = 0; i < data.length; i++) {
-                    var id = data[i].fields.id;
+                    var id = data[i].pk;
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td></tr>');
+                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td><td><input type="number" class="form-control" id="'+id+'" name="cantidades[]"></td></tr>');
                     subtotal+= parseFloat(precio);
                 }
                 total = subtotal;
@@ -65,12 +65,17 @@ function cargar_cot(){
 }
 
 // Función para guardar la nueva cotización
-function crear_cotizacion(){
+function crear_cotizacion(){    
     var checked = [];
+    var cantidades = [];
     // Obtenemos las id de los análisis seleccionados
     $("input[name='cot[]']:checked").each(function (){
         checked.push(parseInt($(this).val()));
     });
+    // Obtenemos las cantidades de los análisis seleccionados
+    $("input[name='cantidades[]']").each(function (){
+        cantidades.push(parseInt($(this).val()));
+    });    
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
     // Obtener valor de los inputs
@@ -91,6 +96,7 @@ function crear_cotizacion(){
             iva: iva,
             total: total,
             'checked[]': checked,
+            'cantidades[]': cantidades,
             'csrfmiddlewaretoken': token
         },
         type: "POST",
