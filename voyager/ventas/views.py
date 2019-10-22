@@ -48,7 +48,7 @@ def cargar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-    
+
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -91,7 +91,7 @@ def editar_analisis(request, id):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
@@ -160,7 +160,7 @@ def ver_cotizaciones(request):
             return render(request, 'ventas/cotizaciones.html', context)
         else:
             raise Http404
-            
+
 def cargar_cot(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
@@ -200,3 +200,51 @@ def is_not_empty(data):
         return True
     else:
         return False
+
+@login_required
+def crear_cotizacion(data):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+            raise Http404
+        if request.method == 'POST': #Obtención de datos de cotización
+            if (request.POST.get('cliente')
+                and request.POST.get('subtotal')
+                and request.POST.get('descuento')
+                and request.POST.get('iva')
+                and request.POST.get('total')
+            ):
+                checked = request.POST.getlist('checked[]')
+                cantidad = request.POST.getlist('cantidades[]')
+                if checked:
+                    cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                    c = Cotizacion()
+                    c.usuario_c = cliente
+                    c.usuario_v = user_logged
+                    c.descuento = request.POST.get('descuento')
+                    c.subtotal = request.POST.get('subtotal')
+                    c.iva = request.POST.get('iva')
+                    c.total = request.POST.get('total')
+                    c.status = True
+                    c.save()
+                    data = []
+                    # Iteramos en los análisis seleccionados
+                    index = 0
+                    for id in checked: #Asignar codigo DHL
+                        a = Analisis.objects.get(id_analisis = id)
+                        ac = AnalisisCotizacion()
+                        ac.analisis = a
+                        ac.cotizacion = c
+                        ac.cantidad = cantidad[index]
+                        ac.fecha = datetime.datetime.now().date()
+                        ac.save()
+                        index = index + 1
+                else:
+                    response = JsonResponse({"error": "No llegaron análisis seleccionados"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+            else:
+                raise Http404
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
