@@ -29,7 +29,7 @@ function cargar_cot(){
         success: function(response){
             // Obtener la info que se regresa del controlador
             var data = JSON.parse(response.data);
-            console.log(response.data);
+            console.log(response);
         },
         error: function(data){
             // Código de error alert(data.status);

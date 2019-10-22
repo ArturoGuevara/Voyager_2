@@ -168,18 +168,21 @@ def cargar_cot(request):
             # Obtenemos el arreglo de análisis seleccionados para crear cotización
             checked = request.POST.getlist('checked[]')
             if checked:
+                data = []
                 # Iteramos en los análisis seleccionados
                 for id in checked: #Asignar codigo DHL
                     analisis = Analisis.objects.get(id_analisis = id)
-                    if analisis: #Valida si existe
-                        data = serializers.serialize("json", [analisis], ensure_ascii = False)
+                    if analisis: #Valida si existe y lo añade al array
+                        print(analisis.nombre)
+                        data.append(analisis)
                     else:
                         response = JsonResponse({"error": "No existe ese análisis"})
                         response.status_code = 500
                         # Regresamos la respuesta de error interno del servidor
                         return response
-                data = data[1:-1]
-                return JsonResponse({"data": data})
+                #return HttpResponse(json.dumps(data), content_type='application/json')
+                info = serializers.serialize("json", data, ensure_ascii = False)
+                return JsonResponse({"info": info})
             else:
                 response = JsonResponse({"error": "No llegaron análisis seleccionados"})
                 response.status_code = 500
