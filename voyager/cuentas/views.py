@@ -5,7 +5,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from .models import IFCUsuario
+from reportes.models import OrdenInterna
 from django.urls import reverse
+from django.http import Http404
+from django.core import serializers
+from django.http import JsonResponse
+
 # Create your views here.
 
 #Vista de Login
@@ -67,11 +72,47 @@ def loggedOut(request):
     })
 
 
+
+
+def consultar_usuario(request, id):
+    if request.method == 'POST':
+
+        data_ordenes_int = []
+        data_ordenes = []
+        data = {}
+
+        usuario = IFCUsuario.objects.get(id=id)
+        #muestras = Muestra.objects.get(oi = oi)
+        if usuario:
+            data = serializers.serialize("json", [usuario], ensure_ascii=False)
+            data = data[1:-1]
+
+        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')
+        for o in ordenes_int:
+            if o:
+                data_ordenes_int.append(o)
+            else:
+                print("Not exists")
+        print(data_ordenes_int)
+        data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
+        print(data_ordenes)
+        return JsonResponse({"data": data, "data_ordenes":data_ordenes})
+
+
 def lista_usuarios(request):
     #View de lista de usuarios
+    rol_busqueda = 'Cliente'
+    context = {}
 
-    context = {
-        'usuarios': usuarios,
-    }
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if usuario_log.rol.nombre == "Director": #Verificar que el rol sea válido
+            usuarios_dir = IFCUsuario.objects.all()
+            context = {'usuarios':usuarios_dir}
+        elif usuario_log.rol.nombre == "Contaduria":
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol_busqueda)
+            context = {'usuarios':usuarios_cont}
+        else:
+            raise Http404
 
     return render(request, 'cuentas/usuarios.html', context)

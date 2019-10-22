@@ -7,59 +7,47 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="post" action="{% url 'usuarios' %}" >
-                {% csrf_token %}
+            <form id="form" >
                 <div class="modal-body">
                     <div class="form-row">
                         <div class="form-group col-md-6">
                             <label for="inputName">Nombre</label>
-                            <input type="text" class="form-control" id="inputEmail4" placeholder="Email">
+                            <input type="text" class="form-control" id="input_nombre" name="input_nombre" placeholder="Email">
                         </div>
                         <div class="form-group col-md-6">
                           <label for="inputEmail4">Correo</label>
                           <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
                         </div>
-                      </div>
-                      <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label for="inputAddress">Telefono</label>
-                        <input type="text" class="form-control" id="inputAddress" placeholder="442 5674 892">
-                      </div>
-                      <div class="form-row">
+                        <input type="text" class="form-control" id="inputTelefono" placeholder="442 5674 892">
+                    </div>
+                    <div class="form-row">
                         <div class="form-group col-md-6">
                           <label for="inputCity">City</label>
                           <input type="text" class="form-control" id="inputCity">
                         </div>
                         <div class="form-group col-md-4">
-                          <label for="inputState">Estatus</label>
-                          <select id="inputState" class="form-control">
+                          <label for="inputEstatus">Estatus</label>
+                          <select id="inputEstatus" class="form-control">
                             <option>NA</option>
                             <option>Deudor</option>
                             <option>Pagado</option>
                           </select>
                         </div> 
-                      </div>
+                    </div>
                     <div class="form-row">
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                            <table class="table table-sm table-bordered table-striped mb-0">
+                            <table class="table table-sm table-bordered table-striped mb-0" id="tabla_usuario" name="tabla_usuario">
                                 <thead>
                                     <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Estatus</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                    <th scope="row">1</th>
-                                    <td>Mark</td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">2</th>
-                                    <td>Jacob</td>
-                                    </tr>
-                                    <tr>
-                                    <th scope="row">3</th>
-                                    <td colspan="2">Larry the Bird</td>
-                                    </tr>
+                                <tbody id="tabla_cont" name="tabla_cont">
+                                    
                                 </tbody>
                             </table>
                         </div>
