@@ -137,7 +137,6 @@ def is_not_empty(data):
 def agregar_analisis(request):
     if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
         form = AnalisisForma(request.POST)
-        print(form.is_valid())
         if form.is_valid():         # Verificar si los datos de la forma son validos
            # Tomar los datos por su nombre en el HTML
             n_nombre = form.cleaned_data['nombre']
