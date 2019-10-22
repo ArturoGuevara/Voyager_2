@@ -40,6 +40,7 @@ class TestAnalisis(TestCase):
 
     def test_analisis_forma(self):
         form_data = {
+        'nombre': 'pesticida',
         'codigo': 'H-091233',
         'descripcion': 'Análisis para detección de pesticida en cultivos',
         'precio': 2000.00,

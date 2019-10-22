@@ -140,6 +140,7 @@ def agregar_analisis(request):
         print(form.is_valid())
         if form.is_valid():         # Verificar si los datos de la forma son validos
            # Tomar los datos por su nombre en el HTML
+            n_nombre = form.cleaned_data['nombre']
             n_codigo = form.cleaned_data['codigo']
             n_precio = form.cleaned_data['precio']
             n_descripcion = form.cleaned_data['descripcion']
@@ -153,15 +154,9 @@ def agregar_analisis(request):
                 n_acreditacion = False
             else:
                 n_acreditacion = True
-            print(n_codigo)
-            print(n_precio)
-            print(n_descripcion)
-            print(n_duracion)
-            print(n_pais)
-            print(n_unidad_min)
-            print(n_acreditacion)
 
             newAnalisis = Analisis.objects.create(
+                nombre = n_nombre,
                 codigo = n_codigo,
                 descripcion = n_descripcion,
                 precio = n_precio,

@@ -100,6 +100,7 @@ class Pais(models.Model):
 
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, default='')
     codigo = models.CharField(max_length=50)
     descripcion = models.CharField(max_length=100)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
