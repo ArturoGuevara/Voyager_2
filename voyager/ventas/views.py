@@ -172,7 +172,7 @@ def cargar_cot(request):
                 for id in checked: #Asignar codigo DHL
                     analisis = Analisis.objects.get(id_analisis = id)
                     if analisis: #Valida si existe
-                        serializers.serialize("json", [analisis], ensure_ascii = False)
+                        data = serializers.serialize("json", [analisis], ensure_ascii = False)
                     else:
                         response = JsonResponse({"error": "No existe ese análisis"})
                         response.status_code = 500
