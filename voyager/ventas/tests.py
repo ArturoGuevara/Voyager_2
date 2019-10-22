@@ -2,24 +2,26 @@ from django.test import TestCase
 from ventas.forms import AnalisisForma
 from django.urls import reverse, resolve
 from .views import agregar_analisis
-from reportes.models import Analisis,Cotizacion
+from reportes.models import Analisis,Cotizacion, Pais, Nota
 from cuentas.models import Rol,IFCUsuario,Empresa
-from .views import ver_cotizaciones
 from django.contrib.auth.models import User
 from datetime import datetime, date
-from django.urls import reverse, resolve
-
+from .views import ver_cotizaciones
 
 # Create your tests here.
 class TestAnalisis(TestCase):
     def setUp(self):
-        analisis1 = Analisis(codigo="1", nombre="Analisis 1", descripcion="Descripcion 1", precio="1500", tiempo="3")
+
+        pais = Pais(id_pais=1, nombre="Mexico")
+        pais.save()
+
+        analisis1 = Analisis(codigo="1", descripcion="Descripcion 1", precio="1500", tiempo="3", unidad_min="500 gr", pais=Pais.objects.get(id_pais=1), acreditacion="0")
         analisis1.save()
 
-        analisis2 = Analisis(codigo="2", nombre="Analisis 2", descripcion="Descripcion 2", precio="2500", tiempo="5")
+        analisis2 = Analisis(codigo="2", descripcion="Descripcion 2", precio="2500", tiempo="5", unidad_min="500 gr", pais=Pais.objects.get(id_pais=1), acreditacion="0")
         analisis2.save()
 
-        analisis3 = Analisis(codigo="3", nombre="Analisis 3", descripcion="Descripcion 3", precio="3500", tiempo="7")
+        analisis3 = Analisis(codigo="3", descripcion="Descripcion 3", precio="3500", tiempo="7", unidad_min="500 gr", pais=Pais.objects.get(id_pais=1), acreditacion="0")
         analisis3.save()
 
 #Unit tests de US06-06 añadir análisis.
@@ -38,14 +40,18 @@ class TestAnalisis(TestCase):
 
     def test_analisis_forma(self):
         form_data = {
+        'nombre': 'pesticida',
         'codigo': 'H-091233',
-        'nombre': 'Pesticida',
         'descripcion': 'Análisis para detección de pesticida en cultivos',
         'precio': 2000.00,
-        'duracion': '5-8 días'
+        'unidad_min': '500 gr',
+        'duracion': '5-8 días',
+        'pais': '1',
+        'acreditacion' : '0'
         }
         form = AnalisisForma(data = form_data)
         self.assertTrue(form.is_valid())
+
 
     #def test_anadir_analisis(self):
         #analisis = Analisis.objects.first()
@@ -91,12 +97,13 @@ class TestAnalisis(TestCase):
             var = True
             self.assertEquals(var, True)
 
+
 class TestCotizaciones(TestCase):
     #Tests de cotizaciones
     def set_up_Users(self):
 
-        #Crea usuarios Clientes        
-        rol_clientes = Rol.objects.create(nombre='Cliente') 
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
         empresa =  Empresa.objects.create(empresa='TestInc')
 
@@ -222,7 +229,7 @@ class TestCotizaciones(TestCase):
         self.assertContains(response, "123")
         self.assertNotContains(response, "456")
         self.assertContains(response, "789")
-    
+
     def test_model(self):
         #Test del model de Cotizaciones
         self.set_up_Users() #Set up de datos
@@ -239,5 +246,3 @@ class TestCotizaciones(TestCase):
         #URL testing.
         url = reverse('cotizaciones')
         self.assertEquals(resolve(url).func,ver_cotizaciones)
-
-    
