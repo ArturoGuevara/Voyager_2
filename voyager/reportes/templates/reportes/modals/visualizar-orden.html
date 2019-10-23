@@ -22,98 +22,196 @@
                                 <div class="form-group col-md-6">
                                     <input type="hidden" class="form-control" id="visualizar_idOI" name="visualizar_idOI">
                                     <label for="visualizar_estatus">Estatus</label>
-                                    <input type="text" class="form-control" id="visualizar_estatus" name="visualizar_estatus" placeholder="estatus">
+                                    <input type="text" class="form-control" id="visualizar_estatus" placeholder="estatus" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="fecha_envio">Fecha Envío</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_envio" name="visualizar_fecha_envio" placeholder="Fecha de envío">
+                                    <label for="visualizar_fecha_envio">Fecha Envío</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="visualizar_localidad" name="visualizar_localidad" placeholder="Localidad">
+                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_guia_envio">Guía de Envío</label>
-                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío">
+                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
                                 </div>
-
                             </div>
                             <div class="form-row">
 
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="link_resultados">Link de Resultados</label>
-                                    <input type="text" class="form-control" id="visualizar_link_resultados" name="visualizar_link_resultados" placeholder="Link de resultados">
+                                    <label for="visualizar_link_resultados">Link de Resultados</label>
+                                    <input type="text" class="form-control" id="visualizar_link_resultados" placeholder="Link de resultados" disabled>
                                 </div>
                             </div>
 
                             <div id="info-cliente">
                                 <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
-                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa"></p>
+                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa">IFC</p>
+
+                                <label for="visualizar_usuario_nombre"><b>Usuario:</b></label>
+                                <p id="visualizar_usuario_nombre" name="visualizar_usuario_nombre">Usuario</p>
 
                                 <label for="visualizar_usuario_email"><b>Usuario:</b></label>
-                                <p id="visualizar_usuario_email" name="visualizar_usuario_email"></p>
+                                <p id="visualizar_usuario_email" name="visualizar_usuario_email">hockey@lalocura.com</p>
 
-                                <label for="visualizar_usuario_contactos"><b>Contactos:</b></label>
-                                <p id="visualizar_usuario_contactos" name="visualizar_usuario_contactos"></p>
-
+                                <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
+                                <p id="visualizar_usuario_telefono" name="visualizar_usuario_telefono">4464573</p>
                             </div>
 
                         </div>
                         <div class="tab-pane container fade" id="visualizar_muestras">
-  <div id="accordion">
-    <div class="card">
-      <div class="card-header">
-        <a class="card-link" data-toggle="collapse" href="#collapseOne">
-          Collapsible Group Item #1
-        </a>
-      </div>
-      <div id="collapseOne" class="collapse show" data-parent="#accordion">
-        <div class="card-body">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <a class="collapsed card-link" data-toggle="collapse" href="#collapseTwo">
-        Collapsible Group Item #2
-      </a>
-      </div>
-      <div id="collapseTwo" class="collapse" data-parent="#accordion">
-        <div class="card-body">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header">
-        <a class="collapsed card-link" data-toggle="collapse" href="#collapseThree">
-          Collapsible Group Item #3
-        </a>
-      </div>
-      <div id="collapseThree" class="collapse" data-parent="#accordion">
-        <div class="card-body">
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-        </div>
-      </div>
-    </div>
-  </div>
+                            <div id="accordion">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <a class="card-link" data-toggle="collapse" href="#collapseOne">
+                                            Muestra 1
+                                        </a>
+                                    </div>
+                                    <div id="collapseOne" class="collapse show" data-parent="#accordion">
+                                        <div class="card-body">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-2">
+                                                    <label for="visualizar_muestra_numero_1">Número</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_numero_1" placeholder="Número" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_codigo_1">Código</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_codigo_1" placeholder="Código" disabled>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="visualizar_muestra_1">Muestra</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_1" placeholder="Muestra" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_numero_interno_1">Número interno</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_numero_interno_1" placeholder="Número interno" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_fecha_recibo_1">Fecha de recibo</label>
+                                                    <input type="date" class="form-control" id="visualizar_muestra_fecha_recibo_1" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_orden_compra_1">Orden de compra</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_orden_compra_1" placeholder="Orden de compra" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_factura_1">Factura</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_factura_1" placeholder="Factura" disabled>
+                                                </div>
+                                            </div>
+                                            <p>Análisis</p>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <th>Nombre</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>A1</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>A2</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>B1</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+                                <div class="card">
+                                    <div class="card-header">
+                                        <a class="card-link collapsed" data-toggle="collapse" href="#collapseTwo">
+                                            Muestra 2
+                                        </a>
+                                    </div>
+                                    <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                                        <div class="card-body">
+                                            <div class="form-row">
+                                                <div class="form-group col-md-2">
+                                                    <label for="visualizar_muestra_numero_2">Número</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_numero_2" placeholder="Número" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_codigo_2">Código</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_codigo_2" placeholder="Código" disabled>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="visualizar_muestra_2">Muestra</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_2" placeholder="Muestra" disabled>
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_numero_interno_2">Número interno</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_numero_interno_2" placeholder="Número interno" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_fecha_recibo_2">Fecha de recibo</label>
+                                                    <input type="date" class="form-control" id="visualizar_muestra_fecha_recibo_2" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_orden_compra_2">Orden de compra</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_orden_compra_2" placeholder="Orden de compra" disabled>
+                                                </div>
+                                                <div class="form-group col-md-3">
+                                                    <label for="visualizar_muestra_factura_2">Factura</label>
+                                                    <input type="text" class="form-control" id="visualizar_muestra_factura_2" placeholder="Factura" disabled>
+                                                </div>
+                                            </div>
+                                            <p>Análisis</p>
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-striped">
+                                                    <thead>
+                                                        <th>Nombre</th>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>A1</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>A2</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>B1</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
                         </div>
                         <div class="tab-pane container fade" id="visualizar_observaciones">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_formato_ingreso_muestra">Formato de ingreso de muestra</label>
-                                    <input type="text" class="form-control" id="visualizar_formato_ingreso_muestra" name="visualizar_formato_ingreso_muestra" placeholder="">
+                                    <input type="text" class="form-control" id="visualizar_formato_ingreso_muestra" name="visualizar_formato_ingreso_muestra" placeholder="Formato" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="idioma_reporte">Idioma del reporte: </label>
                                     <p>
-                                        <input type="radio" name="visualizar_idioma_reporte" id="visualizar_idioma_reporteES" value="8809 ES">8809 ES
-                                        <input type="radio" name="visualizar_idioma_reporte" id="visualizar_idioma_reporteEN" value="8992 EN">8992 EN
+                                        <input type="radio" name="visualizar_idioma_reporte" id="visualizar_idioma_reporteES" value="8809 ES" disabled>8809 ES
+                                        <input type="radio" name="visualizar_idioma_reporte" id="visualizar_idioma_reporteEN" value="8992 EN" disabled>8992 EN
                                     </p>
                                 </div>
                             </div>
@@ -122,28 +220,28 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_mrl">MRL</label>
-                                    <input type="text" class="form-control" id="visualizar_mrl" name="visualizar_mrl" placeholder="MRL">
+                                    <input type="text" class="form-control" id="visualizar_mrl" name="visualizar_mrl" placeholder="MRL" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_eri">Fecha esperada de recibo de informes</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_eri" name="visualizar_fecha_eri" placeholder="">
+                                    <label for="visualizar_fecha_lab">Fecha de llegada al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_lab" name="visualizar_fecha_lab" disabled>
                                 </div>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_lab">Fecha de llegada al lab</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_lab" name="visualizar_fecha_lab" placeholder="">
+                                    <label for="visualizar_fecha_ei">Fecha de envío al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_ei" name="visualizar_fecha_ei" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_ei">Fecha de envío de informes</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_ei" name="visualizar_fecha_ei" placeholder="">
+                                    <label for="visualizar_fecha_eri">Fecha de recibo de informes</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_eri" name="visualizar_fecha_eri" disabled>
                                 </div>
                             </div>
 
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_notif_e" name="visualizar_notif_e">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_notif_e" name="visualizar_notif_e" disabled>
                                     <span class="form-check-sign"></span>
                                     Notificación de envío al cliente
                                 </label>
@@ -152,7 +250,7 @@
 
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_envio_ti" name="visualizar_envio_ti">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_envio_ti" name="visualizar_envio_ti" disabled>
                                     <span class="form-check-sign"></span>
                                     Envío de todos los informes
                                 </label>
@@ -160,20 +258,16 @@
 
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_cliente_cr" name="visualizar_cliente_cr">
+                                    <input class="form-check-input" type="checkbox" value="Sí" id="visualizar_cliente_cr" name="visualizar_cliente_cr" disabled>
                                     <span class="form-check-sign"></span>
                                     El cliente confirmó de recibido
                                 </label>
                             </div>
-
-
                         </div>
                         <div class="tab-pane container fade" id="visualizar_facturacion">
-                            <p>Aki va la wea de facturación</p>
+                            <p>La funcionalidad de facturación se agregará próximamente</p>
                         </div>
                     </div>
-            </div>
-            <div class="modal-footer">
             </div>
         </div>
     </div>
