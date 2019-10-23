@@ -7,11 +7,15 @@ $(document).ready(function() {
         $('#container-cotizaciones').removeClass('d-block').addClass('d-none');
         $('#btn-continuar-cot').removeClass('d-none').addClass('d-inline');
     });
-    
+
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen
     $('#agregar-cot').on('hidden.bs.modal', function () {
         $('#tabla-analisis-info').empty()
     });
+
+    $('#descuento').on("change", calc_total);
+    $('#iva').on("change", calc_total);
+
 });
 
 // Función para cargar la información a mostrar en el modal de resumen de cotización
@@ -52,6 +56,10 @@ function cargar_cot(){
                 total = subtotal;
                 // Asignar valores al input de subtotal y total
                 $('#subtotal').val(subtotal);
+                var ivaa = $('#iva').val();
+                var iva_total = parseInt(ivaa)/100;
+                var iva = iva_total * total;
+                total = total + iva;
                 $('#total').val(total);
             },
             error: function(data){
@@ -65,7 +73,7 @@ function cargar_cot(){
 }
 
 // Función para guardar la nueva cotización
-function crear_cotizacion(){    
+function crear_cotizacion(){
     var checked = [];
     var cantidades = [];
     // Obtenemos las id de los análisis seleccionados
@@ -75,7 +83,7 @@ function crear_cotizacion(){
     // Obtenemos las cantidades de los análisis seleccionados
     $("input[name='cantidades[]']").each(function (){
         cantidades.push(parseInt($(this).val()));
-    });    
+    });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
     // Obtener valor de los inputs
@@ -110,16 +118,16 @@ function crear_cotizacion(){
             var status = data.fields.status;
             var cap_status = status.charAt(0).toUpperCase() + string.slice(1);
             $('#row-container-cots').append('<tr id="cotizaciones-'+data.pk+'"><td class="pt-3 cotizaciones_id_cotizacion">'+data.pk+'</td><td class="pt-3 cotizaciones_status">'+cap_status+'</td><td class="pt-3 cotizaciones_total">$'+data.fields.total+'</td><td class="pt-3 cotizaciones_fecha_creada">'+data.fields.fecha_creada+'</td><td class="pt-3 cotizaciones_acciones"><button type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button> <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button></td></tr>');
-            
+
             // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
             $('#btn-agregar-cot').removeClass('d-none').addClass('d-inline');
             $('#container-analisis').removeClass('d-block').addClass('d-none');
             $('#container-cotizaciones').removeClass('d-none').addClass('d-block');
-            $('#btn-continuar-cot').removeClass('d-inline').addClass('d-none');            
-            
+            $('#btn-continuar-cot').removeClass('d-inline').addClass('d-none');
+
             // Limpiamos todos los checkboxes por si quiere agregar una nueva correctamente
             $('input[name="cot[]"]:checkbox').prop('checked',false);
-            
+
             // Damos retroalimentación de que se guardó correctamente
             showNotification('top','right','Cotización guardada correctamente');
         },
@@ -128,4 +136,20 @@ function crear_cotizacion(){
             // Mensaje de error alert(data.responseJSON.error);
         }
     });
+}
+
+function calc_total(e){
+    var sub = document.getElementById("subtotal");
+    var total = document.getElementById("total");
+    var iva = document.getElementById("iva");
+    total.value = sub.value;
+    var desc = document.getElementById("descuento");
+    var d = parseInt(desc.value)/100;
+    var t = parseInt(total.value);
+    var temp = t*d;
+    var tot = t - temp;
+    var ivaa = parseInt(iva.value)/100;
+    ivaa = tot * ivaa;
+    tot = tot + ivaa;
+    total.value = tot;
 }
