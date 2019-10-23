@@ -108,7 +108,7 @@ class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, default='')
     codigo = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=500)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
     unidad_min = models.CharField(max_length=50, default='')
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
