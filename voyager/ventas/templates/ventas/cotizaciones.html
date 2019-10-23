@@ -36,7 +36,9 @@
                     <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
                     <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
                     <td class="pt-3 cotizaciones_acciones">
-                        <button type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="#ver_cotizacion">
+                            <i class="fa fa-eye"></i>
+                        </button>
                         <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
@@ -68,7 +70,7 @@
                         <i class="fa fa-eye tabla-icon"></i>
                     </button>
                 </td>
-                <td class="analisis-seleccionar" data-id="{{ a.id_analisis }}">    
+                <td class="analisis-seleccionar" data-id="{{ a.id_analisis }}">
                     <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
                 </td>
             </tr>
@@ -77,6 +79,7 @@
     </table>
     </div>
     {% include './modals/agregar-cot.html' %}
+    {% include './modals/visualizar-cot.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
