@@ -95,7 +95,6 @@ function crear_cotizacion(){
 
     $.ajax({
         url: "crear_cotizacion/",
-        dataType: 'json',
         // Seleccionar información que se mandara al controlador
         data: {
             cliente: cliente,
@@ -108,28 +107,16 @@ function crear_cotizacion(){
             'csrfmiddlewaretoken': token
         },
         type: "POST",
-        success: function(response){
-            // Obtener la info que se regresa del controlador
-            var data = JSON.parse(response.data);
-            console.log(data);
+        success: function(){
             // Cerramos el modal para confirmar cotización
             $('#agregar-cot').modal('hide');
-            // Hacemos mayusucula la primer letra del status de la cotización
-            var status = data.fields.status;
-            var cap_status = status.charAt(0).toUpperCase() + string.slice(1);
-            $('#row-container-cots').append('<tr id="cotizaciones-'+data.pk+'"><td class="pt-3 cotizaciones_id_cotizacion">'+data.pk+'</td><td class="pt-3 cotizaciones_status">'+cap_status+'</td><td class="pt-3 cotizaciones_total">$'+data.fields.total+'</td><td class="pt-3 cotizaciones_fecha_creada">'+data.fields.fecha_creada+'</td><td class="pt-3 cotizaciones_acciones"><button type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button> <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button></td></tr>');
-
-            // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
-            $('#btn-agregar-cot').removeClass('d-none').addClass('d-inline');
-            $('#container-analisis').removeClass('d-block').addClass('d-none');
-            $('#container-cotizaciones').removeClass('d-none').addClass('d-block');
-            $('#btn-continuar-cot').removeClass('d-inline').addClass('d-none');
-
-            // Limpiamos todos los checkboxes por si quiere agregar una nueva correctamente
-            $('input[name="cot[]"]:checkbox').prop('checked',false);
 
             // Damos retroalimentación de que se guardó correctamente
             showNotification('top','right','Cotización guardada correctamente');
+
+            setTimeout(function(){
+                location.reload();
+            }, 2000);
         },
         error: function(data){
             // Código de error alert(data.status);
