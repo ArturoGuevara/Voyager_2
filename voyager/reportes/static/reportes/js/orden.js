@@ -172,3 +172,82 @@ function actualizar_tabla(oi){
 
 
 })
+
+// boton para abrir modal de visualizar oi y carga los campos
+function visualizar_info_oi(id) {
+    $.ajax({
+        url: "consultar_orden/"+id,
+        type: "POST",
+        dataType: 'json',
+        data: {
+            'id':id,
+            'csrfmiddlewaretoken': token
+        },
+        success: function (response) {
+            var data = JSON.parse(response.data);
+            data = data.fields;
+            console.log(data);
+            //pestaña de información
+            $('#visualizar_idOI').val(id);
+            $('#visualizar_estatus').val(data.estatus);
+            $('#visualizar_localidad').val(data.localidad);
+            $('#visualizar_fecha_envio').val(data.fecha_envio);
+            $('#visualizar_guia_envio').val(data.guia_envio)
+            $('#visualizar_link_resultados').val(data.link_resultados);
+            //pestaña de observaciones
+            $('#visualizar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
+
+            //hacer check a radio input del idioma
+            if(data.idioma_reporte == "8809 ES"){
+                $('#visualizar_idioma_reporteES').prop('checked', true);
+                $('#visualizar_idioma_reporteEN').prop('checked', false);
+            }else if(data.idioma_reporte == "8992 EN"){
+                $('#visualizar_idioma_reporteES').prop('checked', false);
+                $('#visualizar_idioma_reporteEN').prop('checked', true);
+            }else{
+                $('#visualizar_idioma_reporteES').prop('checked', false);
+                $('#visualizar_idioma_reporteEN').prop('checked', false);
+            }
+            $('#visualizar_mrl').val(data.mrl);
+            $('#visualizar_fecha_eri').val(data.fecha_eri);
+            $('#visualizar_fecha_lab').val(data.fecha_lab);
+            $('#visualizar_fecha_ei').val(data.fecha_ei);
+
+
+
+            //Hacer check a las checkboxes
+            if(data.notif_e ="Sí"){
+                $('#visualizar_notif_e').prop('checked', true)
+            }
+            if(data.envio_ti ="Sí"){
+                $('#visualizar_envio_ti').prop('checked', true)
+            }
+            if(data.cliente_cr ="Sí"){
+                $('#visualizar_cliente_cr').prop('checked', true)
+            }
+
+/*
+            //Información general
+            $('#editar_estatus_orden').val(data.fields.estatus)
+            $('#editar_localidad_orden').val(data.fields.localidad)
+            $('#editar_fecha_envio_orden').val(data.fields.fecha_envio)
+            $('#editar_guia_orden').val(data.fields.guia_envio)
+            $('#editar_link_orden').val(data.fields.link_resultados)
+            //Observaciones
+            $('#').val(data.fields.formato_ingreso_muestra)
+            $('#').val(data.fields.idioma_reporte)
+            $('#').val(data.fields.mrl)
+            $('#').val(data.fields.fecha_eri)
+            $('#').val(data.fields.notif_e)
+            $('#').val(data.fields.fecha_lab)
+            $('#').val(data.fields.fecha_ei)
+            $('#').val(data.fields.envio_ti)
+            $('#').val(data.fields.cliente_cr)
+            //Facturacion
+            $('#').val(data.fields.resp_pago)
+            $('#').val(data.fields.correo)
+            $('#').val(data.fields.telefono)
+            */
+        }
+    })
+}

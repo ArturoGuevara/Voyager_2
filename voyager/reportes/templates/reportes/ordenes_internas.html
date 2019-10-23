@@ -48,7 +48,7 @@
                     <td class="pt-3-half oiData oi_usuario">{{ o.usuario.user }}</td>
                     <td class="pt-3-half oiData oi_fecha_muestreo">{{ o.localidad }}</td>
                     <td colspan="4">
-                        <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="">
+                        <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>
                         </button>
                         <button type="button" class="btn btn-warning" onclick="cargar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-orden-interna">
@@ -68,6 +68,7 @@
     </div>
     {% include './modals/paquete.html' %}
     {% include './modals/ver-orden.html' %}
+    {% include './modals/visualizar-orden.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
