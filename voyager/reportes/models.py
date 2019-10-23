@@ -1,5 +1,6 @@
 from django.db import models
 from cuentas.models import IFCUsuario
+from ventas.models import Factura
 from datetime import datetime, date
 
 class Paquete(models.Model):
@@ -74,7 +75,9 @@ class Muestra(models.Model):
     estado_muestra = models.BooleanField()
     fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
-
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)#factura 
+    orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
+    
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)

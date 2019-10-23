@@ -1,13 +1,4 @@
 
-$(document).ready(function(){
-    $("form#actualizarOI :input").each(function(){
-        var input = $(this); // This is the jquery object of the input, do what you will
-        input.prop('disabled', true)
-       });           
-})
-
-
-
 var token = csrftoken;
 
 //cargar datos del usuario en el modal
@@ -31,7 +22,19 @@ function cargar_info_oi(id) {
         success: function (response) {
             var data = JSON.parse(response.data);
             data = data.fields;
-            console.log(data);
+
+            var muestras = JSON.parse(response.muestras);
+            console.log(muestras[0].fields)
+
+            console.log("usuario");
+            var usuario = JSON.parse(response.usuario);
+            usuario = usuario.fields;
+            console.log(usuario)
+
+
+            console.log("usuario django");
+            var email = response.correo;
+            console.log(email)
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);

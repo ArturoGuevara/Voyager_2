@@ -115,11 +115,20 @@ def consultar_orden(request, id):
         raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI=id)
-        #muestras = Muestra.objects.get(oi = oi)
         if oi:
             data = serializers.serialize("json", [oi], ensure_ascii=False)
             data = data[1:-1]
+            muestras = Muestra.objects.filter(oi = oi)
+            data_muestras= []
+            for m in muestras:
+                data_muestras.append(m)
 
+            usuario = muestras[0].usuario
+            u = serializers.serialize("json", [usuario], ensure_ascii=False)
+            u = u[1:-1]
+            vector_m = serializers.serialize("json", data_muestras, ensure_ascii=False)
+            u2 = usuario.user.email
+            
         """
         if muestras:
             muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
@@ -127,7 +136,7 @@ def consultar_orden(request, id):
         else:
             muestras = {'fields': None}
         """
-        return JsonResponse({"data": data})
+        return JsonResponse({"data": data, "muestras": vector_m, "usuario":u, "correo":u2})
 
 @login_required
 def actualizar_orden(request):
