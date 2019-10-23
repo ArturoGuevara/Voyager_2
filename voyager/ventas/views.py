@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+import datetime
 import json
 
 # Create your views here.
@@ -116,17 +117,7 @@ def borrar_analisis(request, id):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-# Funciones para validar campos
-
 # COTIZACIONES
-
-# COTIZACIONES
-
-
-
-
-# Cotizaciones
-
 @login_required
 def ver_cotizaciones(request):
     #Vista de cotizaciones del cliente
@@ -161,6 +152,7 @@ def ver_cotizaciones(request):
         else:
             raise Http404
 
+@login_required
 def cargar_cot(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
@@ -195,14 +187,8 @@ def cargar_cot(request):
         raise Http404
 
 # FUNCIONES EXTRA
-def is_not_empty(data):
-    if data != "":
-        return True
-    else:
-        return False
-
 @login_required
-def crear_cotizacion(data):
+def crear_cotizacion(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
@@ -239,6 +225,12 @@ def crear_cotizacion(data):
                         ac.fecha = datetime.datetime.now().date()
                         ac.save()
                         index = index + 1
+                    # Obtenemos la nueva cotización
+                    nueva_cotizacion = Cotizacion.objects.all().last()
+                    data = serializers.serialize("json", [nueva_cotizacion], ensure_ascii = False)
+                    data = data[1:-1]
+                    # Regresamos información actualizada
+                    return JsonResponse({"data": data})
                 else:
                     response = JsonResponse({"error": "No llegaron análisis seleccionados"})
                     response.status_code = 500
@@ -248,3 +240,10 @@ def crear_cotizacion(data):
                 raise Http404
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+# EXTRAS
+def is_not_empty(data):
+    if data != "":
+        return True
+    else:
+        return False

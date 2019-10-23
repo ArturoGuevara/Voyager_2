@@ -7,6 +7,6 @@ urlpatterns = [
     path('editar_analisis/<int:id>', views.editar_analisis, name='editar_analisis'),
     path('borrar_analisis/<int:id>', views.borrar_analisis, name='borrar_analisis'),
     path('cargar_cot/', views.cargar_cot, name='cargar_cot'),
-    path('cotizaciones', views.ver_cotizaciones, name='cotizaciones'),
     path('crear_cotizacion/', views.crear_cotizacion, name='crear_cotizacion'),
+    path('cotizaciones', views.ver_cotizaciones, name='cotizaciones'),
 ]

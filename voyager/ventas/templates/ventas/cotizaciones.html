@@ -26,20 +26,16 @@
                 <th class="text-center">Fecha creada</th>
                 <th class="text-center">Acciones</th>
             </thead>
-            <tbody>
+            <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
                 <tr id="cotizaciones-{{c.id_cotizacion}}">
-                    <td class="pt-3-half oiData cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
-                    <td class="pt-3-half oiData cotizaciones_status">{{ c.status }}</td>
-                    <td class="pt-3-half oiData cotizaciones_total">{{ c.total }}</td>
-                    <td class="pt-3-half oiData cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
-                    <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="">
-                            <i class='fas fa-trash'></i>
-                        </button>
+                    <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
+                    <td class="pt-3 cotizaciones_status">{{ c.status }}</td>
+                    <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
+                    <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
+                    <td class="pt-3 cotizaciones_acciones">
+                        <button type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button>
+                        <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
                 {% endfor %}
