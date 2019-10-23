@@ -10,6 +10,23 @@
 <div class="text-md-left text-center">
     <h2>Catálogo de Análisis</h2>
 </div>
+{% if success_code == 1 %}
+
+<div class="alert alert-success" role="alert" id="alert">
+  <strong>Análisis registrado exitosamente
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+{% elif success_code == -1 %}
+<div class="alert alert-danger" role="alert" id="alert">
+  <strong>Hubo un error en el registro
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+{% endif %}
 <div class="text-center text-md-right">
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#agregar_analisis"><i class="nc-icon nc-simple-add"></i> Análisis</button>
 </div>
@@ -39,6 +56,9 @@
         {% endfor %}
         </tbody>
     </table>
+
+
+
 </div>
 {% include './modals/agregar.html' %}
 {% include './modals/borrar.html' %}
@@ -50,4 +70,5 @@
 <script src="{% static 'ventas/js/validaciones.js' %}" type="text/javascript"></script>
 <script src="{% static 'root/js/notificaciones.js' %}" type="text/javascript"></script>
 <script src="{% static 'ventas/js/catalogo.js' %}" type="text/javascript"></script>
+<script src="{% static 'ventas/js/slider.js' %}" type="text/javascript"></script>
 {% endblock %}

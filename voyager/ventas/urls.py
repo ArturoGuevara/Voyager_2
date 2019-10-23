@@ -9,4 +9,6 @@ urlpatterns = [
     path('cargar_cot/', views.cargar_cot, name='cargar_cot'),
     path('crear_cotizacion/', views.crear_cotizacion, name='crear_cotizacion'),
     path('cotizaciones', views.ver_cotizaciones, name='cotizaciones'),
+    path('agregar_analisis/', views.agregar_analisis, name='agregar_analisis'),
+    path('', views.indexView, name=''),
 ]

@@ -2,13 +2,13 @@
 <div class="sidebar" data-color="orange" data-image="https://demos.creative-tim.com/light-bootstrap-dashboard/assets/img/sidebar-5.jpg">
     <div class="sidebar-wrapper">
         <div class="logo">
-            <a href="#" class="simple-text">
+            <a href="/cuentas/home/" class="simple-text">
                 <!-- Name Dashboard Here -->
                 Voyager
             </a>
         </div>
         <ul class="nav">
-            {% if user.rol.nombre == 'Director' or user.rol.nombre == 'Ventas' %}
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
@@ -18,14 +18,14 @@
                     <ul class="nav">
                         <li class="nav-item ">
                             <a class="nav-link" href="#">
-                                <span>Link 1 Admin</span>
+                                <span>Inicio</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
             {% endif %}
-
+            {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">
                     <i class="nc-icon nc-delivery-fast"></i>
@@ -35,13 +35,12 @@
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="#">
-                                <span>Consultar tacking</span>
+                                <span>Consultar tracking</span>
                             </a>
                         </li>
                     </ul>
                 </div>
             </li>
-            {% if request.session.userrole == 'Soporte' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                     <i class="nc-icon nc-notes"></i>
@@ -49,9 +48,16 @@
                 </a>
                 <div class="collapse" id="procesamientoDropdown">
                     <ul class="nav">
+                        {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
                         <li class="nav-item">
                             <a class="nav-link" href="/reportes/ordenes_internas">
                                 <span>Órdenes internas</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/reportes/ingreso_cliente">
+                                <span>Ingresar muestra</span>
                             </a>
                         </li>
                     </ul>
