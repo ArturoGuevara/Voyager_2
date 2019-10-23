@@ -31,7 +31,7 @@
                 </div>
             </li>
             {% endif %}
-            {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
+            {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">
                     <i class="nc-icon nc-delivery-fast"></i>
@@ -54,11 +54,13 @@
                 </a>
                 <div class="collapse" id="procesamientoDropdown">
                     <ul class="nav">
+                        {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
                         <li class="nav-item">
                             <a class="nav-link" href="/reportes/ordenes_internas">
                                 <span>Órdenes internas</span>
                             </a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" href="/reportes/ingreso_cliente">
                                 <span>Ingresar muestra</span>

@@ -5,6 +5,9 @@ from datetime import datetime, date
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
     codigo_dhl = models.CharField(max_length=10,blank=True,null=True)
+    def __str__(self):
+        return "%s" % (self.codigo_dhl)
+
 
 # Create your models here.
 class OrdenInterna(models.Model):
@@ -113,12 +116,14 @@ class Analisis(models.Model):
     acreditacion = models.BooleanField(default=False)
 
     def __str__(self):
-        return "%s %s %s" % (self.id_analisis, self.codigo, self.descripcion)
+        return "%s %s" % (self.nombre, self.codigo)
 
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
+    def __str__(self):
+        return "%s" % (self.descripcion)
 
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
@@ -127,6 +132,13 @@ class AnalisisCotizacion(models.Model):
     cantidad = models.IntegerField()
     fecha = models.DateField()
 
+    class Meta:
+        verbose_name = 'Analisis Cotizacion'
+        verbose_name_plural = 'Analisis Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.fecha, self.id_analisis_cotizacion)
+
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
@@ -134,3 +146,5 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
+    def __str__(self):
+        return "%s" % (self.fecha)
