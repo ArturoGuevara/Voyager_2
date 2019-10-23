@@ -1,3 +1,13 @@
+
+$(document).ready(function(){
+    $("form#actualizarOI :input").each(function(){
+        var input = $(this); // This is the jquery object of the input, do what you will
+        input.prop('disabled', true)
+       });           
+})
+
+
+
 var token = csrftoken;
 
 //cargar datos del usuario en el modal
@@ -6,6 +16,7 @@ function cargar_info_usuario(id){
 
     })
 }
+
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(id) {
