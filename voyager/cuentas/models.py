@@ -37,6 +37,7 @@ class IFCUsuario(models.Model):
     telefono = models.CharField(max_length = 15)
     estado = models.BooleanField(default = True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True)
+    estatus_pago = models.CharField(max_length = 10,default = 'NA')
 
     class Meta:
         verbose_name = 'Usuario IFC'
