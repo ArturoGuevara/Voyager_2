@@ -225,12 +225,7 @@ def crear_cotizacion(request):
                         ac.fecha = datetime.datetime.now().date()
                         ac.save()
                         index = index + 1
-                    # Obtenemos la nueva cotización
-                    nueva_cotizacion = Cotizacion.objects.all().last()
-                    data = serializers.serialize("json", [nueva_cotizacion], ensure_ascii = False)
-                    data = data[1:-1]
-                    # Regresamos información actualizada
-                    return JsonResponse({"data": data})
+                    return HttpResponse('OK')
                 else:
                     response = JsonResponse({"error": "No llegaron análisis seleccionados"})
                     response.status_code = 500
