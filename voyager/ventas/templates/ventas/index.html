@@ -1,0 +1,43 @@
+<!-- Vista principal de la USV07-07 -->
+{% extends 'root/base.html' %}
+{% load static %}
+
+
+{% block content %}
+<h1>Ventas</h1>
+<form>
+    <div class="row">
+        <div class="form-group col-md-8">
+            <label>Cliente</label>
+            <select name="cliente" class="form-control" id="cliente" required>
+              <option selected value="" disabled>Selecciona al cliente...</option>
+              # Aquí va el for
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group col-md-2">
+         <label for="descuento">Descuento</label>
+         <input type="number" class="form-control" id="descuento" name="descuento">
+       </div>
+       <div class="form-group col-md-2">
+        <label for="subtotal">Descuento</label>
+        <input type="number" class="form-control" id="subtotal" name="subtotal" disabled>
+      </div>
+      <div class="form-group col-md-2">
+       <label for="iva">IVA</label>
+       <input type="number" class="form-control" id="iva" name="iva" disabled>
+     </div>
+     <div class="form-group col-md-2">
+      <label for="total">Total</label>
+      <input type="number" class="form-control" id="total" name="total" disabled>
+    </div>
+    </div>
+
+</form>
+
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
+{% endblock %}

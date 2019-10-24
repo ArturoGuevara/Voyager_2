@@ -17,9 +17,9 @@ $(document).ready(function(){
         var precio_r = $('#descripcion').val();
         var tiempo_r =  $('#duracion').val();
 
-        console.log("xd")
         var dict = {
             1 : check_is_not_empty_2(nombre_r, '#nombre'),
+            2 : check_is_not_empty_2(nombre_r, '#nombre'),
             3 : check_is_not_empty_2(codigo_r, '#codigo'),
             4 : check_is_not_empty_2(descripcion_r, '#precio'),
             5 : check_is_not_empty_2(precio_r, '#descripcion'),

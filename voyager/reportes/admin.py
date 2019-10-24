@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Paquete,OrdenInterna, Pais, AnalisisCotizacion
+from .models import Paquete, OrdenInterna, Pais, AnalisisCotizacion
 
 admin.site.register(OrdenInterna)
 admin.site.register(Paquete)
