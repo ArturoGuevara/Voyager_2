@@ -87,6 +87,7 @@ def consultar_usuario(request, id):
         data_ordenes_int = []
         data_ordenes = []
         data = {}
+        rol = ""
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
@@ -104,7 +105,10 @@ def consultar_usuario(request, id):
                                 data_ordenes_int.append(o)
                             else:
                                 print("Not exists")
-                        data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
+                        data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)     
+            else:
+                raise Http404  
+
         return JsonResponse({"data": data, "data_ordenes":data_ordenes,"rol":rol})
 
 @login_required
