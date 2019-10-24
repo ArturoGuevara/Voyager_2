@@ -75,8 +75,9 @@ class Muestra(models.Model):
     estado_muestra = models.BooleanField()
     fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
-    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)#factura 
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura 
     orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
+    
     
 
 class Cotizacion(models.Model):

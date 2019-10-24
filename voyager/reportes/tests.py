@@ -527,3 +527,225 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),2) #verificar que hay dos registros en la tabla muestras
         self.assertEqual(all_samples.last().estado_muestra,True) #verificar que la muestra está activa
+
+# Create your tests here.
+class OrdenesInternasViewTests(TestCase):   #Casos de prueba para view una orden interna
+    def setup(self): #registrar la información necesaria para ejecutar los test
+        role = Rol()
+        role.nombre = "Soporte"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
+        user.save() #guardar usuario de Django
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        i_user = IFCUsuario() #Crear un usuario de IFC
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+
+
+    def test_no_login_form(self): #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
+        self.setup()
+        response = self.client.get(reverse('ordenes_internas'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_no_login_different_role(self): #probar que el usario no pueda ingresar a la página si no tiene el rol adecuado
+        self.setup()
+        self.client.login(username='padrino', password='padrino') #ingresar como un usuario cliente
+        response = self.client.get(reverse('ordenes_internas'))
+        self.assertEqual(response.status_code, 404)    
+
+    def test_login_correcto(self): #probar que el usario puede ingresar a la página si tiene el rol adecuado
+        self.setup()
+        self.client.login(username='hockey', password='lalocura') #ingresar como un usuario soporte
+        response = self.client.get(reverse('ordenes_internas'))
+        self.assertEqual(response.status_code, 200)    
+
+class ConsultarOrdenesInternasViewTests(TestCase):   #Casos de prueba para view de consultar una orden interna
+    def setup(self): #registrar la información necesaria para ejecutar los test
+        role = Rol()
+        role.nombre = "Soporte"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
+        user.save() #guardar usuario de Django
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        i_user = IFCUsuario() #Crear un usuario de IFC
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+
+
+    def test_no_login_form(self): #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
+        self.setup()
+        response = self.client.get(reverse('consultar_orden'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_no_login_different_role(self): #probar que el usario no pueda ingresar a la página si no tiene el rol adecuado
+        self.setup()
+        self.client.login(username='padrino', password='padrino') #ingresar como un usuario cliente
+        response = self.client.get(reverse('consultar_orden'))
+        self.assertEqual(response.status_code, 404)    
+
+    def test_no_post(self): #probar que el usario no puede ingresar a la página sin enviar POST
+        self.setup()
+        self.client.login(username='hockey', password='lalocura') #ingresar como un usuario soporte
+        response = self.client.get(reverse('consultar_orden'))
+        self.assertEqual(response.status_code, 404) 
+
+    def test_post_empty(self):   #Prueba si no se manda nada en el post
+        self.setup()
+        self.client.login(username='hockey',password='lalocura')
+        response = self.client.post(reverse('consultar_orden'),{})   #El post va vacío
+        self.assertEqual(response.status_code, 404)   #Mostrar 404
+
+    def create_role_client(self):   #Crear rol en base de datos de tests
+        role = Rol()
+        role.nombre = "Cliente"
+        role.save()
+        return role
+
+    def create_user_django(self):   #Crear usuario en tabla usuario de Django
+        user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
+        user.save()
+        return user
+
+    def create_IFCUsuario(self):   #Crear usuario de IFC
+        i_user = IFCUsuario()
+        i_user.user = self.create_user_django()   #Asignar usuario de la tabla User
+        i_user.rol = self.create_role_client()   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+
+    def create_phantom(self):   #Función para crear al usuario fantasma quien creará las ordenes internas
+        user = User.objects.create_user('danny_phantom', 'danny@phantom.com', 'phantom')
+        user.save()   #Guardar objeto de usuario
+        user_phantom = IFCUsuario()
+        user_phantom.user = user
+        user_phantom.rol = self.create_role_client()
+        user_phantom.nombre = "Danny"
+        user_phantom.apellido_paterno = "Phantom"
+        user_phantom.apellido_materno = "Phantom"
+        user_phantom.telefono = "9114364"
+        user_phantom.estado = True
+        user_phantom.save()   #Guardar usuario de IFC
+
+
+    def setup2(self):   #Función de setUp que crea lo necesario en la base de datos de pruebas para funcionar correctamente
+        u1 = IFCUsuario.objects.all().first()
+        self.create_phantom()
+        u2 = IFCUsuario.objects.all().last()
+        c = Cotizacion()   #Crear un objeto de Cotizacion
+        c.usuario_c = u1
+        c.usuario_v = u2
+        c.descuento = 10.00
+        c.subtotal = 10000.00
+        c.iva = 100.00
+        c.total = 1234235.00
+        c.status = True
+        c.save()   #Guardar la cotización
+        pais = Pais() # Crear un pais para los analisis
+        pais.nombre = "México"
+        pais.save()
+        a1 = Analisis()   #Crear un objeto de Analisis
+        a1.codigo = "A1"
+        a1.nombre = "Pest"
+        a1.descripcion = "agropecuario"
+        a1.precio = 213132423.12
+        a1.unidad_min = "500 gr"
+        a1.tiempo = "1 - 2 días"
+        a1.pais = pais
+        a1.save()   #Guardar el análisis
+        a2 = Analisis()   #Crear un objeto de Analisis
+        a2.codigo = "A2"
+        a2.nombre = "icida"
+        a2.descripcion = "agro"
+        a2.precio = 2132423.12
+        a2.unidad_min = "1 kg."
+        a2.tiempo = "3 - 5 días"
+        a2.pais = pais
+        a2.save()   #Guardar el análisis
+        ac1 = AnalisisCotizacion()   #Conectar el análisis con la cotización
+        ac1.analisis = a1
+        ac1.cotizacion = c
+        ac1.cantidad = 10000
+        ac1.fecha = datetime.datetime.now().date()
+        ac1.save()   #Guardar conexión
+        ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
+        ac2.analisis = a2
+        ac2.cotizacion = c
+        ac2.cantidad = 100
+        ac2.fecha = datetime.datetime.now().date()
+        ac2.save()   #Guardar conexión
+        otro = Analisis()   #Crear un objeto de Analisis
+        otro.codigo = "Otro"
+        otro.nombre = "Otro"
+        otro.descripcion = "Otro"
+        otro.precio = 0.00
+        otro.unidad_min = "10 gr."
+        otro.tiempo = "10 - 12 días"
+        otro.pais = pais
+        otro.save()   #Guardar el análisis
+        self.client.login(username='hockey', password='lalocura')
+        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
+        """
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Antigua y Barbuda",
+                                                                  'estado':"Saint John's",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"fritas",
+                                                                  'parcela':"parcelin",
+                                                                  'pais_destino':"Albania",
+                                                                  'clave_muestra':"CLAVE",
+                                                                  'enviar': "1",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  'analisis'+str(analysis_id):"on",
+                                                                  })
+        """
+        self.client.logout()
+
+    def test_id_incorrecto(self):   #Prueba si no se manda nada en el post
+            self.setup2()
+            self.client.login(username='hockey',password='lalocura')
+            response = self.client.post(reverse('consultar_orden'),{'id':3456})   #El post va vacío
+            self.assertEqual(response.status_code, 404)   #Mostrar 404

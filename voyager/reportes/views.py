@@ -109,11 +109,17 @@ def oi_guardar(request, form, template_name):
             return JsonResponse({"data": data})
 
 @login_required
-def consultar_orden(request, id):
+def consultar_orden(request):
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get('id'):
+        raise Http404
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
+        id = request.POST.get('id')
         oi = OrdenInterna.objects.get(idOI=id)
         if oi:
             data = serializers.serialize("json", [oi], ensure_ascii=False)
@@ -129,14 +135,27 @@ def consultar_orden(request, id):
             vector_m = serializers.serialize("json", data_muestras, ensure_ascii=False)
             u2 = usuario.user.email
             
-        """
-        if muestras:
-            muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
-            muestras = muestras[1:-1]
+            empresa = usuario.empresa.empresa
+
+            analisis_muestras = {}
+            facturas_muestras = {}
+            for m in muestras:
+                an = AnalisisMuestra.objects.filter(muestra = m) #recuperas todos los analisis de una muestra
+                analisis = []
+                if m.factura:
+                    facturas_muestras[m.id_muestra] = m.factura.idFactura
+                else:
+                    facturas_muestras[m.id_muestra] = "no hay"
+
+                for a in an:
+                    analisis.append(a.analisis.codigo)
+                analisis_muestras[m.id_muestra] =  analisis
+            
         else:
-            muestras = {'fields': None}
-        """
-        return JsonResponse({"data": data, "muestras": vector_m, "usuario":u, "correo":u2})
+            raise Http404
+
+        return JsonResponse({"data": data, "muestras":vector_m, "usuario":u, "correo":u2, "empresa":empresa, "dict_am":analisis_muestras, "facturas":facturas_muestras})
+        
 
 @login_required
 def actualizar_orden(request):

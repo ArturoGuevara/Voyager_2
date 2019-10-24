@@ -12,7 +12,7 @@ function cargar_info_usuario(id){
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(id) {
     $.ajax({
-        url: "consultar_orden/"+id,
+        url: "consultar_orden/",
         type: "POST",
         dataType: 'json',
         data: {
@@ -22,19 +22,9 @@ function cargar_info_oi(id) {
         success: function (response) {
             var data = JSON.parse(response.data);
             data = data.fields;
-
-            var muestras = JSON.parse(response.muestras);
-            console.log(muestras[0].fields)
-
-            console.log("usuario");
-            var usuario = JSON.parse(response.usuario);
-            usuario = usuario.fields;
-            console.log(usuario)
+            console.log(data);
 
 
-            console.log("usuario django");
-            var email = response.correo;
-            console.log(email)
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
@@ -187,10 +177,78 @@ function actualizar_tabla(oi){
 
 })
 
+function build_muestras(id_muestra, muestra, analisis, factura){
+    var html = `
+    <div class="card">
+        <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
+                Muestra ` + id_muestra + `
+            </a>
+        </div>
+        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#accordion">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="visualizar_muestra_numero_` + id_muestra + `">Número</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_codigo_` + id_muestra + `">Código</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="visualizar_muestra_` + id_muestra + `">Muestra</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno"  disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
+                        <input type="date" class="form-control" id="visualizar_muestra_fecha_recibo_` + id_muestra + `" value="` + muestra.fechah_recibo + `" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
+                        <input type="text" class="form-control" id="visualizar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `" disabled>
+                    </div>
+                </div>
+                <p>Análisis</p>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <th>Nombre</th>
+                        </thead>
+                        <tbody>`;
+
+
+    for(let a in analisis){
+        html = html+ `
+            <tr>
+                <td>`+ analisis[a] +`</td>
+            </tr>
+        `;
+    }
+
+    html = html+ `</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    return html;
+}
+
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
     $.ajax({
-        url: "consultar_orden/"+id,
+        url: "consultar_orden/",
         type: "POST",
         dataType: 'json',
         data: {
@@ -198,9 +256,25 @@ function visualizar_info_oi(id) {
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
+            //datos de la orden interna
             var data = JSON.parse(response.data);
+            console.log(data)
             data = data.fields;
-            console.log(data);
+
+            console.log(data.cliente_cr);
+
+            //datos de las muestras
+            var muestras = JSON.parse(response.muestras);
+            //datos del usuario
+            var usuario = JSON.parse(response.usuario);
+            usuario = usuario.fields;
+            var correo = response.correo;
+            
+            var analisis_muestras = response.dict_am;
+            var facturas = response.facturas;
+
+
+
             //pestaña de información
             $('#visualizar_idOI').val(id);
             $('#visualizar_estatus').val(data.estatus);
@@ -208,60 +282,78 @@ function visualizar_info_oi(id) {
             $('#visualizar_fecha_envio').val(data.fecha_envio);
             $('#visualizar_guia_envio').val(data.guia_envio)
             $('#visualizar_link_resultados').val(data.link_resultados);
+            $('#visualizar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
+            $('#visualizar_usuario_nombre').text(n);
+            
+            $('#visualizar_usuario_email').text(response.correo);
+            $('#visualizar_usuario_telefono').text(usuario.telefono);
+
             //pestaña de observaciones
             $('#visualizar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
 
             //hacer check a radio input del idioma
-            if(data.idioma_reporte == "8809 ES"){
-                $('#visualizar_idioma_reporteES').prop('checked', true);
-                $('#visualizar_idioma_reporteEN').prop('checked', false);
-            }else if(data.idioma_reporte == "8992 EN"){
-                $('#visualizar_idioma_reporteES').prop('checked', false);
-                $('#visualizar_idioma_reporteEN').prop('checked', true);
-            }else{
-                $('#visualizar_idioma_reporteES').prop('checked', false);
-                $('#visualizar_idioma_reporteEN').prop('checked', false);
-            }
+            $('#visualizar_idioma_reporte').text(data.idioma_reporte);
+
+
+
+
             $('#visualizar_mrl').val(data.mrl);
             $('#visualizar_fecha_eri').val(data.fecha_eri);
             $('#visualizar_fecha_lab').val(data.fecha_lab);
             $('#visualizar_fecha_ei').val(data.fecha_ei);
 
 
+            
+            $('#visualizar_notif_e').text(data.notif_e)
+            $('#visualizar_envio_ti').text(data.envio_ti);
+            $('#visualizar_cliente_cr').text(data.cliente_cr);
 
-            //Hacer check a las checkboxes
-            if(data.notif_e ="Sí"){
-                $('#visualizar_notif_e').prop('checked', true)
-            }
-            if(data.envio_ti ="Sí"){
-                $('#visualizar_envio_ti').prop('checked', true)
-            }
-            if(data.cliente_cr ="Sí"){
-                $('#visualizar_cliente_cr').prop('checked', true)
+
+            var html_muestras = "";
+            //muestras[0].foelds
+
+
+            for (let m in muestras){
+                console.log(muestras[m]);
+                var id_muestra = muestras[m].pk;
+                var objm = muestras[m].fields;
+
+                console.log('fistsasdadss')
+
+                console.log(objm)
+
+                html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
             }
 
-/*
-            //Información general
-            $('#editar_estatus_orden').val(data.fields.estatus)
-            $('#editar_localidad_orden').val(data.fields.localidad)
-            $('#editar_fecha_envio_orden').val(data.fields.fecha_envio)
-            $('#editar_guia_orden').val(data.fields.guia_envio)
-            $('#editar_link_orden').val(data.fields.link_resultados)
-            //Observaciones
-            $('#').val(data.fields.formato_ingreso_muestra)
-            $('#').val(data.fields.idioma_reporte)
-            $('#').val(data.fields.mrl)
-            $('#').val(data.fields.fecha_eri)
-            $('#').val(data.fields.notif_e)
-            $('#').val(data.fields.fecha_lab)
-            $('#').val(data.fields.fecha_ei)
-            $('#').val(data.fields.envio_ti)
-            $('#').val(data.fields.cliente_cr)
-            //Facturacion
-            $('#').val(data.fields.resp_pago)
-            $('#').val(data.fields.correo)
-            $('#').val(data.fields.telefono)
-            */
+
+
+            $('.accordion_muestras').html(html_muestras);
+
+            //Construir tabla de facturas
+            var html_facturas =`
+            <table class="table table-hover table-striped">
+                <thead>
+                    <th>Nombre</th>
+                </thead>
+                <tbody>`;
+
+
+            for(let f in facturas){
+                html_facturas = html_facturas+ `
+                    <tr>
+                        <td>`+ facturas[f] +`</td>
+                    </tr>
+                `;
+            }
+
+            html_facturas = html_facturas+ `
+                    </tbody>
+                </table>
+            `;
+            $('#visualizar_tabla_facturas').html(html_facturas);
+
+            
         }
     })
 }
