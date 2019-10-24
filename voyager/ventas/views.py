@@ -8,6 +8,9 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
+import datetime
+import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 
@@ -127,10 +130,6 @@ def borrar_analisis(request, id):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-# Funciones para validar campos
-
-# COTIZACIONES
-
 # COTIZACIONES
 
 
@@ -186,8 +185,12 @@ def ver_cotizaciones(request):
         if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
             if usuario_log.rol.nombre == "Ventas":
                 cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                 context = {
+                    'analisis': analisis,
                     'cotizaciones': cotizaciones,
+                    'clientes': clientes
                 }
             elif usuario_log.rol.nombre == "Cliente":
                 cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
@@ -196,14 +199,116 @@ def ver_cotizaciones(request):
                 }
             elif usuario_log.rol.nombre == "SuperUser":
                 cotizaciones = Cotizacion.objects.all()
+                analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                 context = {
+                    'analisis': analisis,
                     'cotizaciones': cotizaciones,
+                    'clientes': clientes
                 }
             return render(request, 'ventas/cotizaciones.html', context)
         else:
             raise Http404
 
+@login_required
+def cargar_cot(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            # Obtenemos el arreglo de análisis seleccionados para crear cotización
+            checked = request.POST.getlist('checked[]')
+            if len(checked) != 0 and checked[0] != 'NaN':
+                data = []
+                # Iteramos en los análisis seleccionados
+                for id in checked: #Asignar codigo DHL
+                    analisis = Analisis.objects.get(id_analisis = id)
+                    if analisis: #Valida si existe y lo añade al array
+                        data.append(analisis)
+                    else:
+                        response = JsonResponse({"error": "No existe ese análisis"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                info = serializers.serialize("json", data, ensure_ascii = False)
+                return JsonResponse({"info": info})
+            else:
+                response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
 # FUNCIONES EXTRA
+@login_required
+def crear_cotizacion(request):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+            raise Http404
+        if request.method == 'POST': #Obtención de datos de cotización
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+                checked = request.POST.getlist('checked[]')
+                cantidad = request.POST.getlist('cantidades[]')
+                if len(checked) != 0 and checked[0] != 'NaN':
+                    if len(cantidad) != 0 and cantidad[0] != 'NaN':
+                        print(checked)
+                        print(cantidad)
+                        cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                        c = Cotizacion()
+                        c.usuario_c = cliente
+                        c.usuario_v = user_logged
+                        c.descuento = request.POST.get('descuento')
+                        c.subtotal = request.POST.get('subtotal')
+                        c.iva = request.POST.get('iva')
+                        c.total = request.POST.get('total')
+                        c.status = True
+                        c.save()
+                        data = []
+                        # Iteramos en los análisis seleccionados
+                        index = 0
+                        for id in checked: #Asignar codigo DHL
+                            a = Analisis.objects.get(id_analisis = id)
+                            ac = AnalisisCotizacion()
+                            ac.analisis = a
+                            ac.cotizacion = c
+                            ac.cantidad = cantidad[index]
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.save()
+                            index = index + 1
+                        response = JsonResponse({"Success": "OK"})
+                        response.status_code = 200
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                    else:
+                        response = JsonResponse({"error": "No llegaron las cantidades de análisis seleccionados"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                else:
+                    response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+            else:
+                response = JsonResponse({"error": "Campos vacíos"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
+# EXTRAS
 def is_not_empty(data):
     if data != "":
         return True
