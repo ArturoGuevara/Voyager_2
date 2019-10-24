@@ -14,7 +14,7 @@
         <h2>Cotizaciones</h2>
     </div>
     <div class="text-center text-md-right">
-        {% if user.rol.nombre == 'SuperUser' or user.rol.nombre == 'Ventas' %}
+        {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
         <button id="btn-agregar-cot" class="btn btn-success d-inline"><i class="nc-icon nc-simple-add"></i> Cotización</button>
         <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()">Continuar</button>
         {% endif %}

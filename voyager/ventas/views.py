@@ -291,6 +291,9 @@ def crear_cotizacion(request):
                     return response
             else:
                 raise Http404
+        else:
+            raise Http404
+
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
