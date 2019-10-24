@@ -89,7 +89,7 @@ def consultar_usuario(request, id):
         data_ordenes = []
         data = {}
 
-        usuario = IFCUsuario.objects.get(id=id)
+        usuario = IFCUsuario.objects.get(user=id)
         #muestras = Muestra.objects.get(oi = oi)
         if usuario:
             data = serializers.serialize("json", [usuario], ensure_ascii=False)
@@ -106,7 +106,7 @@ def consultar_usuario(request, id):
                 data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
         return JsonResponse({"data": data, "data_ordenes":data_ordenes})
 
-
+@login_required
 def lista_usuarios(request):
     #View de lista de usuarios
     rol_busqueda = 'Cliente'
@@ -114,16 +114,36 @@ def lista_usuarios(request):
 
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Director": #Verificar que el rol sea válido
-            usuarios_dir = IFCUsuario.objects.all()
+        if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
+            usuarios_dir = IFCUsuario.objects.all().order_by('user')
             context = {'usuarios':usuarios_dir}
         elif usuario_log.rol.nombre == "Contaduria":
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol_busqueda)
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol_busqueda).order_by('user')
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
 
     return render(request, 'cuentas/usuarios.html', context)
+
+@login_required
+def actualizar_usuario(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
+    #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Contaduria" or user_logged.rol.nombre=="SuperUser"):
+        raise Http404
+    if request.method == 'POST':
+         usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
+         print(usuario)
+         if usuario:
+            #Actualizar campos
+            usuario.estatus_pago = request.POST['estatus']
+            usuario.save()
+            #Cargar de nuevo la info de usuario
+            usuario_actualizado = IFCUsuario.objects.get(user = request.POST['id'])
+            data = serializers.serialize("json", [usuario_actualizado], ensure_ascii = False)
+            data = data[1:-1]
+            # Regresamos información actualizada
+            return JsonResponse({"data": data})
 
 @login_required
 def crear_cliente(request):
