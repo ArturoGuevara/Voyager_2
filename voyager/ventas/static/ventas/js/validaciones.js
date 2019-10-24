@@ -16,11 +16,11 @@ $(document).ready(function(){
         var tiempo_r =  $('#duracion').val();
 
         var dict = {
-            1 : check_is_not_empty_2(nombre_r, '#nombre'),
-            3 : check_is_not_empty_2(codigo_r, '#codigo'),
-            4 : check_is_not_empty_2(descripcion_r, '#precio'),
-            5 : check_is_not_empty_2(precio_r, '#descripcion'),
-            6 : check_is_not_empty_2(tiempo_r, '#duracion')
+            1 : check_is_not_empty(nombre_r, '#nombre'),
+            3 : check_is_not_empty(codigo_r, '#codigo'),
+            4 : check_is_not_empty(descripcion_r, '#precio'),
+            5 : check_is_not_empty(precio_r, '#descripcion'),
+            6 : check_is_not_empty(tiempo_r, '#duracion')
         }
 
         for(var key in dict) {
@@ -42,15 +42,6 @@ $(document).ready(function(){
 
 // Función para checar que no estén vacíos los campos
 var check_is_not_empty = function(auxiliar, id){
-    if(auxiliar == '' || auxiliar == null){
-        $(id).addClass('is-invalid');
-        return false;
-    }else{
-        $(id).removeClass('is-invalid');
-        return true;
-    }
-}
-function check_is_not_empty_2(auxiliar, id){
     if(auxiliar == '' || auxiliar == null){
         $(id).addClass('is-invalid');
         return false;

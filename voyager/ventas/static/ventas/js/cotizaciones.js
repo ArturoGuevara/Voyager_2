@@ -64,7 +64,7 @@ function cargar_cot(){
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td><td><input type="number" class="form-control" id="'+id+'" name="cantidades[]"></td></tr>');
+                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td><td><input type="number" class="form-control" id="res-cot-an-'+id+'" data-id="'+id+'" name="cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
                     subtotal+= parseFloat(precio);
                 }
                 total = subtotal;
@@ -97,6 +97,9 @@ function crear_cotizacion(){
     // Obtenemos las cantidades de los análisis seleccionados
     $("input[name='cantidades[]']").each(function (){
         cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs de cantidad
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(), "#res-cot-an-"+id+"");
     });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
@@ -107,6 +110,13 @@ function crear_cotizacion(){
     var iva = $('#iva').val();
     var total = $('#total').val();
 
+    // Validamos que no estén vacíos los inputs
+    check_is_not_empty(cliente, '#cliente');
+    check_is_not_empty(subtotal, '#subtotal');
+    check_is_not_empty(descuento, '#descuento');
+    check_is_not_empty(iva, '#iva');
+    check_is_not_empty(total, '#total');
+    
     $.ajax({
         url: "crear_cotizacion/",
         dataType: 'json',
@@ -140,6 +150,7 @@ function crear_cotizacion(){
     });
 }
 
+// Función para que el total se actualize con cada tecla que va introduciendo
 function calc_total(e){
     var sub = document.getElementById("subtotal");
     var total = document.getElementById("total");
