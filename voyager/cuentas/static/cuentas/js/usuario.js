@@ -29,14 +29,27 @@ function cargar_info_usuario(id) {
         },
         success: function (response) {
             var data = JSON.parse(response.data);
-            var ordenes = JSON.parse(response.data_ordenes);
-            data = data.fields;
-            $('#tabla_cont').empty();
-            for(var i = 0; i < ordenes.length; i++){
-                var id = ordenes[i].pk;
-                var estatus = ordenes[i].fields.estatus;
 
-                $('#tabla_usuario').append('<tr><th scope="row">'+ id +'</th><td>'+ estatus +'</td></tr>');
+            if(response.data_ordenes != ""){
+                var ordenes = JSON.parse(response.data_ordenes);
+            }
+            var rol = response.rol;
+            data = data.fields;
+
+            if(rol == "Cliente"){
+                
+                $('#ordenes_pendientes').removeClass('d-none');
+
+                $('#tabla_cont').empty();
+                for(var i = 0; i < ordenes.length; i++){
+                    var id = ordenes[i].pk;
+                    var estatus = ordenes[i].fields.estatus;
+
+                    $('#tabla_usuario').append('<tr><th scope="row">'+ id +'</th><td>'+ estatus +'</td></tr>');
+                }
+            }else{
+                $('#ordenes_pendientes').addClass('d-none');
+                $('#tabla_cont').empty();
             }
             //pestaña de información
             $('#input_nombre').val(data.nombre);

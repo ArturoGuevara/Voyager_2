@@ -84,27 +84,28 @@ def loggedOut(request):
 
 def consultar_usuario(request, id):
     if request.method == 'POST':
-
         data_ordenes_int = []
         data_ordenes = []
         data = {}
 
-        usuario = IFCUsuario.objects.get(user=id)
-        #muestras = Muestra.objects.get(oi = oi)
-        if usuario:
-            data = serializers.serialize("json", [usuario], ensure_ascii=False)
-            data = data[1:-1]
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
-                ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')
-                for o in ordenes_int:
-                    if o:
-                        data_ordenes_int.append(o)
-                    else:
-                        print("Not exists")
-                data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
-        return JsonResponse({"data": data, "data_ordenes":data_ordenes})
+            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Contaduria":
+                usuario = IFCUsuario.objects.get(user=id)
+                rol = usuario.rol.nombre
+                if usuario:
+                    data = serializers.serialize("json", [usuario], ensure_ascii=False)
+                    data = data[1:-1]
+               
+                    if rol == "Cliente":
+                        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')
+                        for o in ordenes_int:
+                            if o:
+                                data_ordenes_int.append(o)
+                            else:
+                                print("Not exists")
+                        data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
+        return JsonResponse({"data": data, "data_ordenes":data_ordenes,"rol":rol})
 
 @login_required
 def lista_usuarios(request):
