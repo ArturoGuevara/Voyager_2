@@ -2,7 +2,7 @@ from django.test import TestCase
 from ventas.forms import AnalisisForma
 from django.urls import reverse, resolve
 from .views import agregar_analisis
-from reportes.models import Analisis,Cotizacion, Pais, Nota
+from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion
 from cuentas.models import Rol,IFCUsuario,Empresa
 from django.contrib.auth.models import User
 from datetime import datetime, date
@@ -200,6 +200,28 @@ class TestCotizaciones(TestCase):
                                                 )
         cotizacion3.save()
 
+        pais = Pais() # Crear un pais para los analisis
+        pais.nombre = "México"
+        pais.save()
+        a1 = Analisis() #Crear un objeto de Analisis
+        a1.codigo = "A1"
+        a1.nombre = "Pest"
+        a1.descripcion = "agropecuario"
+        a1.precio = 213132423.12
+        a1.unidad_min = "500 gr"
+        a1.tiempo = "1 - 2 días"
+        a1.pais = pais
+        a1.save()   #Guardar el análisis
+        a2 = Analisis()  #Crear un objeto de Analisis
+        a2.codigo = "A2"
+        a2.nombre = "icida"
+        a2.descripcion = "agro"
+        a2.precio = 2132423.12
+        a2.unidad_min = "1 kg."
+        a2.tiempo = "3 - 5 días"
+        a2.pais = pais
+        a2.save()   #Guardar el análisis
+
     #Tests
     def test_acceso_denegado(self):
         #Test de acceso a url sin Log In
@@ -246,3 +268,47 @@ class TestCotizaciones(TestCase):
         #URL testing.
         url = reverse('cotizaciones')
         self.assertEquals(resolve(url).func,ver_cotizaciones)
+
+    def test_crear_cotizacion_no_post(self):
+        #Test del model de Cotizaciones
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        response = self.client.get('/ventas/crear_cotizacion')
+        self.assertEqual(response.status_code,301)
+
+    def test_post_empty(self):    #Prueba si no se manda nada en el post
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        response = self.client.post('/ventas/crear_cotizacion',{})
+        self.assertEqual(response.status_code,301)
+
+    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        cliente = IFCUsuario.objects.get(nombre="clientes")
+        response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
+                                                                  'subtotal':500,
+                                                                  'descuento':10,
+                                                                  'iva':"",
+                                                                  'total':490,
+                                                                  'checked': "",
+                                                                  })
+        self.assertEqual(response.status_code,301)
+
+    def test_post_complete(self):   #Prueba si el post no lleva todo lo que necesita
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        cliente = IFCUsuario.objects.get(nombre="clientes")
+        analisis1 = Analisis.objects.get(codigo="A1")
+        analisis2 = Analisis.objects.get(codigo="A2")
+        analisis_arr = [analisis1.id_analisis, analisis2.id_analisis]
+        cantidades = [3,2]
+        response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
+                                                                  'subtotal':"500",
+                                                                  'descuento':10,
+                                                                  'iva': 15,
+                                                                  'total':490,
+                                                                  'checked[]': analisis_arr,
+                                                                  'cantidades[]': cantidades,
+                                                                  })
+        self.assertEqual(response.status_code,301)
