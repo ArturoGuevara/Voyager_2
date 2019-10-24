@@ -94,14 +94,16 @@ def consultar_usuario(request, id):
         if usuario:
             data = serializers.serialize("json", [usuario], ensure_ascii=False)
             data = data[1:-1]
-
-        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')
-        for o in ordenes_int:
-            if o:
-                data_ordenes_int.append(o)
-            else:
-                print("Not exists")
-        data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
+        if request.session._session:
+            usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+            if usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
+                ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')
+                for o in ordenes_int:
+                    if o:
+                        data_ordenes_int.append(o)
+                    else:
+                        print("Not exists")
+                data_ordenes = serializers.serialize("json", data_ordenes_int, ensure_ascii=False)        
         return JsonResponse({"data": data, "data_ordenes":data_ordenes})
 
 
