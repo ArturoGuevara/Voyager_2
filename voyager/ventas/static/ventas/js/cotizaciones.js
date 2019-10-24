@@ -140,3 +140,47 @@ function calc_total(e){
     tot = tot + ivaa;
     total.value = tot;
 }
+
+function visualizar_cotizacion(id){
+    // Verificar que el analisis existe
+    if (id > 0){
+        // Obtenemos el token de django para el ajax y el id guardada previamente al cargar el modal
+        var token = csrftoken;
+        $.ajax({
+            url: "visualizar_cotizacion/"+id,
+            dataType: 'json',
+            // Seleccionar información que se mandara al controlador
+            data: {
+                id:id,
+                'csrfmiddlewaretoken': token
+            },
+            type: "POST",
+            success: function(response){
+                console.log(response.info)
+                var data_cotizacion = JSON.parse(response.info[0]);
+                var data_cliente = JSON.parse(response.info[1]);
+                var data_vendedor = JSON.parse(response.info[2]);
+                var aux_analisis = response.info[3]
+                analisis = []
+                for(registro in aux_analisis){
+                    n_analisis = JSON.parse(aux_analisis[registro])
+                    analisis.push(n_analisis)
+                }
+                console.log(analisis)
+                cargar_datos_cotizacion(data_cotizacion,data_cliente,data_vendedor,analisis)
+            }
+        })
+    }
+}
+
+function cargar_datos_cotizacion(data_cotizacion,data_cliente,data_vendedor,analisis){
+    console.log(data_cotizacion)
+    $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
+    $('#cliente_nombre').html(data_cliente[0].fields.nombre +' '+data_cliente[0].fields.apellido_paterno +' '+ data_cliente[0].fields.apellido_materno);
+    $('#vendedor').html(data_vendedor[0].fields.nombre +' '+data_vendedor[0].fields.apellido_paterno +' '+ data_vendedor[0].fields.apellido_materno);
+    $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
+    $('#n_iva').html(data_cotizacion[0].fields.iva);
+    $('#n_descuento').html(data_cotizacion[0].fields.descuento);
+    $('#n_total').html(data_cotizacion[0].fields.total);
+// + data_cliente[0].fields.apellido_paterno + data_cliente[0].fields.apellido_materno
+}

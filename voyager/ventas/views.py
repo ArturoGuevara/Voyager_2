@@ -244,7 +244,7 @@ def cargar_cot(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-# FUNCIONES EXTRA
+
 @login_required
 def crear_cotizacion(request):
     if request.session._session:   #Revisión de sesión iniciada
@@ -293,6 +293,44 @@ def crear_cotizacion(request):
                 raise Http404
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+
+@login_required
+def visualizar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":  # Verificar el tipo de usuario logeado
+        if request.method == 'POST':
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
+            if cotizacion:  # Verificar si la cotizacion existe
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                if analisis_cotizacion:
+                    data_analisis = []
+                    data = []
+
+                    for registro in analisis_cotizacion:    # Agregar analisis a vector para enviar
+                        #data_analisis.append(registro.analisis)
+                        data_analisis.append(serializers.serialize("json", [registro.analisis], ensure_ascii = False))
+
+                    data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
+                    data.append(serializers.serialize("json", [cotizacion.usuario_c], ensure_ascii = False))
+
+                    data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
+                    data.append(data_analisis)
+
+                    return JsonResponse({"info": data})
+
+                else:
+                    response = JsonResponse({"error": "La cotización no contiene analisis"})
+                    response.status_code = 500
+                    return response
+            else:
+                response = JsonResponse({"error": "No existe la cotización"})
+                response.status_code = 500
+                return response     # Si se intenta consultar una cotizacion inexistente, regresar un error
+        else:
+            response = JsonResponse({"error": "No se puede acceder por éste método"})
+            response.status_code = 500
+            return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
 
 # EXTRAS
 def is_not_empty(data):
