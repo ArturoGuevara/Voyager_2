@@ -109,6 +109,7 @@ function crear_cotizacion(){
 
     $.ajax({
         url: "crear_cotizacion/",
+        dataType: 'json',
         // Seleccionar información que se mandara al controlador
         data: {
             cliente: cliente,
@@ -121,7 +122,7 @@ function crear_cotizacion(){
             'csrfmiddlewaretoken': token
         },
         type: "POST",
-        success: function(){
+        success: function(response){
             // Cerramos el modal para confirmar cotización
             $('#agregar-cot').modal('hide');
 
