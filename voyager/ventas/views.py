@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion, Pais
+from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -17,6 +17,8 @@ def indexView(request):
     return render(request, 'ventas/index.html')
 
 # Create your views here.
+
+# CÁTALOGO DE ANÁLISIS
 @login_required
 def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
@@ -126,11 +128,12 @@ def borrar_analisis(request, id):
         raise Http404
 
 # Funciones para validar campos
-def is_not_empty(data):
-    if data != "":
-        return True
-    else:
-        return False
+
+# COTIZACIONES
+
+# COTIZACIONES
+
+
 
 #US V10-10
 @login_required
@@ -173,16 +176,36 @@ def agregar_analisis(request):
     else:
         return redirect('/ventas/ver_catalogo')
 
+# Cotizaciones
 @login_required
 def ver_cotizaciones(request):
     #Vista de cotizaciones del cliente
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
+        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if usuario_log.rol.nombre == "Ventas":
+                cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            elif usuario_log.rol.nombre == "Cliente":
+                cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            elif usuario_log.rol.nombre == "SuperUser":
+                cotizaciones = Cotizacion.objects.all()
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            return render(request, 'ventas/cotizaciones.html', context)
+        else:
             raise Http404
-        cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario
-        context = {
-            'cotizaciones': cotizaciones,
-        }
-    return render(request, 'ventas/cotizaciones.html', context)
+
+# FUNCIONES EXTRA
+def is_not_empty(data):
+    if data != "":
+        return True
+    else:
+        return False

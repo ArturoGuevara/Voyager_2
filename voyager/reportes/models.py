@@ -5,6 +5,9 @@ from datetime import datetime, date
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
     codigo_dhl = models.CharField(max_length=10,blank=True,null=True)
+    def __str__(self):
+        return "%s" % (self.codigo_dhl)
+
 
 # Create your models here.
 class OrdenInterna(models.Model):
@@ -98,21 +101,29 @@ class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
 
+    def __str__(self):
+        return "%s" % (self.nombre)
+
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, default='')
     codigo = models.CharField(max_length=50)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=500)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
     unidad_min = models.CharField(max_length=50, default='')
     tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
     pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais', default='')
     acreditacion = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "%s %s" % (self.nombre, self.codigo)
+
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
+    def __str__(self):
+        return "%s" % (self.descripcion)
 
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
@@ -121,6 +132,13 @@ class AnalisisCotizacion(models.Model):
     cantidad = models.IntegerField()
     fecha = models.DateField()
 
+    class Meta:
+        verbose_name = 'Analisis Cotizacion'
+        verbose_name_plural = 'Analisis Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.fecha, self.id_analisis_cotizacion)
+
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
@@ -128,3 +146,5 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
+    def __str__(self):
+        return "%s" % (self.fecha)

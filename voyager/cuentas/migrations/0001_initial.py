@@ -45,10 +45,11 @@ class Migration(migrations.Migration):
                 ('apellido_materno', models.CharField(max_length=30)),
                 ('telefono', models.CharField(max_length=15)),
                 ('estado', models.BooleanField(default=True)),
-                ('estatus_pago', models.CharField(default='NA', max_length=10)),
                 ('empresa', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='cuentas.Empresa')),
                 ('rol', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='cuentas.Rol')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('estatus_pago', models.CharField(default='NA', max_length=10)),
+
             ],
             options={
                 'verbose_name': 'Usuario IFC',
