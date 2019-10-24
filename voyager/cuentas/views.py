@@ -138,22 +138,18 @@ def actualizar_usuario(request):
     data = {}
 
     user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
-    #Si el rol del usuario no es cliente no puede entrar a la página
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"): #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
          usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
          print(usuario)
          if usuario:
-            #Actualizar campos
-            usuario.estatus_pago = request.POST['estatus']
+            usuario.estatus_pago = request.POST['estatus'] #Actualizar campos
             usuario.save()
-            #Cargar de nuevo la info de usuario
-            usuario_actualizado = IFCUsuario.objects.get(user = request.POST['id'])
+            usuario_actualizado = IFCUsuario.objects.get(user = request.POST['id'])#Cargar de nuevo la info de usuario
             data = serializers.serialize("json", [usuario_actualizado], ensure_ascii = False)
             data = data[1:-1]
-            # Regresamos información actualizada
-            return JsonResponse({"data": data})
+            return JsonResponse({"data": data}) # Regresamos información actualizada en un json
 
 @login_required
 def crear_cliente(request):

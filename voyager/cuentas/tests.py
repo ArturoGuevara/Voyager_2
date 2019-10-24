@@ -6,7 +6,6 @@ from reportes.models import OrdenInterna
 from django.urls import reverse, resolve
 from .views import lista_usuarios
 
-'''
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
     #Aquí se crea la base de datos dentro del ambiente de prueba
@@ -322,7 +321,6 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
         num_clients_after = IFCUsuario.objects.filter(rol=client).count() #obtener todos los usarios del tipo cliente
         #despues de registrar el nuevo
         self.assertEqual(num_clients_before+1,num_clients_after) #verificar que la cantidad de clientes incrementó en 1
-        '''
 
 class TestCuentasUsuarios(TestCase):
     #Tests de cuentas de usuarios
