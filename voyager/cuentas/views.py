@@ -92,7 +92,7 @@ def consultar_usuario(request, id):
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Contaduria":
+            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "SuperUser":
                 usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
                 rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
                 if usuario:
@@ -115,7 +115,7 @@ def consultar_usuario(request, id):
 @login_required
 def lista_usuarios(request):
     #View de lista de usuarios
-    rol_busqueda = 'Cliente'
+    rol_busqueda = "Cliente"
     context = {}
 
     if request.session._session:
@@ -123,8 +123,9 @@ def lista_usuarios(request):
         if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
             usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
             context = {'usuarios':usuarios_dir}
-        elif usuario_log.rol.nombre == "Contaduria":
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol_busqueda).order_by('user')  #Obtener usuarios que son clientes
+        elif not usuario_log.rol.nombre == "Cliente":
+            rol = Rol.objects.get(nombre="Cliente")
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
@@ -138,7 +139,7 @@ def actualizar_usuario(request):
 
     user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
     #Si el rol del usuario no es cliente no puede entrar a la página
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Contaduria" or user_logged.rol.nombre=="SuperUser"):
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):
         raise Http404
     if request.method == 'POST':
          usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
