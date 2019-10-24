@@ -242,7 +242,7 @@ class TestCotizaciones(TestCase):
         self.assertEqual(cotizacion2.subtotal,24)
         self.assertEqual(cotizacion3.status,False)
 
-    def test_url_resolved(self):
+    def test_url_resuelta(self):
         #URL testing.
         url = reverse('cotizaciones')
         self.assertEquals(resolve(url).func,ver_cotizaciones)

@@ -425,7 +425,7 @@ class TestCuentasUsuarios(TestCase):
         self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido_total(self):
-        #Test de acceso a url con Log In como Director
+        #Test de acceso a url con Log In como Director para que vea a todos los usuarios
         self.set_up_Users() #Set up de datos
         self.client.login(username='direc',password='testpassword')
         response = self.client.get('/cuentas/usuarios')
@@ -459,7 +459,7 @@ class TestCuentasUsuarios(TestCase):
         cliente = IFCUsuario.objects.filter(rol=rol).first()
         self.assertEqual(cliente.estatus_pago,"NA")
 
-    def test_url_resolved(self):
+    def test_url_resuelta(self):
         #URL testing.
         url = reverse('usuarios')
         self.assertEquals(resolve(url).func,lista_usuarios)

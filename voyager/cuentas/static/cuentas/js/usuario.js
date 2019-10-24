@@ -28,10 +28,10 @@ function cargar_info_usuario(id) {
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
-            var data = JSON.parse(response.data);
+            var data = JSON.parse(response.datos);
 
-            if(response.data_ordenes != ""){
-                var ordenes = JSON.parse(response.data_ordenes);
+            if(response.datos_ordenes != ""){
+                var ordenes = JSON.parse(response.datos_ordenes);
             }
             var rol = response.rol;
             data = data.fields;
@@ -97,7 +97,7 @@ function submit(){
         },
         dataType: 'json',
         success: function (response) {
-            var data = JSON.parse(response.data);
+            var data = JSON.parse(response.datos);
             data = data.fields;
             var tr = '#usuario-'+id + " .u_estatus";
             $(tr).text(data.estatus_pago);
