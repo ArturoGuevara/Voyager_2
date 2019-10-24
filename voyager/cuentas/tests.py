@@ -2,7 +2,9 @@ from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from cuentas.models import*
 from cuentas.models import Rol,IFCUsuario,Empresa
-from django.urls import reverse
+from reportes.models import OrdenInterna
+from django.urls import reverse, resolve
+from .views import lista_usuarios
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
@@ -319,3 +321,145 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
         num_clients_after = IFCUsuario.objects.filter(rol=client).count() #obtener todos los usarios del tipo cliente
         #despues de registrar el nuevo
         self.assertEqual(num_clients_before+1,num_clients_after) #verificar que la cantidad de clientes incrementó en 1
+
+class TestCuentasUsuarios(TestCase):
+    #Tests de cuentas de usuarios
+    def set_up_Users(self):
+
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+
+        clientes1 = IFCUsuario.objects.create(
+                                                        rol =rol_clientes,
+                                                        user = usuario_clientes,
+                                                        nombre = 'clientes',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes1.save()
+
+        usuario_clientes = User.objects.create_user('otro', 'otro@testuser.com', 'testpassword')
+        clientes2 = IFCUsuario.objects.create(
+                                                        rol =rol_clientes,
+                                                        user = usuario_clientes,
+                                                        nombre = 'otro',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes2.save()
+
+        #Crea usuario Director
+        usuario_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
+        rol_dir = Rol.objects.create(nombre='Director')
+
+        dir = IFCUsuario.objects.create(
+                                                        rol = rol_dir,
+                                                        user = usuario_dir,
+                                                        nombre = 'dir',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno = 'test',
+                                                        telefono = '3234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        dir.save()
+
+
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+
+        ventas = IFCUsuario.objects.create(
+                                                        rol = rol_ventas,
+                                                        user = usuario_ventas,
+                                                        nombre = 'ventas',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno = 'test',
+                                                        telefono = '3234567',
+                                                        estado = True,
+                                                        empresa=empresa
+                                                      )
+        ventas.save()
+
+        #Crea usuario Facturacion
+        user_facturacion = User.objects.create_user('fact', 'facttest@testuser.com', 'testpassword')
+        rol_facturacion = Rol.objects.create(nombre='Facturacion')
+        facturacion = IFCUsuario.objects.create(
+                                                        rol = rol_facturacion,
+                                                        user = user_facturacion,
+                                                        nombre ='facturacion',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono ='4234567',
+                                                        estado =True,
+                                                        empresa=empresa
+                                                      )
+        facturacion.save()
+
+        #Crear orden interna para cliente
+        oi = OrdenInterna.objects.create(
+                                                    usuario = clientes1,
+                                                    estatus = "Estatus Prueba"
+                                                )
+        oi.save()
+
+    #Tests
+    def test_acceso_denegado(self):
+        #Test de acceso a url sin Log In
+        response = self.client.get('/cuentas/usuarios')
+        self.assertRedirects(response, '/cuentas/login?next=/cuentas/usuarios', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_acceso_denegado_rol(self):
+        #Test de acceso a url con Log In como Cliente
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='client',password='testpassword')
+        response = self.client.get('/cuentas/usuarios')
+        self.assertEqual(response.status_code,404)
+
+    def test_acceso_permitido_total(self):
+        #Test de acceso a url con Log In como Director para que vea a todos los usuarios
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='direc',password='testpassword')
+        response = self.client.get('/cuentas/usuarios')
+        self.assertEqual(response.status_code,200)
+        #Revisa que director pueda ver al usuario de facturacion
+        self.assertContains(response, "facturacion")
+
+    def test_acceso_permitido(self):
+        #Test de acceso a url con Log In como Facturacion
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='fact',password='testpassword')
+        response = self.client.get('/cuentas/usuarios')
+        self.assertEqual(response.status_code,200)
+        #Revisa que no puede ver al usuario de facturacion, ya que solo debe ver clientes
+        self.assertNotContains(response, "facturacion")
+
+    def test_template(self):
+        #Test de creacion de ordenes internas para cliente
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='direc',password='testpassword')
+        rol = Rol.objects.get(nombre="Cliente")
+        cliente = IFCUsuario.objects.filter(rol=rol).first()
+        dir = "/cuentas/consultar_usuario/" + str(cliente.user.id)
+        response = self.client.post(dir)
+        self.assertContains(response, "Estatus Prueba")
+
+    def test_model(self):
+        #Test del model de Cotizaciones
+        self.set_up_Users() #Set up de datos
+        rol = Rol.objects.get(nombre="Cliente")
+        cliente = IFCUsuario.objects.filter(rol=rol).first()
+        self.assertEqual(cliente.estatus_pago,"NA")
+
+    def test_url_resuelta(self):
+        #URL testing.
+        url = reverse('usuarios')
+        self.assertEquals(resolve(url).func,lista_usuarios)
