@@ -1,13 +1,11 @@
 // Función para checar que un campo sólo pueda aceptar números y no strings
-const regexNumber = /[0-9]{1}/;
+const regexNumber = /^([0-9]+\.?[0-9]{0,2})$/; 
 function justNumbers(e){
    return regexNumber.test(e.originalEvent.key);
 }
 // Al cargar el documento se le dice que a esos inputs con X id ejecuten la función de sólo números
 $(document).ready(function(){
     $("#editar_precio_analisis").on("keypress", justNumbers);
-//    $("#editar_fecha_analisis").on("keypress", justNumbers);
-
 
     // Validar que los campos de registro de analisis no se quedan validaciones
     $("#submit-analisis-button").click(function(){
@@ -17,7 +15,6 @@ $(document).ready(function(){
         var precio_r = $('#descripcion').val();
         var tiempo_r =  $('#duracion').val();
 
-        console.log("xd")
         var dict = {
             1 : check_is_not_empty_2(nombre_r, '#nombre'),
             3 : check_is_not_empty_2(codigo_r, '#codigo'),
@@ -43,10 +40,6 @@ $(document).ready(function(){
     });
 });
 
-//Funcion para validar campos de registro de analisis
-
-
-
 // Función para checar que no estén vacíos los campos
 var check_is_not_empty = function(auxiliar, id){
     if(auxiliar == '' || auxiliar == null){
@@ -57,7 +50,6 @@ var check_is_not_empty = function(auxiliar, id){
         return true;
     }
 }
-
 function check_is_not_empty_2(auxiliar, id){
     if(auxiliar == '' || auxiliar == null){
         $(id).addClass('is-invalid');

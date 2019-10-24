@@ -3,9 +3,24 @@ $(document).ready(function() {
     // Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
     $('#btn-agregar-cot').click(function(){
         $(this).removeClass('d-inline').addClass('d-none');
+        $('#btn-continuar-cot').removeClass('d-none').addClass('d-inline');
+        $('#btn-cancelar-cot').removeClass('d-none').addClass('d-inline');
+        
         $('#container-analisis').removeClass('d-none').addClass('d-block');
         $('#container-cotizaciones').removeClass('d-block').addClass('d-none');
-        $('#btn-continuar-cot').removeClass('d-none').addClass('d-inline');
+    });
+    // Cuando se cancela el crear cotización
+    $('#btn-cancelar-cot').click(function(){
+        $(this).removeClass('d-inline').addClass('d-none');
+        $('#btn-continuar-cot').removeClass('d-inline').addClass('d-none');
+        $('#btn-agregar-cot').removeClass('d-none').addClass('d-inline');
+        
+        $('#container-analisis').removeClass('d-block').addClass('d-none');
+        $('#container-cotizaciones').removeClass('d-none').addClass('d-block');
+                
+        $("input[name='cot[]']:checked").each(function (){
+            $(this).prop('checked', false);
+        });
     });
 
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen
@@ -15,7 +30,6 @@ $(document).ready(function() {
 
     $('#descuento').on("change", calc_total);
     $('#iva').on("change", calc_total);
-
 });
 
 // Función para cargar la información a mostrar en el modal de resumen de cotización

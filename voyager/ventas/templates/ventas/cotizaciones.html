@@ -14,10 +14,11 @@
         <h2>Cotizaciones</h2>
     </div>
     <div class="text-center text-md-right">
-        {% if user.rol.nombre == 'SuperUser' or user.rol.nombre == 'Ventas' %}
+    {% if request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' %}
         <button id="btn-agregar-cot" class="btn btn-success d-inline"><i class="nc-icon nc-simple-add"></i> Cotización</button>
         <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()">Continuar</button>
-        {% endif %}
+        <button id="btn-cancelar-cot" class="btn btn-danger d-none">Cancelar</button>
+    {% endif %}
     </div>
     <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
         <table class="table table-hover table-responsive table-striped" id="tabla_cotizaciones">
@@ -70,11 +71,7 @@
                 <td class="analisis-ver" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
                 </td>
-<<<<<<< HEAD
-                <td class="analisis-seleccionar" data-id="{{ a.id_analisis }}">
-=======
                 <td class="analisis-seleccionar text-center" data-id="{{ a.id_analisis }}">
->>>>>>> USV01-01
                     <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
                 </td>
             </tr>
