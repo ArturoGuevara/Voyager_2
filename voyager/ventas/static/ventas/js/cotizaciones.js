@@ -3,9 +3,24 @@ $(document).ready(function() {
     // Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
     $('#btn-agregar-cot').click(function(){
         $(this).removeClass('d-inline').addClass('d-none');
+        $('#btn-continuar-cot').removeClass('d-none').addClass('d-inline');
+        $('#btn-cancelar-cot').removeClass('d-none').addClass('d-inline');
+        
         $('#container-analisis').removeClass('d-none').addClass('d-block');
         $('#container-cotizaciones').removeClass('d-block').addClass('d-none');
-        $('#btn-continuar-cot').removeClass('d-none').addClass('d-inline');
+    });
+    // Cuando se cancela el crear cotización
+    $('#btn-cancelar-cot').click(function(){
+        $(this).removeClass('d-inline').addClass('d-none');
+        $('#btn-continuar-cot').removeClass('d-inline').addClass('d-none');
+        $('#btn-agregar-cot').removeClass('d-none').addClass('d-inline');
+        
+        $('#container-analisis').removeClass('d-block').addClass('d-none');
+        $('#container-cotizaciones').removeClass('d-none').addClass('d-block');
+                
+        $("input[name='cot[]']:checked").each(function (){
+            $(this).prop('checked', false);
+        });
     });
 
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen
@@ -15,7 +30,6 @@ $(document).ready(function() {
 
     $('#descuento').on("change", calc_total);
     $('#iva').on("change", calc_total);
-
 });
 
 // Función para cargar la información a mostrar en el modal de resumen de cotización
@@ -50,7 +64,7 @@ function cargar_cot(){
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td><td><input type="number" class="form-control" id="'+id+'" name="cantidades[]"></td></tr>');
+                    $('#tabla-analisis-info').append('<tr><td>'+codigo+'</td><td>'+nombre+'</td><td>$ '+precio+'</td><td><input type="number" class="form-control" id="res-cot-an-'+id+'" data-id="'+id+'" name="cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
                     subtotal+= parseFloat(precio);
                 }
                 total = subtotal;
@@ -83,6 +97,9 @@ function crear_cotizacion(){
     // Obtenemos las cantidades de los análisis seleccionados
     $("input[name='cantidades[]']").each(function (){
         cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs de cantidad
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(), "#res-cot-an-"+id+"");
     });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
@@ -93,8 +110,16 @@ function crear_cotizacion(){
     var iva = $('#iva').val();
     var total = $('#total').val();
 
+    // Validamos que no estén vacíos los inputs
+    check_is_not_empty(cliente, '#cliente');
+    check_is_not_empty(subtotal, '#subtotal');
+    check_is_not_empty(descuento, '#descuento');
+    check_is_not_empty(iva, '#iva');
+    check_is_not_empty(total, '#total');
+    
     $.ajax({
         url: "crear_cotizacion/",
+        dataType: 'json',
         // Seleccionar información que se mandara al controlador
         data: {
             cliente: cliente,
@@ -107,7 +132,7 @@ function crear_cotizacion(){
             'csrfmiddlewaretoken': token
         },
         type: "POST",
-        success: function(){
+        success: function(response){
             // Cerramos el modal para confirmar cotización
             $('#agregar-cot').modal('hide');
 
@@ -125,6 +150,7 @@ function crear_cotizacion(){
     });
 }
 
+// Función para que el total se actualize con cada tecla que va introduciendo
 function calc_total(e){
     var sub = document.getElementById("subtotal");
     var total = document.getElementById("total");
