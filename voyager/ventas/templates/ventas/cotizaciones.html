@@ -32,13 +32,15 @@
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
                 <tr id="cotizaciones-{{c.id_cotizacion}}">
-                    <td class="cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
-                    <td class="cotizaciones_cliente">{{ c.usuario_c }}</td>
-                    <td class="cotizaciones_ventas">{{ c.usuario_v }}</td>
-                    <td class="cotizaciones_total">${{ c.total }}</td>
-                    <td class="cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
-                    <td class="cotizaciones_acciones">
-                        <button type="button" class="btn btn-primary"><i class="fa fa-eye"></i></button>
+                    <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
+                    <td class="pt-3 cotizaciones_cliente">{{ c.usuario_c }}</td>
+                    <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
+                    <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
+                    <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
+                    <td class="pt-3 cotizaciones_acciones">
+                        <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="#ver_cotizacion">
+                            <i class="fa fa-eye"></i>
+                        </button>
                         <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
@@ -68,7 +70,11 @@
                 <td class="analisis-ver" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
                 </td>
+<<<<<<< HEAD
+                <td class="analisis-seleccionar" data-id="{{ a.id_analisis }}">
+=======
                 <td class="analisis-seleccionar text-center" data-id="{{ a.id_analisis }}">
+>>>>>>> USV01-01
                     <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
                 </td>
             </tr>
@@ -77,6 +83,7 @@
     </table>
     </div>
     {% include './modals/agregar-cot.html' %}
+    {% include './modals/visualizar-cot.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
