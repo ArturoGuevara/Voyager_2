@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from cuentas.models import IFCUsuario,Rol
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna,Pais
 from django.http import HttpResponse
+from cuentas.models import Empresa
+from ventas.models import Factura
 from django.test.client import Client
 import datetime
 
@@ -633,11 +635,20 @@ class ConsultarOrdenesInternasViewTests(TestCase):   #Casos de prueba para view 
         response = self.client.post(reverse('consultar_orden'),{})   #El post va vacío
         self.assertEqual(response.status_code, 404)   #Mostrar 404
 
+
+
     def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
         role.save()
         return role
+
+    def create_role_soporte(self):   #Crear rol en base de datos de tests
+        role = Rol()
+        role.nombre = "Soporte"
+        role.save()
+        return role
+
 
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
         user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
@@ -667,12 +678,35 @@ class ConsultarOrdenesInternasViewTests(TestCase):   #Casos de prueba para view 
         user_phantom.telefono = "9114364"
         user_phantom.estado = True
         user_phantom.save()   #Guardar usuario de IFC
+    
+    def create_soporte(self):   #Función para crear al usuario fantasma quien creará las ordenes internas
+        user = User.objects.create_user('soporte', 'soporte@phantom.com', 'soporte')
+        user.save()   #Guardar objeto de usuario
+        user_soporte = IFCUsuario()
+        user_soporte.user = user
+        user_soporte.rol = self.create_role_soporte()
+        user_soporte.nombre = "soporte"
+        user_soporte.apellido_paterno = "soporte"
+        user_soporte.apellido_materno = "soporte"
+        user_soporte.telefono = "9114364"
+        user_soporte.estado = True
+        empresa = Empresa()
+        empresa.empresa = "KFC"
+        empresa.save()
+        user_soporte.empresa = empresa
+        user_soporte.save()   #Guardar usuario de IFC
 
 
     def setup2(self):   #Función de setUp que crea lo necesario en la base de datos de pruebas para funcionar correctamente
         u1 = IFCUsuario.objects.all().first()
         self.create_phantom()
         u2 = IFCUsuario.objects.all().last()
+        self.create_soporte()
+        empresa = Empresa()
+        empresa.empresa = "IFC"
+        empresa.save()
+        u1.empresa = empresa
+        u1.save()
         c = Cotizacion()   #Crear un objeto de Cotizacion
         c.usuario_c = u1
         c.usuario_v = u2
@@ -724,10 +758,12 @@ class ConsultarOrdenesInternasViewTests(TestCase):   #Casos de prueba para view 
         otro.tiempo = "10 - 12 días"
         otro.pais = pais
         otro.save()   #Guardar el análisis
-        self.client.login(username='hockey', password='lalocura')
-        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
-        """
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
+        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
+        self.client.login(username='hockey',password='lalocura')
+        factura = Factura()
+        factura.save()
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la primera muestra
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -741,11 +777,55 @@ class ConsultarOrdenesInternasViewTests(TestCase):   #Casos de prueba para view 
                                                                   'fecha_muestreo':datetime.datetime.now().date(),
                                                                   'analisis'+str(analysis_id):"on",
                                                                   })
-        """
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Italia",
+                                                                  'estado':"Roma",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"adobadas",
+                                                                  'parcela':"parcela",
+                                                                  'pais_destino':"Alemania",
+                                                                  'clave_muestra':"CLAVE2",
+                                                                  'enviar': "1",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  'analisis'+str(analysis_id2):"on",
+                                                                  })
+        m = Muestra.objects.all().first()
+        m.factura = factura
+        m.save()
         self.client.logout()
 
     def test_id_incorrecto(self):   #Prueba si no se manda nada en el post
-            self.setup2()
-            self.client.login(username='hockey',password='lalocura')
-            response = self.client.post(reverse('consultar_orden'),{'id':3456})   #El post va vacío
-            self.assertEqual(response.status_code, 404)   #Mostrar 404
+        self.create_IFCUsuario()
+        self.setup2()
+        self.client.login(username='hockey',password='lalocura')
+        response = self.client.post(reverse('consultar_orden'),{'id':3456})   #El post va vacío
+        self.assertEqual(response.status_code, 404)   #Mostrar 404
+
+    def test_dos_muestras(self): #Prueba si la oi tiene 2 muestras, una con factura y otra sin factura
+        self.create_IFCUsuario()
+        self.setup2()
+        self.client.login(username='soporte',password='soporte')
+        oi_id = OrdenInterna.objects.all().first().idOI
+        response = self.client.post(reverse('consultar_orden'),{'id':oi_id})   #El post va vacío
+        o = OrdenInterna.objects.get(idOI = oi_id)
+        # Sacar la oi y las muestras para comparar con el response
+        import json
+        m = response.json()['muestras']
+        f = response.json()['facturas']
+        mu = json.loads(m)
+        num_muestras = 0
+        #Checar cada muestra y comparar que corresponden con la oi y sus facturas
+        for i in mu:
+            muestra = Muestra.objects.get(id_muestra = i['pk'])
+            if muestra.factura:
+                self.assertEqual(f[str(i['pk'])] , muestra.factura.idFactura)
+            self.assertEqual(i['fields']['oi'] , oi_id)
+            num_muestras+=1
+
+        self.assertEqual(num_muestras, Muestra.objects.filter(oi = o).count()) #Checar que el núm de muestras del response sea igual al de la oi asociada
+        self.assertEqual(response.status_code, 200)   #Mostrar 200
+
+
+

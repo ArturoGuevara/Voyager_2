@@ -333,7 +333,7 @@ def muestra_enviar(request): #guia para guardar muestras
                     and request.POST.get('fecha_muestreo')
             ): #verificar que toda la información necesaria se envíe por POST
                 user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
-                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo con permisos
+                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo  permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
