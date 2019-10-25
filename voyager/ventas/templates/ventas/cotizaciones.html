@@ -35,7 +35,7 @@
                     <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
                     <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
                     <td class="pt-3 cotizaciones_acciones">
-                        <button type="button" class="btn btn-primary" onclick="" data-toggle="modal" data-target="#ver_cotizacion">
+                        <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
                         <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>

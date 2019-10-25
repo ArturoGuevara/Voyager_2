@@ -13,6 +13,14 @@ import datetime
 import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
+from django.core.serializers.json import DjangoJSONEncoder
+
+#Esta clase sirve para serializar los objetos de los modelos.
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Cotizacion):
+            return str(obj)
+        return super().default(obj)
 
 # Vista del index
 @login_required
@@ -244,7 +252,7 @@ def cargar_cot(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-# FUNCIONES EXTRA
+
 @login_required
 def crear_cotizacion(request):
     if request.session._session:   #Revisión de sesión iniciada
@@ -307,6 +315,53 @@ def crear_cotizacion(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+############### CONTROLADOR USV04-04##################
+@login_required
+def visualizar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":  # Verificar el tipo de usuario logeado
+        if request.method == 'POST':
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
+            if cotizacion:  # Verificar si la cotizacion existe
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                if analisis_cotizacion:
+                    data_analisis = []
+                    data_cotizacion_analisis = []
+                    data = []
+
+                    for registro in analisis_cotizacion:    # Agregar analisis a vector para enviar
+                        #data_analisis.append(registro.analisis)
+                        data_cotizacion_analisis.append(serializers.serialize("json", [registro], ensure_ascii = False))
+                        data_analisis.append(serializers.serialize("json", [registro.analisis], ensure_ascii = False))
+
+
+                    #data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
+                    data.append(serializers.serialize('json', Cotizacion.objects.filter(id_cotizacion = id), cls=LazyEncoder))
+
+                    data.append(serializers.serialize("json", [cotizacion.usuario_c], ensure_ascii = False))
+
+                    data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
+                    data.append(data_analisis)
+                    data.append(data_cotizacion_analisis)
+
+                    response =  JsonResponse({"info": data})
+                    response.status_code = 200
+                    return response
+
+                else:
+                    response = JsonResponse({"error": "La cotización no contiene analisis"})
+                    #response.status_code = 500
+                    return response
+            else:
+                response = JsonResponse({"error": "No existe la cotización"})
+                response.status_code = 500
+                return response     # Si se intenta consultar una cotizacion inexistente, regresar un error
+        else:
+            response = JsonResponse({"error": "No se puede acceder por éste método"})
+            response.status_code = 500
+            return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
+############### CONTROLADOR USV04-04##################
 
 # EXTRAS
 def is_not_empty(data):
