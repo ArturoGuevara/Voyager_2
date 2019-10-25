@@ -13,6 +13,14 @@ import datetime
 import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
+from django.core.serializers.json import DjangoJSONEncoder
+
+#Esta clase sirve para serializar los objetos de los modelos.
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Cotizacion):
+            return str(obj)
+        return super().default(obj)
 
 # Vista del index
 @login_required
@@ -308,7 +316,7 @@ def crear_cotizacion(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-
+############### CONTROLADOR USV04-04##################
 @login_required
 def visualizar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
@@ -328,7 +336,9 @@ def visualizar_cotizacion(request, id):
                         data_analisis.append(serializers.serialize("json", [registro.analisis], ensure_ascii = False))
 
 
-                    data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
+                    #data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
+                    data.append(serializers.serialize('json', Cotizacion.objects.filter(id_cotizacion = id), cls=LazyEncoder))
+
                     data.append(serializers.serialize("json", [cotizacion.usuario_c], ensure_ascii = False))
 
                     data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
@@ -351,6 +361,7 @@ def visualizar_cotizacion(request, id):
             response = JsonResponse({"error": "No se puede acceder por éste método"})
             response.status_code = 500
             return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
+############### CONTROLADOR USV04-04##################
 
 # EXTRAS
 def is_not_empty(data):
