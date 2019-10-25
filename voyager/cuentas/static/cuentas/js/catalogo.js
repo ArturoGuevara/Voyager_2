@@ -26,6 +26,7 @@ $(document).ready(function() {
     setTimeout(function(){
        $("#alert").hide();
     }, 3000);
+
 });
 
 /* Funciones para ver y editar análisis */
@@ -54,8 +55,10 @@ function cargar_analisis(id){
                 id_analisis = id;
             },
             error: function(data){
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
+                // Código de error
+                alert(data.status);
+                // Mensaje de error
+                alert(data.responseJSON.error);
             }
         });
     }
@@ -71,14 +74,14 @@ function editar_analisis(){
         var codigo = $('#editar_codigo_analisis').val();
         var descripcion = $('#editar_desc_analisis').val();
         var precio = $('#editar_precio_analisis').val();
-        var tiempo =  $('#editar-duracion').val();
+        var tiempo =  $('#editar_fecha_analisis').val();
 
         // Validar que los inputs no estén vacíos
         check_is_not_empty(nombre,'#editar_nombre_analisis');
         check_is_not_empty(codigo,'#editar_codigo_analisis');
         check_is_not_empty(descripcion,'#editar_desc_analisis');
         check_is_not_empty(precio,'#editar_precio_analisis');
-        check_is_not_empty(tiempo,'#editar-duracion');
+        check_is_not_empty(tiempo,'#editar_fecha_analisis');
 
         $.ajax({
             url: "editar_analisis/"+id,
@@ -101,11 +104,16 @@ function editar_analisis(){
                 cambiar_valores_analisis_tabla('.analisis-codigo', data.fields.codigo, id);
                 cambiar_valores_analisis_tabla('.analisis-nombre', data.fields.nombre, id);
                 cambiar_valores_analisis_tabla('.analisis-desc', data.fields.descripcion, id);
-                cambiar_valores_analisis_tabla('.analisis-precio', '$'+data.fields.precio, id);
+                cambiar_valores_analisis_tabla('.analisis-precio', data.fields.precio, id);
                 cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
+                // Actualizar información en bloque de visualización de análisis
+                cargar_info_modal_ver(data.fields.codigo, data.fields.nombre, data.fields.precio, data.fields.tiempo, data.fields.descripcion);
 
-                // Si todo salió bien esconderemos el bloque de editar y mostraremos el de visualizar
-                $('#ver_analisis').modal('hide');
+                // Si todo salió bien esconderemos el bloque de editar y mostraremos el de editar
+                $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
+                $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
+                $('#ver_info').removeClass('d-none').addClass('d-block');
+                $('#editar_info').removeClass('d-block').addClass('d-none');
 
                 // Damos retroalimentación de que se guardó correctamente
                 showNotification('top','right','Cambios guardados correctamente');
@@ -113,16 +121,18 @@ function editar_analisis(){
                 id_analisis = 0;
             },
             error: function(data){
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
+                // Código de error
+                alert(data.status);
+                // Mensaje de error
+                alert(data.responseJSON.error);
             }
         });
     }
 }
-
 /* Funciones para borrar análisis */
 function borrar_analisis(id){
-   if(id > 0){
+   id_analisis = id;
+   if( id>0 ) {
        id_analisis = id;
    }
 }
@@ -144,10 +154,6 @@ function confirmar_borrar(){
                 id_analisis = 0;
                 $('#borrar_analisis').modal('toggle');
             },
-            error: function(data){
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
-            }
         });
     }
 }
@@ -164,7 +170,7 @@ function cargar_info_modal_editar(codigo, nombre, precio, tiempo, descripcion){
     $('#editar_codigo_analisis').val(codigo);
     $('#editar_nombre_analisis').val(nombre);
     $('#editar_precio_analisis').val(precio);
-    $('#editar-duracion').val(tiempo);
+    $('#editar_fecha_analisis').val(tiempo);
     $('#editar_desc_analisis').val(descripcion);
 }
 function cambiar_valores_analisis_tabla(clase,value,id){
@@ -180,4 +186,19 @@ function borrar_analisis_tabla(clase,id){
            $(e).remove();
        }
     });
+}
+
+// Función que crea y muestra alerta
+function showNotification(from, align, msg){
+	color = Math.floor((Math.random() * 4) + 1);
+	$.notify({
+		icon: "nc-icon nc-app",
+		message: msg
+	},{
+		timer: 4000,
+		placement: {
+			from: from,
+			align: align
+		}
+	});
 }

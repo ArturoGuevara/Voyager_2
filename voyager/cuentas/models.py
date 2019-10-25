@@ -37,10 +37,11 @@ class IFCUsuario(models.Model):
     telefono = models.CharField(max_length = 15)
     estado = models.BooleanField(default = True)
     empresa = models.ForeignKey(Empresa, on_delete=models.CASCADE, null=True)
+    estatus_pago = models.CharField(max_length = 10,default = 'NA')
 
     class Meta:
         verbose_name = 'Usuario IFC'
         verbose_name_plural = 'Usuarios IFC'
 
     def __str__(self):
-        return "%s: %s (%s %s %s)" % (self.user, self.user.email, self.nombre, self.apellido_paterno, self.apellido_materno)
+        return "%s %s %s" % (self.nombre, self.apellido_paterno, self.apellido_materno)

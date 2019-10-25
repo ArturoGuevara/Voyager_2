@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion, Pais
+from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
 from cuentas.models import IFCUsuario
 from django.http import JsonResponse
 from django.core import serializers
@@ -8,8 +8,19 @@ from django.http import Http404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
+import datetime
+import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
+from django.core.serializers.json import DjangoJSONEncoder
+
+#Esta clase sirve para serializar los objetos de los modelos.
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Cotizacion):
+            return str(obj)
+        return super().default(obj)
 
 # Vista del index
 @login_required
@@ -17,6 +28,8 @@ def indexView(request):
     return render(request, 'ventas/index.html')
 
 # Create your views here.
+
+# CÁTALOGO DE ANÁLISIS
 @login_required
 def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
@@ -125,12 +138,9 @@ def borrar_analisis(request, id):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-# Funciones para validar campos
-def is_not_empty(data):
-    if data != "":
-        return True
-    else:
-        return False
+# COTIZACIONES
+
+
 
 #US V10-10
 @login_required
@@ -173,16 +183,189 @@ def agregar_analisis(request):
     else:
         return redirect('/ventas/ver_catalogo')
 
+# Cotizaciones
 @login_required
 def ver_cotizaciones(request):
     #Vista de cotizaciones del cliente
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if not usuario_log.rol.nombre == "Cliente": #Verificar que el rol sea válido
+        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if usuario_log.rol.nombre == "Ventas":
+                cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
+                context = {
+                    'analisis': analisis,
+                    'cotizaciones': cotizaciones,
+                    'clientes': clientes
+                }
+            elif usuario_log.rol.nombre == "Cliente":
+                cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
+                context = {
+                    'cotizaciones': cotizaciones,
+                }
+            elif usuario_log.rol.nombre == "SuperUser":
+                cotizaciones = Cotizacion.objects.all()
+                analisis = Analisis.objects.all()
+                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
+                context = {
+                    'analisis': analisis,
+                    'cotizaciones': cotizaciones,
+                    'clientes': clientes
+                }
+            return render(request, 'ventas/cotizaciones.html', context)
+        else:
             raise Http404
-        cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario
-        context = {
-            'cotizaciones': cotizaciones,
-        }
-    return render(request, 'ventas/cotizaciones.html', context)
+
+@login_required
+def cargar_cot(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            # Obtenemos el arreglo de análisis seleccionados para crear cotización
+            checked = request.POST.getlist('checked[]')
+            if len(checked) != 0 and checked[0] != 'NaN':
+                data = []
+                # Iteramos en los análisis seleccionados
+                for id in checked: #Asignar codigo DHL
+                    analisis = Analisis.objects.get(id_analisis = id)
+                    if analisis: #Valida si existe y lo añade al array
+                        data.append(analisis)
+                    else:
+                        response = JsonResponse({"error": "No existe ese análisis"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                info = serializers.serialize("json", data, ensure_ascii = False)
+                return JsonResponse({"info": info})
+            else:
+                response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
+
+@login_required
+def crear_cotizacion(request):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+            raise Http404
+        if request.method == 'POST': #Obtención de datos de cotización
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+                checked = request.POST.getlist('checked[]')
+                cantidad = request.POST.getlist('cantidades[]')
+                if len(checked) != 0 and checked[0] != 'NaN':
+                    if len(cantidad) != 0 and cantidad[0] != 'NaN':
+                        print(checked)
+                        print(cantidad)
+                        cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                        c = Cotizacion()
+                        c.usuario_c = cliente
+                        c.usuario_v = user_logged
+                        c.descuento = request.POST.get('descuento')
+                        c.subtotal = request.POST.get('subtotal')
+                        c.iva = request.POST.get('iva')
+                        c.total = request.POST.get('total')
+                        c.status = True
+                        c.save()
+                        data = []
+                        # Iteramos en los análisis seleccionados
+                        index = 0
+                        for id in checked: #Asignar codigo DHL
+                            a = Analisis.objects.get(id_analisis = id)
+                            ac = AnalisisCotizacion()
+                            ac.analisis = a
+                            ac.cotizacion = c
+                            ac.cantidad = cantidad[index]
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.save()
+                            index = index + 1
+                        response = JsonResponse({"Success": "OK"})
+                        response.status_code = 200
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                    else:
+                        response = JsonResponse({"error": "No llegaron las cantidades de análisis seleccionados"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                else:
+                    response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+            else:
+                response = JsonResponse({"error": "Campos vacíos"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
+############### CONTROLADOR USV04-04##################
+@login_required
+def visualizar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":  # Verificar el tipo de usuario logeado
+        if request.method == 'POST':
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
+            if cotizacion:  # Verificar si la cotizacion existe
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                if analisis_cotizacion:
+                    data_analisis = []
+                    data_cotizacion_analisis = []
+                    data = []
+
+                    for registro in analisis_cotizacion:    # Agregar analisis a vector para enviar
+                        #data_analisis.append(registro.analisis)
+                        data_cotizacion_analisis.append(serializers.serialize("json", [registro], ensure_ascii = False))
+                        data_analisis.append(serializers.serialize("json", [registro.analisis], ensure_ascii = False))
+
+
+                    #data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
+                    data.append(serializers.serialize('json', Cotizacion.objects.filter(id_cotizacion = id), cls=LazyEncoder))
+
+                    data.append(serializers.serialize("json", [cotizacion.usuario_c], ensure_ascii = False))
+
+                    data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
+                    data.append(data_analisis)
+                    data.append(data_cotizacion_analisis)
+
+                    response =  JsonResponse({"info": data})
+                    response.status_code = 200
+                    return response
+
+                else:
+                    response = JsonResponse({"error": "La cotización no contiene analisis"})
+                    #response.status_code = 500
+                    return response
+            else:
+                response = JsonResponse({"error": "No existe la cotización"})
+                response.status_code = 500
+                return response     # Si se intenta consultar una cotizacion inexistente, regresar un error
+        else:
+            response = JsonResponse({"error": "No se puede acceder por éste método"})
+            response.status_code = 500
+            return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
+############### CONTROLADOR USV04-04##################
+
+# EXTRAS
+def is_not_empty(data):
+    if data != "":
+        return True
+    else:
+        return False

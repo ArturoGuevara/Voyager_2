@@ -4,12 +4,15 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
+from django.core import serializers
 from .models import IFCUsuario,Rol,Empresa
+from reportes.models import OrdenInterna
 from django.urls import reverse
 from .forms import ClientForm
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
+
 # Create your views here.
 
 #Vista del Index
@@ -77,6 +80,75 @@ def loggedOut(request):
     return render(request,'cuentas/login.html', {
         'success': 'Sesión cerrada correctamente'
     })
+
+
+def consultar_usuario(request, id):
+    #View de consulta de información de usuario
+    if request.method == 'POST':
+        datos_ordenes_int = []
+        datos_ordenes = []
+        datos = {}
+        rol = ""
+
+        if request.session._session:
+            usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "SuperUser":
+                usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
+                rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
+                if usuario:
+                    datos = serializers.serialize("json", [usuario], ensure_ascii=False) #Serializar objeto usuario
+                    datos = datos[1:-1]
+               
+                    if rol == "Cliente":
+                        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')   #Obtener 0.I de cliente a consultar
+                        for o in ordenes_int:
+                            if o:
+                                datos_ordenes_int.append(o)
+                            else:
+                                print("Not exists")
+                        datos_ordenes = serializers.serialize("json", datos_ordenes_int, ensure_ascii=False)     #Serializar objetos de O.I
+            else:
+                raise Http404  
+
+        return JsonResponse({"datos": datos, "datos_ordenes":datos_ordenes,"rol":rol})
+
+@login_required
+def lista_usuarios(request):
+    #View de lista de usuarios
+    rol_busqueda = "Cliente"
+    context = {}
+
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
+            usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
+            context = {'usuarios':usuarios_dir}
+        elif not usuario_log.rol.nombre == "Cliente":
+            rol = Rol.objects.get(nombre="Cliente")
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+            context = {'usuarios':usuarios_cont}
+        else:
+            raise Http404
+
+    return render(request, 'cuentas/usuarios.html', context)
+
+@login_required
+def actualizar_usuario(request):
+    #View de actualización de info de usuario
+    datos = {}
+
+    user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"): #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
+    if request.method == 'POST':
+         usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
+         if usuario:
+            usuario.estatus_pago = request.POST['estatus'] #Actualizar campos
+            usuario.save()
+            usuario_actualizado = IFCUsuario.objects.get(user = request.POST['id'])#Cargar de nuevo la info de usuario
+            datos = serializers.serialize("json", [usuario_actualizado], ensure_ascii = False)
+            datos = datos[1:-1]
+            return JsonResponse({"datos": datos}) # Regresamos información actualizada en un json
 
 @login_required
 def crear_cliente(request):
