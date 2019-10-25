@@ -305,23 +305,29 @@ def visualizar_cotizacion(request, id):
                 analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
                 if analisis_cotizacion:
                     data_analisis = []
+                    data_cotizacion_analisis = []
                     data = []
 
                     for registro in analisis_cotizacion:    # Agregar analisis a vector para enviar
                         #data_analisis.append(registro.analisis)
+                        data_cotizacion_analisis.append(serializers.serialize("json", [registro], ensure_ascii = False))
                         data_analisis.append(serializers.serialize("json", [registro.analisis], ensure_ascii = False))
+
 
                     data.append(serializers.serialize("json", [cotizacion], ensure_ascii = False))
                     data.append(serializers.serialize("json", [cotizacion.usuario_c], ensure_ascii = False))
 
                     data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
                     data.append(data_analisis)
+                    data.append(data_cotizacion_analisis)
 
-                    return JsonResponse({"info": data})
+                    response =  JsonResponse({"info": data})
+                    response.status_code = 200
+                    return response
 
                 else:
                     response = JsonResponse({"error": "La cotización no contiene analisis"})
-                    response.status_code = 500
+                    #response.status_code = 500
                     return response
             else:
                 response = JsonResponse({"error": "No existe la cotización"})
