@@ -109,25 +109,53 @@ def oi_guardar(request, form, template_name):
             return JsonResponse({"data": data})
 
 @login_required
-def consultar_orden(request, id):
+def consultar_orden(request):
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get('id'):
+        raise Http404
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
+        id = request.POST.get('id')
         oi = OrdenInterna.objects.get(idOI=id)
-        #muestras = Muestra.objects.get(oi = oi)
         if oi:
             data = serializers.serialize("json", [oi], ensure_ascii=False)
             data = data[1:-1]
+            muestras = Muestra.objects.filter(oi = oi)
+            data_muestras= []
+            for m in muestras:
+                data_muestras.append(m)
 
-        """
-        if muestras:
-            muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
-            muestras = muestras[1:-1]
+            usuario = muestras[0].usuario
+            u = serializers.serialize("json", [usuario], ensure_ascii=False)
+            u = u[1:-1]
+            vector_m = serializers.serialize("json", data_muestras, ensure_ascii=False)
+            u2 = usuario.user.email
+            
+            empresa = usuario.empresa.empresa
+
+            analisis_muestras = {}
+            facturas_muestras = {}
+            for m in muestras:
+                an = AnalisisMuestra.objects.filter(muestra = m) #recuperas todos los analisis de una muestra
+                analisis = []
+                if m.factura:
+                    facturas_muestras[m.id_muestra] = m.factura.idFactura
+                else:
+                    facturas_muestras[m.id_muestra] = "no hay"
+
+                for a in an:
+                    analisis.append(a.analisis.codigo)
+                analisis_muestras[m.id_muestra] =  analisis
+            
         else:
-            muestras = {'fields': None}
-        """
-        return JsonResponse({"data": data})
+            raise Http404
+
+        return JsonResponse({"data": data, "muestras":vector_m, "usuario":u, "correo":u2, "empresa":empresa, "dict_am":analisis_muestras, "facturas":facturas_muestras})
+        
 
 @login_required
 def actualizar_orden(request):
@@ -305,7 +333,7 @@ def muestra_enviar(request): #guia para guardar muestras
                     and request.POST.get('fecha_muestreo')
             ): #verificar que toda la información necesaria se envíe por POST
                 user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
-                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo con permisos
+                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo  permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
