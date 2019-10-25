@@ -10,6 +10,7 @@
             <form id="form" >
                 <div class="modal-body">
                     <div class="form-row">
+                        <input type="hidden" class="form-control" id="id_usuario" name="id_usuario">
                         <div class="form-group col-md-6">
                             <label for="inputName">Nombre</label>
                             <input type="text" class="form-control" id="input_nombre" name="input_nombre" placeholder="Email">
@@ -30,14 +31,14 @@
                         </div>
                         <div class="form-group col-md-4">
                           <label for="inputEstatus">Estatus</label>
-                          <select id="inputEstatus" class="form-control">
-                            <option>NA</option>
-                            <option>Deudor</option>
-                            <option>Pagado</option>
+                          <select name="inputEstatus" id="inputEstatus" class="form-control">
+                            <option name="NA" id="NA">NA</option>
+                            <option name="Deudor" id="Deudor">Deudor</option>
+                            <option name="Pagado" id="Pagado">Pagado</option>
                           </select>
                         </div> 
                     </div>
-                    <div class="form-row">
+                    <div class="form-row d-none" id="ordenes_pendientes" name = "ordenes_pendientes">
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
                             <table class="table table-sm table-bordered table-striped mb-0" id="tabla_usuario" name="tabla_usuario">
                                 <thead>
@@ -46,8 +47,7 @@
                                     <th scope="col">Estatus</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabla_cont" name="tabla_cont">
-                                    
+                                <tbody id="tabla_cont" name="tabla_cont"> 
                                 </tbody>
                             </table>
                         </div>
@@ -55,7 +55,7 @@
                 </div>
                 <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-success" id="alertmss">Guardar</button>
+                    <button name="submitForm" id="submitForm" type="button" class="btn btn-success">Guardar</button>
                 </div>
             </form>
         </div>

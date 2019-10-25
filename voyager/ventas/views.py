@@ -217,7 +217,7 @@ def cargar_cot(request):
         if request.method == 'POST':
             # Obtenemos el arreglo de análisis seleccionados para crear cotización
             checked = request.POST.getlist('checked[]')
-            if checked:
+            if len(checked) != 0 and checked[0] != 'NaN':
                 data = []
                 # Iteramos en los análisis seleccionados
                 for id in checked: #Asignar codigo DHL
@@ -232,7 +232,7 @@ def cargar_cot(request):
                 info = serializers.serialize("json", data, ensure_ascii = False)
                 return JsonResponse({"info": info})
             else:
-                response = JsonResponse({"error": "No llegaron análisis seleccionados"})
+                response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
                 response.status_code = 500
                 # Regresamos la respuesta de error interno del servidor
                 return response
@@ -252,45 +252,59 @@ def crear_cotizacion(request):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
-            if (request.POST.get('cliente')
-                and request.POST.get('subtotal')
-                and request.POST.get('descuento')
-                and request.POST.get('iva')
-                and request.POST.get('total')
-            ):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
-                if checked:
-                    cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
-                    c = Cotizacion()
-                    c.usuario_c = cliente
-                    c.usuario_v = user_logged
-                    c.descuento = request.POST.get('descuento')
-                    c.subtotal = request.POST.get('subtotal')
-                    c.iva = request.POST.get('iva')
-                    c.total = request.POST.get('total')
-                    c.status = True
-                    c.save()
-                    data = []
-                    # Iteramos en los análisis seleccionados
-                    index = 0
-                    for id in checked: #Asignar codigo DHL
-                        a = Analisis.objects.get(id_analisis = id)
-                        ac = AnalisisCotizacion()
-                        ac.analisis = a
-                        ac.cotizacion = c
-                        ac.cantidad = cantidad[index]
-                        ac.fecha = datetime.datetime.now().date()
-                        ac.save()
-                        index = index + 1
-                    return HttpResponse('OK')
+                if len(checked) != 0 and checked[0] != 'NaN':
+                    if len(cantidad) != 0 and cantidad[0] != 'NaN':
+                        print(checked)
+                        print(cantidad)
+                        cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                        c = Cotizacion()
+                        c.usuario_c = cliente
+                        c.usuario_v = user_logged
+                        c.descuento = request.POST.get('descuento')
+                        c.subtotal = request.POST.get('subtotal')
+                        c.iva = request.POST.get('iva')
+                        c.total = request.POST.get('total')
+                        c.status = True
+                        c.save()
+                        data = []
+                        # Iteramos en los análisis seleccionados
+                        index = 0
+                        for id in checked: #Asignar codigo DHL
+                            a = Analisis.objects.get(id_analisis = id)
+                            ac = AnalisisCotizacion()
+                            ac.analisis = a
+                            ac.cotizacion = c
+                            ac.cantidad = cantidad[index]
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.save()
+                            index = index + 1
+                        response = JsonResponse({"Success": "OK"})
+                        response.status_code = 200
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                    else:
+                        response = JsonResponse({"error": "No llegaron las cantidades de análisis seleccionados"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
                 else:
-                    response = JsonResponse({"error": "No llegaron análisis seleccionados"})
+                    response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
                     response.status_code = 500
                     # Regresamos la respuesta de error interno del servidor
                     return response
             else:
-                raise Http404
+                response = JsonResponse({"error": "Campos vacíos"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 

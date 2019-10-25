@@ -21,13 +21,13 @@
         </thead>
         <tbody>
             {% for c in usuarios %}
-            <tr id="cotizaciones-{{c.id_cotizacion}}">
-                <td class="pt-3-half oiData cotizaciones_id_cotizacion">{{ c.id }}</td>
-                <td class="pt-3-half oiData cotizaciones_status">{{ c.nombre}}{{ c.apellido_paterno }} {{ c.apellido_materno }}</td>
-                <td class="pt-3-half oiData cotizaciones_total">{{ c.estatus_pago }}</td>
-                <td class="pt-3-half oiData cotizaciones_fecha_creada">{{ c.empresa }}</td>
+            <tr id="usuario-{{c.user.id}}">
+                <td class="pt-3 u_id">{{ c.user.id }}</td>
+                <td class="pt-3 u_nombre">{{ c.nombre}} {{ c.apellido_paterno }} {{ c.apellido_materno }}</td>
+                <td class="pt-3 u_estatus">{{ c.estatus_pago }}</td>
+                <td class="pt-3 u_empresa">{{ c.empresa }}</td>
                 <td>
-                    <button type="button" class="btn btn-primary" onclick="cargar_info_usuario({{ c.id }})" data-toggle="modal" data-target="#modal_info_usuario">
+                    <button type="button" class="btn btn-primary" onclick="cargar_info_usuario({{ c.user.id }})" data-toggle="modal" data-target="#modal_info_usuario">
                         <i class="fas fa-eye"></i>
                     </button>
                     <!--<button type="button" class="btn btn-warning" onclick="" data-toggle="modal" data-target="">
@@ -48,6 +48,8 @@
 
 
 {% include './modals/info_usuario.html' %}
+{% include './modals/actualizar_usuario.html' %}
+
 {% endblock content %}
 
 {% block optionalJS %}
