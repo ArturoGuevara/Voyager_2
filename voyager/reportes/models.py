@@ -78,6 +78,7 @@ class Muestra(models.Model):
     fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
 
+######### MODEL USV04-04 ########
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -97,12 +98,17 @@ class Cotizacion(models.Model):
     def __str__(self):
         return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
 
+######### MODEL USV04-04 ########
+
+
 class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
 
     def __str__(self):
         return "%s" % (self.nombre)
+
+######### MODEL USV04-04 ########
 
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
@@ -118,12 +124,18 @@ class Analisis(models.Model):
     def __str__(self):
         return "%s %s" % (self.nombre, self.codigo)
 
+######### MODEL USV04-04 ########
+
+
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
     def __str__(self):
         return "%s" % (self.descripcion)
+
+
+######### MODEL USV04-04 ########
 
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
@@ -138,6 +150,8 @@ class AnalisisCotizacion(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.fecha, self.id_analisis_cotizacion)
+
+######### MODEL USV04-04 ########
 
 
 class AnalisisMuestra(models.Model):

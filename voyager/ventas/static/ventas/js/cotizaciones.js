@@ -167,6 +167,9 @@ function calc_total(e){
     total.value = tot;
 }
 
+
+// ######### MODEL USV04-04 ########
+
 function visualizar_cotizacion(id){
     // Verificar que el analisis existe
     if (id > 0){
@@ -226,7 +229,6 @@ function cargar_datos_cotizacion(data_cotizacion,data_cliente,data_vendedor,anal
     for (n in analisis){
         $('#analisis_tabla').append("<tr class='analisis_registro'><td>"+analisis[n][0].fields.codigo+"</td><td>"+analisis[n][0].fields.nombre+"</td><td>"+analisis_cotizacion[n][0].fields.cantidad+"</td><td>$ "+analisis[n][0].fields.precio+"</td></tr>");
     }
-//+ data_cliente[0].fields.apellido_paterno + data_cliente[0].fields.apellido_materno
 }
 
 function error_datos_cotizacion(){
@@ -239,5 +241,7 @@ function error_datos_cotizacion(){
     $('#n_iva').html("");
     $('#n_descuento').html("");
     $('#n_total').html("");
-    $('#analisis_tabla').append("<tr class='analisis_registro'><td> ERROR: No existen analisis en la cotizacion </td></tr>")
+    $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }
+
+//######### MODEL USV04-04 ########

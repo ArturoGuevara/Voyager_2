@@ -312,3 +312,33 @@ class TestCotizaciones(TestCase):
                                                                   'cantidades[]': cantidades,
                                                                   })
         self.assertEqual(response.status_code,301)
+
+    def test_visualizar_cotizacion_correcta(self):      # Prueba si se puede visualizar una cotizacion correctamente
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        cliente = IFCUsuario.objects.get(nombre="clientes")
+        analisis1 = Analisis.objects.get(codigo="A1")
+        analisis2 = Analisis.objects.get(codigo="A2")
+        analisis_arr = [analisis1.id_analisis, analisis2.id_analisis]
+        cantidades = [3,2]
+        response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
+                                                                  'subtotal':"500",
+                                                                  'descuento':10,
+                                                                  'iva': 15,
+                                                                  'total':490,
+                                                                  'checked[]': analisis_arr,
+                                                                  'cantidades[]': cantidades,
+                                                                  })
+        url =  '/ventas/visualizar_cotizacion/' + str(Cotizacion.objects.all().last().id_cotizacion)
+        response = self.client.post(url)
+        self.assertEqual(response.status_code,200)
+
+    def test_visualizar_cotizacion_vacia(self):     # Prueba si te devuelve un error al consultar una cotizacion sin analisis
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='vent',password='testpassword')
+        url = url =  '/ventas/visualizar_cotizacion/' + str(Cotizacion.objects.all().last().id_cotizacion)
+        response = self.client.post(url)
+        self.assertJSONEqual(
+            str(response.content, encoding='utf8'),
+            {'error': 'La cotización no contiene analisis'}
+        )
