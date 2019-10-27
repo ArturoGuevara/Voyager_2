@@ -75,14 +75,13 @@
             </tbody>
         </table>
     </div>
-    {% include './modals/agregar-cot.html' %}
-    {% include './modals/visualizar-cot.html' %}
+    {% include './modals/cotizaciones/agregar.html' %}
+    {% include './modals/cotizaciones/visualizar.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
     <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
-    <script src="{% static 'root/js/notificaciones.js' %}" type="text/javascript"></script>
-    <script src="{% static 'ventas/js/validaciones.js' %}" type="text/javascript"></script>
-    <script src="{% static 'ventas/js/cotizaciones.js' %}" type="text/javascript"></script>
-    <script src="{% static 'ventas/js/cotizaciones/editar-cotizacion.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/agregar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/visualizar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/editar.js' %}" type="text/javascript"></script>
 {% endblock %}

@@ -1,9 +1,11 @@
+// ######### USV03-03 ########
+
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function() {
     
 });
 
-/* FUNCIONES DE BOTONES/MODALS PARA MOSTRAR/OCULTAR LA EDICIÓN DE UNA COTIZACIÓN */
+/* FUNCIONES PARA MOSTRAR/OCULTAR LA EDICIÓN DE UNA COTIZACIÓN */
 function restaurar_modal_ver_cot(){
     // Alternar botones
     $('#btn-canc-edit-cot').removeClass('d-inline').addClass('d-none');
