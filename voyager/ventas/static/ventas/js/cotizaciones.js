@@ -243,5 +243,3 @@ function error_datos_cotizacion(){
     $('#n_total').html("");
     $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }
-
-//######### MODEL USV04-04 ########

@@ -47,33 +47,33 @@
     </div>
     <div id="container-analisis" class="table-responsive table-full-width d-none">
         <table class="table table-hover table-responsive table-striped" id="tabla_analisis_2">
-        <thead>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Precio</th>
-            <th>Tiempo Aprox.</th>
-            <th>Acciones</th>
-            <th>Checkbox</th>
-        </thead>
-        <tbody>
-        {% for a in analisis %}
-            <tr class="analisis-row">
-                <td class="analisis-codigo">{{ a.codigo }}</td>
-                <td class="analisis-nombre">{{ a.nombre }}</td>
-                <td class="analisis-desc">{{ a.descripcion }}</td>
-                <td class="analisis-precio">${{ a.precio }}</td>
-                <td class="analisis-tiempo">{{ a.tiempo }}</td>
-                <td class="analisis-ver" data-id="{{ a.id_analisis }}">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
-                </td>
-                <td class="analisis-seleccionar text-center" data-id="{{ a.id_analisis }}">
-                    <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+            <thead>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Tiempo Aprox.</th>
+                <th>Acciones</th>
+                <th>Checkbox</th>
+            </thead>
+            <tbody>
+                {% for a in analisis %}
+                <tr>
+                    <td>{{ a.codigo }}</td>
+                    <td>{{ a.nombre }}</td>
+                    <td>{{ a.descripcion }}</td>
+                    <td>${{ a.precio }}</td>
+                    <td>{{ a.tiempo }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
+                    </td>
+                    <td>
+                        <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% include './modals/agregar-cot.html' %}
     {% include './modals/visualizar-cot.html' %}
@@ -84,4 +84,5 @@
     <script src="{% static 'root/js/notificaciones.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/validaciones.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/editar-cotizacion.js' %}" type="text/javascript"></script>
 {% endblock %}
