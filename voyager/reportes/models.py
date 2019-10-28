@@ -88,7 +88,7 @@ class Cotizacion(models.Model):
     subtotal = models.DecimalField(max_digits=100, decimal_places=2)
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
-    status = models.BooleanField()
+    status = models.BooleanField(default=True)
     fecha_creada = models.DateField(default=date.today())
 
     class Meta:

@@ -1,3 +1,8 @@
+//Variable global de la cotizacion a borrar
+var id_cotizacion;
+
+
+
 /* Funciones que se ejecutan al cargar la página */
 $(document).ready(function() {
     // Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
@@ -30,6 +35,13 @@ $(document).ready(function() {
 
     $('#descuento').on("change", calc_total);
     $('#iva').on("change", calc_total);
+
+    // Cuando se cierra el modal para confirmar el borrado de la cotizacion, reajusta la variable global a 0
+    $('#borrar_cotizacion').on('hidden.bs.modal', function () {
+       id_cotizacion = 0;
+       console.log(id_cotizacion);
+    });
+
 });
 
 // Función para cargar la información a mostrar en el modal de resumen de cotización
@@ -168,7 +180,7 @@ function calc_total(e){
 }
 
 
-// ######### MODEL USV04-04 ########
+// ######### JAVASCRIPT USV04-04 ########
 
 function visualizar_cotizacion(id){
     // Verificar que el analisis existe
@@ -244,4 +256,26 @@ function error_datos_cotizacion(){
     $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }
 
-//######### MODEL USV04-04 ########
+//######### USV04-04 ########
+
+
+
+
+function borrar_cotizacion(id){
+    if (id > 0){
+        id_cotizacion = id;     // Carga el id de la cotización que se quiere borrar en la variable global
+    }
+    console.log(id_cotizacion);
+}
+
+function confirmar_borrar_cotizacion(){
+    if (id_cotizacion > 0){
+        // Guardar variables globales en locales
+        var id =  id_cotizacion;
+        var token = csrftoken;
+
+    }
+    $('#borrar_cotizacion').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
+    showNotification('top','right','Se ha borrado la cotización exitosamente.');    // Mostrar alerta de cotizacion borrada
+
+}
