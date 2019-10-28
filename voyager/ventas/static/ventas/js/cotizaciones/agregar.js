@@ -1,3 +1,5 @@
+/* VARIABLES GLOBALES */
+var id_cotizacion = 0;
 // ######### USV01-01 ########
 
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
@@ -22,7 +24,7 @@ function cargar_cot() {
     if (checked.length > 0) {
         // Abrimos el modal porque seleccionó al menos un análisis
         $('#agregar-cot').modal('toggle');
-        // Obtenemos el token de django para el ajax y el id guardada previamente al cargar el modal
+        // Obtenemos el token de django para el ajax
         var token = csrftoken;
         $.ajax({
             url: "cargar_cot/",

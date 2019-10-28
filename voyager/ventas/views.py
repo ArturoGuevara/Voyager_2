@@ -315,7 +315,7 @@ def crear_cotizacion(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-
+        
 ############### CONTROLADOR USV04-04##################
 @login_required
 def visualizar_cotizacion(request, id):
@@ -361,7 +361,6 @@ def visualizar_cotizacion(request, id):
             response = JsonResponse({"error": "No se puede acceder por éste método"})
             response.status_code = 500
             return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
-############### CONTROLADOR USV04-04##################
 
 # EXTRAS
 def is_not_empty(data):
