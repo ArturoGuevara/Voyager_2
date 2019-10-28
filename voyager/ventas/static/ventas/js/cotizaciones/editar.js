@@ -16,8 +16,6 @@ function restaurar_modal_ver_cot(){
     $('#ver-resumen-cot').removeClass('d-none').addClass('d-block');
     $('#editar-resumen-cot').removeClass('d-block').addClass('d-none');
     
-    visualizar_cotizacion(id_cotizacion);
-    
     // Limpiar tabla de resumen de análisis al editar
     $('#editar-cot-tabla-analisis-resumen').empty();
     
@@ -45,12 +43,27 @@ $('#btn-editar-cot').click(function(){
 });
 $('#btn-canc-edit-cot').click(function(){
     restaurar_modal_ver_cot();
+    // Reiniciamos al default los valores de la cotización
+    visualizar_cotizacion(id_cotizacion);
 });
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
 });
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
+function editar_cot_eliminar_an(id){
+    $('.edit-cot-res-an').each(function (){
+        if(id == $(this).data('id')){
+            $(this).remove();
+        }
+    });
+    $('input[name="editar-cot-an[]"]').each(function (){
+        if(id == $(this).data('id')){
+            $(this).prop('checked', false);
+        }
+    });
+}
+
 $("input[name='editar-cot-an[]']").click(function (){
     // Obtenemos el checkbox que dio click
     var id = $(this).val();
@@ -81,7 +94,7 @@ $("input[name='editar-cot-an[]']").click(function (){
                 var data = JSON.parse(response.data);
 
                 // Agremoas el análisis seleccionado a la tabla
-                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button></td></tr>');
+                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
             },
             error: function (data) {
                 // Código de error alert(data.status);
