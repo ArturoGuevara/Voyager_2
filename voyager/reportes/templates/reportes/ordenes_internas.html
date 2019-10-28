@@ -25,11 +25,11 @@
             <tbody>
                 {% for o in ordenes %}
                 <tr id="oi-{{o.idOI}}">
-                    <td class="pt-3-half oiData oi_idOI">{{ o.idOI }}</td>
-                    <td class="pt-3-half oiData oi_estatus">{{ o.estatus }}</td>
-                    <td class="pt-3-half oiData oi_empresa">{{ o.usuario.empresa }}</td>
-                    <td class="pt-3-half oiData oi_usuario">{{ o.usuario.user }}</td>
-                    <td class="pt-3-half oiData oi_fecha_muestreo">{{ o.localidad }}</td>
+                    <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
+                    <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
+                    <td class="pt-3 oiData oi_empresa">{{ o.usuario.empresa }}</td>
+                    <td class="pt-3 oiData oi_usuario">{{ o.usuario.user }}</td>
+                    <td class="pt-3 oiData oi_localidad">{{ o.localidad }}</td>
                     <td colspan="4">
                         <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>

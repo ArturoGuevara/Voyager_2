@@ -1,4 +1,3 @@
-
 var token = csrftoken;
 
 //cargar datos del usuario en el modal
@@ -7,7 +6,6 @@ function cargar_info_usuario(id){
 
     })
 }
-
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(id) {
@@ -23,8 +21,6 @@ function cargar_info_oi(id) {
             var data = JSON.parse(response.data);
             data = data.fields;
             console.log(data);
-
-
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
@@ -34,7 +30,6 @@ function cargar_info_oi(id) {
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-            
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "8809 ES"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -50,9 +45,6 @@ function cargar_info_oi(id) {
             $('#editar_fecha_eri').val(data.fecha_eri);
             $('#editar_fecha_lab').val(data.fecha_lab);
             $('#editar_fecha_ei').val(data.fecha_ei);
-            
-
-
             //Hacer check a las checkboxes
             if(data.notif_e ="Sí"){
                 $('#editar_notif_e').prop('checked', true)
@@ -63,37 +55,12 @@ function cargar_info_oi(id) {
             if(data.cliente_cr ="Sí"){
                 $('#editar_cliente_cr').prop('checked', true)
             }
-
-/*
-            //Información general
-            $('#editar_estatus_orden').val(data.fields.estatus)
-            $('#editar_localidad_orden').val(data.fields.localidad)
-            $('#editar_fecha_envio_orden').val(data.fields.fecha_envio)
-            $('#editar_guia_orden').val(data.fields.guia_envio)
-            $('#editar_link_orden').val(data.fields.link_resultados)
-            //Observaciones
-            $('#').val(data.fields.formato_ingreso_muestra)
-            $('#').val(data.fields.idioma_reporte)
-            $('#').val(data.fields.mrl)
-            $('#').val(data.fields.fecha_eri)
-            $('#').val(data.fields.notif_e)
-            $('#').val(data.fields.fecha_lab)
-            $('#').val(data.fields.fecha_ei)
-            $('#').val(data.fields.envio_ti)
-            $('#').val(data.fields.cliente_cr)
-            //Facturacion
-            $('#').val(data.fields.resp_pago)
-            $('#').val(data.fields.correo)
-            $('#').val(data.fields.telefono)
-            */
         }
     })
 }
 
 // boton dentro de forma oi que guarda
 $('#submitForm').on('click', function () {
-
-    
     //Código que guarda todas las variables para mandarlas al server y actuaizar oi
     //pestaña de info
     var idOI = $('#editar_idOI').val();
@@ -136,7 +103,6 @@ $('#submitForm').on('click', function () {
     }
     
     
-    
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -163,18 +129,16 @@ $('#submitForm').on('click', function () {
         success: function (response) {
             var data = JSON.parse(response.data);
             data = data.fields;
-            console.log(data);
             var tr = '#oi-'+idOI + " .oi_estatus";
             $(tr).text(data.estatus);
+            tr = '#oi-'+idOI + " .oi_localidad";
+            $(tr).text(data.localidad);
         }
     });
 
 
 function actualizar_tabla(oi){
-
 }
-
-
 })
 
 function build_muestras(id_muestra, muestra, analisis, factura){
