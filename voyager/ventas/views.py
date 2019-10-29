@@ -361,7 +361,8 @@ def visualizar_cotizacion(request, id):
             response = JsonResponse({"error": "No se puede acceder por éste método"})
             response.status_code = 500
             return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
-############### CONTROLADOR USV04-04##################
+###############  USV04-04##################
+
 
 # EXTRAS
 def is_not_empty(data):

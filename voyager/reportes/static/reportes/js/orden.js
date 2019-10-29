@@ -1,5 +1,6 @@
 
 var token = csrftoken;
+var id_oi;  // Variable global para borrar orden interna
 
 //cargar datos del usuario en el modal
 function cargar_info_usuario(id){
@@ -32,7 +33,7 @@ function cargar_info_oi(id) {
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-            
+
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "8809 ES"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -48,7 +49,7 @@ function cargar_info_oi(id) {
             $('#editar_fecha_eri').val(data.fecha_eri);
             $('#editar_fecha_lab').val(data.fecha_lab);
             $('#editar_fecha_ei').val(data.fecha_ei);
-            
+
 
 
             //Hacer check a las checkboxes
@@ -91,7 +92,7 @@ function cargar_info_oi(id) {
 // boton dentro de forma oi que guarda
 $('#submitForm').on('click', function () {
 
-    
+
     //Código que guarda todas las variables para mandarlas al server y actuaizar oi
     //pestaña de info
     var idOI = $('#editar_idOI').val();
@@ -113,7 +114,7 @@ $('#submitForm').on('click', function () {
     }else{
         idioma_reporte = "8809 ES";
     }
-    
+
     var mrl = $('#editar_mrl').val();
     var fecha_eri = $('#editar_fecha_eri').val();
     var fecha_lab = $('#editar_fecha_lab').val();
@@ -132,7 +133,7 @@ $('#submitForm').on('click', function () {
     if( $('#editar_cliente_cr').is(":checked") ){
         notif_e = "Sí"
     }
-    
+
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -266,7 +267,7 @@ function visualizar_info_oi(id) {
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
-            $('#visualizar_usuario_nombre').text(n);            
+            $('#visualizar_usuario_nombre').text(n);
             $('#visualizar_usuario_email').text(response.correo);
             $('#visualizar_usuario_telefono').text(usuario.telefono);
 
@@ -311,7 +312,47 @@ function visualizar_info_oi(id) {
                 </table>
             `;
             $('#visualizar_tabla_facturas').html(html_facturas);
-            
+
         }
     })
+}
+
+$(document).ready(function(){
+    // Cuando se cierra el modal para confirmar el borrado de la OI, reajusta la variable global a 0
+    $('#borrar_orden').on('hidden.bs.modal', function () {
+       id_oi = 0;
+    });
+})
+
+// Cargar id de OI a variable global
+function borrar_oi(id){
+    if (id > 0){
+        id_oi = id;
+    }
+}
+
+function confirmar_borrar_oi(){
+    if (id_oi > 0){
+        var id = id_oi;
+        var token = csrftoken;
+        $.ajax({
+            url: "borrar_orden/",
+            // Infor que se enviara al controlador
+            data: {
+                id: id,
+                'csrfmiddlewaretoken': token
+            },
+            type: "POST",
+            success: function(){
+                $('#oi-'+id).remove();
+                $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
+                showNotification('top','right','Se ha borrado la Orden Interna exitosamente.');    // Mostrar alerta de cotizacion borrada
+            },
+            error: function(data){
+                $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
+                showNotification('top','right','Ah ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+            }
+        });
+    }
+
 }
