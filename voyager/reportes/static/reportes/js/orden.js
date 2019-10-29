@@ -195,7 +195,7 @@ function confirmar_borrar_oi(){
         var id = id_oi;
         var token = csrftoken;
         $.ajax({
-            url: "borrar_orden/"+id,
+            url: "borrar_orden/",
             // Infor que se enviara al controlador
             data: {
                 id: id,
