@@ -3,6 +3,7 @@
 
 {% block optionalCSS %}
     <link href="{% static 'ventas/css/styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
@@ -38,7 +39,9 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
-                        <button type="button" class="btn btn-danger"><i class="fa fa-trash"></i></button>
+                        <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
+                            <i class="fa fa-trash"></i>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -77,6 +80,7 @@
     </div>
     {% include './modals/cotizaciones/agregar.html' %}
     {% include './modals/cotizaciones/visualizar.html' %}
+    {% include './modals/cotizaciones/borrar-cot.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -84,4 +88,5 @@
     <script src="{% static 'ventas/js/cotizaciones/agregar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/visualizar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/editar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/borrar.js' %}" type="text/javascript"></script>
 {% endblock %}

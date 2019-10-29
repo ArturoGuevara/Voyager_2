@@ -1,0 +1,25 @@
+<!-- Modal que forma parte de borar cotizacion -->
+<div class="modal fade" id="borrar_cotizacion" tabindex="-1" role="dialog" aria-labelledby="borrar_cotizacion_modal" aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+        <div class="modal-content bg-danger">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-white">
+                <div class="py-3 text-center">
+                    <i class="nc-icon nc-bell-55" id="delete-icon-modal"></i>
+                    <h4 class="text-uppercase mt-4">¡Estás a punto de borrar una cotización!</h4>
+                    <p class="">
+                        Si le das a borrar no podrás recuperar la información
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger bg-white border-white text-dark" onclick="confirmar_borrar_cotizacion()">Borrar</button>
+                <button type="button" class="btn btn-primary border-0 text-white ml-auto" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>

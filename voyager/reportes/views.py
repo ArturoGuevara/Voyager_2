@@ -116,45 +116,59 @@ def consultar_orden(request):
         raise Http404
 
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (
+            user_logged.rol.nombre == "Soporte" 
+            or user_logged.rol.nombre == "Facturacion" 
+            or user_logged.rol.nombre == "SuperUser"
+        ):   
         raise Http404
     if request.method == 'POST':
         id = request.POST.get('id')
-        oi = OrdenInterna.objects.get(idOI=id)
+        #oi = orden interna
+        oi = OrdenInterna.objects.get(idOI = id)
         if oi:
-            data = serializers.serialize("json", [oi], ensure_ascii=False)
+            data = serializers.serialize("json", [oi], ensure_ascii = False)
             data = data[1:-1]
             muestras = Muestra.objects.filter(oi = oi)
             data_muestras= []
-            for m in muestras:
-                data_muestras.append(m)
+            for muestra in muestras:
+                data_muestras.append(muestra)
 
             usuario = muestras[0].usuario
-            u = serializers.serialize("json", [usuario], ensure_ascii=False)
-            u = u[1:-1]
-            vector_m = serializers.serialize("json", data_muestras, ensure_ascii=False)
-            u2 = usuario.user.email
-            
+            user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+            user_serialize = user_serialize[1:-1]
+            vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+            email = usuario.user.email
             empresa = usuario.empresa.empresa
-
             analisis_muestras = {}
             facturas_muestras = {}
-            for m in muestras:
-                an = AnalisisMuestra.objects.filter(muestra = m) #recuperas todos los analisis de una muestra
+            for muestra in muestras:
+                #recuperas todos los analisis de una muestra
+                #ana_mue es objeto de tabla AnalisisMuestra
+                ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
                 analisis = []
-                if m.factura:
-                    facturas_muestras[m.id_muestra] = m.factura.idFactura
+                if muestra.factura:
+                    facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                 else:
-                    facturas_muestras[m.id_muestra] = "no hay"
+                    facturas_muestras[muestra.id_muestra] = "no hay"
 
-                for a in an:
+                for a in ana_mue:
                     analisis.append(a.analisis.codigo)
-                analisis_muestras[m.id_muestra] =  analisis
+                analisis_muestras[muestra.id_muestra] =  analisis
             
         else:
             raise Http404
 
-        return JsonResponse({"data": data, "muestras":vector_m, "usuario":u, "correo":u2, "empresa":empresa, "dict_am":analisis_muestras, "facturas":facturas_muestras})
+        return JsonResponse(
+                            {"data": data,
+                            "muestras":vector_muestras,
+                            "usuario":user_serialize,
+                            "correo":email,
+                            "empresa":empresa,
+                            "dict_am":analisis_muestras,
+                            "facturas":facturas_muestras}
+                        )
         
 
 @login_required
@@ -406,3 +420,29 @@ def muestra_enviar(request): #guia para guardar muestras
             raise Http404
     else:
         raise Http404
+
+
+###############  CONTROLADOR USVP09-24 ##################
+
+def borrar_orden_interna(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Soporte":
+        if request.method == 'POST':
+            id = request.POST.get('id')
+            oi = OrdenInterna.objects.get(idOI = id)
+            if oi:
+                oi.estatus = 'borrado'
+                oi.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe la Orden Interna"})
+                response.status_code = 500
+                return response
+        else:
+            response = JsonResponse({"Error": "No se mandó la petición por el método correcto"})
+            response.status_code = 500
+            return response
+    else:
+        raise Http404
+
+############### USVP09-24 ##################

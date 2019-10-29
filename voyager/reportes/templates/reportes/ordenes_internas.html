@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block optionalCSS %}
+<link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
 
 {% endblock %}
 
@@ -24,6 +25,7 @@
             </thead>
             <tbody>
                 {% for o in ordenes %}
+                {% if o.estatus != 'borrado' %}
                 <tr id="oi-{{o.idOI}}">
                     <td class="pt-3-half oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3-half oiData oi_estatus">{{ o.estatus }}</td>
@@ -40,17 +42,19 @@
                         <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
                             <i class='fas fa-paper-plane'></i>
                         </button>
-                        <button type="button" class="btn btn-danger" onclick="" data-toggle="modal" data-target="">
+                        <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
     </div>
     {% include './modals/paquete.html' %}
     {% include './modals/ver-orden.html' %}
+    {% include './modals/borrar-orden.html' %}
     {% include './modals/visualizar-orden.html' %}
 {% endblock content %}
 
