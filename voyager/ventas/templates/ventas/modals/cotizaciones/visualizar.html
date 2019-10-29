@@ -81,7 +81,7 @@
                                             <th>Cantidad</th>
                                             <th>Acción</th>
                                         </thead>
-                                        <tbody id="editar-cot-tabla-analisis-resumen" class="text-center">
+                                        <tbody id="editar-cot-tabla-analisis-resumen">
 
                                         </tbody>
                                     </table>
@@ -124,7 +124,6 @@
                                     <thead>
                                         <th>Código</th>
                                         <th>Nombre</th>
-                                        <th>Descripción</th>
                                         <th>Precio</th>
                                         <th>Tiempo Aprox.</th>
                                         <th>Acciones</th>
@@ -135,14 +134,13 @@
                                         <tr class="analisis-row">
                                             <td>{{ a.codigo }}</td>
                                             <td>{{ a.nombre }}</td>
-                                            <td>{{ a.descripcion }}</td>
                                             <td>${{ a.precio }}</td>
                                             <td>{{ a.tiempo }}</td>
                                             <td>
                                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#"><i class="fa fa-eye tabla-icon"></i></button>
                                             </td>
-                                            <td>
-                                                <input class="form-check-input" name="editar-cot[]" type="checkbox" value="{{ a.id_analisis }}">
+                                            <td class="text-center">
+                                                <input class="form-check-input" data-id="{{ a.id_analisis }}" name="editar-cot-an[]" type="checkbox" value="{{ a.id_analisis }}">
                                             </td>
                                         </tr>
                                         {% endfor %}
