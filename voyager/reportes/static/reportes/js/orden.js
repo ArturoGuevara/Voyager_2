@@ -1,5 +1,13 @@
 var token = csrftoken;
 
+//Script para formato de fecha
+$(".form_datetime").datetimepicker({
+    format: "dd MM yyyy - hh:ii",
+    autoclose: true,
+    todayBtn: true,
+    pickerPosition: "bottom-left"
+});
+
 //cargar datos del usuario en el modal
 function cargar_info_usuario(id){
     $.ajax({
@@ -18,8 +26,18 @@ function cargar_info_oi(id) {
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
+            //Datos de orden interna
             var data = JSON.parse(response.data);
             data = data.fields;
+            //datos de las muestras
+            var muestras = JSON.parse(response.muestras);
+            //datos del usuario
+            var usuario = JSON.parse(response.usuario);
+            usuario = usuario.fields;
+            var correo = response.correo;
+            var analisis_muestras = response.dict_am;
+            var facturas = response.facturas;
+
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
@@ -54,8 +72,49 @@ function cargar_info_oi(id) {
             if(data.cliente_cr ="Sí"){
                 $('#editar_cliente_cr').prop('checked', true)
             }
+
+            var html_muestras = "";
+
+            for (let mue in muestras){
+                var id_muestra = muestras[mue].pk;
+                var objm = muestras[mue].fields;
+
+                html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+            }
+            $('.edicion_muestras').html(html_muestras);
         }
     })
+}
+
+function guardar_muestra(id_muestra){
+    //var idOI = $('#editar_idOI').val();
+    var ni = "#editar_muestra_numero_interno_" + id_muestra;
+    num_interno = $(ni).val();
+    var fr = "#editar_muestra_fecha_recibo_" + id_muestra;
+    fechah_recibo = $(fr).val();
+    var oc = "#editar_muestra_orden_compra_" + id_muestra;
+    orden_compra = $(oc).val();
+    var f = "#editar_muestra_factura_" + id_muestra;
+    factura = $(f).val();
+
+    //Código ajax que guarda una muestra en particular
+    $.ajax({
+        url: 'actualizar_muestra/',
+        type: "POST",
+        data: {
+            'id_muestra': id_muestra,
+            'fechah_recibo': fechah_recibo,
+            'orden_compra': orden_compra,
+            'num_interno_informe': num_interno,
+            'factura': factura,
+            'csrfmiddlewaretoken': token,
+        },
+        dataType: 'json',
+        success: function (response) {
+            //Aki va a wea de confirm
+            console.log('aguevo');
+        }
+    });
 }
 
 // boton dentro de forma oi que guarda
@@ -207,6 +266,76 @@ function build_muestras(id_muestra, muestra, analisis, factura){
     </div>`;
     return html;
 }
+
+function editar_muestras(id_muestra, muestra, analisis, factura){
+    var html = `
+    <div class="card">
+        <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
+                Muestra ` + id_muestra + `
+            </a>
+        </div>
+        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="visualizar_muestra_numero_` + id_muestra + `">Número</label>
+                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_codigo_` + id_muestra + `">Código</label>
+                        <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="visualizar_muestra_` + id_muestra + `">Muestra</label>
+                        <input type="text" class="form-control" id="editar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
+                        <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
+                        <input type="text" class="form-control" id="editar_muestra_fecha_recibo_` + id_muestra + `" value="` + muestra.fechah_recibo + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
+                        <input type="text" class="form-control" id="editar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
+                        <input type="number" class="form-control" id="editar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `">
+                    </div>
+                    <input class="btn btn-success ml-3" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
+                </div>
+                <p>Análisis</p>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <th>Nombre</th>
+                        </thead>
+                        <tbody>`;
+
+
+    for(let a in analisis){
+        html = html+ `
+            <tr>
+                <td>`+ analisis[a] +`</td>
+            </tr>
+        `;
+    }
+
+    html = html+ `</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    return html;
+}
+
 
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {

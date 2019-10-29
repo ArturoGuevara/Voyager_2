@@ -49,9 +49,9 @@ class OrdenInterna(models.Model):
     cliente_cr = models.CharField(max_length=2, choices=SN, blank=True) #cliente confirmó de recibido
 
     #Info general factura
-    resp_pago = models.CharField(max_length=50, blank=True)
-    correo = models.EmailField(max_length=50, blank=True)
-    telefono = models.CharField(max_length=13, blank=True)
+    #resp_pago = models.CharField(max_length=50, blank=True)
+    #correo = models.EmailField(max_length=50, blank=True)
+    #telefono = models.CharField(max_length=13, blank=True)
 
     class Meta:
         verbose_name = 'Orden Interna'
@@ -76,6 +76,7 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+    num_interno_informe = models.CharField(max_length=50, null=True, blank=True)
     fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura 

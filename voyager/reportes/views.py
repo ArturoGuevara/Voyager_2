@@ -9,6 +9,7 @@ from django.urls import reverse
 from urllib.parse import urlencode
 import requests
 import json
+from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
 from cuentas.models import IFCUsuario
 from django.http import Http404
@@ -170,6 +171,36 @@ def consultar_orden(request):
                             "facturas":facturas_muestras}
                         )
         
+@login_required
+def actualizar_muestra(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
+    if request.method == 'POST':
+        muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
+        if muestra:
+            #Actualizar campos
+            muestra.num_interno_informe = request.POST['num_interno_informe']
+            if isinstance(request.POST['factura'], int):
+                factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
+                if factura:
+                    muestra.factura = factura
+                else:
+                    muestra.factura = None
+            muestra.orden_compra = request.POST['orden_compra']
+            try:
+                muestra.fechah_recibo = request.POST['fechah_recibo']
+            except Exception:
+                print("entro")
+                muestra.fechah_recibo = None  
+            muestra.save()
+            # Cargar de nuevo la muestra
+            muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
+            data = serializers.serialize("json", [muestra_actualizada], ensure_ascii = False)
+            data = data[1:-1]
+            # Regresamos información actualizada
+            return JsonResponse({"data": data})
+
 
 @login_required
 def actualizar_orden(request):
