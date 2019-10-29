@@ -326,8 +326,6 @@ def actualizar_cotizacion(request,id):
                 cantidad = request.POST.getlist('cantidades[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
-                        print(checked)
-                        print(cantidad)
                         cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
                         edit_cotizacion = Cotizacion.objects.get(id_cotizacion = id)
                         edit_cotizacion.usuario_c = cliente

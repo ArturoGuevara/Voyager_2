@@ -1,6 +1,7 @@
+// ######### USV01-01 ########
+
 /* VARIABLES GLOBALES */
 var id_cotizacion = 0;
-// ######### USV01-01 ########
 
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function () {
