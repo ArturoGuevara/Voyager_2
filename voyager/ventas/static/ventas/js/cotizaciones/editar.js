@@ -65,6 +65,7 @@ function editar_cot_eliminar_an(id){
             $(this).prop('checked', false);
         }
     });
+    calc_total();
 }
 // Cuando el usuario clickea en algún checkbox para agregarlo al resumen
 $("input[name='editar-cot-an[]']").click(function (){

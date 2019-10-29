@@ -10,8 +10,8 @@ $(document).ready(function () {
         $('#tabla-analisis-info').empty()
     });
     // Para actualizar el total al crear una nueva cotización
-    $('#descuento').on("change", calc_total);
-    $('#iva').on("change", calc_total);
+    $('#descuento').on("change", add_calc_total);
+    $('#iva').on("change", add_calc_total);
 });
 
 /* FUNCIONES PARA CREAR COTIZACIÓN */
@@ -47,7 +47,7 @@ function cargar_cot() {
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
+                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="add_calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
                     subtotal += parseFloat(precio);
                 }
                 total = subtotal;
@@ -158,7 +158,7 @@ $('#btn-cancelar-cot').click(function () {
 // Función para que el total se actualize con cada tecla que va introduciendo
 
 
-function calc_total() {
+function add_calc_total() {
     var pr = [];
     $("input[name='precios[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
