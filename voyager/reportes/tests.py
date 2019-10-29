@@ -181,6 +181,15 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         role.save()
         return role
 
+    def create_user_support(self):   #Crear rol en base de datos de tests
+        role = Rol()
+        role.nombre = "Soporte"
+        role.save()
+        user = User.objects.create_user('soporte','soporte@lalocura.com','lalocura')
+        ifc_usuario = IFCUsuario.objects.create(user=user, rol=role, nombre='Juanito', apellido_paterno='Lemus', apellido_materno='Guevara', telefono="1234567890", estado=True)
+        ifc_usuario.save()
+        return ifc_usuario
+
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
         user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
         user.save()
@@ -527,3 +536,163 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),2) #verificar que hay dos registros en la tabla muestras
         self.assertEqual(all_samples.last().estado_muestra,True) #verificar que la muestra está activa
+
+################ Test USV09-24 ##################
+    def test_borrar_oi(self):
+        self.create_user_support()
+        self.create_IFCUsuario()
+        self.setup()
+        self.client.login(username='hockey', password='lalocura')
+        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles para el primer análisis
+        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
+        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
+        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
+        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Italia",
+                                                                  'estado':"Roma",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"adobadas",
+                                                                  'parcela':"parcela",
+                                                                  'pais_destino':"Alemania",
+                                                                  'clave_muestra':"CLAVE2",
+                                                                  'enviar': "1",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  #'analisis'+str(analysis_id2):"on",
+                                                                  })
+        self.client.logout()
+        self.client.login(username='soporte', password='lalocura')
+        oi_id = OrdenInterna.objects.all().first().idOI
+
+        url = 'borrar_orden'
+        response = self.client.post(reverse(url), {'id':oi_id})
+        self.assertEqual(response.status_code,200)
+
+################ Test USV09-24 ##################
+'''
+class OrdenesInternasTests(TestCase):
+        def create_role_client(self):   #Crear rol en base de datos de tests
+            role = Rol()
+            role.nombre = "Cliente"
+            role.save()
+            return role
+
+        def create_role_soporte(self):   #Crear rol en base de datos de tests
+            role = Rol()
+            role.nombre = "Soporte"
+            role.save()
+            return role
+
+        def create_user_django(self):   #Crear usuario en tabla usuario de Django
+            user = User.objects.create_user('hockey','hockey@lalocura.com','lalocura')
+            user.save()
+            return user
+
+        def create_IFCUsuario(self):   #Crear usuario de IFC
+            i_user = IFCUsuario()
+            i_user.user = self.create_user_django()   #Asignar usuario de la tabla User
+            i_user.rol = self.create_role_soporte()   #Asignar rol creado
+            i_user.nombre = "Hockey"
+            i_user.apellido_paterno = "Lalo"
+            i_user.apellido_materno = "Cura"
+            i_user.telefono = "9114364"
+            i_user.estado = True
+            i_user.save()   #Guardar usuario de IFC
+
+        def create_phantom(self):   #Función para crear al usuario fantasma quien creará las ordenes internas
+            user = User.objects.create_user('danny_phantom1', 'danny@phantom1.com', 'phantom1')
+            user.save()   #Guardar objeto de usuario
+            user_phantom = IFCUsuario()
+            user_phantom.user = user
+            user_phantom.rol = self.create_role_client()
+            user_phantom.nombre = "Danny"
+            user_phantom.apellido_paterno = "Phantom"
+            user_phantom.apellido_materno = "Phantom"
+            user_phantom.telefono = "9114364"
+            user_phantom.estado = True
+            user_phantom.save()   #Guardar usuario de IFC
+
+
+        def setup(self):   #Función de setUp que crea lo necesario en la base de datos de pruebas para funcionar correctamente
+            u1 = IFCUsuario.objects.all().first()
+            self.create_phantom()
+            u2 = IFCUsuario.objects.all().last()
+            c = Cotizacion()   #Crear un objeto de Cotizacion
+            c.usuario_c = u1
+            c.usuario_v = u2
+            c.descuento = 10.00
+            c.subtotal = 10000.00
+            c.iva = 100.00
+            c.total = 1234235.00
+            c.status = True
+            c.save()   #Guardar la cotización
+            pais = Pais() # Crear un pais para los analisis
+            pais.nombre = "México"
+            pais.save()
+            a1 = Analisis()   #Crear un objeto de Analisis
+            a1.codigo = "A1"
+            a1.nombre = "Pest"
+            a1.descripcion = "agropecuario"
+            a1.precio = 213132423.12
+            a1.unidad_min = "500 gr"
+            a1.tiempo = "1 - 2 días"
+            a1.pais = pais
+            a1.save()   #Guardar el análisis
+            a2 = Analisis()   #Crear un objeto de Analisis
+            a2.codigo = "A2"
+            a2.nombre = "icida"
+            a2.descripcion = "agro"
+            a2.precio = 2132423.12
+            a2.unidad_min = "1 kg."
+            a2.tiempo = "3 - 5 días"
+            a2.pais = pais
+            a2.save()   #Guardar el análisis
+            ac1 = AnalisisCotizacion()   #Conectar el análisis con la cotización
+            ac1.analisis = a1
+            ac1.cotizacion = c
+            ac1.cantidad = 10000
+            ac1.fecha = datetime.datetime.now().date()
+            ac1.save()   #Guardar conexión
+            ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
+            ac2.analisis = a2
+            ac2.cotizacion = c
+            ac2.cantidad = 100
+            ac2.fecha = datetime.datetime.now().date()
+            ac2.save()   #Guardar conexión
+            otro = Analisis()   #Crear un objeto de Analisis
+            otro.codigo = "Otro"
+            otro.nombre = "Otro"
+            otro.descripcion = "Otro"
+            otro.precio = 0.00
+            otro.unidad_min = "10 gr."
+            otro.tiempo = "10 - 12 días"
+            otro.pais = pais
+            otro.save()   #Guardar el análisis
+        def test_borrar_oi(self):
+            self.create_phantom()
+            self.create_IFCUsuario()
+            self.setup()
+            self.client.login(username='', password='lalocura')
+            number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles
+            analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
+            response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+                                                                  'direccion':"Impulsadin",
+                                                                  'pais':"Antigua y Barbuda",
+                                                                  'estado':"Saint John's",
+                                                                  'idioma':"8992 EN",
+                                                                  'producto':"papas",
+                                                                  'variedad':"fritas",
+                                                                  'parcela':"parcelin",
+                                                                  'pais_destino':"Albania",
+                                                                  'clave_muestra':"CLAVE",
+                                                                  'enviar': "1",
+                                                                  'fecha_muestreo':datetime.datetime.now().date(),
+                                                                  'analisis'+str(analysis_id):"on",
+                                                                  })
+            all_internal_orders = OrdenInterna.objects.all()
+            oi_id = all_internal_orders.last().idOI
+            url = '/reportes/borrar_orden/'+str(oi_id)
+            response = self.client.post(url)
+            print(response.content)
+'''

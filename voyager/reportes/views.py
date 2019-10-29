@@ -382,10 +382,11 @@ def muestra_enviar(request): #guia para guardar muestras
 
 ###############  CONTROLADOR USVP09-24 ##################
 
-def borrar_orden_interna(request, id):
+def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Soporte":
         if request.method == 'POST':
+            id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
                 oi.estatus = 'borrado'
