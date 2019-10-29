@@ -39,7 +39,6 @@ $(document).ready(function() {
     // Cuando se cierra el modal para confirmar el borrado de la cotizacion, reajusta la variable global a 0
     $('#borrar_cotizacion').on('hidden.bs.modal', function () {
        id_cotizacion = 0;
-       console.log(id_cotizacion);
     });
 
 });
@@ -265,7 +264,6 @@ function borrar_cotizacion(id){
     if (id > 0){
         id_cotizacion = id;     // Carga el id de la cotización que se quiere borrar en la variable global
     }
-    console.log(id_cotizacion);
 }
 
 function confirmar_borrar_cotizacion(){

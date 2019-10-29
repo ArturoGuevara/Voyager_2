@@ -133,13 +133,7 @@ $('#submitForm').on('click', function () {
     if( $('#editar_cliente_cr').is(":checked") ){
         notif_e = "Sí"
     }
-<<<<<<< HEAD
 
-
-
-=======
-
->>>>>>> develop
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -327,7 +321,6 @@ $(document).ready(function(){
     // Cuando se cierra el modal para confirmar el borrado de la OI, reajusta la variable global a 0
     $('#borrar_orden').on('hidden.bs.modal', function () {
        id_oi = 0;
-       console.log(id_oi);
     });
 })
 
@@ -336,7 +329,6 @@ function borrar_oi(id){
     if (id > 0){
         id_oi = id;
     }
-    console.log(id_oi);
 }
 
 function confirmar_borrar_oi(){
