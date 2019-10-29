@@ -2,7 +2,8 @@
 
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function() {
-    
+    $('#editar-cot-descuento').on("change", calc_total);
+    $('#editar-cot-iva').on("change", calc_total);
 });
 
 /* FUNCIONES PARA MOSTRAR/OCULTAR LA EDICIÓN DE UNA COTIZACIÓN */
@@ -15,15 +16,15 @@ function restaurar_modal_ver_cot(){
     // Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-none').addClass('d-block');
     $('#editar-resumen-cot').removeClass('d-block').addClass('d-none');
-    
+
     // Limpiar tabla de resumen de análisis al editar
     $('#editar-cot-tabla-analisis-resumen').empty();
-    
+
     // Deseleccionamos los análisis checados en la tabla
     $("input[name='editar-cot-an[]']:checked").each(function () {
         $(this).prop('checked', false);
     });
-    
+
     // Hacemos que la tab de información general sea la activa
     $('#nav-info-tab').removeClass().addClass('nav-item nav-link active');
     $('#nav-analisis-tab').removeClass().addClass('nav-item nav-link');
@@ -69,7 +70,7 @@ function editar_cot_eliminar_an(id){
 $("input[name='editar-cot-an[]']").click(function (){
     // Obtenemos el checkbox que dio click
     var id = $(this).val();
-    
+
     var flag = 0;
     // Buscamos si el análisis al que dio click ya estaba seleccionado
     $('.edit-cot-res-an').each(function (){
@@ -77,7 +78,7 @@ $("input[name='editar-cot-an[]']").click(function (){
             flag = 1;
         }
     });
-    
+
     // Si el análisis no está en la tabla agregarlo y si sí está quitarlo
     if(flag == 0){
         // Obtenemos el token de django para el ajax
@@ -96,7 +97,8 @@ $("input[name='editar-cot-an[]']").click(function (){
                 var data = JSON.parse(response.data);
 
                 // Agremoas el análisis seleccionado a la tabla
-                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
+                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="editar-cot-precios[]" value='+data.fields.precio +' hidden>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
+                calc_total();
             },
             error: function (data) {
                 // Código de error alert(data.status);
@@ -144,7 +146,7 @@ function guardar_cambios_cot(){
         check_is_not_empty(descuento, '#editar-cot-descuento');
         check_is_not_empty(iva, '#editar-cot-iva');
         check_is_not_empty(total, '#editar-cot-total');
-        
+
         if(checked.length != 0){
             $.ajax({
                 url: "actualizar_cotizacion/"+id_cotizacion,
@@ -182,6 +184,47 @@ function guardar_cambios_cot(){
             setTimeout(function () {
                 $('#alert-error-edit-cot').removeClass('d-block').addClass('d-none');
             }, 2000);
-        }        
+        }
     }
+}
+function calc_total() {
+    var pr = [];
+    $("input[name='editar-cot-precios[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        pr.push(val);
+    });
+    var sub = document.getElementById("editar-cot-subtotal");
+    var total = document.getElementById("editar-cot-total");
+    var iva = document.getElementById("editar-cot-iva");
+    var precios = [];
+    var i = 0;
+    $("input[name='editar-cot-cantidades[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs de cantidad
+        var val = $(this).val();
+        var temp = pr[i] * val;
+        precios.push(temp);
+        i = i+1;
+    });
+    var subtotal = 0;
+    i = 0;
+    for (p in precios) {
+        subtotal = subtotal + precios[i];
+        console.log(p);
+        i = i + 1;
+    }
+    console.log(subtotal);
+    sub.value = subtotal;
+    total.value = sub.value;
+    var desc = document.getElementById("editar-cot-descuento");
+    var d = parseInt(desc.value) / 100;
+    var t = parseInt(total.value);
+    var temp = t * d;
+    var tot = t - temp;
+    var ivaa = parseInt(iva.value) / 100;
+    ivaa = tot * ivaa;
+    tot = tot + ivaa;
+    total.value = tot;
 }
