@@ -109,25 +109,67 @@ def oi_guardar(request, form, template_name):
             return JsonResponse({"data": data})
 
 @login_required
-def consultar_orden(request, id):
+def consultar_orden(request):
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get('id'):
+        raise Http404
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (
+            user_logged.rol.nombre == "Soporte" 
+            or user_logged.rol.nombre == "Facturacion" 
+            or user_logged.rol.nombre == "SuperUser"
+        ):   
         raise Http404
     if request.method == 'POST':
-        oi = OrdenInterna.objects.get(idOI=id)
-        #muestras = Muestra.objects.get(oi = oi)
+        id = request.POST.get('id')
+        #oi = orden interna
+        oi = OrdenInterna.objects.get(idOI = id)
         if oi:
-            data = serializers.serialize("json", [oi], ensure_ascii=False)
+            data = serializers.serialize("json", [oi], ensure_ascii = False)
             data = data[1:-1]
+            muestras = Muestra.objects.filter(oi = oi)
+            data_muestras= []
+            for muestra in muestras:
+                data_muestras.append(muestra)
 
-        """
-        if muestras:
-            muestras = serializers.serialize("json", [muestras], ensure_ascii=False)
-            muestras = muestras[1:-1]
+            usuario = muestras[0].usuario
+            user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+            user_serialize = user_serialize[1:-1]
+            vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+            email = usuario.user.email
+            empresa = usuario.empresa.empresa
+            analisis_muestras = {}
+            facturas_muestras = {}
+            for muestra in muestras:
+                #recuperas todos los analisis de una muestra
+                #ana_mue es objeto de tabla AnalisisMuestra
+                ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
+                analisis = []
+                if muestra.factura:
+                    facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                else:
+                    facturas_muestras[muestra.id_muestra] = "no hay"
+
+                for a in ana_mue:
+                    analisis.append(a.analisis.codigo)
+                analisis_muestras[muestra.id_muestra] =  analisis
+            
         else:
-            muestras = {'fields': None}
-        """
-        return JsonResponse({"data": data})
+            raise Http404
+
+        return JsonResponse(
+                            {"data": data,
+                            "muestras":vector_muestras,
+                            "usuario":user_serialize,
+                            "correo":email,
+                            "empresa":empresa,
+                            "dict_am":analisis_muestras,
+                            "facturas":facturas_muestras}
+                        )
+        
 
 @login_required
 def actualizar_orden(request):
@@ -305,7 +347,7 @@ def muestra_enviar(request): #guia para guardar muestras
                     and request.POST.get('fecha_muestreo')
             ): #verificar que toda la información necesaria se envíe por POST
                 user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
-                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo con permisos
+                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo  permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
