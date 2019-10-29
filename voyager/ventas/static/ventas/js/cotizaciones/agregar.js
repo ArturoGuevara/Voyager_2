@@ -1,5 +1,5 @@
 // ######### USV01-01 ########
-
+var cantidad
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function () {
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen
@@ -38,14 +38,16 @@ function cargar_cot() {
                 var data = JSON.parse(response.info);
                 var subtotal = 0;
                 var total = 0;
+                var i = 0;
                 // Agregamos uno por uno los análisis seleccionados
                 for (var i = 0; i < data.length; i++) {
                     var id = data[i].pk;
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
+                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
                     subtotal += parseFloat(precio);
+                    i = i + 1;
                 }
                 total = subtotal;
                 // Asignar valores al input de subtotal y total
@@ -153,10 +155,38 @@ $('#btn-cancelar-cot').click(function () {
     });
 });
 // Función para que el total se actualize con cada tecla que va introduciendo
-function calc_total(e) {
+
+
+function calc_total() {
+    var pr = [];
+    $("input[name='precios[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        pr.push(val);
+    });
     var sub = document.getElementById("subtotal");
     var total = document.getElementById("total");
     var iva = document.getElementById("iva");
+    var precios = [];
+    var i = 0;
+    $("input[name='cantidades[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs de cantidad
+        var val = $(this).val();
+        var temp = pr[i] * val;
+        precios.push(temp);
+        i = i+1;
+    });
+    var subtotal = 0;
+    i = 0;
+    for (p in precios) {
+        subtotal = subtotal + precios[i];
+        console.log(p);
+        i = i + 1;
+    }
+    console.log(subtotal);
+    sub.value = subtotal;
     total.value = sub.value;
     var desc = document.getElementById("descuento");
     var d = parseInt(desc.value) / 100;
