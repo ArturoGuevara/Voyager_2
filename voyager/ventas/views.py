@@ -267,7 +267,7 @@ def crear_cotizacion(request):
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         print(checked)
                         print(cantidad)
-                        cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                        cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         c = Cotizacion()
                         c.usuario_c = cliente
                         c.usuario_v = user_logged
@@ -315,7 +315,7 @@ def crear_cotizacion(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 ############### CONTROLADOR USV04-04##################
 @login_required
 def visualizar_cotizacion(request, id):

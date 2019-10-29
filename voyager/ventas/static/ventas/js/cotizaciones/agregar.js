@@ -40,7 +40,6 @@ function cargar_cot() {
                 var data = JSON.parse(response.info);
                 var subtotal = 0;
                 var total = 0;
-                var i = 0;
                 // Agregamos uno por uno los análisis seleccionados
                 for (var i = 0; i < data.length; i++) {
                     var id = data[i].pk;
@@ -49,7 +48,6 @@ function cargar_cot() {
                     var precio = data[i].fields.precio;
                     $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
                     subtotal += parseFloat(precio);
-                    i = i + 1;
                 }
                 total = subtotal;
                 // Asignar valores al input de subtotal y total
