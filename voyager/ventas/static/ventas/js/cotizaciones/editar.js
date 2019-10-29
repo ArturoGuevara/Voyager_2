@@ -28,9 +28,8 @@ function restaurar_modal_ver_cot(){
     $('#nav-info-tab').removeClass().addClass('nav-item nav-link active');
     $('#nav-analisis-tab').removeClass().addClass('nav-item nav-link');
     $('#nav-info').removeClass().addClass('tab-pane fade show active');
-    $('#nav-analisis').removeClass().addClass('tab-pane fade');   
+    $('#nav-analisis').removeClass().addClass('tab-pane fade');
 }
-
 $('#btn-editar-cot').click(function(){
     // Alternar botones
     $(this).removeClass('d-inline').addClass('d-none');
@@ -48,9 +47,12 @@ $('#btn-canc-edit-cot').click(function(){
 });
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
+    // Restauramos la variable global que almacena la id de la cotización clickeada
+    id_cotizacion = 0;
 });
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
+// Cuando el usuario decide eliminar un análisis del resumen
 function editar_cot_eliminar_an(id){
     $('.edit-cot-res-an').each(function (){
         if(id == $(this).data('id')){
@@ -63,7 +65,7 @@ function editar_cot_eliminar_an(id){
         }
     });
 }
-
+// Cuando el usuario clickea en algún checkbox para agregarlo al resumen
 $("input[name='editar-cot-an[]']").click(function (){
     // Obtenemos el checkbox que dio click
     var id = $(this).val();
@@ -109,3 +111,77 @@ $("input[name='editar-cot-an[]']").click(function (){
         });
     }
 });
+
+/* FUNCIONES PARA GUARDAR LOS CAMBIOS DE LA COTIZACIÓN */
+// Función para guardar los cambios
+function guardar_cambios_cot(){
+    if(id_cotizacion > 0){
+        var checked = [];
+        var cantidades = [];
+        // Obtenemos las id de los análisis seleccionados
+        $("input[name='editar-cot-an[]']:checked").each(function () {
+            checked.push(parseInt($(this).val()));
+        });
+        // Obtenemos las cantidades de los análisis seleccionados
+        $("input[name='editar-cot-cantidades[]']").each(function () {
+            cantidades.push(parseInt($(this).val()));
+            // Checamos que no estén vacíos los inputs de cantidad
+            var id = $(this).data('id');
+            check_is_not_empty($(this).val(), "#edit-cot-an-" + id + "");
+        });
+        // Obtenemos el token de django para el ajax
+        var token = csrftoken;
+        // Obtener valor de los inputs
+        var cliente = $('#editar-cot-cliente').val();
+        var subtotal = $('#editar-cot-subtotal').val();
+        var descuento = $('#editar-cot-descuento').val();
+        var iva = $('#editar-cot-iva').val();
+        var total = $('#editar-cot-total').val();
+
+        // Validamos que no estén vacíos los inputs
+        check_is_not_empty(cliente, '#editar-cot-cliente');
+        check_is_not_empty(subtotal, '#editar-cot-subtotal');
+        check_is_not_empty(descuento, '#editar-cot-descuento');
+        check_is_not_empty(iva, '#editar-cot-iva');
+        check_is_not_empty(total, '#editar-cot-total');
+        
+        if(checked.length != 0){
+            $.ajax({
+                url: "actualizar_cotizacion/"+id_cotizacion,
+                dataType: 'json',
+                // Seleccionar información que se mandara al controlador
+                data: {
+                    cliente: cliente,
+                    subtotal: subtotal,
+                    descuento: descuento,
+                    iva: iva,
+                    total: total,
+                    'checked[]': checked,
+                    'cantidades[]': cantidades,
+                    'csrfmiddlewaretoken': token
+                },
+                type: "POST",
+                success: function (response) {
+                    // Cerramos el modal para confirmar cotización
+                    $('#ver_cotizacion').modal('hide');
+
+                    // Damos retroalimentación de que se guardó correctamente
+                    showNotification('top', 'right', 'Cambios en la cotización guardados correctamente');
+
+                    setTimeout(function () {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function (data) {
+                    // Código de error alert(data.status);
+                    // Mensaje de error alert(data.responseJSON.error);
+                }
+            });
+        }else{
+            $('#alert-error-edit-cot').removeClass('d-none').addClass('d-block');
+            setTimeout(function () {
+                $('#alert-error-edit-cot').removeClass('d-block').addClass('d-none');
+            }, 2000);
+        }        
+    }
+}

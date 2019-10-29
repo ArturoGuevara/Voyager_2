@@ -34,10 +34,8 @@ function visualizar_cotizacion(id) {
                         n_analisis_cotizacion = JSON.parse(aux_analisis_cotizacion[registro]);
                         analisis_cotizacion.push(n_analisis_cotizacion);
                     }
-                    
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion)
                 }
-
             }
         });
     }

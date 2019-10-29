@@ -12,4 +12,5 @@ urlpatterns = [
     path('cotizaciones', views.ver_cotizaciones, name='cotizaciones'),
     path('agregar_analisis/', views.agregar_analisis, name='agregar_analisis'),
     path('visualizar_cotizacion/<int:id>', views.visualizar_cotizacion, name='visualizar_cotizacion'),
+    path('actualizar_cotizacion/<int:id>', views.actualizar_cotizacion, name='actualizar_cotizacion'),
 ]

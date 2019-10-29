@@ -1,7 +1,8 @@
+// ######### USV01-01 ########
+
 /* VARIABLES GLOBALES */
 var id_cotizacion = 0;
-// ######### USV01-01 ########
-var cantidad
+var cantidad;
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function () {
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen

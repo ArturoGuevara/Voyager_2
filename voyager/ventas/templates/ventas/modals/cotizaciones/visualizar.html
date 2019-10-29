@@ -9,6 +9,9 @@
                 </button>
             </div>
             <div class="modal-body" id="seccion_validacion">
+                <div id="alert-error-edit-cot" class="alert alert-danger d-none">
+                    <span><strong>¡Error! </strong> Selecciona al menos un análisis</span>
+                </div>
                 <div class="container d-block" id="ver-resumen-cot">
                     <div class="row">
                         <span>Fecha de creación: </span><span class="text-secondary" id="fecha"> 99/99/9999</span>
@@ -154,7 +157,7 @@
             <div class="modal-footer">
                 <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
-                <button id="btn-guar-editar-cot" class="btn btn-success d-none">Guardar</button>
+                <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
             </div>
         </div>
     </div>
