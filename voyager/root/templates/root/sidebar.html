@@ -8,7 +8,7 @@
             </a>
         </div>
         <ul class="nav">
-            {% if request.session.userrole == 'Director' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
@@ -17,8 +17,8 @@
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
                         <li class="nav-item ">
-                            <a class="nav-link" href="#">
-                                <span>Inicio</span>
+                            <a class="nav-link" href="/cuentas/usuarios">
+                                <span>Lista de Usuarios</span>
                             </a>
                         </li>
                     </ul>
@@ -88,6 +88,21 @@
                 </div>
             </li>
             {% endif %}
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="collapse" href="#perfilDropdown">
+                    <i class="nc-icon nc-single-02"></i>
+                    <p>Mi Perfil<b class="caret"></b></p>
+                </a>
+                <div class="collapse" id="perfilDropdown">
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link" href="/cuentas/home">
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
             <!-- perfil -->
             <li class="nav-item d-block d-sm-none">
                 <a class="nav-link" data-toggle="collapse" href="#profileDropdown">
