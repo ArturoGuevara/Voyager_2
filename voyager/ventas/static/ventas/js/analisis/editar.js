@@ -1,31 +1,9 @@
-// Variable que guarda la id de análisis a cargar
-var id_analisis;
-
-/* Funciones que se ejecutan al cargar la página */
-$(document).ready(function() {
-    // Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
-    $('#btn-editar-analisis').click(function(){
-        $(this).removeClass('d-block').addClass('d-none');
-        $('#btn-guardar-cambios').removeClass('d-none').addClass('d-block');
-        $('#ver_info').removeClass('d-block').addClass('d-none');
-        $('#editar_info').removeClass('d-none').addClass('d-block');
-    });
-    // Cuando se cierra el modal de bootstrap por dar click afuera, esconder bloque de inputs y mostrar el de info
-    $('#ver_analisis').on('hidden.bs.modal', function () {
-        $('#ver_info').removeClass('d-none').addClass('d-block');
-        $('#editar_info').removeClass('d-block').addClass('d-none');
-        $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
-        $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
-    });
-    // Cuando se cierra el modal de bootstrap por dar click afuera, esconder bloque de inputs y mostrar el de info
-    $('#borrar_analisis').on('hidden.bs.modal', function () {
-       id_analisis = 0;
-    });
-
-    // Cerrar alert de retroalimentación en caso de hacer un registro de analisis
-    setTimeout(function(){
-       $("#alert").hide();
-    }, 3000);
+// Cuando se da click en el botón de editar esconder bloque de info y mostrar el de inputs
+$('#btn-editar-analisis').click(function(){
+    $(this).removeClass('d-block').addClass('d-none');
+    $('#btn-guardar-cambios').removeClass('d-none').addClass('d-block');
+    $('#ver_info').removeClass('d-block').addClass('d-none');
+    $('#editar_info').removeClass('d-none').addClass('d-block');
 });
 
 /* Funciones para ver y editar análisis */
@@ -120,64 +98,16 @@ function editar_analisis(){
     }
 }
 
-/* Funciones para borrar análisis */
-function borrar_analisis(id){
-   if(id > 0){
-       id_analisis = id;
-   }
-}
-function confirmar_borrar(){
-    if(id_analisis>0){
-        var id = id_analisis;
-        var token = csrftoken;
-        $.ajax({
-            url: "borrar_analisis/"+id,
-            // Seleccionar información que se mandara al controlador
-            data: {
-                id:id,
-                'csrfmiddlewaretoken': token
-            },
-            type: "POST",
-            success: function(){
-                borrar_analisis_tabla('.analisis-row',id);
-                showNotification('top','right','Tu análisis ha sido borrado exitosamente');
-                id_analisis = 0;
-                $('#borrar_analisis').modal('toggle');
-            },
-            error: function(data){
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
-            }
-        });
-    }
-}
-
-/* Funciones para reemplazar valores en la tabla e inputs */
-function cargar_info_modal_ver(codigo, nombre, precio, tiempo, descripcion){
-    $('#codigo_analisis').html(codigo);
-    $('#nombre_analisis').html(nombre);
-    $('#precio_analisis').html(precio);
-    $('#fecha_analisis').html(tiempo);
-    $('#descripcion_analisis').html(descripcion);
-}
-function cargar_info_modal_editar(codigo, nombre, precio, tiempo, descripcion){
-    $('#editar_codigo_analisis').val(codigo);
-    $('#editar_nombre_analisis').val(nombre);
-    $('#editar_precio_analisis').val(precio);
-    $('#editar-duracion').val(tiempo);
-    $('#editar_desc_analisis').val(descripcion);
-}
-function cambiar_valores_analisis_tabla(clase,value,id){
-    $(clase).each(function(i,e){
-       if( $(e).data('id') == id ){
-           $(e).html(value);
-       }
+// Editar análisis
+$(function(){
+    $("#slider-range-editar").slider({
+        range: true,
+        min: 0,
+        max: 20,
+        values: [ 0, 20 ],
+        slide: function( event, ui ) {
+            $("#editar-duracion").val( ui.values[ 0 ] + " - " + ui.values[ 1 ] + " días" );
+        }
     });
-}
-function borrar_analisis_tabla(clase,id){
-    $(clase).each(function(i,e){
-       if( $(e).data('id') == id ){
-           $(e).remove();
-       }
-    });
-}
+    $("#editar-duracion").val( $("#slider-range-editar").slider("values",0) + " - " + $("#slider-range-editar").slider("values", 1) + " días");
+});

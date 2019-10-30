@@ -1,0 +1,76 @@
+<!-- Modal que forma parte de la USV07-07 -->
+<div class="modal fade" id="agregar-cot" tabindex="-1" role="dialog" aria-labelledby="agregar_analisis_modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title w-100 text-center" id="exampleModalLongTitle">Agregar Análisis</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="form-group col-12">
+                        <label>Cliente</label>
+                        <select name="cliente" class="form-control" id="cliente">
+                            {% for cl in clientes %}
+                                <option value="{{ cl.id }}">{{ cl.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="table-responsive table-full-width mx-auto w-100">
+                        <table class="table table-responsive table-hover">
+                            <thead>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                            </thead>
+                            <tbody id="tabla-analisis-info" class="text-center">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-3">
+                        <label for="subtotal">Subtotal</label>
+                        <input type="number" class="form-control" id="subtotal" name="subtotal" readonly>
+                        <div class="invalid-feedback">
+                            El SubTotal no puede estar vacío
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="descuento">% Descuento</label>
+                        <input type="number" class="form-control" id="descuento" name="descuento" value="0" min="0" max="100">
+                        <div class="invalid-feedback">
+                            Por favor introduce una valor para el descuento
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="iva">% IVA</label>
+                        <input type="number" class="form-control" id="iva" name="iva" value="16" min="0" max="100">
+                        <div class="invalid-feedback">
+                            Por favor introduce una valor para el IVA
+                        </div>
+                    </div>
+                    <div class="form-group col-sm-3">
+                        <label for="total">Total</label>
+                        <input type="number" class="form-control" id="total" name="total" readonly>
+                        <div class="invalid-feedback">
+                            El total no puede estar vacío
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="col-10"></div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-success" onclick="crear_cotizacion()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

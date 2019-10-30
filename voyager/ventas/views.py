@@ -265,9 +265,7 @@ def crear_cotizacion(request):
                 cantidad = request.POST.getlist('cantidades[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
-                        print(checked)
-                        print(cantidad)
-                        cliente = IFCUsuario.objects.get(user__id=request.POST.get('cliente'))
+                        cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         c = Cotizacion()
                         c.usuario_c = cliente
                         c.usuario_v = user_logged
@@ -277,7 +275,6 @@ def crear_cotizacion(request):
                         c.total = request.POST.get('total')
                         c.status = True
                         c.save()
-                        data = []
                         # Iteramos en los análisis seleccionados
                         index = 0
                         for id in checked: #Asignar codigo DHL
@@ -316,7 +313,75 @@ def crear_cotizacion(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-############### CONTROLADOR USV04-04##################
+
+@login_required
+def actualizar_cotizacion(request,id):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+            raise Http404
+        if request.method == 'POST': #Obtención de datos de los cambios en la cotización
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+                checked = request.POST.getlist('checked[]')
+                cantidad = request.POST.getlist('cantidades[]')
+                if len(checked) != 0 and checked[0] != 'NaN':
+                    if len(cantidad) != 0 and cantidad[0] != 'NaN':
+                        cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
+                        edit_cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+                        edit_cotizacion.usuario_c = cliente
+                        edit_cotizacion.descuento = request.POST.get('descuento')
+                        edit_cotizacion.subtotal = request.POST.get('subtotal')
+                        edit_cotizacion.iva = request.POST.get('iva')
+                        edit_cotizacion.total = request.POST.get('total')
+                        edit_cotizacion.status = True
+                        edit_cotizacion.save()
+
+                        # Obtenemos la fecha previamente guardada
+                        aux = AnalisisCotizacion.objects.filter(cotizacion = edit_cotizacion).first()
+                        fecha = aux.fecha
+                        # Borramos los análisis previamente guardados para sobreescribirlos
+                        AnalisisCotizacion.objects.filter(cotizacion = edit_cotizacion).delete()
+
+                        # Iteramos en los análisis seleccionados
+                        index = 0
+
+                        for idAnalisis in checked: #Asignar codigo DHL
+                            a = Analisis.objects.get(id_analisis = idAnalisis)
+                            # Creamos una nueva entrada y agregamos los nuevos valores
+                            ac = AnalisisCotizacion()
+                            ac.analisis = a
+                            ac.cotizacion = edit_cotizacion
+                            ac.cantidad = cantidad[index]
+                            ac.fecha = fecha
+                            ac.save()
+                            index = index + 1
+                        response = JsonResponse({"Success": "OK"})
+                        response.status_code = 200
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                    else:
+                        response = JsonResponse({"error": "No llegaron las cantidades de análisis seleccionados"})
+                        response.status_code = 500
+                        # Regresamos la respuesta de error interno del servidor
+                        return response
+                else:
+                    response = JsonResponse({"error": "No llegaron los análisis seleccionados"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+            else:
+                response = JsonResponse({"error": "Campos vacíos"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
 @login_required
 def visualizar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
