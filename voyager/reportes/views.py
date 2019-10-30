@@ -18,6 +18,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -190,8 +191,8 @@ def actualizar_muestra(request):
             muestra.orden_compra = request.POST['orden_compra']
             try:
                 muestra.fechah_recibo = request.POST['fechah_recibo']
-            except Exception:
-                print("entro")
+            except ValidationError: #No está funcionando actualmente, el error se captura en orden.js
+                print("Error al guardar")
                 muestra.fechah_recibo = None  
             muestra.save()
             # Cargar de nuevo la muestra

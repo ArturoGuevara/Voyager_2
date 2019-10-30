@@ -80,7 +80,6 @@ $('#submitForm').on('click', function () {
 });
 
 function submit(){
-//$('#submitForm').on('click', function () {
     var estatus = "";
     if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado"){
         estatus = $('#inputEstatus').val();

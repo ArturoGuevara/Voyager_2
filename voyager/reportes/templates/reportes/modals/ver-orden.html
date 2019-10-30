@@ -86,7 +86,7 @@
                                         <label for="idioma_reporte">Idioma del reporte: </label>
                                         <p>
                                             <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="8809 ES">8809 ES
-                                            <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="8992 EN">8992 EN                                      
+                                            <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="8992 EN">8992 EN
                                         </p>
                                     </div>
                                 </div>
@@ -117,7 +117,7 @@
                                 
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="Sí" id="editar_notif_e" name="editar_notif_e">
+                                        <input class="form-check-input" type="checkbox" id="editar_notif_e" name="editar_notif_e">
                                         <span class="form-check-sign"></span>
                                         Notificación de envío al cliente
                                     </label>
@@ -126,7 +126,7 @@
     
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="Sí" id="editar_envio_ti" name="editar_envio_ti">
+                                        <input class="form-check-input" type="checkbox" id="editar_envio_ti" name="editar_envio_ti">
                                         <span class="form-check-sign"></span>
                                         Envío de todos los informes
                                     </label>
@@ -134,7 +134,7 @@
     
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" value="Sí" id="editar_cliente_cr" name="editar_cliente_cr">
+                                        <input class="form-check-input" type="checkbox" id="editar_cliente_cr" name="editar_cliente_cr">
                                         <span class="form-check-sign"></span>
                                         El cliente confirmó de recibido
                                     </label>
@@ -148,7 +148,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary ml-auto" data-dismiss="modal">Cerrar</button>
-                    <input id="submitForm" class="btn btn-success ml-3" type="button" onclick="return confirm('¿Deseas confirmar la actualización?')" value="Guardar" /> 
+                    <button name="submitForm" id="submitForm" type="button" class="btn btn-success ml-3">Guardar</button>
                 </div>
             </div>
         </div>
