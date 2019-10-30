@@ -101,10 +101,6 @@ $("input[name='editar-cot-an[]']").click(function (){
                 $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="editar-cot-precios[]" value='+data.fields.precio +' hidden>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
                 calc_total();
             },
-            error: function (data) {
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
-            }
         });
     }else{
         $('.edit-cot-res-an').each(function (){

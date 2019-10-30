@@ -25,8 +25,6 @@ $("#submit-analisis-button").click(function(){
 
     if(flag == true){
         document.getElementById("submit-analisis-form").submit();
-    }else{
-        console.log("valores vacios");
     }
 });
 

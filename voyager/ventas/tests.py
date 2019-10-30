@@ -353,28 +353,28 @@ class TestEditarCotizaciones(TestCase):
         empresa =  Empresa.objects.create(empresa='TestInc')
 
         clientes1 = IFCUsuario.objects.create(
-                                                        rol =rol_clientes,
-                                                        user = usuario_clientes,
-                                                        nombre = 'clientes',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono = '5234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
         clientes1.save()
 
         usuario_clientes = User.objects.create_user('otro', 'otro@testuser.com', 'testpassword')
         clientes2 = IFCUsuario.objects.create(
-                                                        rol =rol_clientes,
-                                                        user = usuario_clientes,
-                                                        nombre = 'otro',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono = '5234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'otro',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
         clientes2.save()
 
         #Crea usuario Director
@@ -382,15 +382,15 @@ class TestEditarCotizaciones(TestCase):
         rol_dir = Rol.objects.create(nombre='Director')
 
         dir = IFCUsuario.objects.create(
-                                                        rol = rol_dir,
-                                                        user = usuario_dir,
-                                                        nombre = 'dir',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno = 'test',
-                                                        telefono = '3234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+                                        rol = rol_dir,
+                                        user = usuario_dir,
+                                        nombre = 'dir',
+                                        apellido_paterno = 'test',
+                                        apellido_materno = 'test',
+                                        telefono = '3234567',
+                                        estado = True,
+                                        empresa=empresa,
+                                        )
         dir.save()
 
 
@@ -399,49 +399,49 @@ class TestEditarCotizaciones(TestCase):
         rol_ventas = Rol.objects.create(nombre='Ventas')
 
         ventas = IFCUsuario.objects.create(
-                                                        rol = rol_ventas,
-                                                        user = usuario_ventas,
-                                                        nombre = 'ventas',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno = 'test',
-                                                        telefono = '3234567',
-                                                        estado = True,
-                                                        empresa=empresa
-                                                      )
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
         ventas.save()
 
         #Crea cotizaciones
         cotizacion = Cotizacion.objects.create(
-                                                    usuario_c = clientes1,
-                                                    usuario_v = ventas,
-                                                    descuento = 5,
-                                                    subtotal = 5000,
-                                                    iva = 150,
-                                                    total = 123,
-                                                    status = True,
-                                                    fecha_creada = date.today()
+                                                usuario_c = clientes1,
+                                                usuario_v = ventas,
+                                                descuento = 5,
+                                                subtotal = 5000,
+                                                iva = 150,
+                                                total = 123,
+                                                status = True,
+                                                fecha_creada = date.today()
                                                 )
         cotizacion.save()
         cotizacion2 = Cotizacion.objects.create(
-                                                    usuario_c = clientes2,
-                                                    usuario_v = ventas,
-                                                    descuento = 6,
-                                                    subtotal = 24,
-                                                    iva = 150,
-                                                    total = 456,
-                                                    status = True,
-                                                    fecha_creada = date.today()
+                                                usuario_c = clientes2,
+                                                usuario_v = ventas,
+                                                descuento = 6,
+                                                subtotal = 24,
+                                                iva = 150,
+                                                total = 456,
+                                                status = True,
+                                                fecha_creada = date.today()
                                                 )
         cotizacion2.save()
         cotizacion3 = Cotizacion.objects.create(
-                                                    usuario_c = clientes1,
-                                                    usuario_v = ventas,
-                                                    descuento = 7,
-                                                    subtotal = 5000,
-                                                    iva = 150,
-                                                    total = 789,
-                                                    status = False,
-                                                    fecha_creada = date.today()
+                                                usuario_c = clientes1,
+                                                usuario_v = ventas,
+                                                descuento = 7,
+                                                subtotal = 5000,
+                                                iva = 150,
+                                                total = 789,
+                                                status = False,
+                                                fecha_creada = date.today()
                                                 )
         cotizacion3.save()
 
@@ -549,13 +549,13 @@ class TestEditarCotizaciones(TestCase):
         analisis_arr = [analisis1.id_analisis, analisis2.id_analisis]
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
-                                                                  'subtotal':"500",
-                                                                  'descuento':10,
-                                                                  'iva': 15,
-                                                                  'total':490,
-                                                                  'checked[]': analisis_arr,
-                                                                  'cantidades[]': cantidades,
-                                                                  })
+                                                                'subtotal':"500",
+                                                                'descuento':10,
+                                                                'iva': 15,
+                                                                'total':490,
+                                                                'checked[]': analisis_arr,
+                                                                'cantidades[]': cantidades,
+                                                                })
         self.assertEqual(response.status_code,301)
 
     def test_visualizar_cotizacion_correcta(self):      # Prueba si se puede visualizar una cotizacion correctamente
@@ -567,13 +567,13 @@ class TestEditarCotizaciones(TestCase):
         analisis_arr = [analisis1.id_analisis, analisis2.id_analisis]
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
-                                                                  'subtotal':"500",
-                                                                  'descuento':10,
-                                                                  'iva': 15,
-                                                                  'total':490,
-                                                                  'checked[]': analisis_arr,
-                                                                  'cantidades[]': cantidades,
-                                                                  })
+                                                                'subtotal':"500",
+                                                                'descuento':10,
+                                                                'iva': 15,
+                                                                'total':490,
+                                                                'checked[]': analisis_arr,
+                                                                'cantidades[]': cantidades,
+                                                                })
         url =  '/ventas/visualizar_cotizacion/' + str(Cotizacion.objects.all().last().id_cotizacion)
         response = self.client.post(url)
         self.assertEqual(response.status_code,200)

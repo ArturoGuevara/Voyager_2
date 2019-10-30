@@ -430,9 +430,6 @@ def visualizar_cotizacion(request, id):
 
 
 # EXTRAS
-
-
-
 def is_not_empty(data):
     if data != "":
         return True

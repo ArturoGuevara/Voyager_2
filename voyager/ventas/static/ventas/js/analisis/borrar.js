@@ -22,10 +22,6 @@ function confirmar_borrar(){
                 id_analisis = 0;
                 $('#borrar_analisis').modal('toggle');
             },
-            error: function(data){
-                // Código de error alert(data.status);
-                // Mensaje de error alert(data.responseJSON.error);
-            }
         });
     }
 }
