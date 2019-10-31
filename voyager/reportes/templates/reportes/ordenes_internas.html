@@ -42,9 +42,11 @@
                         <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
                             <i class='fas fa-paper-plane'></i>
                         </button>
+                        {% if request.session.userrole == "Soporte" or request.session.userrole == "SuperUser" %}
                         <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endif %}

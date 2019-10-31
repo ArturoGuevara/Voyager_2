@@ -137,7 +137,7 @@ def consultar_orden(request):
             for muestra in muestras:
                 data_muestras.append(muestra)
 
-            usuario = muestras[0].usuario
+            usuario = muestras[0].usuario #Esto desplegará error si una orden interna no tiene muestras, pero eso nunca debería ocurrir
             user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
             user_serialize = user_serialize[1:-1]
             vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
@@ -458,7 +458,7 @@ def muestra_enviar(request): #guia para guardar muestras
 
 def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Soporte":
+    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
