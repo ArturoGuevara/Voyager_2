@@ -112,6 +112,15 @@ def oi_guardar(request, form, template_name):
 
 @login_required
 def consultar_orden(request):
+
+    data = {}
+    vector_muestras= None
+    user_serialize= None
+    email={}
+    empresa={}
+    analisis_muestras={}
+    facturas_muestras={}
+
     if request.method != 'POST':
         raise Http404
     if not request.POST.get('id'):
@@ -134,30 +143,32 @@ def consultar_orden(request):
             data = data[1:-1]
             muestras = Muestra.objects.filter(oi = oi)
             data_muestras= []
-            for muestra in muestras:
-                data_muestras.append(muestra)
 
-            usuario = muestras[0].usuario #Esto desplegará error si una orden interna no tiene muestras, pero eso nunca debería ocurrir
-            user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
-            user_serialize = user_serialize[1:-1]
-            vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-            email = usuario.user.email
-            empresa = usuario.empresa.empresa
-            analisis_muestras = {}
-            facturas_muestras = {}
-            for muestra in muestras:
-                #recuperas todos los analisis de una muestra
-                #ana_mue es objeto de tabla AnalisisMuestra
-                ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
-                analisis = []
-                if muestra.factura:
-                    facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
-                else:
-                    facturas_muestras[muestra.id_muestra] = "no hay"
+            if muestras:
+                for muestra in muestras:
+                    data_muestras.append(muestra)
+                
+                usuario = muestras[0].usuario #Esto desplegará error si una orden interna no tiene muestras, pero eso nunca debería ocurrir
+                user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+                user_serialize = user_serialize[1:-1]
+                vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+                email = usuario.user.email
+                empresa = usuario.empresa.empresa
+                analisis_muestras = {}
+                facturas_muestras = {}
+                for muestra in muestras:
+                    #recuperas todos los analisis de una muestra
+                    #ana_mue es objeto de tabla AnalisisMuestra
+                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
+                    analisis = []
+                    if muestra.factura:
+                        facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                    else:
+                        facturas_muestras[muestra.id_muestra] = "no hay"
 
-                for a in ana_mue:
-                    analisis.append(a.analisis.codigo)
-                analisis_muestras[muestra.id_muestra] =  analisis
+                    for a in ana_mue:
+                        analisis.append(a.analisis.codigo)
+                    analisis_muestras[muestra.id_muestra] =  analisis
             
         else:
             raise Http404

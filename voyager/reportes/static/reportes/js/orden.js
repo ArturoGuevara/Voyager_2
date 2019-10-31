@@ -47,10 +47,16 @@ function cargar_info_oi(id) {
             var data = JSON.parse(response.data);
             data = data.fields;
             //datos de las muestras
-            var muestras = JSON.parse(response.muestras);
+            console.log(response.muestras);
+            if(response.muestras != null){
+                var muestras = JSON.parse(response.muestras);
+            }            
             //datos del usuario
-            var usuario = JSON.parse(response.usuario);
-            usuario = usuario.fields;
+            if(response.usuario != null){
+                var usuario = JSON.parse(response.usuario);
+                usuario = usuario.fields;
+            }
+            
             var correo = response.correo;
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
@@ -105,12 +111,13 @@ function cargar_info_oi(id) {
             }
 
             var html_muestras = "";
+            if(muestras != null){
+                for (let mue in muestras){
+                    var id_muestra = muestras[mue].pk;
+                    var objm = muestras[mue].fields;
 
-            for (let mue in muestras){
-                var id_muestra = muestras[mue].pk;
-                var objm = muestras[mue].fields;
-
-                html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                }
             }
             $('.edicion_muestras').html(html_muestras);
         }
@@ -426,12 +433,13 @@ function visualizar_info_oi(id) {
             $('#visualizar_cliente_cr').text(data.cliente_cr);
 
             var html_muestras = "";
+            if(muestras != null){
+                for (let mue in muestras){
+                    var id_muestra = muestras[mue].pk;
+                    var objm = muestras[mue].fields;
 
-            for (let mue in muestras){
-                var id_muestra = muestras[mue].pk;
-                var objm = muestras[mue].fields;
-
-                html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                    html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                }
             }
             $('.accordion_muestras').html(html_muestras);
 
