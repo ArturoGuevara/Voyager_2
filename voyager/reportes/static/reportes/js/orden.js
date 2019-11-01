@@ -47,16 +47,15 @@ function cargar_info_oi(id) {
             var data = JSON.parse(response.data);
             data = data.fields;
             //datos de las muestras
-            console.log(response.muestras);
             if(response.muestras != null){
                 var muestras = JSON.parse(response.muestras);
-            }            
+            }
             //datos del usuario
             if(response.usuario != null){
                 var usuario = JSON.parse(response.usuario);
                 usuario = usuario.fields;
             }
-            
+
             var correo = response.correo;
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
@@ -70,8 +69,6 @@ function cargar_info_oi(id) {
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-
-
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "8809 ES"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -200,8 +197,8 @@ function submit(){
     if (document.getElementById("editar_cliente_cr").checked){
         cliente_cr = "Sí"
     }
-    
-    
+
+
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -228,10 +225,10 @@ function submit(){
         success: function (response) {
             var data = JSON.parse(response.data);
             data = data.fields;
-            var tr = '#oi-'+idOI + " .oi_estatus";
-            $(tr).text(data.estatus);
-            tr = '#oi-'+idOI + " .oi_localidad";
-            $(tr).text(data.localidad);
+            var track = '#oi-'+idOI + " .oi_estatus";
+            $(track).text(data.estatus);
+            track = '#oi-'+idOI + " .oi_localidad";
+            $(track).text(data.localidad);
             showNotification('top','right','Se han guardado tus cambios');
             $('#actualizar_oi').modal('toggle');
             $('#modal-orden-interna').modal('toggle');
@@ -308,6 +305,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
 }
 
 function editar_muestras(id_muestra, muestra, analisis, factura){
+    //Eliminar el formato de fecha dado por Django para poder leerla
     if (muestra.fechah_recibo != null){
         fecha_r = muestra.fechah_recibo.replace('T', ' ');
         fecha_r = fecha_r.replace('Z', '');
@@ -326,15 +324,15 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
             <div class="card-body">
                 <div class="form-row">
                     <div class="form-group col-md-2">
-                        <label for="visualizar_muestra_numero_` + id_muestra + `">Número</label>
+                        <label for="editar_muestra_numero_` + id_muestra + `">Número</label>
                         <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_codigo_` + id_muestra + `">Código</label>
+                        <label for="editar_muestra_codigo_` + id_muestra + `">Código</label>
                         <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="visualizar_muestra_` + id_muestra + `">Muestra</label>
+                        <label for="editar_muestra_` + id_muestra + `">Muestra</label>
                         <input type="text" class="form-control" id="editar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
                     </div>
                 </div>

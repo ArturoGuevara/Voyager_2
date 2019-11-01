@@ -129,10 +129,10 @@ def consultar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
     if not (
-            user_logged.rol.nombre == "Soporte" 
-            or user_logged.rol.nombre == "Facturacion" 
+            user_logged.rol.nombre == "Soporte"
+            or user_logged.rol.nombre == "Facturacion"
             or user_logged.rol.nombre == "SuperUser"
-        ):   
+        ):
         raise Http404
     if request.method == 'POST':
         id = request.POST.get('id')
@@ -147,8 +147,8 @@ def consultar_orden(request):
             if muestras:
                 for muestra in muestras:
                     data_muestras.append(muestra)
-                
-                usuario = muestras[0].usuario #Esto desplegará error si una orden interna no tiene muestras, pero eso nunca debería ocurrir
+
+                usuario = muestras[0].usuario
                 user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
                 user_serialize = user_serialize[1:-1]
                 vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
@@ -159,7 +159,7 @@ def consultar_orden(request):
                 for muestra in muestras:
                     #recuperas todos los analisis de una muestra
                     #ana_mue es objeto de tabla AnalisisMuestra
-                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
+                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
                     analisis = []
                     if muestra.factura:
                         facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
@@ -169,7 +169,7 @@ def consultar_orden(request):
                     for a in ana_mue:
                         analisis.append(a.analisis.codigo)
                     analisis_muestras[muestra.id_muestra] =  analisis
-            
+
         else:
             raise Http404
 
@@ -182,7 +182,7 @@ def consultar_orden(request):
                             "dict_am":analisis_muestras,
                             "facturas":facturas_muestras}
                         )
-        
+
 @login_required
 def actualizar_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -200,11 +200,7 @@ def actualizar_muestra(request):
                 else:
                     muestra.factura = None
             muestra.orden_compra = request.POST['orden_compra']
-            try:
-                muestra.fechah_recibo = request.POST['fechah_recibo']
-            except ValidationError: #No está funcionando actualmente, el error se captura en orden.js
-                print("Error al guardar")
-                muestra.fechah_recibo = None  
+            muestra.fechah_recibo = request.POST['fechah_recibo']
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])

@@ -48,11 +48,6 @@ class OrdenInterna(models.Model):
     envio_ti = models.CharField(max_length=2, choices=SN, blank=True) #envio de todos los informes
     cliente_cr = models.CharField(max_length=2, choices=SN, blank=True) #cliente confirmó de recibido
 
-    #Info general factura
-    #resp_pago = models.CharField(max_length=50, blank=True)
-    #correo = models.EmailField(max_length=50, blank=True)
-    #telefono = models.CharField(max_length=13, blank=True)
-
     class Meta:
         verbose_name = 'Orden Interna'
         verbose_name_plural = 'Órdenes Internas'
@@ -79,10 +74,10 @@ class Muestra(models.Model):
     num_interno_informe = models.CharField(max_length=50, null=True, blank=True)
     fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
-    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura 
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura
     orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
-    
-    
+
+
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
