@@ -1,3 +1,8 @@
 .btn {
     cursor: pointer !important;
 }
+
+table th:hover{
+    font-weight: bolder !important;
+    cursor: pointer !important;
+}
