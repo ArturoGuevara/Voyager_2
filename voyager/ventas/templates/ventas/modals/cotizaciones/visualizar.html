@@ -155,7 +155,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                {% if  request.session.userrole == 'Ventas' %}
                 <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                {% endif %}
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
             </div>

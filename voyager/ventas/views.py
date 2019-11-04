@@ -186,7 +186,7 @@ def agregar_analisis(request):
 # Cotizaciones
 @login_required
 def ver_cotizaciones(request):
-    #Vista de cotizaciones del cliente
+    #Vista de cotizaciones del cliente. Esta funcion muestra todas las cotizaciones consultadas en una tabla.
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
@@ -384,8 +384,9 @@ def actualizar_cotizacion(request,id):
 
 @login_required
 def visualizar_cotizacion(request, id):
+    # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":  # Verificar el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
             if cotizacion:  # Verificar si la cotizacion existe
