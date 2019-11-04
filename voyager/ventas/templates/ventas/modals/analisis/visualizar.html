@@ -33,9 +33,6 @@
                     </div>
                 </div>
                 <div class="d-none m-4" id="editar_info">
-                    <div class="alert alert-danger d-none" id="edit-analisis-error">
-                        <strong>¡Error! </strong><span id="message-error-alert"></span>
-                    </div>
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -62,11 +59,9 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputFecha">Fecha</label>
-                                <input type="text" class="form-control input-analisis" id="editar_fecha_analisis" placeholder="3">
-                                <div class="invalid-feedback">
-                                    Por favor introduce un número de días
-                                </div>
+                                <label for="inputDuracion">Duración aproximada</label>
+                                <input type="text" class="form-control input-analisis" readonly id="editar-duracion" name="editar-duracion">
+                                <div id="slider-range-editar"></div>
                             </div>
                         </div>
                         <div class="form-group">

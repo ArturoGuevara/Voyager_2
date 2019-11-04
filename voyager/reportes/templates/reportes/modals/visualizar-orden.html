@@ -1,0 +1,133 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="modal-visualizar-orden">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
+                    </li>
+                </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane container active" id="visualizar_info">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <input type="hidden" class="form-control" id="visualizar_idOI" name="visualizar_idOI">
+                                    <label for="visualizar_estatus">Estatus</label>
+                                    <input type="text" class="form-control" id="visualizar_estatus" placeholder="estatus" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_envio">Fecha Envío</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_localidad">Localidad</label>
+                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_guia_envio">Guía de Envío</label>
+                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_link_resultados">Link de Resultados</label>
+                                    <input type="text" class="form-control" id="visualizar_link_resultados" placeholder="Link de resultados" disabled>
+                                </div>
+                            </div>
+
+                            <div id="info-cliente">
+                                <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
+                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa"></p>
+
+                                <label for="visualizar_usuario_nombre"><b>Usuario:</b></label>
+                                <p id="visualizar_usuario_nombre" name="visualizar_usuario_nombre">Nombre no disponible</p>
+
+                                <label for="visualizar_usuario_email"><b>Correo:</b></label>
+                                <p id="visualizar_usuario_email" name="visualizar_usuario_email">Correo no disponible</p>
+
+                                <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
+                                <p id="visualizar_usuario_telefono" name="visualizar_usuario_telefono">Teléfono no disponible</p>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane container fade" id="visualizar_muestras">
+                            <div id="accordion" class="accordion_muestras">
+
+                            </div>
+                        </div>
+
+
+                        <div class="tab-pane container fade" id="visualizar_observaciones">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_formato_ingreso_muestra">Formato de ingreso de muestra</label>
+                                    <input type="text" class="form-control" id="visualizar_formato_ingreso_muestra" name="visualizar_formato_ingreso_muestra" placeholder="Formato" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_idioma_reporte">Idioma del reporte: </label>
+                                    <p id="visualizar_idioma_reporte">Idioma no disponible</p>
+                                </div>
+                            </div>
+
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_mrl">MRL</label>
+                                    <input type="text" class="form-control" id="visualizar_mrl" name="visualizar_mrl" placeholder="MRL" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_lab">Fecha de llegada al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_lab" name="visualizar_fecha_lab" disabled>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_ei">Fecha de envío al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_ei" name="visualizar_fecha_ei" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_eri">Fecha de recibo de informes</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_eri" name="visualizar_fecha_eri" disabled>
+                                </div>
+                            </div>
+
+                            
+                            <div class="form-group">
+                                <label for="visualizar_notif_e">Notificación de envío al cliente</label>
+                                <p id="visualizar_notif_e" name="visualizar_fecha_eri" ></p>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="visualizar_envio_ti">Envío de todos los informes</label>
+                                <p id="visualizar_envio_ti" name="visualizar_envio_ti" ></p>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="visualizar_cliente_cr">El cliente confirmó de recibido</label>
+                                <p id="visualizar_cliente_cr" name="visualizar_cliente_cr" ></p>
+                            </div>
+
+                        </div>
+                        <div class="tab-pane container fade" id="visualizar_facturacion">
+                            <div id="visualizar_tabla_facturas"></div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

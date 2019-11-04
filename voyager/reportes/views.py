@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
+from django.core import serializers
 from .models import OrdenInterna, Paquete
-from .forms import OrdenInternaF,codigoDHL
+from .forms import codigoDHL
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -8,6 +9,7 @@ from django.urls import reverse
 from urllib.parse import urlencode
 import requests
 import json
+from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
 from cuentas.models import IFCUsuario
 from django.http import Http404
@@ -16,13 +18,14 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
 def ingreso_cliente(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
+        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
@@ -36,10 +39,10 @@ def ingresar_muestras(request):
             and request.POST.get('pais')
             and request.POST.get('idioma')
             and (request.POST.get('estado1') or (request.POST.get('estado2'))
-)
-    ):
+    )
+        ):
         user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
-        if not user_logged.rol.nombre=="Cliente":   #Si el rol del usuario no es cliente no puede entrar a la página
+        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
@@ -58,21 +61,27 @@ def ingresar_muestras(request):
 
 @login_required
 def indexView(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     return render(request, 'reportes/index.html')
 
 
 @login_required
 def ordenes_internas(request):
-    
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
+
     estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
     ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
-    
+
     response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
-    
+
 
     context = {
         'ordenes': ordenes,
@@ -80,44 +89,188 @@ def ordenes_internas(request):
         'form': form,
         'successcode': response,
     }
-    
-    return render(request, 'reportes/ordenes_internas.html', context)
 
+    return render(request, 'reportes/ordenes_internas.html', context)
 
 @login_required
 def oi_guardar(request, form, template_name):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     data = dict()
     if request.method == 'POST':
-        if form.is_valid():
-            form.save()
-            data['form_is_valid'] = True
-            ordenes = OrdenInterna.objects.all()
-            context = {
-                'ordenes': ordenes,
-            }
-            data['html_oi_list'] = render_to_string('reportes/modals/oi_lista.html', context)
+        id = id
+        oi = OrdenInterna.objects.get(idOI=id)
+        if oi:
+            data = serializers.serialize("json", [oi], ensure_ascii=False)
+            data = data[1:-1]
+            return JsonResponse({"data": data})
         else:
-            data['form_is_valid'] = False
-    context = {'form': form}
-    data['html_form'] = render_to_string(template_name, context, request=request)
-    return JsonResponse(data)
+            #objeto ya no existe
+            data = 'null'
+            return JsonResponse({"data": data})
+
+@login_required
+def consultar_orden(request):
+
+    data = {}
+    vector_muestras= None
+    user_serialize= None
+    email={}
+    empresa={}
+    analisis_muestras={}
+    facturas_muestras={}
+
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get('id'):
+        raise Http404
+
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (
+            user_logged.rol.nombre == "Soporte"
+            or user_logged.rol.nombre == "Facturacion"
+            or user_logged.rol.nombre == "SuperUser"
+        ):
+        raise Http404
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        #oi = orden interna
+        oi = OrdenInterna.objects.get(idOI = id)
+        if oi:
+            data = serializers.serialize("json", [oi], ensure_ascii = False)
+            data = data[1:-1]
+            muestras = Muestra.objects.filter(oi = oi)
+            data_muestras= []
+
+            if muestras:
+                for muestra in muestras:
+                    data_muestras.append(muestra)
+
+                usuario = muestras[0].usuario
+                user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+                user_serialize = user_serialize[1:-1]
+                vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+                email = usuario.user.email
+                empresa = usuario.empresa.empresa
+                analisis_muestras = {}
+                facturas_muestras = {}
+                for muestra in muestras:
+                    #recuperas todos los analisis de una muestra
+                    #ana_mue es objeto de tabla AnalisisMuestra
+                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
+                    analisis = []
+                    if muestra.factura:
+                        facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                    else:
+                        facturas_muestras[muestra.id_muestra] = "no hay"
+
+                    for a in ana_mue:
+                        analisis.append(a.analisis.codigo)
+                    analisis_muestras[muestra.id_muestra] =  analisis
+
+        else:
+            raise Http404
+
+        return JsonResponse(
+                            {"data": data,
+                            "muestras":vector_muestras,
+                            "usuario":user_serialize,
+                            "correo":email,
+                            "empresa":empresa,
+                            "dict_am":analisis_muestras,
+                            "facturas":facturas_muestras}
+                        )
+
+@login_required
+def actualizar_muestra(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
+    if request.method == 'POST':
+        muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
+        if muestra:
+            #Actualizar campos
+            muestra.num_interno_informe = request.POST['num_interno_informe']
+            if isinstance(request.POST['factura'], int):
+                factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
+                if factura:
+                    muestra.factura = factura
+                else:
+                    muestra.factura = None
+            muestra.orden_compra = request.POST['orden_compra']
+            muestra.fechah_recibo = request.POST['fechah_recibo']
+            muestra.save()
+            # Cargar de nuevo la muestra
+            muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
+            data = serializers.serialize("json", [muestra_actualizada], ensure_ascii = False)
+            data = data[1:-1]
+            # Regresamos información actualizada
+            return JsonResponse({"data": data})
 
 
 @login_required
-def oi_actualizar(request, pk):
-    oi = get_object_or_404(OrdenInterna, pk=pk)
+def actualizar_orden(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     if request.method == 'POST':
-        form = OrdenInternaF(request.POST, instance=oi)
-    else:
-        form = OrdenInterna(instance=oi)
-    return oi_guardar(request, form, 'reportes/modals/oi_actualizar.html')
+        oi = OrdenInterna.objects.get(idOI = request.POST['idOI'])
+        if oi:
+            #Actualizar campos
+            oi.estatus = request.POST['estatus']
 
+            oi.localidad = request.POST['localidad']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_envio'] == "":
+                oi.fecha_envio = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_envio = request.POST['fecha_envio']
+
+            oi.guia_envio = request.POST['guia_envio']
+            oi.link_resultados = request.POST['link_resultados']
+            oi.formato_ingreso_muestra = request.POST['formato_ingreso_muestra']
+            oi.idioma_reporte = request.POST['idioma_reporte']
+            oi.mrl = request.POST['mrl']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_eri'] == "":
+                oi.fecha_eri = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_eri = request.POST['fecha_eri']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_lab'] == "":
+                oi.fecha_lab = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_lab = request.POST['fecha_lab']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_ei'] == "":
+                oi.fecha_ei = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_ei = request.POST['fecha_ei']
+
+            oi.notif_e = request.POST['notif_e']
+            oi.envio_ti = request.POST['envio_ti']
+            oi.cliente_cr = request.POST['cliente_cr']
+            #Guardar
+            oi.save()
+
+            # Cargar de nuevo la orden interna
+            oi_actualizada = OrdenInterna.objects.get(idOI = request.POST['idOI'])
+            data = serializers.serialize("json", [oi_actualizada], ensure_ascii = False)
+            data = data[1:-1]
+            # Regresamos información actualizada
+            return JsonResponse({"data": data})
 
 
 def validacion_dhl(codigo):
     #Validación del codigo de paquete de DHL en API
 
-    url = "https://api-eu.dhl.com/track/shipments"  
+    url = "https://api-eu.dhl.com/track/shipments"
 
     headers = {
         'Accept': 'application/json',
@@ -129,10 +282,10 @@ def validacion_dhl(codigo):
         #5551260643
         'service': 'express'
     }
-     
+
     resp = requests.get(url, params=payload, headers=headers) #Manda informacion de paquete y obtiene response de API
-    
-    
+
+
     return resp.status_code
 
 
@@ -143,7 +296,7 @@ def codigo_repetido(codigo_DHL):
         cod_test = Paquete.objects.get(codigo_dhl = codigoDHL)
     except:
         cod_test = None
-    
+
     if(cod_test == None):
         return False
 
@@ -154,21 +307,21 @@ def codigo_repetido(codigo_DHL):
 def guardar_paquete(codigo_DHL, ids_OrdI):
     #Guarda codigo en BD y relaciona a O.I
 
-    
+
     if len(ids_OrdI) == 0: #Verifica que haya algo en lista de O.I
         return 204
 
     if not codigo_repetido(codigo_DHL): #Verifica si el codigo no existe
         codigo = Paquete(codigo_dhl=codigo_DHL)  #Introduce nuevo codigo a BD
         codigo.save()
-      
-    for id in ids_OrdI: #Asignar codigo DHL 
+
+    for id in ids_OrdI: #Asignar codigo DHL
         try:
             referencia = OrdenInterna.objects.get(idOI = id) #Obtener objeto de O.I
         except:
             referencia = None
-            
-        if(referencia != None): #Valida si existe la O.I 
+
+        if(referencia != None): #Valida si existe la O.I
             cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
             referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
             referencia.save()
@@ -177,28 +330,30 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
     return True
 
-    
-@login_required
+
 def validacion_codigo(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
     #Obtención de codigo y verificación de Form
 
     if request.method == 'POST':
         form = codigoDHL(request.POST)
         if form.is_valid():
-            
+
             codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
             oi_seleccionadas = request.POST.getlist('oiselected')    #Obtiene datos de la form
-            
+
             resp = validacion_dhl(codigo)   #Valida codigo ingresado en Form
-            
-            
+
+
             if(resp == 200):    #Guardar codigo si es valido
                 if not guardar_paquete(codigo,oi_seleccionadas):
                     resp = 404
                 elif guardar_paquete(codigo,oi_seleccionadas) == 204:
                     resp = 204
             else:
-                resp = 404    
+                resp = 404
 
             #Pasar una variable por url de exito o fallo
             baseurl = reverse('ordenes_internas')
@@ -206,13 +361,13 @@ def validacion_codigo(request):
             url = '{}?{}'.format(baseurl, querystring)
 
             request.session['alerta'] = 1
-            
+
             return redirect(url)
-    
+
     else:
         form = codigoDHL()  #Se manda Form vacia
     return redirect('ordenes_internas')
-        
+
 @login_required
 def muestra_enviar(request): #guia para guardar muestras
     if request.session._session:
@@ -231,7 +386,7 @@ def muestra_enviar(request): #guia para guardar muestras
                     and request.POST.get('fecha_muestreo')
             ): #verificar que toda la información necesaria se envíe por POST
                 user_logged = IFCUsuario.objects.get(user=request.user) #obtener usuario que inició sesión
-                if not user_logged.rol.nombre == "Cliente": #verificar que el usuario pertenezca al grupo con permisos
+                if not (user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser"): #verificar que el usuario pertenezca al grupo  permisos
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
@@ -304,3 +459,29 @@ def muestra_enviar(request): #guia para guardar muestras
             raise Http404
     else:
         raise Http404
+
+
+###############  CONTROLADOR USVP09-24 ##################
+
+def borrar_orden_interna(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            id = request.POST.get('id')
+            oi = OrdenInterna.objects.get(idOI = id)
+            if oi:
+                oi.estatus = 'borrado'
+                oi.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe la Orden Interna"})
+                response.status_code = 500
+                return response
+        else:
+            response = JsonResponse({"Error": "No se mandó la petición por el método correcto"})
+            response.status_code = 500
+            return response
+    else:
+        raise Http404
+
+############### USVP09-24 ##################

@@ -1,21 +1,23 @@
 from django.db import models
 from cuentas.models import IFCUsuario
+from ventas.models import Factura
+from datetime import datetime, date
 
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
     codigo_dhl = models.CharField(max_length=10,blank=True,null=True)
+    def __str__(self):
+        return "%s" % (self.codigo_dhl)
+
 
 # Create your models here.
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
-    fecha_muestreo = models.DateField(null=True, blank=True)
     localidad = models.CharField(max_length=50, blank=True)
-    fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
-    estatus = models.CharField(max_length=15, blank=True)
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
     #Opciones de sí/no e idioma
@@ -31,6 +33,7 @@ class OrdenInterna(models.Model):
         ('invisible', 'invisible'),
         ('fantasma', 'fantasma'),
         ('activo', 'activo'),
+        ('borrado', 'borrado'),
     )
 
     #Observaciones
@@ -44,11 +47,6 @@ class OrdenInterna(models.Model):
     fecha_ei = models.DateField(null=True, blank=True) #fecha de envio de informes
     envio_ti = models.CharField(max_length=2, choices=SN, blank=True) #envio de todos los informes
     cliente_cr = models.CharField(max_length=2, choices=SN, blank=True) #cliente confirmó de recibido
-
-    #Info general factura
-    resp_pago = models.CharField(max_length=50, blank=True)
-    correo = models.EmailField(max_length=50, blank=True)
-    telefono = models.CharField(max_length=13, blank=True)
 
     class Meta:
         verbose_name = 'Orden Interna'
@@ -73,7 +71,12 @@ class Muestra(models.Model):
     destino = models.CharField(max_length=50)
     idioma = models.CharField(max_length=20)
     estado_muestra = models.BooleanField()
+    num_interno_informe = models.CharField(max_length=50, null=True, blank=True)
+    fechah_recibo = models.DateTimeField(null=True, blank=True)
     fecha_forma = models.DateField()
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura
+    orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
+
 
 
 class Cotizacion(models.Model):
@@ -84,17 +87,54 @@ class Cotizacion(models.Model):
     subtotal = models.DecimalField(max_digits=100, decimal_places=2)
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
-    status = models.BooleanField()
+    status = models.BooleanField(default=True)
+    fecha_creada = models.DateField(default=date.today())
 
+    class Meta:
+        verbose_name = 'Cotización'
+        verbose_name_plural = 'Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
+
+######### MODEL USV04-04 ########
+
+
+class Pais(models.Model):
+    id_pais = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=50)
+
+    def __str__(self):
+        return "%s" % (self.nombre)
+
+######### MODEL USV04-04 ########
 
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100, default='')
     codigo = models.CharField(max_length=50)
-    nombre = models.CharField(max_length=100)
-    descripcion = models.CharField(max_length=100)
+    descripcion = models.CharField(max_length=500)
     precio = models.DecimalField(max_digits=30,decimal_places=2)
-    tiempo = models.IntegerField() #numero de dias que toma el análisis
+    unidad_min = models.CharField(max_length=50, default='')
+    tiempo = models.CharField(max_length=15) #numero de dias que toma el análisis
+    pais = models.ForeignKey(Pais,on_delete=models.CASCADE, related_name='pais', default='')
+    acreditacion = models.BooleanField(default=False)
 
+    def __str__(self):
+        return "%s %s" % (self.nombre, self.codigo)
+
+######### MODEL USV04-04 ########
+
+
+class Nota(models.Model):
+    id_nota = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE, related_name='analisis')
+    def __str__(self):
+        return "%s" % (self.descripcion)
+
+
+######### MODEL USV04-04 ########
 
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
@@ -103,6 +143,15 @@ class AnalisisCotizacion(models.Model):
     cantidad = models.IntegerField()
     fecha = models.DateField()
 
+    class Meta:
+        verbose_name = 'Analisis Cotizacion'
+        verbose_name_plural = 'Analisis Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.fecha, self.id_analisis_cotizacion)
+
+######### MODEL USV04-04 ########
+
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
@@ -110,4 +159,5 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
-
+    def __str__(self):
+        return "%s" % (self.fecha)
