@@ -201,6 +201,13 @@ function calc_total() {
         //cantidades.push(parseInt($(this).val()));
         // Checamos que no estén vacíos los inputs de cantidad
         var val = $(this).val();
+        if(val < 1){
+            val = val*-1;
+            if(val == 0){
+                val = 1;
+            }
+            $(this).val(val);
+        }
         var temp = pr[i] * val;
         precios.push(temp);
         i = i+1;

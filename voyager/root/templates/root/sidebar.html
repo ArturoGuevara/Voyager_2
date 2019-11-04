@@ -17,6 +17,11 @@
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
                         <li class="nav-item ">
+                            <a class="nav-link" href="/cuentas/">
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
                             <a class="nav-link" href="/cuentas/usuarios">
                                 <span>Lista de Usuarios</span>
                             </a>
@@ -35,6 +40,11 @@
                     <ul class="nav">
                         <li class="nav-item">
                             <a class="nav-link" href="#">
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
                                 <span>Consultar tracking</span>
                             </a>
                         </li>
@@ -50,16 +60,23 @@
                     <ul class="nav">
                         {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
                         <li class="nav-item">
+                            <a class="nav-link" href="/reportes/">
+                                <span>Inicio</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="/reportes/ordenes_internas">
                                 <span>Órdenes internas</span>
                             </a>
                         </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/reportes/ingreso_cliente">
-                                <span>Ingresar muestra</span>
-                            </a>
-                        </li>
+                        {% if request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/reportes/ingreso_cliente">
+                                    <span>Ingresar muestra</span>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </li>
@@ -73,6 +90,11 @@
                 <div class="collapse" id="ventasDropdown">
                     <ul class="nav">
                         {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser'  %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ventas/">
+                                <span>Inicio</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/ventas/ver_catalogo">
                                 <span>Catálogo de análisis</span>

@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="text-md-left text-center">
-        <h2>Cotizaciones 
+        <h2>Cotizaciones
             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones y administrarlas.">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
@@ -29,7 +29,7 @@
                 <th>Vendedor <i class="fa fa-sort"></i></th>
                 <th>Total <i class="fa fa-sort"></i></th>
                 <th>Fecha creada <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de una cotización individual o eliminarla.">Acciones <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de una cotización individual o eliminarla.">Acciones</th>
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
