@@ -2,6 +2,7 @@ from django.db import models
 from cuentas.models import IFCUsuario
 from ventas.models import Factura
 from datetime import datetime, date
+from django.utils import timezone
 
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
@@ -88,7 +89,7 @@ class Cotizacion(models.Model):
     iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField(default=True)
-    fecha_creada = models.DateField(default=date.today())
+    fecha_creada = models.DateField(default=timezone.now)
 
     class Meta:
         verbose_name = 'Cotización'
