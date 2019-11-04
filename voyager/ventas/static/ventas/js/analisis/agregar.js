@@ -1,3 +1,11 @@
+/* Funciones que se ejecutan al cargar la página */
+$(document).ready(function() {
+    // Validar que los campos de registro de analisis no se quedan vacíos
+    $("#btn-agregar-analisis").click(function(){
+        $('#agregar_analisis').modal('show');
+    });
+});
+
 // Validar que los campos de registro de analisis no se quedan vacíos
 $("#submit-analisis-button").click(function(){
     var nombre_r = $('#nombre').val();
@@ -28,7 +36,7 @@ $("#submit-analisis-button").click(function(){
     }
 });
 
-// Agregar análisis
+// Agregar análisis slider range
 $(function(){
     $("#slider-range").slider({
         range: true,
