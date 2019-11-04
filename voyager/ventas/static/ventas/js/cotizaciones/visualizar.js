@@ -51,6 +51,13 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     $('#n_iva').html(data_cotizacion[0].fields.iva);
     $('#n_descuento').html(data_cotizacion[0].fields.descuento);
     $('#n_total').html(data_cotizacion[0].fields.total);
+    
+    $("#editar-cot-cliente > option").each(function() {
+        if($(this).val() == data_cliente[0].pk){
+            $(this).attr('selected','selected');
+        }
+    });
+    
     for (n in analisis) {
         $('#analisis_tabla').append("<tr class='analisis_registro'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td></tr>");
 
