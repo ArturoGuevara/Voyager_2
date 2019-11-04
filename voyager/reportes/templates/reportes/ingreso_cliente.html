@@ -6,6 +6,14 @@
 
 <h2 class="mb-3 mt-3">Información del solicitante</h2>
 
+<div class="text-md-left text-center">
+        <h2>Cotizaciones
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones.">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        </h2>
+</div>
+
 <form action="{% url 'ingresar_muestras' %}" method="post">
   {% csrf_token %}
   <div class="row mt-0 pt-0 mb-0 pb-0">
