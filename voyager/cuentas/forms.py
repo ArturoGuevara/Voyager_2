@@ -11,7 +11,10 @@ class ClientForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__()
-        self.fields['correo'].widget.attrs.update({'class': 'form-control','id': 'correo'})
+        self.fields['correo'].widget.attrs.update({'class': 'form-control',
+                                                        'id': 'correo',
+                                                        'placeholder':'juanrod@gmail.com'
+                                                   })
         self.fields['empresa'].widget.attrs.update({'class': 'form-control'})
         self.fields['contraseña'].widget.attrs.update({'class': 'form-control','id':'contraseña'})
         self.fields['contraseña2'].widget.attrs.update({'class': 'form-control','id':'contraseña2'})
@@ -25,22 +28,27 @@ class ClientForm(ModelForm):
             'nombre': forms.TextInput(
                 attrs={
                     'class':'form-control',
+                    'placeholder': 'Juan José',
                 }
             ),
             'apellido_paterno': forms.TextInput(
                 attrs={
                     'class':'form-control',
-                    'id': 'apellido_paterno'
+                    'id': 'apellido_paterno',
+                    'placeholder': 'Rodríguez',
                 }
             ),
             'apellido_materno': forms.TextInput(
                 attrs={
-                    'class':'form-control'
+                    'class':'form-control',
+                    'id': 'apellido_materno',
+                    'placeholder': 'Sánchez',
                 }
             ),
             'telefono': forms.TextInput(
                 attrs={
-                    'class':'form-control'
+                    'class':'form-control',
+                    'placeholder': '444346456',
                 }
             ),
             'puesto': forms.TextInput(
