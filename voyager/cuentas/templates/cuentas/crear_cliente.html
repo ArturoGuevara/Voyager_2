@@ -66,10 +66,18 @@
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
-                    <a href="{% url 'home' %}" class="btn btn-danger btn-block">Cancelar</a>
+                    <a href="{% url 'home' %}" class="btn btn-danger btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Cancelar la creación de un nuevo usuario">
+                            Cancelar
+                    </a>
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
-                    <button type="submit" id="submit" class="btn btn-success btn-block">Continuar</button>
+                    <button type="submit" id="submit" class="btn btn-success btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Crear un nuevo usuario de cliente">
+                            Crear
+                    </button>
                 </div>
               </div>
         </form>
