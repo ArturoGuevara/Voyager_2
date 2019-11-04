@@ -10,6 +10,7 @@ from django.http import HttpResponse
 from cuentas.models import Empresa
 from ventas.models import Factura
 from django.test.client import Client
+from .views import ordenes_internas
 import datetime
 
 # Create your tests here.
@@ -906,3 +907,146 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         #Checar que el núm de muestras del response sea igual al de la oi asociada
         self.assertEqual(num_muestras, Muestra.objects.filter(oi = orden).count())
         self.assertEqual(response.status_code, 200)   #Mostrar 200
+
+
+
+class TestEditaOrdenesInternas(TestCase):
+    #Tests de cuentas de usuarios
+    def set_up_Users(self):
+
+        #Crea usuarios Clientes
+        rol_soporte = Rol.objects.create(nombre='Soporte')
+        rol_cliente = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('soport', 'soporttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+
+        clientes1 = IFCUsuario.objects.create(
+                                                        rol =rol_soporte,
+                                                        user = usuario_clientes,
+                                                        nombre = 'soporte',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes1.save()
+
+        usuario_clientes = User.objects.create_user('client', 'client@testuser.com', 'testpassword')
+        clientes2 = IFCUsuario.objects.create(
+                                                        rol =rol_cliente,
+                                                        user = usuario_clientes,
+                                                        nombre = 'otro',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes2.save()
+
+        #Crea usuario Director
+        usuario_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
+        rol_dir = Rol.objects.create(nombre='Director')
+
+        dir = IFCUsuario.objects.create(
+                                                        rol = rol_dir,
+                                                        user = usuario_dir,
+                                                        nombre = 'dir',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno = 'test',
+                                                        telefono = '3234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        dir.save()
+
+
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+
+        ventas = IFCUsuario.objects.create(
+                                                        rol = rol_ventas,
+                                                        user = usuario_ventas,
+                                                        nombre = 'ventas',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno = 'test',
+                                                        telefono = '3234567',
+                                                        estado = True,
+                                                        empresa=empresa
+                                                      )
+        ventas.save()
+
+        #Crea usuario Facturacion
+        user_facturacion = User.objects.create_user('fact', 'facttest@testuser.com', 'testpassword')
+        rol_facturacion = Rol.objects.create(nombre='Facturacion')
+        facturacion = IFCUsuario.objects.create(
+                                                        rol = rol_facturacion,
+                                                        user = user_facturacion,
+                                                        nombre ='facturacion',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono ='4234567',
+                                                        estado =True,
+                                                        empresa=empresa
+                                                      )
+        facturacion.save()
+
+        #Crear orden interna para cliente
+        oi = OrdenInterna.objects.create(
+                                                    usuario = clientes1,
+                                                    estatus = "fantasma",
+                                                    localidad = "mexico",
+                                                )
+        oi.save()
+
+    #Tests
+    def test_acceso_denegado(self):
+        #Test de acceso a url sin Log In
+        response = self.client.get('/reportes/ordenes_internas')
+        self.assertRedirects(response, '/cuentas/login?next=/reportes/ordenes_internas', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_acceso_denegado_rol(self):
+        #Test de acceso a url con Log In como Cliente
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='client',password='testpassword')
+        response = self.client.get('/reportes/ordenes_internas')
+        self.assertEqual(response.status_code,404)
+
+    def test_acceso_permitido_total(self):
+        #Test de acceso a url con Log In como Director para que vea a todos los usuarios
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='soport',password='testpassword')
+        response = self.client.get('/reportes/ordenes_internas')
+        self.assertEqual(response.status_code,200)
+    
+    def test_template(self):
+        #Test de creacion de ordenes internas para cliente
+        self.set_up_Users() #Set up de datos
+        self.client.login(username='soport',password='testpassword')
+        orden = OrdenInterna.objects.filter(estatus="fantasma").first()
+        dir = "/reportes/ordenes_internas" 
+        response = self.client.post(dir)
+        self.assertContains(response, "fantasma")
+        self.assertContains(response, "mexico")
+
+    
+    def test_model(self):
+        #Test del model de Ordenes Internas
+        self.set_up_Users() #Set up de datos
+        user = IFCUsuario.objects.get(nombre= "soporte")
+        orden = OrdenInterna.objects.create(  usuario = user,
+                                            localidad = "loc1",
+                                            fecha_envio = "2019-03-02",
+                                            link_resultados = "www.lol.com",
+                                            guia_envio = "lololo"
+                                        )
+
+        self.assertEqual(orden.localidad,"loc1")
+        self.assertEqual(orden.guia_envio,"lololo")
+
+    def test_url_resuelta(self):
+        #URL testing.
+        url = reverse('ordenes_internas')
+        self.assertEquals(resolve(url).func,ordenes_internas)

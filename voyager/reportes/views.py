@@ -9,6 +9,7 @@ from django.urls import reverse
 from urllib.parse import urlencode
 import requests
 import json
+from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
 from cuentas.models import IFCUsuario
 from django.http import Http404
@@ -17,6 +18,7 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
+from django.core.exceptions import ValidationError
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -110,6 +112,15 @@ def oi_guardar(request, form, template_name):
 
 @login_required
 def consultar_orden(request):
+
+    data = {}
+    vector_muestras= None
+    user_serialize= None
+    email={}
+    empresa={}
+    analisis_muestras={}
+    facturas_muestras={}
+
     if request.method != 'POST':
         raise Http404
     if not request.POST.get('id'):
@@ -118,10 +129,10 @@ def consultar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
     if not (
-            user_logged.rol.nombre == "Soporte" 
-            or user_logged.rol.nombre == "Facturacion" 
+            user_logged.rol.nombre == "Soporte"
+            or user_logged.rol.nombre == "Facturacion"
             or user_logged.rol.nombre == "SuperUser"
-        ):   
+        ):
         raise Http404
     if request.method == 'POST':
         id = request.POST.get('id')
@@ -132,31 +143,33 @@ def consultar_orden(request):
             data = data[1:-1]
             muestras = Muestra.objects.filter(oi = oi)
             data_muestras= []
-            for muestra in muestras:
-                data_muestras.append(muestra)
 
-            usuario = muestras[0].usuario
-            user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
-            user_serialize = user_serialize[1:-1]
-            vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-            email = usuario.user.email
-            empresa = usuario.empresa.empresa
-            analisis_muestras = {}
-            facturas_muestras = {}
-            for muestra in muestras:
-                #recuperas todos los analisis de una muestra
-                #ana_mue es objeto de tabla AnalisisMuestra
-                ana_mue = AnalisisMuestra.objects.filter(muestra = muestra) 
-                analisis = []
-                if muestra.factura:
-                    facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
-                else:
-                    facturas_muestras[muestra.id_muestra] = "no hay"
+            if muestras:
+                for muestra in muestras:
+                    data_muestras.append(muestra)
 
-                for a in ana_mue:
-                    analisis.append(a.analisis.codigo)
-                analisis_muestras[muestra.id_muestra] =  analisis
-            
+                usuario = muestras[0].usuario
+                user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+                user_serialize = user_serialize[1:-1]
+                vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+                email = usuario.user.email
+                empresa = usuario.empresa.empresa
+                analisis_muestras = {}
+                facturas_muestras = {}
+                for muestra in muestras:
+                    #recuperas todos los analisis de una muestra
+                    #ana_mue es objeto de tabla AnalisisMuestra
+                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
+                    analisis = []
+                    if muestra.factura:
+                        facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                    else:
+                        facturas_muestras[muestra.id_muestra] = "no hay"
+
+                    for a in ana_mue:
+                        analisis.append(a.analisis.codigo)
+                    analisis_muestras[muestra.id_muestra] =  analisis
+
         else:
             raise Http404
 
@@ -169,7 +182,33 @@ def consultar_orden(request):
                             "dict_am":analisis_muestras,
                             "facturas":facturas_muestras}
                         )
-        
+
+@login_required
+def actualizar_muestra(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        raise Http404
+    if request.method == 'POST':
+        muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
+        if muestra:
+            #Actualizar campos
+            muestra.num_interno_informe = request.POST['num_interno_informe']
+            if isinstance(request.POST['factura'], int):
+                factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
+                if factura:
+                    muestra.factura = factura
+                else:
+                    muestra.factura = None
+            muestra.orden_compra = request.POST['orden_compra']
+            muestra.fechah_recibo = request.POST['fechah_recibo']
+            muestra.save()
+            # Cargar de nuevo la muestra
+            muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
+            data = serializers.serialize("json", [muestra_actualizada], ensure_ascii = False)
+            data = data[1:-1]
+            # Regresamos información actualizada
+            return JsonResponse({"data": data})
+
 
 @login_required
 def actualizar_orden(request):
@@ -294,7 +333,7 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
 def validacion_codigo(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     #Obtención de codigo y verificación de Form
 
@@ -426,7 +465,7 @@ def muestra_enviar(request): #guia para guardar muestras
 
 def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Soporte":
+    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
