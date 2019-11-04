@@ -8,7 +8,7 @@ $(document).ready(function(){
         "infoFiltered": "(Filtrado de _MAX_ total entradas)",
         "infoPostFix": "",
         "thousands": ",",
-        "lengthMenu": "Mostrar _MENU_ entradas",
+        "lengthMenu": "Mostrar entradas _MENU_ ",
         "loadingRecords": "Cargando...",
         "processing": "Procesando...",
         "search": "Buscar:",

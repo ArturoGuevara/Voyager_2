@@ -8,11 +8,15 @@
 
 {% block content %}
     <div class="text-md-left text-center">
-        <h2>Cotizaciones</h2>
+        <h2>Cotizaciones 
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones.">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        </h2>
     </div>
     <div class="text-center text-md-right">
         {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
-            <button id="btn-agregar-cot" class="btn btn-success d-inline"><i class="nc-icon nc-simple-add"></i> Cotización</button>
+            <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para cambiar a la pestaña de crear una nueva cotización."><i class="nc-icon nc-simple-add"></i> Cotización</button>
             <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()">Continuar</button>
             <button id="btn-cancelar-cot" class="btn btn-danger d-none">Cancelar</button>
         {% endif %}

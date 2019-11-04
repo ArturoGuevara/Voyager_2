@@ -1,14 +1,36 @@
-
 var token = csrftoken;
 var id_oi;  // Variable global para borrar orden interna
 
-//cargar datos del usuario en el modal
-function cargar_info_usuario(id){
-    $.ajax({
-
-    })
+function validarFecha(str, id){
+    var id_new = "#editar_muestra_fecha_recibo_" + String(id);
+    if (moment(str, 'YYYY-MM-DD HH:mm:ss',true).isValid()){
+        $(id_new).removeClass('is-invalid');
+        return true;
+    }else{
+        $(id_new).addClass('is-invalid');
+        return false;
+    }
 }
 
+// Función que crea y muestra alerta
+function showNotification(from, align, msg){
+    color = Math.floor((Math.random() * 4) + 1);
+	$.notify({
+		icon: "nc-icon nc-app",
+        message: msg,
+	},{
+		timer: 4000,
+		placement: {
+			from: from,
+			align: align
+		}
+	});
+}
+
+// boton dentro de forma oi que guarda
+$('#submitForm').on('click', function () {
+    $('#actualizar_oi').modal('toggle');
+});
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(id) {
@@ -21,8 +43,22 @@ function cargar_info_oi(id) {
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
+            //Datos de orden interna
             var data = JSON.parse(response.data);
             data = data.fields;
+            //datos de las muestras
+            if(response.muestras != null){
+                var muestras = JSON.parse(response.muestras);
+            }
+            //datos del usuario
+            if(response.usuario != null){
+                var usuario = JSON.parse(response.usuario);
+                usuario = usuario.fields;
+            }
+
+            var correo = response.correo;
+            var analisis_muestras = response.dict_am;
+            var facturas = response.facturas;
 
             //pestaña de información
             $('#editar_idOI').val(id);
@@ -33,7 +69,6 @@ function cargar_info_oi(id) {
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "8809 ES"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -53,45 +88,75 @@ function cargar_info_oi(id) {
 
 
             //Hacer check a las checkboxes
-            if(data.notif_e ="Sí"){
-                $('#editar_notif_e').prop('checked', true)
+            if(data.notif_e == "Sí"){
+                document.getElementById("editar_notif_e").checked = true;
             }
-            if(data.envio_ti ="Sí"){
-                $('#editar_envio_ti').prop('checked', true)
+            else{
+                document.getElementById("editar_notif_e").checked = false;
             }
-            if(data.cliente_cr ="Sí"){
-                $('#editar_cliente_cr').prop('checked', true)
+            if(data.envio_ti == "Sí"){
+                document.getElementById("editar_envio_ti").checked = true;
+            }
+            else{
+                document.getElementById("editar_envio_ti").checked = false;
+            }
+            if(data.cliente_cr == "Sí"){
+                document.getElementById("editar_cliente_cr").checked = true;
+            }
+            else{
+                document.getElementById("editar_cliente_cr").checked = false;
             }
 
-/*
-            //Información general
-            $('#editar_estatus_orden').val(data.fields.estatus)
-            $('#editar_localidad_orden').val(data.fields.localidad)
-            $('#editar_fecha_envio_orden').val(data.fields.fecha_envio)
-            $('#editar_guia_orden').val(data.fields.guia_envio)
-            $('#editar_link_orden').val(data.fields.link_resultados)
-            //Observaciones
-            $('#').val(data.fields.formato_ingreso_muestra)
-            $('#').val(data.fields.idioma_reporte)
-            $('#').val(data.fields.mrl)
-            $('#').val(data.fields.fecha_eri)
-            $('#').val(data.fields.notif_e)
-            $('#').val(data.fields.fecha_lab)
-            $('#').val(data.fields.fecha_ei)
-            $('#').val(data.fields.envio_ti)
-            $('#').val(data.fields.cliente_cr)
-            //Facturacion
-            $('#').val(data.fields.resp_pago)
-            $('#').val(data.fields.correo)
-            $('#').val(data.fields.telefono)
-            */
+            var html_muestras = "";
+            if(muestras != null){
+                for (let mue in muestras){
+                    var id_muestra = muestras[mue].pk;
+                    var objm = muestras[mue].fields;
+
+                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                }
+            }
+            $('.edicion_muestras').html(html_muestras);
         }
     })
 }
 
-// boton dentro de forma oi que guarda
-$('#submitForm').on('click', function () {
+function guardar_muestra(id_muestra){
+    //var idOI = $('#editar_idOI').val();
+    var ni = "#editar_muestra_numero_interno_" + id_muestra;
+    num_interno = $(ni).val();
+    var fr = "#editar_muestra_fecha_recibo_" + id_muestra;
+    fechah_recibo = $(fr).val();
+    var oc = "#editar_muestra_orden_compra_" + id_muestra;
+    orden_compra = $(oc).val();
+    var f = "#editar_muestra_factura_" + id_muestra;
+    factura = $(f).val();
+    if (validarFecha(fechah_recibo, id_muestra)){
+        //Código ajax que guarda una muestra en particular
+        $.ajax({
+            url: 'actualizar_muestra/',
+            type: "POST",
+            data: {
+                'id_muestra': id_muestra,
+                'fechah_recibo': fechah_recibo,
+                'orden_compra': orden_compra,
+                'num_interno_informe': num_interno,
+                'factura': factura,
+                'csrfmiddlewaretoken': token,
+            },
+            dataType: 'json',
+            success: function (response) {
+                showNotification('top','right','La muestra se ha guardado correctamente');
+            },
+            error: function () {
+                showNotification('top','right','Ha ocurrido un error, por favor revisa tus datos');
+            },
+        });
+    }
+}
 
+// boton dentro de forma oi que guarda
+function submit(){
 
     //Código que guarda todas las variables para mandarlas al server y actuaizar oi
     //pestaña de info
@@ -107,12 +172,11 @@ $('#submitForm').on('click', function () {
 
     //checar radio seleccionado, si ninguno, se toma default español
     var idioma_reporte;
-    if($('#editar_idioma_reporteES').prop('checked', true)){
+    if (document.getElementById("editar_idioma_reporteES").checked){
         idioma_reporte = "8809 ES";
-    }else if ($('#editar_idioma_reporteEN').prop('checked', true)){
+    }
+    else if (document.getElementById("editar_idioma_reporteEN").checked){
         idioma_reporte = "8992 EN";
-    }else{
-        idioma_reporte = "8809 ES";
     }
 
     var mrl = $('#editar_mrl').val();
@@ -122,17 +186,18 @@ $('#submitForm').on('click', function () {
 
     //Recuperar value de las checkboxes
     var notif_e = "No"
-    if( $('#editar_notif_e').is(":checked") ){
+    if (document.getElementById("editar_notif_e").checked){
         notif_e = "Sí"
     }
     var envio_ti = "No"
-    if( $('#editar_envio_ti').is(":checked") ){
+    if (document.getElementById("editar_envio_ti").checked){
         envio_ti = "Sí"
     }
     var cliente_cr = "No"
-    if( $('#editar_cliente_cr').is(":checked") ){
-        notif_e = "Sí"
+    if (document.getElementById("editar_cliente_cr").checked){
+        cliente_cr = "Sí"
     }
+
 
     //Código ajax que guarda los datos
     $.ajax({
@@ -160,12 +225,16 @@ $('#submitForm').on('click', function () {
         success: function (response) {
             var data = JSON.parse(response.data);
             data = data.fields;
-            var tr = '#oi-'+idOI + " .oi_estatus";
-            $(tr).text(data.estatus);
+            var track = '#oi-'+idOI + " .oi_estatus";
+            $(track).text(data.estatus);
+            track = '#oi-'+idOI + " .oi_localidad";
+            $(track).text(data.localidad);
+            showNotification('top','right','Se han guardado tus cambios');
+            $('#actualizar_oi').modal('toggle');
+            $('#modal-orden-interna').modal('toggle');
         }
     });
-
-})
+}
 
 function build_muestras(id_muestra, muestra, analisis, factura){
     var html = `
@@ -235,6 +304,84 @@ function build_muestras(id_muestra, muestra, analisis, factura){
     return html;
 }
 
+function editar_muestras(id_muestra, muestra, analisis, factura){
+    //Eliminar el formato de fecha dado por Django para poder leerla
+    if (muestra.fechah_recibo != null){
+        fecha_r = muestra.fechah_recibo.replace('T', ' ');
+        fecha_r = fecha_r.replace('Z', '');
+    }
+    else{
+        fecha_r = '';
+    }
+    var html = `
+    <div class="card">
+        <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
+                Muestra ` + id_muestra + `
+            </a>
+        </div>
+        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-md-2">
+                        <label for="editar_muestra_numero_` + id_muestra + `">Número</label>
+                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="editar_muestra_codigo_` + id_muestra + `">Código</label>
+                        <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="editar_muestra_` + id_muestra + `">Muestra</label>
+                        <input type="text" class="form-control" id="editar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
+                        <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno" value=" ` + muestra.num_interno_informe + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
+                        <input type="text" class="form-control" id="editar_muestra_fecha_recibo_` + id_muestra + `" placeholder="2019-01-25 18:36:00" value="` + fecha_r + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
+                        <input type="text" class="form-control" id="editar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
+                        <input type="number" class="form-control" id="editar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `">
+                    </div>
+                    <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
+                </div>
+                <p>Análisis</p>
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped">
+                        <thead>
+                            <th>Nombre</th>
+                        </thead>
+                        <tbody>`;
+
+
+    for(let a in analisis){
+        html = html+ `
+            <tr>
+                <td>`+ analisis[a] +`</td>
+            </tr>
+        `;
+    }
+
+    html = html+ `</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>`;
+    return html;
+}
+
+
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
     $.ajax({
@@ -284,12 +431,13 @@ function visualizar_info_oi(id) {
             $('#visualizar_cliente_cr').text(data.cliente_cr);
 
             var html_muestras = "";
+            if(muestras != null){
+                for (let mue in muestras){
+                    var id_muestra = muestras[mue].pk;
+                    var objm = muestras[mue].fields;
 
-            for (let mue in muestras){
-                var id_muestra = muestras[mue].pk;
-                var objm = muestras[mue].fields;
-
-                html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                    html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                }
             }
             $('.accordion_muestras').html(html_muestras);
 
