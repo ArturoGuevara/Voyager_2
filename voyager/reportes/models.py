@@ -14,7 +14,7 @@ class Paquete(models.Model):
 # Create your models here.
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
-    usuarito = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
+    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
     localidad = models.CharField(max_length=50, blank=True)
     fecha_envio = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
