@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="text-md-left text-center">
-        <h2>Cotizaciones 
+        <h2>Cotizaciones
             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones.">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
@@ -43,9 +43,11 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
+                        <!--
                         <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
                             <i class="fa fa-trash"></i>
                         </button>
+                        -->
                     </td>
                 </tr>
                 {% endfor %}
