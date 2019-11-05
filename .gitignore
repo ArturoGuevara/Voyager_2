@@ -133,4 +133,4 @@ venv.bak/
 
 #Ignorar Migraciones
 **/migrations/**
-/voyager/settings.py
+voyager/voyager/settings.py
