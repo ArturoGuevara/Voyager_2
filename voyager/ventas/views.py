@@ -145,48 +145,52 @@ def borrar_analisis(request, id):
 #US V10-10
 @login_required
 def agregar_analisis(request):
-    if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
-        form = AnalisisForma(request.POST)
-        if form.is_valid():         # Verificar si los datos de la forma son validos
-           # Tomar los datos por su nombre en el HTML
-            n_nombre = form.cleaned_data['nombre']
-            n_codigo = form.cleaned_data['codigo']
-            n_precio = form.cleaned_data['precio']
-            n_descripcion = form.cleaned_data['descripcion']
-            n_duracion = form.cleaned_data['duracion']
-            n_pais = form.cleaned_data['pais']
-            n_unidad_min = form.cleaned_data['unidad_min']
-            n_acreditacion = form.cleaned_data['acreditacion']
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+        if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+            form = AnalisisForma(request.POST)
+            if form.is_valid():         # Verificar si los datos de la forma son validos
+               # Tomar los datos por su nombre en el HTML
+                n_nombre = form.cleaned_data['nombre']
+                n_codigo = form.cleaned_data['codigo']
+                n_precio = form.cleaned_data['precio']
+                n_descripcion = form.cleaned_data['descripcion']
+                n_duracion = form.cleaned_data['duracion']
+                n_pais = form.cleaned_data['pais']
+                n_unidad_min = form.cleaned_data['unidad_min']
+                n_acreditacion = form.cleaned_data['acreditacion']
 
-            n_pais = Pais.objects.get(id_pais=n_pais)
-            if n_acreditacion == "0":
-                n_acreditacion = False
+                n_pais = Pais.objects.get(id_pais=n_pais)
+                if n_acreditacion == "0":
+                    n_acreditacion = False
+                else:
+                    n_acreditacion = True
+
+                newAnalisis = Analisis.objects.create(
+                    nombre = n_nombre,
+                    codigo = n_codigo,
+                    descripcion = n_descripcion,
+                    precio = n_precio,
+                    tiempo = n_duracion,
+                    pais = n_pais,
+                    unidad_min = n_unidad_min,
+                    acreditacion = n_acreditacion
+                )
+                newAnalisis.save()      # Guardar objeto
+                request.session['success_code'] = 1
+                return redirect('/ventas/ver_catalogo')
             else:
-                n_acreditacion = True
-
-            newAnalisis = Analisis.objects.create(
-                nombre = n_nombre,
-                codigo = n_codigo,
-                descripcion = n_descripcion,
-                precio = n_precio,
-                tiempo = n_duracion,
-                pais = n_pais,
-                unidad_min = n_unidad_min,
-                acreditacion = n_acreditacion
-            )
-            newAnalisis.save()      # Guardar objeto
-            request.session['success_code'] = 1
-            return redirect('/ventas/ver_catalogo')
+                request.session['success_code'] = -1
+                return redirect('/ventas/ver_catalogo')
         else:
-            request.session['success_code'] = -1
             return redirect('/ventas/ver_catalogo')
     else:
-        return redirect('/ventas/ver_catalogo')
+        raise Http404
 
 # Cotizaciones
 @login_required
 def ver_cotizaciones(request):
-    #Vista de cotizaciones del cliente
+    #Vista de cotizaciones del cliente. Esta funcion muestra todas las cotizaciones consultadas en una tabla.
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
@@ -384,8 +388,9 @@ def actualizar_cotizacion(request,id):
 
 @login_required
 def visualizar_cotizacion(request, id):
+    # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":  # Verificar el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
             if cotizacion:  # Verificar si la cotizacion existe
