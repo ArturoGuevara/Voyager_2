@@ -154,7 +154,7 @@ def actualizar_usuario(request):
 def crear_cliente(request):
     form = ClientForm()
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if user_logged.rol.nombre != "Ventas":  # verificar que el usuario pertenezca al grupo con permisos
+    if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
     return render(request, 'cuentas/crear_cliente.html', {'form' : form})
 
