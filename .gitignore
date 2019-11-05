@@ -132,4 +132,4 @@ venv.bak/
 .idea/**/markdown-navigator/
 
 #Ignorar Migraciones
-migrations/
+**/migrations/**
