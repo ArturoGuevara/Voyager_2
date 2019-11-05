@@ -8,20 +8,25 @@
 
 {% block content %}
     <div class="text-md-left text-center">
-        <h2>Órdenes Internas</h2>
+        <h2>Órdenes Internas
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus ordenes internas y administrarlas.">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        </h2>
     </div>
+    
     <div class="text-center text-md-right">
-        <button class="btn btn-info" data-toggle="modal" data-target="#modal_paquete"><i class="nc-icon nc-email-83"></i> Paquete</button>
+        <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Este botón te sirve para registrar un código de rastreo de DHL a varias ordenes internas a la vez."><i class="nc-icon nc-email-83"></i> Paquete</button>
     </div>
     <div id="table" class="table-responsive table-full-width">
         <table class="table table-hover table-responsive table-striped" id="tabla_ordenes_internas">
             <thead>
-                <th>#</th>
-                <th>Estatus</th>
-                <th>Empresa</th>
-                <th>Usuario</th>
-                <th>Localidad</th>
-                <th>Acciones</th>
+                <th># <i class="fa fa-sort"></i></th>
+                <th>Estatus <i class="fa fa-sort"></i></th>
+                <th>Empresa <i class="fa fa-sort"></i></th>
+                <th>Usuario <i class="fa fa-sort"></i></th>
+                <th>Localidad <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de una orden interna, editarla, enviar resultados o eliminarla.">Acciones</th>
             </thead>
             <tbody>
                 {% for o in ordenes %}

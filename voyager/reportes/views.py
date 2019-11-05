@@ -62,7 +62,7 @@ def ingresar_muestras(request):
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     return render(request, 'reportes/index.html')
 
@@ -70,7 +70,7 @@ def indexView(request):
 @login_required
 def ordenes_internas(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
     estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
@@ -95,7 +95,7 @@ def ordenes_internas(request):
 @login_required
 def oi_guardar(request, form, template_name):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     data = dict()
     if request.method == 'POST':
@@ -132,6 +132,7 @@ def consultar_orden(request):
             user_logged.rol.nombre == "Soporte"
             or user_logged.rol.nombre == "Facturacion"
             or user_logged.rol.nombre == "SuperUser"
+            or user_logged.rol.nombre=="Ventas"
         ):
         raise Http404
     if request.method == 'POST':
@@ -186,7 +187,7 @@ def consultar_orden(request):
 @login_required
 def actualizar_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
@@ -213,7 +214,7 @@ def actualizar_muestra(request):
 @login_required
 def actualizar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI = request.POST['idOI'])
@@ -333,7 +334,7 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
 def validacion_codigo(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre=="Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     #Obtención de codigo y verificación de Form
 
@@ -465,7 +466,7 @@ def muestra_enviar(request): #guia para guardar muestras
 
 def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas":
         if request.method == 'POST':
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)

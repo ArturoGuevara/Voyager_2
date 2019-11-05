@@ -474,6 +474,9 @@ $(document).ready(function(){
     $('#borrar_orden').on('hidden.bs.modal', function () {
        id_oi = 0;
     });
+    $('#btn-paquete-dhl').on('click', function () {
+        $('#modal_paquete').modal('show');
+    });
 })
 
 // Cargar id de OI a variable global

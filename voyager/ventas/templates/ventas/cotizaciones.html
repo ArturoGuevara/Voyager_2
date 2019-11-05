@@ -9,7 +9,7 @@
 {% block content %}
     <div class="text-md-left text-center">
         <h2>Cotizaciones
-            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones.">
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus cotizaciones y administrarlas.">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
         </h2>
@@ -17,19 +17,19 @@
     <div class="text-center text-md-right">
         {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
             <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para cambiar a la pestaña de crear una nueva cotización."><i class="nc-icon nc-simple-add"></i> Cotización</button>
-            <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()">Continuar</button>
-            <button id="btn-cancelar-cot" class="btn btn-danger d-none">Cancelar</button>
+            <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Este botón te permite ir al resumen de la cotización para agregar los últimos detalles.">Continuar</button>
+            <button id="btn-cancelar-cot" class="btn btn-danger d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Este botón te permite cancelar y regresar a la lista de todas las cotizaciones.">Cancelar</button>
         {% endif %}
     </div>
     <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
         <table class="table table-hover table-responsive table-striped" id="tabla_cotizaciones">
             <thead>
-                <th class="text-center">#</th>
-                <th class="text-center">Cliente</th>
-                <th class="text-center">Vendedor</th>
-                <th class="text-center">Total</th>
-                <th class="text-center">Fecha creada</th>
-                <th class="text-center">Acciones</th>
+                <th># <i class="fa fa-sort"></i></th>
+                <th>Cliente <i class="fa fa-sort"></i></th>
+                <th>Vendedor <i class="fa fa-sort"></i></th>
+                <th>Total <i class="fa fa-sort"></i></th>
+                <th>Fecha creada <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de una cotización individual o eliminarla.">Acciones</th>
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
@@ -57,13 +57,13 @@
     <div id="container-analisis" class="table-responsive table-full-width d-none">
         <table class="table table-hover table-responsive table-striped" id="tabla_analisis_2">
             <thead>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Descripción</th>
-                <th>Precio</th>
-                <th>Tiempo Aprox.</th>
-                <th>Acciones</th>
-                <th>Checkbox</th>
+                <th>Código <i class="fa fa-sort"></i></th>
+                <th>Nombre <i class="fa fa-sort"></i></th>
+                <th>Descripción <i class="fa fa-sort"></i></th>
+                <th>Precio <i class="fa fa-sort"></i></th>
+                <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene el botón para visualizar la información individual de cada análisis.">Acciones</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene un selector que te permite marcar un análisis para agregarlo a la cotización.">Checkbox</th>
             </thead>
             <tbody>
                 {% for a in analisis %}
