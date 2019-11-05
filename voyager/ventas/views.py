@@ -265,10 +265,6 @@ def crear_cotizacion(request):
                 cantidad = request.POST.getlist('cantidades[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
-                        # for cant in cantidad:
-                        #     if cant < 1:
-                        #         # Regresamos la respuesta de error interno del servidor
-                        #         return redirect('/ventas/cotizaciones')
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         c = Cotizacion()
                         c.usuario_c = cliente
