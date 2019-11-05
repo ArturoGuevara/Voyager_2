@@ -59,7 +59,11 @@ function cargar_info_oi(id) {
             var correo = response.correo;
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
-
+            $('#editar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
+            $('#editar_usuario_nombre').text(n);
+            $('#editar_usuario_email').text(response.correo);
+            $('#editar_usuario_telefono').text(usuario.telefono);
             //pestaña de información
             $('#editar_idOI').val(id);
             $('#editar_estatus').val(data.estatus);
@@ -316,11 +320,11 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
     var html = `
     <div class="card">
         <div class="card-header">
-            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
+            <a class="card-link" data-toggle="collapse" href="#editar_collapse` + id_muestra + `">
                 Muestra ` + id_muestra + `
             </a>
         </div>
-        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
+        <div id="editar_collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
             <div class="card-body">
                 <div class="form-row">
                     <div class="form-group col-md-2">
@@ -338,19 +342,19 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
+                        <label for="editar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
                         <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno" value=" ` + muestra.num_interno_informe + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
+                        <label for="editar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
                         <input type="text" class="form-control" id="editar_muestra_fecha_recibo_` + id_muestra + `" placeholder="2019-01-25 18:36:00" value="` + fecha_r + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
+                        <label for="editar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
                         <input type="text" class="form-control" id="editar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
+                        <label for="editar_muestra_factura_` + id_muestra + `">Factura</label>
                         <input type="number" class="form-control" id="editar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `">
                     </div>
                     <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
