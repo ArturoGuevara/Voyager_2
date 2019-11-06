@@ -437,7 +437,7 @@ def muestra_enviar(request): #guia para guardar muestras
                             am.fecha = datetime.datetime.now()
                             if request.POST.get('enviar')=="1": #verificar que la información se haya enviado para guardar o enviar
                                 am.estado = True
-                                a = all_analysis_cot.get(analisis__id_analisis=id_analisis)
+                                a = all_analysis_cot.filter(analisis__id_analisis=id_analisis).first()
                                 a.cantidad = a.cantidad-1 #disminuir cantidad de análisis disponibles
                                 a.save()
                             else:
