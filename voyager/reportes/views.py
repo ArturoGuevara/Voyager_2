@@ -393,6 +393,18 @@ def muestra_enviar(request): #guia para guardar muestras
                 muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
                 if muestras_hoy:
                     oi = muestras_hoy[0].oi #si se ha registrado una muestra en el mismo día, usar la misma orden interna
+                    for m in muestras_hoy:
+                        if m.oi.estatus != 'borrado':
+                            oi = m.oi
+                    if oi.estatus == 'borrado':
+                        oi = OrdenInterna()
+                        oi.usuario = phantom_user
+                        if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
+                            oi.estatus = 'fantasma'
+                        else:
+                            oi.estatus = 'invisible'
+                        oi.idioma_reporte = request.POST.get('idioma')
+                        oi.save()
                 else: #crear orden interna si no se ha registrado una
                     oi = OrdenInterna()
                     oi.usuario = phantom_user
