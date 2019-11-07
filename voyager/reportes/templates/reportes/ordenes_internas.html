@@ -41,17 +41,14 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button type="button" class="btn btn-warning" onclick="cargar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-orden-interna">
-                            <i class='fas fa-edit'></i>
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
-                            <i class='fas fa-paper-plane'></i>
-                        </button>
                         {% if request.session.userrole == "Soporte" or request.session.userrole == "SuperUser" %}
                         <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
                         {% endif %}
+                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
+                            Enviar
+                        </button>
                     </td>
                 </tr>
                 {% endif %}
@@ -60,10 +57,8 @@
         </table>
     </div>
     {% include './modals/paquete.html' %}
-    {% include './modals/ver-orden.html' %}
     {% include './modals/borrar-orden.html' %}
-    {% include './modals/visualizar-orden.html' %}
-    {% include './modals/actualizar_oi.html' %}
+    {% include './modals/ver-oi.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -71,6 +66,7 @@
     <script src="{% static 'reportes/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'reportes/js/orden.js' %}" type="text/javascript"></script>
     <script src="{% static 'reportes/js/validacion.js' %}" type="text/javascript"></script>
+    <script src="{% static 'reportes/js/ver-editar-oi.js' %}" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
     {% if successcode == "200" %}

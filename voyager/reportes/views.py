@@ -112,69 +112,51 @@ def oi_guardar(request, form, template_name):
 
 @login_required
 def consultar_orden(request):
-
-    data = {}
-    vector_muestras= None
-    user_serialize= None
-    email={}
-    empresa={}
-    analisis_muestras={}
-    facturas_muestras={}
-
-    if request.method != 'POST':
-        raise Http404
-    if not request.POST.get('id'):
-        raise Http404
-
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
-    if not (
-            user_logged.rol.nombre == "Soporte"
-            or user_logged.rol.nombre == "Facturacion"
-            or user_logged.rol.nombre == "SuperUser"
-            or user_logged.rol.nombre=="Ventas"
-        ):
-        raise Http404
-    if request.method == 'POST':
-        id = request.POST.get('id')
-        #oi = orden interna
-        oi = OrdenInterna.objects.get(idOI = id)
-        if oi:
-            data = serializers.serialize("json", [oi], ensure_ascii = False)
-            data = data[1:-1]
-            muestras = Muestra.objects.filter(oi = oi)
-            data_muestras= []
+    if (user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas"):
+        data = {}
+        vector_muestras = None
+        user_serialize = None
+        email = {}
+        empresa = {}
+        analisis_muestras = {}
+        facturas_muestras = {}
+        if request.method == 'POST':
+            id = request.POST.get('id')
+            #oi = orden interna
+            oi = OrdenInterna.objects.get(idOI = id)
+            if oi:
+                data = serializers.serialize("json", [oi], ensure_ascii = False)
+                data = data[1:-1]
+                muestras = Muestra.objects.filter(oi = oi)
+                data_muestras= []
+                if muestras:
+                    for muestra in muestras:
+                        data_muestras.append(muestra)
 
-            if muestras:
-                for muestra in muestras:
-                    data_muestras.append(muestra)
+                    usuario = muestras[0].usuario
+                    user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+                    user_serialize = user_serialize[1:-1]
+                    vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+                    email = usuario.user.email
+                    empresa = usuario.empresa.empresa
+                    analisis_muestras = {}
+                    facturas_muestras = {}
+                    for muestra in muestras:
+                        #recuperas todos los analisis de una muestra
+                        #ana_mue es objeto de tabla AnalisisMuestra
+                        ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
+                        analisis = []
+                        if muestra.factura:
+                            facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                        else:
+                            facturas_muestras[muestra.id_muestra] = "no hay"
 
-                usuario = muestras[0].usuario
-                user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
-                user_serialize = user_serialize[1:-1]
-                vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-                email = usuario.user.email
-                empresa = usuario.empresa.empresa
-                analisis_muestras = {}
-                facturas_muestras = {}
-                for muestra in muestras:
-                    #recuperas todos los analisis de una muestra
-                    #ana_mue es objeto de tabla AnalisisMuestra
-                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
-                    analisis = []
-                    if muestra.factura:
-                        facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
-                    else:
-                        facturas_muestras[muestra.id_muestra] = "no hay"
-
-                    for a in ana_mue:
-                        analisis.append(a.analisis.codigo)
-                    analisis_muestras[muestra.id_muestra] =  analisis
-
-        else:
-            raise Http404
-
-        return JsonResponse(
+                        for a in ana_mue:
+                            analisis.append(a.analisis.codigo)
+                        analisis_muestras[muestra.id_muestra] =  analisis
+                    return JsonResponse(
                             {"data": data,
                             "muestras":vector_muestras,
                             "usuario":user_serialize,
@@ -183,6 +165,22 @@ def consultar_orden(request):
                             "dict_am":analisis_muestras,
                             "facturas":facturas_muestras}
                         )
+                else:
+                    response = JsonResponse({"error": "Hubo un error con las muestras"})
+                    #response.status_code = 500
+                    return response
+            else:
+                response = JsonResponse({"error": "No existe esa orden interna"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response    
+    else:
+        raise Http404
 
 @login_required
 def actualizar_muestra(request):
