@@ -132,4 +132,5 @@ venv.bak/
 .idea/**/markdown-navigator/
 
 #Ignorar Migraciones
-migrations/
+**/migrations/**
+voyager/voyager/settings.py
