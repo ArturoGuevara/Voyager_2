@@ -264,9 +264,12 @@ def crear_cotizacion(request):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
@@ -325,9 +328,12 @@ def actualizar_cotizacion(request,id):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
