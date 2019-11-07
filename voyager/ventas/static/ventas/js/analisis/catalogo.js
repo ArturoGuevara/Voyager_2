@@ -24,6 +24,7 @@ function cargar_info_modal_ver(codigo, nombre, precio, tiempo, descripcion){
     $('#fecha_analisis').html(tiempo);
     $('#descripcion_analisis').html(descripcion);
 }
+
 function cargar_info_modal_editar(codigo, nombre, precio, tiempo, descripcion){
     $('#editar_codigo_analisis').val(codigo);
     $('#editar_nombre_analisis').val(nombre);

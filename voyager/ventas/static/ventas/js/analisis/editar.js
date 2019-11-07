@@ -2,13 +2,31 @@
 $('#btn-editar-analisis').click(function(){
     $(this).removeClass('d-block').addClass('d-none');
     $('#btn-guardar-cambios').removeClass('d-none').addClass('d-block');
+    $('#btn-cancelar-edicion').removeClass('d-none').addClass('d-block');
     $('#ver_info').removeClass('d-block').addClass('d-none');
     $('#editar_info').removeClass('d-none').addClass('d-block');
 });
 
 $('#btn-guardar-cambios').click(function(){
+    var nombre = $('#editar_nombre_analisis').val();
+    var codigo = $('#editar_codigo_analisis').val();
+    var descripcion = $('#editar_desc_analisis').val();
+    var precio = $('#editar_precio_analisis').val();
+    var tiempo =  $('#editar-duracion').val();
+
+    // Validar que los inputs no estén vacíos
+    if(!check_is_not_empty(nombre,'#editar_nombre_analisis') ||
+        !check_is_not_empty(codigo,'#editar_codigo_analisis') ||
+        !check_is_not_empty(descripcion,'#editar_desc_analisis') ||
+        !check_is_not_empty(precio,'#editar_precio_analisis') ||
+        !check_is_not_empty(tiempo,'#editar-duracion')
+    ){
+        return 0;
+    }
     $(this).removeClass('d-block').addClass('d-none');
+    $("#btn-cancelar-edicion").removeClass('d-block').addClass('d-none');
     $('#btn-confirmar-cambios').removeClass('d-none').addClass('d-block');
+    $('#btn-cancelar-cambios').removeClass('d-none').addClass('d-block');
     $('#editar_info').removeClass('d-block').addClass('d-none');
     $('#confirmar_info').removeClass('d-none').addClass('d-block');
     $('#confirmar_codigo_analisis').html($('#editar_codigo_analisis').val());
@@ -16,6 +34,38 @@ $('#btn-guardar-cambios').click(function(){
     $('#confirmar_precio_analisis').html($('#editar_precio_analisis').val());
     $('#confirmar_fecha_analisis').html($('#editar-duracion').val());
     $('#confirmar_descripcion_analisis').html($('#editar_desc_analisis').val());
+});
+
+$('#btn-cancelar-cambios').click(function(){
+    //Ocultar
+    //boton confirmar cambios
+    $('#btn-confirmar-cambios').removeClass('d-block').addClass('d-none');
+    //boton cancelar cambios
+    $(this).removeClass('d-block').addClass('d-none');
+    //block confirmar cambios
+    $('#confirmar_info').removeClass('d-block').addClass('d-none');
+    //Mostrar
+    //block editar
+    $('#editar_info').removeClass('d-none').addClass('d-block');
+    //boton guardar
+    $('#btn-guardar-cambios').removeClass('d-none').addClass('d-block');
+    //boton cancelar edicion
+    $('#btn-cancelar-edicion').removeClass('d-none').addClass('d-block');
+});
+
+$('#btn-cancelar-edicion').click(function(){
+    //Ocultar
+    //boton cancelar edicion
+    $('#btn-cancelar-edicion').removeClass('d-block').addClass('d-none');
+    //boton guardar
+    $('#btn-guardar-cambios').removeClass('d-block').addClass('d-none');
+    //block editar
+    $('#editar_info').removeClass('d-block').addClass('d-none');
+    //Mostrar
+    //block ver
+    $('#ver_info').removeClass('d-none').addClass('d-block');
+    //boton editar
+    $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
 });
 
 /* Funciones para ver y editar análisis */
@@ -40,6 +90,12 @@ function cargar_analisis(id){
                 cargar_info_modal_ver(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
                 // Precargamos los datos en los input
                 cargar_info_modal_editar(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
+                $('#confirmar_info').removeClass('d-block').addClass('d-none');
+                $('#ver_info').removeClass('d-none').addClass('d-block');
+                $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
+                $('#btn-cancelar-edicion').removeClass('d-block').addClass('d-none');
+                $('#btn-cancelar-cambios').removeClass('d-block').addClass('d-none');
+                $('#btn-confirmar-cambios').removeClass('d-block').addClass('d-none');
                 // Guardamos en la variable global la id del análisis que se está visualizando por si se quiere modificar
                 id_analisis = id;
             },
@@ -103,6 +159,7 @@ function editar_analisis(){
                 id_analisis = 0;
                 $('#confirmar_info').removeClass('d-block').addClass('d-none');
                 $('#ver_info').removeClass('d-none').addClass('d-block');
+                $('#btn-editar-analisis').removeClass('d-none').addClass('d-block');
                 $('#btn-confirmar-cambios').removeClass('d-block').addClass('d-none');
             },
             error: function(data){
