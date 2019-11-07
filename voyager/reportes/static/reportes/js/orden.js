@@ -12,34 +12,19 @@ function validarFecha(str, id){
     }
 }
 
-// Función que crea y muestra alerta
-function showNotification(from, align, msg){
-    color = Math.floor((Math.random() * 4) + 1);
-	$.notify({
-		icon: "nc-icon nc-app",
-        message: msg,
-	},{
-		timer: 4000,
-		placement: {
-			from: from,
-			align: align
-		}
-	});
-}
-
 // boton dentro de forma oi que guarda
 $('#submitForm').on('click', function () {
     $('#actualizar_oi').modal('toggle');
 });
 
 // boton para abrir modal de actualizar oi y carga los campos
-function cargar_info_oi(id) {
+function cargar_info_oi(){
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
         dataType: 'json',
         data: {
-            'id':id,
+            'id':id_oi,
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
@@ -65,7 +50,7 @@ function cargar_info_oi(id) {
             $('#editar_usuario_email').text(response.correo);
             $('#editar_usuario_telefono').text(usuario.telefono);
             //pestaña de información
-            $('#editar_idOI').val(id);
+            $('#editar_idOI').val(id_oi);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
             $('#editar_fecha_envio').val(data.fecha_envio);
@@ -233,9 +218,8 @@ function submit(){
             $(track).text(data.estatus);
             track = '#oi-'+idOI + " .oi_localidad";
             $(track).text(data.localidad);
+            $('#modal-visualizar-orden').modal('hide');
             showNotification('top','right','Se han guardado tus cambios');
-            $('#actualizar_oi').modal('toggle');
-            $('#modal-orden-interna').modal('toggle');
         }
     });
 }
@@ -388,6 +372,7 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
 
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
+    id_oi = id;
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
