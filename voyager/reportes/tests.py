@@ -683,7 +683,7 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         #ingresar como un usuario soporte
         self.client.login(username='hockey', password='lalocura')
         response = self.client.get(reverse('consultar_orden'))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 500)
 
     def test_post_empty(self):   #Prueba si no se manda nada en el post
         self.setup()
@@ -1020,18 +1020,18 @@ class TestEditaOrdenesInternas(TestCase):
         self.client.login(username='soport',password='testpassword')
         response = self.client.get('/reportes/ordenes_internas')
         self.assertEqual(response.status_code,200)
-    
+
     def test_template(self):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
         self.client.login(username='soport',password='testpassword')
         orden = OrdenInterna.objects.filter(estatus="fantasma").first()
-        dir = "/reportes/ordenes_internas" 
+        dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
         self.assertContains(response, "fantasma")
         self.assertContains(response, "mexico")
 
-    
+
     def test_model(self):
         #Test del model de Ordenes Internas
         self.set_up_Users() #Set up de datos
