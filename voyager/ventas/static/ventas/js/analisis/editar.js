@@ -101,6 +101,9 @@ function editar_analisis(){
                 showNotification('top','right','Cambios guardados correctamente');
 
                 id_analisis = 0;
+                $('#confirmar_info').removeClass('d-block').addClass('d-none');
+                $('#ver_info').removeClass('d-none').addClass('d-block');
+                $('#btn-confirmar-cambios').removeClass('d-block').addClass('d-none');
             },
             error: function(data){
                 // Código de error alert(data.status);
