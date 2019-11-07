@@ -6,6 +6,18 @@ $('#btn-editar-analisis').click(function(){
     $('#editar_info').removeClass('d-none').addClass('d-block');
 });
 
+$('#btn-guardar-cambios').click(function(){
+    $(this).removeClass('d-block').addClass('d-none');
+    $('#btn-confirmar-cambios').removeClass('d-none').addClass('d-block');
+    $('#editar_info').removeClass('d-block').addClass('d-none');
+    $('#confirmar_info').removeClass('d-none').addClass('d-block');
+    $('#confirmar_codigo_analisis').html($('#editar_codigo_analisis').val());
+    $('#confirmar_nombre_analisis').html($('#editar_nombre_analisis').val());
+    $('#confirmar_precio_analisis').html($('#editar_precio_analisis').val());
+    $('#confirmar_fecha_analisis').html($('#editar-duracion').val());
+    $('#confirmar_descripcion_analisis').html($('#editar_desc_analisis').val());
+});
+
 /* Funciones para ver y editar análisis */
 function cargar_analisis(id){
     // El id de análisis tiene que existir

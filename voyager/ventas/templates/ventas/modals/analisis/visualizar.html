@@ -23,7 +23,7 @@
                             Precio: <span id="precio_analisis" class="text-justify font-weight-normal">$1,000</span>
                         </div>
                         <div class="col-sm-12 col-md-6 font-weight-bold">
-                            Fecha: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                            Duración: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
                         </div>
                     </div>
                     <div class="row my-3">
@@ -73,10 +73,34 @@
                         </div>
                     </form>
                 </div>
+                <div class="d-none m-4" id="confirmar_info">
+                    <div class="row my-3">
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Código: <span id="confirmar_codigo_analisis" class="text-justify font-weight-normal">A1</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Nombre: <span id="confirmar_nombre_analisis" class="text-justify font-weight-normal">Análisis A1</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Precio: <span id="confirmar_precio_analisis" class="text-justify font-weight-normal">$1,000</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Duración: <span id="confirmar_fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            Descripción: <span id="confirmar_descripcion_analisis" class="text-justify font-weight-normal">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, at aperiam voluptatum soluta cumque, et veniam doloremque deleniti adipisci placeat, quo quam iste libero inventore ea beatae provident repudiandae animi.</span>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
-                <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Guardar</button>
+                <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none">Guardar</button>
+                <button type="submit" id="btn-confirmar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Confirmar</button>
             </div>
         </div>
     </div>
