@@ -35,7 +35,7 @@ $('#btn-editar-cot').click(function(){
     // Alternar botones
     $(this).removeClass('d-inline').addClass('d-none');
     $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
-    $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-confirm-editar-cot').removeClass('d-none').addClass('d-inline');
 
     //Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-block').addClass('d-none');
@@ -43,14 +43,84 @@ $('#btn-editar-cot').click(function(){
 });
 $('#btn-canc-edit-cot').click(function(){
     restaurar_modal_ver_cot();
+    $('#confirm-edit-cot').removeClass('d-block').addClass('d-none');
+    $('#btn-confirm-editar-cot').removeClass('d-inline').addClass('d-none');
     // Reiniciamos al default los valores de la cotización
     visualizar_cotizacion(id_cotizacion);
 });
+
+// Boton para cancelar
+$('#btn-canc-edit-cot-2').click(function(){
+    $('#confirm-edit-cot').removeClass('d-block').addClass('d-none');
+    $('#editar-resumen-cot').removeClass('d-none').addClass('d-block');
+    $('#btn-confirm-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#btn-canc-edit-cot-2').removeClass('d-inline').addClass('d-none');
+    $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-guar-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#btn-confirm-editar-cot').removeClass('d-none').addClass('d-inline');
+
+});
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
+    $('#confirm-edit-cot').removeClass('d-block').addClass('d-none');
+    $('#btn-confirm-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#btn-canc-edit-cot-2').removeClass('d-inline').addClass('d-none');
     // Restauramos la variable global que almacena la id de la cotización clickeada
     id_cotizacion = 0;
 });
+
+// Confirmacion para editar COTIZACION
+function solicitar_confirmacion_cot(){
+    var cliente = $('#editar-cot-cliente').val();
+    var subtotal = $('#editar-cot-subtotal').val();
+    var descuento = $('#editar-cot-descuento').val();
+    var iva = $('#editar-cot-iva').val();
+    var total = $('#editar-cot-total').val();
+
+    // Variables que no necesitan verificacion porque no se pueden editar
+    var fecha = $('#fecha').html();
+    var vendedor = $('#vendedor').html();
+    var cliente_text = $('#editar-cot-cliente option:selected').text();
+    $('#editar-cot-tabla-analisis-resumen').find('tr').each(function () {
+        console.log(this);
+    });
+    // Validamos que no estén vacíos los inputs
+    var dict_editar_cot = {
+        1 : check_is_not_empty(cliente, '#editar-cot-cliente'),
+        3 : check_is_not_empty(subtotal, '#editar-cot-subtotal'),
+        4 : check_is_not_empty(descuento, '#editar-cot-descuento'),
+        5 : check_is_not_empty(iva, '#editar-cot-iva'),
+        6 : check_is_not_empty(total, '#editar-cot-total')
+    }
+
+    for(var key in dict_editar_cot) {
+      var value = dict_editar_cot[key];
+      var flag = true;
+      if(value == false){
+          flag = false
+          break;
+      }
+    }
+
+    if (flag){
+        $('#editar-resumen-cot').removeClass('d-block').addClass('d-none');
+        $('#confirm-edit-cot').removeClass('d-none').addClass('d-block');
+        $('#btn-confirm-editar-cot').removeClass('d-inline').addClass('d-none');
+        $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
+        $('#btn-canc-edit-cot').removeClass('d-inline').addClass('d-none');
+        $('#btn-canc-edit-cot-2').removeClass('d-none').addClass('d-inline');
+    }
+
+    // Cargamos la informacion al display de retroalimentacion
+    $('#fecha-confirm-edit-cot').html(fecha);
+    $('#cliente_nombre-confirm-edit-cot').html(cliente_text);
+    $('#vendedor-confirm-edit-cot').html(vendedor);
+    $('#n_subtotal-confirm-edit-cot').html(subtotal);
+    $('#n_iva-confirm-edit-cot').html(iva);
+    $('#n_descuento-confirm-edit-cot').html(descuento);
+    $('#n_total-confirm-edit-cot').html(total);
+
+}
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
 // Cuando el usuario decide eliminar un análisis del resumen
@@ -162,8 +232,9 @@ function guardar_cambios_cot(){
                 type: "POST",
                 success: function (response) {
                     // Cerramos el modal para confirmar cotización
-                    $('#ver_cotizacion').modal('hide');
 
+                    $('#ver_cotizacion').modal('hide');
+                    $('#confirm-edit-cot').removeClass('d-block').addClass('d-none');
                     // Damos retroalimentación de que se guardó correctamente
                     showNotification('top', 'right', 'Cambios en la cotización guardados correctamente');
 

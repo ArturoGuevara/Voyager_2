@@ -12,6 +12,7 @@
                 <div id="alert-error-edit-cot" class="alert alert-danger d-none">
                     <span><strong>¡Error! </strong> Selecciona al menos un análisis</span>
                 </div>
+                <!-- Información de cotizacion -->
                 <div class="container d-block" id="ver-resumen-cot">
                     <div class="row">
                         <span>Fecha de creación: </span><span class="text-secondary" id="fecha"> 99/99/9999</span>
@@ -55,6 +56,7 @@
                         <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
                     </div>
                 </div>
+                <!-- Editar cotizacion -->
                 <div class="container d-none" id="editar-resumen-cot">
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
@@ -153,13 +155,59 @@
                         </div>
                     </div>
                 </div>
+                <!-- Confirmar edicion de cotizacion -->
+                <div class="container d-none" id="confirm-edit-cot">
+                    <h3 class="w-100 text-center text-danger">¿Estás seguro de realizar los siguientes cambios?</h3>
+                    <div class="row">
+                        <span>Fecha de creación: </span><span class="text-secondary" id="fecha-confirm-edit-cot"> 99/99/9999</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6 p-0">
+                            <span>Cliente: </span><span class="text-secondary" id="cliente_nombre-confirm-edit-cot">El Cliente</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6 p-0">
+                            <span>Vendedor: </span><span class="text-secondary" id="vendedor-confirm-edit-cot">El Vendedor</span>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3>Análisis</h3>
+                    </div>
+                    <div class="table-responsive table-full-width mx-auto w-100">
+                        <table class="table table-responsive table-hover">
+                            <thead>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Acción</th>
+                            </thead>
+                            <tbody id="confirm-analisis-table">
+
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row">
+                        <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal-confirm-edit-cot">200.00</span>
+                    </div>
+                    <div class="row">
+                        <span>IVA: </span><span class="text-secondary" id="n_iva-confirm-edit-cot"> 16% ($ 32.00)</span>%
+                    </div>
+                    <div class="row">
+                        <span>Descuento: </span><span class="text-secondary" id="n_descuento-confirm-edit-cot">10</span>%
+                    </div>
+                    <div class="row border border-success bg-success">
+                        <span>TOTAL: $</span><span class="text-white" id="n_total-confirm-edit-cot">212.00</span>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
                 {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
                 <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
                 {% endif %}
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
-                <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
+                <button id="btn-canc-edit-cot-2" class="btn btn-danger d-none">Volver a editar</button>
+                <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Confirmar</button>
+                <button id="btn-confirm-editar-cot" onclick="solicitar_confirmacion_cot()" class="btn btn-success d-none">Realizar cambios</button>
             </div>
         </div>
     </div>
