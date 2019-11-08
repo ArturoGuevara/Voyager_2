@@ -66,6 +66,9 @@ function cargar_cot() {
 function crear_cotizacion() {
     var checked = [];
     var cantidades = [];
+    var descuentos = [];
+    var ivas = [];
+    var totales = [];
     // Obtenemos las id de los análisis seleccionados
     $("input[name='cot[]']:checked").each(function () {
         checked.push(parseInt($(this).val()));
@@ -77,20 +80,26 @@ function crear_cotizacion() {
         var id = $(this).data('id');
         check_is_not_empty($(this).val(), "#res-cot-an-" + id + "");
     });
+    $("input[name='descuentos[]").each(function () {
+        descuentos.push(parseInt($(this).val()));
+    });
+    $("input[name='ivas[]").each(function () {
+        ivas.push(parseInt($(this).val()));
+    });
+    $("input[name='totales[]").each(function () {
+        totales.push(parseInt($(this).val()));
+    });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
     // Obtener valor de los inputs
     var cliente = $('#cliente').val();
     var subtotal = $('#subtotal').val();
-    var descuento = $('#descuento').val();
-    var iva = $('#iva').val();
+    var envio = $('#envio').val();
     var total = $('#total').val();
 
     // Validamos que no estén vacíos los inputs
     check_is_not_empty(cliente, '#cliente');
     check_is_not_empty(subtotal, '#subtotal');
-    check_is_not_empty(descuento, '#descuento');
-    check_is_not_empty(iva, '#iva');
     check_is_not_empty(total, '#total');
 
     $.ajax({
@@ -100,11 +109,13 @@ function crear_cotizacion() {
         data: {
             cliente: cliente,
             subtotal: subtotal,
-            descuento: descuento,
-            iva: iva,
             total: total,
+            envio: envio,
             'checked[]': checked,
             'cantidades[]': cantidades,
+            'ivas[]': ivas,
+            'descuentos[]': descuentos,
+            'totales[]': totales,
             'csrfmiddlewaretoken': token
         },
         type: "POST",

@@ -276,9 +276,8 @@ def crear_cotizacion(request):
                         c = Cotizacion()
                         c.usuario_c = cliente
                         c.usuario_v = user_logged
-                        c.descuento = request.POST.get('descuento')
+                        c.envio = request.POST.get('envio')
                         c.subtotal = request.POST.get('subtotal')
-                        c.iva = request.POST.get('iva')
                         c.total = request.POST.get('total')
                         c.status = True
                         c.save()
@@ -291,6 +290,9 @@ def crear_cotizacion(request):
                             ac.cotizacion = c
                             ac.cantidad = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})
