@@ -1,11 +1,16 @@
 {% extends 'root/base.html' %}
 {% load static %}
 
-
 {% block content %}
 
-
-<h2>Información de muestra</h2>
+<h2 class="mb-3 mt-3">Información de muestra
+    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
+            data-placement="right"
+            data-content="Proporcione información detallada de las muestras"
+            data-trigger="hover">
+        <i class="fa fa-question-circle fa-lg"></i>
+    </button>
+</h2>
 
 <form method="post" action="{% url 'muestra_enviar' %}" class="needs-validation">
     {% csrf_token %}
@@ -25,7 +30,7 @@
                     <h4 class="card-title">Producto
                         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
                                 data-placement="right"
-                                data-content="En esta sección se debe ingresar información básica del producto a muestrear"
+                                data-content="Ingrese información básica del producto a muestrear"
                                 data-trigger="hover">
                             <i class="fa fa-question-circle fa-lg"></i>
                         </button>
@@ -61,7 +66,7 @@
                     <h4 class="card-title">Datos de la muestra
                         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
                                 data-placement="right"
-                                data-content="En esta sección se debe ingresar información adicional del origen de la muestra y su destino"
+                                data-content="Ingrese información del origen y destino de la muestra"
                                 data-trigger="hover">
                             <i class="fa fa-question-circle fa-lg"></i>
                         </button>
@@ -355,7 +360,7 @@
                     <h4 class="card-title">Análisis a Aplicar
                         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
                                 data-placement="right"
-                                data-content="En esta sección se deben seleccionar los análisis a aplicar a la muestra"
+                                data-content="Seleccione los análisis a aplicar a la muestra"
                                 data-trigger="hover">
                             <i class="fa fa-question-circle fa-lg"></i>
                         </button>
@@ -421,21 +426,21 @@
         <div class="col-md-2">
             <a href="{% url 'ingreso_cliente' %}" class="btn btn-danger btn-block"
                 data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Regresar al ingreso de información del solicitante">
+                data-content="Regresa al ingreso de información del solicitante">
                     Atrás
             </a>
         </div>
         <div class="col-md-2">
             <button onclick="guardar_muestra()" type="submit" class="btn btn-primary btn-block"
                 data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Guardar toda la información registrada para editar después">
+                data-content="Guarda la información registrada para editar después">
                     Guardar
             </button>
         </div>
         <div class="col-md-2">
             <button onclick="enviar_muestra()" type="submit" class="btn btn-success btn-block"
                 data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Enviar la solicitud de muestra">
+                data-content="Envía solicitud de ingreso de muestra">
                     Enviar
             </button>
         </div>

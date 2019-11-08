@@ -43,11 +43,6 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
-                        <!--
-                        <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
-                            <i class="fa fa-trash"></i>
-                        </button>
-                        -->
                     </td>
                 </tr>
                 {% endfor %}
@@ -62,8 +57,8 @@
                 <th>Descripción <i class="fa fa-sort"></i></th>
                 <th>Precio <i class="fa fa-sort"></i></th>
                 <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene el botón para visualizar la información individual de cada análisis.">Acciones</th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene un selector que te permite marcar un análisis para agregarlo a la cotización.">Checkbox</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información extra de análisis.">Acciones</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Seleccione análisis para agregar a cotización">Checkbox</th>
             </thead>
             <tbody>
                 {% for a in analisis %}
