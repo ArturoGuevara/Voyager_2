@@ -103,8 +103,8 @@ $(function(){
     $("#slider-range-editar").slider({
         range: true,
         min: 0,
-        max: 20,
-        values: [ 0, 20 ],
+        max: 60,
+        values: [ 0, 60 ],
         slide: function( event, ui ) {
             $("#editar-duracion").val( ui.values[ 0 ] + " - " + ui.values[ 1 ] + " días" );
         }
