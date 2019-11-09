@@ -341,9 +341,8 @@ def actualizar_cotizacion(request,id):
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         edit_cotizacion = Cotizacion.objects.get(id_cotizacion = id)
                         edit_cotizacion.usuario_c = cliente
-                        edit_cotizacion.descuento = request.POST.get('descuento')
+                        edit_cotizacion.envio = request.POST.get('envio')
                         edit_cotizacion.subtotal = request.POST.get('subtotal')
-                        edit_cotizacion.iva = request.POST.get('iva')
                         edit_cotizacion.total = request.POST.get('total')
                         edit_cotizacion.status = True
                         edit_cotizacion.save()
@@ -364,7 +363,10 @@ def actualizar_cotizacion(request,id):
                             ac.analisis = a
                             ac.cotizacion = edit_cotizacion
                             ac.cantidad = cantidad[index]
-                            ac.fecha = fecha
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})

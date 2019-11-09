@@ -94,7 +94,7 @@ $("input[name='editar-cot-an[]']").click(function (){
                 var total_analisis = parseInt(data.fields.precio) + (parseInt(data.fields.precio) * 0.16)
 
                 // Agremoas el análisis seleccionado a la tabla
-                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="edit-cot-precios[]" value='+ data.fields.precio +' hidden>$' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="edit-cot-descuentos[]" min=0 value=0 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="edit-cot-ivas[]" min=0 value=16 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="edit-cot-totales[]" value='+ total_analisis +' readonly></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
+                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="edit-cot-precios[]" value='+ data.fields.precio +' hidden>$' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="edit-cot-de-' + id + '" data-id="' + id + '" name="edit-cot-descuentos[]" min=0 value=0 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-iva-' + id + '" data-id="' + id + '" name="edit-cot-ivas[]" min=0 value=16 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-to-' + id + '" data-id="' + id + '" name="edit-cot-totales[]" value='+ total_analisis +' readonly></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
                 calc_total();
             },
         });
@@ -113,6 +113,9 @@ function guardar_cambios_cot(){
     if(id_cotizacion > 0){
         var checked = [];
         var cantidades = [];
+        var descuentos = [];
+        var ivas = [];
+        var totales = [];
         // Obtenemos las id de los análisis seleccionados
         $("input[name='editar-cot-an[]']:checked").each(function () {
             checked.push(parseInt($(this).val()));
@@ -124,10 +127,20 @@ function guardar_cambios_cot(){
             var id = $(this).data('id');
             check_is_not_empty($(this).val(), "#edit-cot-an-" + id + "");
         });
+        $("input[name='edit-cot-descuentos[]").each(function () {
+            descuentos.push(parseInt($(this).val()));
+        });
+        $("input[name='edit-cot-ivas[]").each(function () {
+            ivas.push(parseInt($(this).val()));
+        });
+        $("input[name='edit-cot-totales[]").each(function () {
+            totales.push(parseFloat($(this).val()));
+        });
         // Obtenemos el token de django para el ajax
         var token = csrftoken;
         // Obtener valor de los inputs
         var cliente = $('#editar-cot-cliente').val();
+        var envio = $('#editar-cot-envio').val();
         var subtotal = $('#editar-cot-subtotal').val();
         var total = $('#editar-cot-total').val();
 
@@ -144,11 +157,13 @@ function guardar_cambios_cot(){
                 data: {
                     cliente: cliente,
                     subtotal: subtotal,
-                    descuento: descuento,
-                    iva: iva,
                     total: total,
+                    envio: envio,
                     'checked[]': checked,
                     'cantidades[]': cantidades,
+                    'descuentos[]': descuentos,
+                    'ivas[]': ivas,
+                    'totales[]': totales,
                     'csrfmiddlewaretoken': token
                 },
                 type: "POST",

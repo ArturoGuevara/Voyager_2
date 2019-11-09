@@ -230,9 +230,8 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         c = Cotizacion()   #Crear un objeto de Cotizacion
         c.usuario_c = u1
         c.usuario_v = u2
-        c.descuento = 10.00
         c.subtotal = 10000.00
-        c.iva = 100.00
+        c.envio = 100.00
         c.total = 1234235.00
         c.status = True
         c.save()   #Guardar la cotización
@@ -774,9 +773,8 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         coti = Cotizacion()   #Crear un objeto de Cotizacion
         coti.usuario_c = user1
         coti.usuario_v = user2
-        coti.descuento = 10.00
         coti.subtotal = 10000.00
-        coti.iva = 100.00
+        coti.envio = 100.00
         coti.total = 1234235.00
         coti.status = True
         coti.save()   #Guardar la cotización

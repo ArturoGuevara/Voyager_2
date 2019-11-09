@@ -87,7 +87,7 @@ function crear_cotizacion() {
         ivas.push(parseInt($(this).val()));
     });
     $("input[name='totales[]").each(function () {
-        totales.push(parseInt($(this).val()));
+        totales.push(parseFloat($(this).val()));
     });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
