@@ -84,9 +84,8 @@ class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
     usuario_c = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='cliente')
     usuario_v = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='ventas')
-    descuento = models.DecimalField(max_digits=100, decimal_places=4)
+    envio = models.DecimalField(max_digits=100, decimal_places=2)
     subtotal = models.DecimalField(max_digits=100, decimal_places=2)
-    iva = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField(default=True)
     fecha_creada = models.DateField(default=timezone.now)
@@ -143,6 +142,9 @@ class AnalisisCotizacion(models.Model):
     cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateField()
+    descuento = models.DecimalField(max_digits=100, decimal_places=4, default=0)
+    iva = models.DecimalField(max_digits=100, decimal_places=2, default=16)
+    total = models.DecimalField(max_digits=100, decimal_places=2, default=0)
 
     class Meta:
         verbose_name = 'Analisis Cotizacion'
