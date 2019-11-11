@@ -31,10 +31,13 @@ class OrdenInterna(models.Model):
         ('8992 EN', '8992 EN'),
     )
     ESTADOS = (
-        ('invisible', 'invisible'),
-        ('fantasma', 'fantasma'),
-        ('activo', 'activo'),
-        ('borrado', 'borrado'),
+        ('Invisible', 'Invisible'),
+        ('Fantasma', 'Fantasma'),
+        ('Creada', 'Creada'),
+        ('Enviada', 'Enviada'),
+        ('En laboratorio', 'En laboratorio'),
+        ('Resultados', 'Resultados'),
+        ('Borrado', 'Borrado'),
     )
 
     #Observaciones
