@@ -11,33 +11,43 @@
                 <div class="modal-body">
                     <div class="form-row">
                         <input type="hidden" class="form-control" id="id_usuario" name="id_usuario">
-                        <div class="form-group col-md-6">
-                            <label for="inputName">Nombre</label>
-                            <input type="text" class="form-control" id="input_nombre" name="input_nombre" placeholder="Email">
+                        <div class="form-group col-md-4">
+                            <label for="nombre">Nombre</label>
+                            <p id="nombre">Juan José</p>
                         </div>
-                        <div class="form-group col-md-6">
-                          <label for="inputEmail4">Correo</label>
-                          <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                        <div class="form-group col-md-4">
+                            <label for="apellido_paterno">Apellido Paterno</label>
+                            <p id="apellido_paterno">Perez</p>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputAddress">Telefono</label>
-                        <input type="text" class="form-control" id="inputTelefono" placeholder="442 5674 892">
+                        <div class="form-group col-md-4">
+                            <label for="apellido_materno">Apellido Materno</label>
+                            <p id="apellido_materno">Juárez</p>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                          <label for="inputCity">City</label>
-                          <input type="text" class="form-control" id="inputCity">
+                            <label for="correo">Correo</label>
+                            <p id="correo">juan@gmail.com</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="telefono">Teléfono</label>
+                            <p id="telefono">4672457457</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="empresa">Empresa</label>
+                            <p id="empresa">Agrícolas incorporados</p>
                         </div>
                         <div class="form-group col-md-4">
-                          <label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección aparece el estado, si ya pagó, si debe dinero o si no aplica">
-                              <i class="fa fa-question-circle fa-sm"></i>
-                          </button></label>
-                          <select name="inputEstatus" id="inputEstatus" class="form-control">
-                            <option name="NA" id="NA">NA</option>
-                            <option name="Deudor" id="Deudor">Deudor</option>
-                            <option name="Pagado" id="Pagado">Pagado</option>
-                          </select>
+                            <label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección aparece el estado, si ya pagó, si debe dinero o si no aplica">
+                                <i class="fa fa-question-circle fa-sm"></i>
+                            </button></label>
+                            <select name="inputEstatus" id="inputEstatus" class="form-control">
+                                <option name="NA" id="NA">NA</option>
+                                <option name="Deudor" id="Deudor">Deudor</option>
+                                <option name="Pagado" id="Pagado">Pagado</option>
+                            </select>
                         </div>
                     </div>
                     <div class="form-row d-none" id="ordenes_pendientes" name = "ordenes_pendientes">
