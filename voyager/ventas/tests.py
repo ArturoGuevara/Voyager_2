@@ -169,9 +169,8 @@ class TestCotizaciones(TestCase):
         cotizacion = Cotizacion.objects.create(
                                                     usuario_c = clientes1,
                                                     usuario_v = ventas,
-                                                    descuento = 5,
                                                     subtotal = 5000,
-                                                    iva = 150,
+                                                    envio = 150,
                                                     total = 123,
                                                     status = True,
                                                     fecha_creada = date.today()
@@ -180,9 +179,8 @@ class TestCotizaciones(TestCase):
         cotizacion2 = Cotizacion.objects.create(
                                                     usuario_c = clientes2,
                                                     usuario_v = ventas,
-                                                    descuento = 6,
                                                     subtotal = 24,
-                                                    iva = 150,
+                                                    envio = 150,
                                                     total = 456,
                                                     status = True,
                                                     fecha_creada = date.today()
@@ -191,9 +189,8 @@ class TestCotizaciones(TestCase):
         cotizacion3 = Cotizacion.objects.create(
                                                     usuario_c = clientes1,
                                                     usuario_v = ventas,
-                                                    descuento = 7,
                                                     subtotal = 5000,
-                                                    iva = 150,
+                                                    envio = 150,
                                                     total = 789,
                                                     status = False,
                                                     fecha_creada = date.today()
@@ -260,7 +257,7 @@ class TestCotizaciones(TestCase):
         cotizacion2 = Cotizacion.objects.filter(total=456).first()
         cotizacion3 = Cotizacion.objects.filter(total=789).first()
 
-        self.assertEqual(cotizacion1.descuento,5)
+        self.assertEqual(cotizacion1.envio,150.00)
         self.assertEqual(cotizacion2.subtotal,24)
         self.assertEqual(cotizacion3.status,False)
 
@@ -288,8 +285,7 @@ class TestCotizaciones(TestCase):
         cliente = IFCUsuario.objects.get(nombre="clientes")
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                   'subtotal':500,
-                                                                  'descuento':10,
-                                                                  'iva':"",
+                                                                  'envio':10,
                                                                   'total':490,
                                                                   'checked': "",
                                                                   })
@@ -305,8 +301,7 @@ class TestCotizaciones(TestCase):
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                   'subtotal':"500",
-                                                                  'descuento':10,
-                                                                  'iva': 15,
+                                                                  'envio': 15,
                                                                   'total':490,
                                                                   'checked[]': analisis_arr,
                                                                   'cantidades[]': cantidades,
@@ -323,8 +318,7 @@ class TestCotizaciones(TestCase):
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                   'subtotal':"500",
-                                                                  'descuento':10,
-                                                                  'iva': 15,
+                                                                  'envio': 15,
                                                                   'total':490,
                                                                   'checked[]': analisis_arr,
                                                                   'cantidades[]': cantidades,
@@ -414,9 +408,8 @@ class TestEditarCotizaciones(TestCase):
         cotizacion = Cotizacion.objects.create(
                                                 usuario_c = clientes1,
                                                 usuario_v = ventas,
-                                                descuento = 5,
                                                 subtotal = 5000,
-                                                iva = 150,
+                                                envio = 150,
                                                 total = 123,
                                                 status = True,
                                                 fecha_creada = date.today()
@@ -425,9 +418,8 @@ class TestEditarCotizaciones(TestCase):
         cotizacion2 = Cotizacion.objects.create(
                                                 usuario_c = clientes2,
                                                 usuario_v = ventas,
-                                                descuento = 6,
                                                 subtotal = 24,
-                                                iva = 150,
+                                                envio = 150,
                                                 total = 456,
                                                 status = True,
                                                 fecha_creada = date.today()
@@ -436,9 +428,8 @@ class TestEditarCotizaciones(TestCase):
         cotizacion3 = Cotizacion.objects.create(
                                                 usuario_c = clientes1,
                                                 usuario_v = ventas,
-                                                descuento = 7,
                                                 subtotal = 5000,
-                                                iva = 150,
+                                                envio = 150,
                                                 total = 789,
                                                 status = False,
                                                 fecha_creada = date.today()
@@ -505,7 +496,7 @@ class TestEditarCotizaciones(TestCase):
         cotizacion2 = Cotizacion.objects.filter(total=456).first()
         cotizacion3 = Cotizacion.objects.filter(total=789).first()
 
-        self.assertEqual(cotizacion1.descuento,5)
+        self.assertEqual(cotizacion1.envio,150.00)
         self.assertEqual(cotizacion2.subtotal,24)
         self.assertEqual(cotizacion3.status,False)
 
@@ -533,8 +524,7 @@ class TestEditarCotizaciones(TestCase):
         cliente = IFCUsuario.objects.get(nombre="clientes")
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                   'subtotal':500,
-                                                                  'descuento':10,
-                                                                  'iva':"",
+                                                                  'envio':"",
                                                                   'total':490,
                                                                   'checked': "",
                                                                   })
@@ -550,8 +540,7 @@ class TestEditarCotizaciones(TestCase):
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                 'subtotal':"500",
-                                                                'descuento':10,
-                                                                'iva': 15,
+                                                                'envio': 15,
                                                                 'total':490,
                                                                 'checked[]': analisis_arr,
                                                                 'cantidades[]': cantidades,
@@ -568,8 +557,7 @@ class TestEditarCotizaciones(TestCase):
         cantidades = [3,2]
         response = self.client.post('/ventas/crear_cotizacion',{'cliente':cliente.id,
                                                                 'subtotal':"500",
-                                                                'descuento':10,
-                                                                'iva': 15,
+                                                                'envio': 15,
                                                                 'total':490,
                                                                 'checked[]': analisis_arr,
                                                                 'cantidades[]': cantidades,

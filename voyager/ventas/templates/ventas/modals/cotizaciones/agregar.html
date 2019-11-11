@@ -27,6 +27,9 @@
                                 <th>Nombre</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
+                                <th>% Descuento</th>
+                                <th>% IVA</th>
+                                <th>Total Análisis</th>
                             </thead>
                             <tbody id="tabla-analisis-info" class="text-center">
 
@@ -35,28 +38,21 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-4">
                         <label for="subtotal">Subtotal</label>
                         <input type="number" class="form-control" id="subtotal" name="subtotal" readonly>
                         <div class="invalid-feedback">
                             El SubTotal no puede estar vacío
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
-                        <label for="descuento">% Descuento</label>
-                        <input type="number" class="form-control" id="descuento" name="descuento" value="0" min="0" max="100">
+                    <div class="form-group col-sm-4">
+                        <label for="envio">Costo de Envío</label>
+                        <input type="number" class="form-control" id="envio" name="envio" value="0" min="0" onchange="add_calc_total()">
                         <div class="invalid-feedback">
-                            Por favor introduce una valor para el descuento
+                            Por favor introduce un costo de envío
                         </div>
                     </div>
-                    <div class="form-group col-sm-3">
-                        <label for="iva">% IVA</label>
-                        <input type="number" class="form-control" id="iva" name="iva" value="16" min="0" max="100">
-                        <div class="invalid-feedback">
-                            Por favor introduce una valor para el IVA
-                        </div>
-                    </div>
-                    <div class="form-group col-sm-3">
+                    <div class="form-group col-sm-4">
                         <label for="total">Total</label>
                         <input type="number" class="form-control" id="total" name="total" readonly>
                         <div class="invalid-feedback">

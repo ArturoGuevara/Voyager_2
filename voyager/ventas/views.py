@@ -264,18 +264,20 @@ def crear_cotizacion(request):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         c = Cotizacion()
                         c.usuario_c = cliente
                         c.usuario_v = user_logged
-                        c.descuento = request.POST.get('descuento')
+                        c.envio = request.POST.get('envio')
                         c.subtotal = request.POST.get('subtotal')
-                        c.iva = request.POST.get('iva')
                         c.total = request.POST.get('total')
                         c.status = True
                         c.save()
@@ -288,6 +290,9 @@ def crear_cotizacion(request):
                             ac.cotizacion = c
                             ac.cantidad = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})
@@ -325,17 +330,19 @@ def actualizar_cotizacion(request,id):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         edit_cotizacion = Cotizacion.objects.get(id_cotizacion = id)
                         edit_cotizacion.usuario_c = cliente
-                        edit_cotizacion.descuento = request.POST.get('descuento')
+                        edit_cotizacion.envio = request.POST.get('envio')
                         edit_cotizacion.subtotal = request.POST.get('subtotal')
-                        edit_cotizacion.iva = request.POST.get('iva')
                         edit_cotizacion.total = request.POST.get('total')
                         edit_cotizacion.status = True
                         edit_cotizacion.save()
@@ -356,7 +363,10 @@ def actualizar_cotizacion(request,id):
                             ac.analisis = a
                             ac.cotizacion = edit_cotizacion
                             ac.cantidad = cantidad[index]
-                            ac.fecha = fecha
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})

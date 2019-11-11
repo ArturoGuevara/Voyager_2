@@ -123,6 +123,8 @@ def consultar_orden(request):
         analisis_muestras = {}
         facturas_muestras = {}
         if request.method == 'POST':
+            if not (request.POST.get('id')):
+                raise Http404
             id = request.POST.get('id')
             #oi = orden interna
             oi = OrdenInterna.objects.get(idOI = id)
@@ -178,7 +180,7 @@ def consultar_orden(request):
             response = JsonResponse({"error": "No se mandó por el método correcto"})
             response.status_code = 500
             # Regresamos la respuesta de error interno del servidor
-            return response    
+            return response
     else:
         raise Http404
 
