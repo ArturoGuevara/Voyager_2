@@ -20,9 +20,30 @@ function confirmar_borrar_cotizacion(){
         // Guardar variables globales en locales
         var id =  id_cotizacion;
         var token = csrftoken;
+        $.ajax({
+            url: "borrar_cotizacion/"+id,
+            // Seleccionar información que se mandara al controlador
+            data: {
+                id:id,
+                'csrfmiddlewaretoken': token
+            },
+            type: "POST",
+            success: function(){
+                borrar_cotizacion_tabla('.cot-row',id);
+                id_cotizacion = 0;
+                $('#borrar_cotizacion').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
+                showNotification('top','right','Se ha borrado la cotización exitosamente.');
+            },
+        });
 
     }
-    $('#borrar_cotizacion').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-    showNotification('top','right','Se ha borrado la cotización exitosamente.');    // Mostrar alerta de cotizacion borrada
+ // Mostrar alerta de cotizacion borrada
+}
 
+function borrar_cotizacion_tabla(clase,id){
+    $(clase).each(function(i,e){
+       if( $(e).data('id') == id ){
+           $(e).remove();
+       }
+    });
 }
