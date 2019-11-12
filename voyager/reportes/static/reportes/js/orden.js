@@ -57,7 +57,6 @@ function cargar_info_oi(){
             $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
-            $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "Español"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -69,33 +68,6 @@ function cargar_info_oi(){
                 $('#editar_idioma_reporteES').prop('checked', false);
                 $('#editar_idioma_reporteEN').prop('checked', false);
             }
-            $('#editar_mrl').val(data.mrl);
-            $('#editar_fecha_eri').val(data.fecha_eri);
-            $('#editar_fecha_lab').val(data.fecha_lab);
-            $('#editar_fecha_ei').val(data.fecha_ei);
-
-
-
-            //Hacer check a las checkboxes
-            if(data.notif_e == "Sí"){
-                document.getElementById("editar_notif_e").checked = true;
-            }
-            else{
-                document.getElementById("editar_notif_e").checked = false;
-            }
-            if(data.envio_ti == "Sí"){
-                document.getElementById("editar_envio_ti").checked = true;
-            }
-            else{
-                document.getElementById("editar_envio_ti").checked = false;
-            }
-            if(data.cliente_cr == "Sí"){
-                document.getElementById("editar_cliente_cr").checked = true;
-            }
-            else{
-                document.getElementById("editar_cliente_cr").checked = false;
-            }
-
             var html_muestras = "";
             if(muestras != null){
                 for (let mue in muestras){
@@ -167,27 +139,6 @@ function submit(){
     else if (document.getElementById("editar_idioma_reporteEN").checked){
         idioma_reporte = "Inglés";
     }
-
-    var mrl = $('#editar_mrl').val();
-    var fecha_eri = $('#editar_fecha_eri').val();
-    var fecha_lab = $('#editar_fecha_lab').val();
-    var fecha_ei = $('#editar_fecha_ei').val();
-
-    //Recuperar value de las checkboxes
-    var notif_e = "No"
-    if (document.getElementById("editar_notif_e").checked){
-        notif_e = "Sí"
-    }
-    var envio_ti = "No"
-    if (document.getElementById("editar_envio_ti").checked){
-        envio_ti = "Sí"
-    }
-    var cliente_cr = "No"
-    if (document.getElementById("editar_cliente_cr").checked){
-        cliente_cr = "Sí"
-    }
-
-
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -201,13 +152,6 @@ function submit(){
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
-            'mrl': mrl,
-            'fecha_eri': fecha_eri,
-            'fecha_lab': fecha_lab,
-            'fecha_ei': fecha_ei,
-            'notif_e': notif_e,
-            'envio_ti': envio_ti,
-            'cliente_cr': cliente_cr,
             'csrfmiddlewaretoken': token,
         },
         dataType: 'json',
@@ -412,16 +356,7 @@ function visualizar_info_oi(id) {
             $('#visualizar_usuario_telefono').text(usuario.telefono);
 
             //pestaña de observaciones
-            $('#visualizar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-            //hacer check a radio input del idioma
             $('#visualizar_idioma_reporte').text(data.idioma_reporte);
-            $('#visualizar_mrl').val(data.mrl);
-            $('#visualizar_fecha_eri').val(data.fecha_eri);
-            $('#visualizar_fecha_lab').val(data.fecha_lab);
-            $('#visualizar_fecha_ei').val(data.fecha_ei);
-            $('#visualizar_notif_e').text(data.notif_e)
-            $('#visualizar_envio_ti').text(data.envio_ti);
-            $('#visualizar_cliente_cr').text(data.cliente_cr);
 
             var html_muestras = "";
             if(muestras != null){

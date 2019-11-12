@@ -233,31 +233,7 @@ def actualizar_orden(request):
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
-            oi.formato_ingreso_muestra = request.POST['formato_ingreso_muestra']
             oi.idioma_reporte = request.POST['idioma_reporte']
-            oi.mrl = request.POST['mrl']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_eri'] == "":
-                oi.fecha_eri = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_eri = request.POST['fecha_eri']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_lab'] == "":
-                oi.fecha_lab = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_lab = request.POST['fecha_lab']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_ei'] == "":
-                oi.fecha_ei = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_ei = request.POST['fecha_ei']
-
-            oi.notif_e = request.POST['notif_e']
-            oi.envio_ti = request.POST['envio_ti']
-            oi.cliente_cr = request.POST['cliente_cr']
             #Guardar
             oi.save()
 
