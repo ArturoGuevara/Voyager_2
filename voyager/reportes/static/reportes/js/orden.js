@@ -59,10 +59,10 @@ function cargar_info_oi(){
             //pestaña de observaciones
             $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
             //hacer check a radio input del idioma
-            if(data.idioma_reporte == "8809 ES"){
+            if(data.idioma_reporte == "Español"){
                 $('#editar_idioma_reporteES').prop('checked', true);
                 $('#editar_idioma_reporteEN').prop('checked', false);
-            }else if(data.idioma_reporte == "8992 EN"){
+            }else if(data.idioma_reporte == "Inglés"){
                 $('#editar_idioma_reporteES').prop('checked', false);
                 $('#editar_idioma_reporteEN').prop('checked', true);
             }else{
@@ -162,10 +162,10 @@ function submit(){
     //checar radio seleccionado, si ninguno, se toma default español
     var idioma_reporte;
     if (document.getElementById("editar_idioma_reporteES").checked){
-        idioma_reporte = "8809 ES";
+        idioma_reporte = "Español";
     }
     else if (document.getElementById("editar_idioma_reporteEN").checked){
-        idioma_reporte = "8992 EN";
+        idioma_reporte = "Inglés";
     }
 
     var mrl = $('#editar_mrl').val();
@@ -213,11 +213,15 @@ function submit(){
         dataType: 'json',
         success: function (response) {
             var data = JSON.parse(response.data);
+            //var fecha_formato = JSON.parse(response.fecha_formato);
+            var fecha_formato = response.fecha_formato;
             data = data.fields;
             var track = '#oi-'+idOI + " .oi_estatus";
             $(track).text(data.estatus);
-            track = '#oi-'+idOI + " .oi_localidad";
-            $(track).text(data.localidad);
+            track = '#oi-'+idOI + " .oi_pagado";
+            $(track).text(data.pagado);
+            var track = '#oi-'+idOI + " .oi_fecha_envio";
+            $(track).text(fecha_formato);
             $('#modal-visualizar-orden').modal('hide');
             showNotification('top','right','Se han guardado tus cambios');
         }

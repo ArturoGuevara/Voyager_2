@@ -19,6 +19,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.core.exceptions import ValidationError
+import locale
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -264,8 +265,13 @@ def actualizar_orden(request):
             oi_actualizada = OrdenInterna.objects.get(idOI = request.POST['idOI'])
             data = serializers.serialize("json", [oi_actualizada], ensure_ascii = False)
             data = data[1:-1]
+            try:
+                locale.setlocale(locale.LC_TIME, 'es_co.utf8') #your language encoding
+            except:
+                locale.setlocale(locale.LC_TIME, 'es_co')
+            fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
             # Regresamos información actualizada
-            return JsonResponse({"data": data})
+            return JsonResponse({"data": data, "fecha_formato":fecha_formato})
 
 
 def validacion_dhl(codigo):
