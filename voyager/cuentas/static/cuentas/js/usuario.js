@@ -59,6 +59,7 @@ function cargar_info_usuario(id) {
             $('#correo').text(response.mail);
             $('#empresa').text(response.nombre_empresa);
             $('#id_usuario').val(data.user);
+            $('#estatus').text(data.estatus_pago);
             if (data.estatus_pago == "NA"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA" selected>NA</option>');
