@@ -13,7 +13,7 @@
     </button>
 </h2>
 
-<form action="{% url 'ingresar_muestras' %}" method="post">
+<form action="{% url 'ingresar_muestras' %}" id="submit-info-cliente" method="post">
     {% csrf_token %}
     <div class="row mt-0 pt-0 mb-0 pb-0">
         <div class="col-md-12">
@@ -35,12 +35,18 @@
                             <div class="form-group">
                                 <label for="nombre">Nombre del Agricultor</label>
                                 <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1" required>
+                                <div class="invalid-feedback">
+                                    Ingrese un nombre válido por favor.
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-7 pl-1">
                             <div class="form-group">
                                 <label>Dirección</label>
                                 <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion" required>
+                                <div class="invalid-feedback">
+                                    Ingrese una dirección válida por favor.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -298,6 +304,9 @@
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabue">Zimbabue</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Seleccione un país por favor.
+                                </div>
                             </div>
                         </div>
                         <div id="label-estado" class="col-md-4 px-1" hidden>
@@ -339,6 +348,9 @@
                                     <option value="Zacatecas">Zacatecas</option>
                                 </select>
                                 <input type="text" class="form-control" value="" id="estado2" name="estado2" minlength="1" hidden>
+                                <div class="invalid-feedback">
+                                    Ingrese un estado por favor.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -370,6 +382,9 @@
                                     <option value="8809">Español</option>
                                     <option value="8992">Inglés</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Seleccione el idioma en el que quiera recibir sus resultados.
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -388,9 +403,9 @@
             </a>
         </div>
         <div class="col-md-2">
-            <button type="submit" class="btn btn-success btn-block"
-                data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Continuar con la solicitud de ingreso de muestra, se deberá agregar más información">
+            <button type="button" class="btn btn-success btn-block"
+                data-content="Continuar con la solicitud de ingreso de muestra, se deberá agregar más información"
+                onclick="validar_campos()">
                 Continuar
             </button>
         </div>

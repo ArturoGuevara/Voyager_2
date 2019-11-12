@@ -37,3 +37,6 @@
               $(".invalid_password").prop('hidden', true);
           }
       }
+      function val_forms(){
+        
+      }
