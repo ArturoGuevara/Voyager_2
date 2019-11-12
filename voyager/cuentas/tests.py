@@ -4,7 +4,7 @@ from cuentas.models import*
 from cuentas.models import Rol,IFCUsuario,Empresa
 from reportes.models import OrdenInterna
 from django.urls import reverse, resolve
-from .views import lista_usuarios
+from .views import lista_usuarios,lista_clientes
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
@@ -463,3 +463,58 @@ class TestCuentasUsuarios(TestCase):
         #URL testing.
         url = reverse('usuarios')
         self.assertEquals(resolve(url).func,lista_usuarios)
+
+
+#####USA05-41##########
+
+class TestListaUsuarios(TestCase):
+    def setup(self):
+        role = Rol()
+        role.nombre = "Ventas"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
+        user.save() #guardar usuario de Django
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        i_user = IFCUsuario() #Crear un usuario de IFC
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+
+    def test_no_login(self):
+        self.setup()
+        response = self.client.get(reverse('clientes'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_login_different_role(self): #probar que el usario no pueda ingresar a la página si no tiene el rol adecuado
+        self.setup()
+        self.client.login(username='padrino', password='padrino') #ingresar como un usuario cliente
+        response = self.client.get(reverse('clientes'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_login_correct(self): #probar que el usario pueda ingresar a la página si tiene el rol adecuado
+        self.setup()
+        self.client.login(username='hockey', password='lalocura') #ingresar como un usuario cliente
+        response = self.client.get(reverse('clientes'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_url_resuelta(self):
+        url = reverse('clientes')
+        self.assertEquals(resolve(url).func,lista_clientes)

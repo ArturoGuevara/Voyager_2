@@ -140,12 +140,15 @@ def lista_usuarios(request):
 
 @login_required
 def lista_clientes(request):
-    #View de lista de clientes
-    rol_busqueda = "Cliente"
     context = {}
-
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not(usuario_log.rol.nombre == "Ventas"
+                    or usuario_log.rol.nombre == "Facturacion"
+                    or usuario_log.rol.nombre == "Director"
+                    or usuario_log.rol.nombre == "SuperUser"
+            ):
+            raise Http404
         rol = Rol.objects.get(nombre="Cliente")
         usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
         context = {'usuarios':usuarios_cont}
