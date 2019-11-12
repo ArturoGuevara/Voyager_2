@@ -1,0 +1,122 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Crear Staff</h1>
+    <div class="card col-12">
+        <form action="/cuentas/guardar_staff/" method="post" id="submit-staff-form">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="id_nombre">Nombre:</label>
+                    <input type="text" name="nombre" class="form-control" placeholder="Juan José" maxlength="30" id="nombre">
+                    <div class="invalid-feedback">
+                        Por favor introduce un nombre
+                    </div>
+                </div>
+
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="apellido_paterno">Apellido Paterno:</label>
+                    <input type="text" name="apellido_paterno" class="form-control" id="apellido_paterno" placeholder="Rodríguez" maxlength="30">
+                    <div class="invalid-feedback">
+                        Por favor introduce un apellido paterno
+                    </div>
+                </div>
+
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="apellido_materno">Apellido Materno:</label>
+                    <input type="text" name="apellido_materno" class="form-control" id="apellido_materno" placeholder="Sánchez" maxlength="30">
+                    <div class="invalid-feedback">
+                        Por favor introduce un apellido materno
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="correo">Correo electrónico:</label>
+                    <input type="email" name="correo" maxlength="100" class="form-control" id="correo" placeholder="ejemplo@gmail.com">
+                    <div class="invalid-feedback">
+                       Por favor introduce un correo
+                    </div>
+                    <div class="invalid_mail p-3" hidden>
+                        <p style="color:red">Este correo ha sido usado</p>
+                    </div>
+                </div>
+
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="id_telefono">Teléfono:</label>
+                    <input type="text" name="telefono" class="form-control" placeholder="4421234567" maxlength="15" id="telefono">
+                    <div class="invalid-feedback">
+                        Por favor introduce un teléfono
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="contraseña">Contraseña:</label>
+                    <input type="password" name="contraseña" class="form-control" minlength="8" id="contraseña">
+                    <div class="invalid-feedback">
+                        Por favor introduce una contraseña
+                    </div>
+                </div>
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="contraseña2">Confirmar Contraseña:</label>
+                    <input type="password" name="contraseña2" class="form-control" minlength="8" id="contraseña2">
+                    <div class="invalid-feedback">
+                        Por favor confirme la contraseña
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="invalid_password p-3" hidden>
+                    <p style="color:red">Las contraseñas no coinciden</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="id_rol">Rol:</label>
+                    <select class="form-control" id="id_rol" name="id_rol">
+                        <option value=""> -- </option>
+                        {% for rol in roles %}
+                        {% if rol.nombre != "Director" and rol.nombre != "Cliente" and rol.nombre != "SuperUser" and rol.nombre != "Phantom" %}
+                        <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="invalid-feedback">
+                        Por favor ingrese un rol
+                    </div>
+                </div>
+
+
+            </div>
+                <div class="row mt-1 pt-1 pb-5">
+                <div class="col-md-7">
+                </div>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <a href="{% url 'usuarios' %}" class="btn btn-danger btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Cancelar la creación de un nuevo usuario">
+                            Cancelar
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <button type="button" id="submit-staff-button" class="btn btn-success btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Crear un nuevo usuario de staff">
+                            Crear
+                    </button>
+                </div>
+              </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block optionalJS %}
+  <script src="{% static 'cuentas/js/createclientvalidations.js' %}" type="text/javascript"></script>
+   <script src="{% static 'cuentas/js/crear_staff_validaciones.js' %}" type="text/javascript"></script>
+{% endblock %}
