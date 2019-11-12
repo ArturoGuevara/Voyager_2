@@ -1,0 +1,38 @@
+<div class="modal fade" role="dialog" id="modal-enviar-resultados">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 align="center">Enviar resultados</h3>
+                <br>
+                <form>
+                    <div class="form-row form-control-sm">
+                        <label for="archivo_resultados">Archivo resultados:  </label>
+                        <input type="file" class="form-control-file" id="archivo_resultados" name="archivo_resultados">
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-5">
+                            <label for="email_destino">Destinatario</label>
+                            <input type="email" class="form-control" id="email_destino" placeholder="Email" name="email_destino">
+                        </div>
+                        <div class="col-md-7">
+                            <label for="subject">Asunto</label>
+                            <input class="form-control" id="subject" type="text" placeholder="Asunto del correo" name="subject">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="body">Cuerpo</label>
+                            <textarea rows="10" class="form-control" id="body" name="body"></textarea>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success float-right" id="button_send_mail">
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
