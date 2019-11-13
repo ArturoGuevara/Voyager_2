@@ -235,7 +235,7 @@ def guardar_staff(request):
         ): #verificar que se envían todos los datos
         request.session['crear_staff_status'] = False
         return redirect('/cuentas/usuarios')
-    
+
     user_name = request.POST.get('nombre')[0:2] \
                 + request.POST.get('apellido_paterno')[0:2] \
                 + request.POST.get('apellido_materno')[0:2] \
@@ -277,7 +277,7 @@ def guardar_staff(request):
     return redirect('/cuentas/usuarios')
 
 @login_required
-def notificar_crear_staff(request):
+def notificar_crear_staff(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
     if 'crear_staff_status' in request.session:
         result = request.session['crear_staff_status']
         del request.session['crear_staff_status']
