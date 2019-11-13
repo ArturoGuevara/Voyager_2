@@ -55,6 +55,7 @@ function cargar_info_oi(){
             $('#editar_localidad').val(data.localidad);
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_guia_envio').val(data.guia_envio)
+            $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
             //hacer check a radio input del idioma
@@ -127,6 +128,7 @@ function submit(){
     var fecha_envio = $('#editar_fecha_envio').val();
     var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
+    var pagado = $('#editar_pagado').val();
 
     //pestaña de observaciones
     var formato_ingreso_muestra = $('#editar_formato_ingreso_muestra').val();
@@ -152,6 +154,7 @@ function submit(){
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
+            'pagado': pagado,
             'csrfmiddlewaretoken': token,
         },
         dataType: 'json',
@@ -160,11 +163,11 @@ function submit(){
             //var fecha_formato = JSON.parse(response.fecha_formato);
             var fecha_formato = response.fecha_formato;
             data = data.fields;
-            var track = '#oi-'+idOI + " .oi_estatus";
+            var track = '#oi-' + idOI + " .oi_estatus";
             $(track).text(data.estatus);
-            track = '#oi-'+idOI + " .oi_pagado";
+            track = '#oi-' + idOI + " .oi_pagado";
             $(track).text(data.pagado);
-            var track = '#oi-'+idOI + " .oi_fecha_envio";
+            track = '#oi-' + idOI + " .oi_fecha_envio";
             $(track).text(fecha_formato);
             $('#modal-visualizar-orden').modal('hide');
             showNotification('top','right','Se han guardado tus cambios');
@@ -347,7 +350,8 @@ function visualizar_info_oi(id) {
             $('#visualizar_estatus').val(data.estatus);
             $('#visualizar_localidad').val(data.localidad);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
-            $('#visualizar_guia_envio').val(data.guia_envio)
+            $('#visualizar_guia_envio').val(data.guia_envio);
+            $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;

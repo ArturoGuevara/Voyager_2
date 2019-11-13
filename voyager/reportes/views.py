@@ -234,6 +234,7 @@ def actualizar_orden(request):
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
+            oi.pagado = request.POST['pagado']
             #Guardar
             oi.save()
 
