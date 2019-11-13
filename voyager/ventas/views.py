@@ -35,7 +35,7 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         analisis = Analisis.objects.all()
         paises = Pais.objects.all()
         context = {
@@ -51,7 +51,7 @@ def ver_catalogo(request):
 @login_required
 def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
             analisis = Analisis.objects.get(id_analisis = id)
             if analisis:
@@ -74,7 +74,7 @@ def cargar_analisis(request, id):
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -117,7 +117,7 @@ def editar_analisis(request, id):
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -146,7 +146,7 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
