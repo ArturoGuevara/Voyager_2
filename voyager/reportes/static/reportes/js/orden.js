@@ -53,6 +53,7 @@ function cargar_info_oi(){
             $('#editar_usuario_email').text(response.s_correo);
             $('#editar_usuario_telefono').text(solicitante.telefono);
             //pestaña de información
+            $('#tituloe_idOI').text("Orden Interna #" + id_oi);
             $('#editar_idOI').val(id_oi);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
@@ -351,6 +352,7 @@ function visualizar_info_oi(id) {
             var facturas = response.facturas;
 
             //pestaña de información
+            $('#titulov_idOI').text("Orden Interna #" + id);
             $('#visualizar_idOI').val(id);
             $('#visualizar_estatus').val(data.estatus);
             $('#visualizar_localidad').val(data.localidad);
