@@ -18,4 +18,5 @@ urlpatterns = [
     path('notificar_crear_staff/', views.notificar_crear_staff, name='notificar_crear_staff'),
     path('verificar_correo/',views.verificar_correo, name='verificar_correo'),
     path('', views.indexView, name=''),
+    path('clientes/',views.lista_clientes, name='clientes'),
 ]

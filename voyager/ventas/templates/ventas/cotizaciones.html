@@ -29,11 +29,12 @@
                 <th>Vendedor <i class="fa fa-sort"></i></th>
                 <th>Total <i class="fa fa-sort"></i></th>
                 <th>Fecha creada <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine una cotización">Acciones</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
-                <tr id="cotizaciones-{{c.id_cotizacion}}">
+                {% if c.status == True %}
+                <tr class="cot-row" data-id="{{c.id_cotizacion}}" id="cotizaciones-{{c.id_cotizacion}}">
                     <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
                     <td class="pt-3 cotizaciones_cliente">{{ c.usuario_c }}</td>
                     <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
@@ -43,8 +44,14 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
+                        {% if request.session.userrole == "Ventas" or request.session.userrole == "SuperUser" %}
+                            <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
+                                <i class='fa fa-trash'></i>
+                            </button>
+                        {% endif %}
                     </td>
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -57,7 +64,7 @@
                 <th>Descripción <i class="fa fa-sort"></i></th>
                 <th>Precio <i class="fa fa-sort"></i></th>
                 <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información extra de análisis.">Acciones</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información extra de análisis.">Acciones <i class="fa fa-question-circle fa-lg"></th>
                 <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Seleccione análisis para agregar a cotización">Checkbox</th>
             </thead>
             <tbody>

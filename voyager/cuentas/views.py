@@ -98,6 +98,12 @@ def consultar_usuario(request, id):
                 if usuario:
                     datos = serializers.serialize("json", [usuario], ensure_ascii=False) #Serializar objeto usuario
                     datos = datos[1:-1]
+                    user_django = User.objects.get(id=usuario.user.id)
+                    mail = user_django.email
+                    empresa = Empresa.objects.filter(id = usuario.empresa.id)
+                    nombre_empresa = ""
+                    if empresa:
+                        nombre_empresa = empresa.first().empresa
 
                     if rol == "Cliente":
                         ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')   #Obtener 0.I de cliente a consultar
@@ -110,7 +116,7 @@ def consultar_usuario(request, id):
             else:
                 raise Http404
 
-        return JsonResponse({"datos": datos, "datos_ordenes":datos_ordenes,"rol":rol})
+        return JsonResponse({"datos": datos, "datos_ordenes":datos_ordenes,"rol":rol,"mail":mail,"nombre_empresa": nombre_empresa})
 
 @login_required
 def lista_usuarios(request):
@@ -129,6 +135,23 @@ def lista_usuarios(request):
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
+
+    return render(request, 'cuentas/usuarios.html', context)
+
+@login_required
+def lista_clientes(request):
+    context = {}
+    if request.session._session:
+        usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
+        if not(usuario_log.rol.nombre == "Ventas"
+                    or usuario_log.rol.nombre == "Facturacion"
+                    or usuario_log.rol.nombre == "Director"
+                    or usuario_log.rol.nombre == "SuperUser"
+            ):
+            raise Http404
+        rol = Rol.objects.get(nombre="Cliente")
+        usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+        context = {'usuarios':usuarios_cont}
 
     return render(request, 'cuentas/usuarios.html', context)
 
@@ -175,7 +198,7 @@ def guardar_cliente(request):
         ): #verificar que se envían todos los datos
         raise Http404
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if user_logged.rol.nombre != "Ventas":  # verificar que el usuario pertenezca al grupo con permisos
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
     user_name = request.POST.get('nombre')[0:2] \
                 + request.POST.get('apellido_paterno')[0:2] \
