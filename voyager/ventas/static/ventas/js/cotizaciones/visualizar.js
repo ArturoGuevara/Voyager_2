@@ -34,19 +34,26 @@ function visualizar_cotizacion(id) {
                         n_analisis_cotizacion = JSON.parse(aux_analisis_cotizacion[registro]);
                         analisis_cotizacion.push(n_analisis_cotizacion);
                     }
-                    cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion)
+
+                    var data_empresa = JSON.parse(response.info[5]);
+                    var data_usuario = JSON.parse(response.info[6]);
+
+                    cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
         });
     }
 }
 
-function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion) {
+function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario) {
     $('.analisis_registro').remove();
     $('#ver_id_cot').html(data_cotizacion[0].pk);
     $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
     $('#vendedor').html(data_vendedor[0].fields.nombre + ' ' + data_vendedor[0].fields.apellido_paterno + ' ' + data_vendedor[0].fields.apellido_materno);
+    $('#cliente_empresa').html(data_empresa[0].fields.empresa);
+    $('#cliente_correo').html(data_usuario[0].fields.email);
+    $('#cliente_telefono').html(data_cliente[0].fields.telefono);
     $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
     $('#n_envio').html(parseFloat(data_cotizacion[0].fields.envio));
     $('#n_total').html(data_cotizacion[0].fields.total);
@@ -81,6 +88,9 @@ function error_datos_cotizacion() {
     $('#ver_id_cot').html("");
     $('#fecha').html("");
     $('#cliente_nombre').html("");
+    $('#cliente_empresa').html("");
+    $('#cliente_correo').html("");
+    $('#cliente_telefono').html("");
     $('#vendedor').html("");
     $('#n_subtotal').html("");
     $('#n_envio').html("");

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
 from django.http import HttpResponse
@@ -35,7 +36,7 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         analisis = Analisis.objects.all()
         paises = Pais.objects.all()
         context = {
@@ -51,7 +52,7 @@ def ver_catalogo(request):
 @login_required
 def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
             analisis = Analisis.objects.get(id_analisis = id)
             if analisis:
@@ -74,7 +75,7 @@ def cargar_analisis(request, id):
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -117,7 +118,7 @@ def editar_analisis(request, id):
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -146,7 +147,7 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
@@ -403,8 +404,10 @@ def visualizar_cotizacion(request, id):
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
+            empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)
+            usuario = User.objects.get(pk = cotizacion.usuario_c.user.pk)
             if cotizacion:  # Verificar si la cotizacion existe
-                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion)  # Cargar registros de tabla analisis_cotizacion
                 if analisis_cotizacion:
                     data_analisis = []
                     data_cotizacion_analisis = []
@@ -424,6 +427,9 @@ def visualizar_cotizacion(request, id):
                     data.append(serializers.serialize("json", [cotizacion.usuario_v], ensure_ascii = False))
                     data.append(data_analisis)
                     data.append(data_cotizacion_analisis)
+
+                    data.append(serializers.serialize("json", [empresa], ensure_ascii = False))
+                    data.append(serializers.serialize("json", [usuario], ensure_ascii = False))
 
                     response =  JsonResponse({"info": data})
                     response.status_code = 200
