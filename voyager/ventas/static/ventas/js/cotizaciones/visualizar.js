@@ -34,38 +34,43 @@ function visualizar_cotizacion(id) {
                         n_analisis_cotizacion = JSON.parse(aux_analisis_cotizacion[registro]);
                         analisis_cotizacion.push(n_analisis_cotizacion);
                     }
-                    cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion)
+
+                    var data_empresa = JSON.parse(response.info[5]);
+                    var data_usuario = JSON.parse(response.info[6]);
+
+                    cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
         });
     }
 }
 
-function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion) {
+function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario) {
     $('.analisis_registro').remove();
     $('#ver_id_cot').html(data_cotizacion[0].pk);
     $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
     $('#vendedor').html(data_vendedor[0].fields.nombre + ' ' + data_vendedor[0].fields.apellido_paterno + ' ' + data_vendedor[0].fields.apellido_materno);
+    $('#cliente_empresa').html(data_empresa[0].fields.empresa);
+    $('#cliente_correo').html(data_usuario[0].fields.email);
+    $('#cliente_telefono').html(data_cliente[0].fields.telefono);
     $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
-    $('#n_iva').html(data_cotizacion[0].fields.iva);
-    $('#n_descuento').html(data_cotizacion[0].fields.descuento);
+    $('#n_envio').html(parseFloat(data_cotizacion[0].fields.envio));
     $('#n_total').html(data_cotizacion[0].fields.total);
-    
+
     $("#editar-cot-cliente > option").each(function() {
         if($(this).val() == data_cliente[0].pk){
             $(this).attr('selected','selected');
         }
     });
-    
+
     for (n in analisis) {
-        $('#analisis_tabla').append("<tr class='analisis_registro'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td></tr>");
+        $('#analisis_tabla').append("<tr class='analisis_registro'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$" + analisis[n][0].fields.precio + "</td><td> " + parseInt(analisis_cotizacion[n][0].fields.descuento) + "</td><td> " + parseInt(analisis_cotizacion[n][0].fields.iva) + "</td><td> " + analisis_cotizacion[n][0].fields.total + "</td></tr>");
 
         // Precargamos los inputs de la cotización
-        $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + analisis[n][0].pk + '"><td>' + analisis[n][0].fields.codigo + '</td><td>' + analisis[n][0].fields.nombre + '</td><td><input id="edit-cot-pr-' + analisis[n][0].pk + '" name="editar-cot-precios[]" value='+analisis[n][0].fields.precio +' hidden>$ ' + analisis[n][0].fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value="'+analisis_cotizacion[n][0].fields.cantidad+'"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + analisis[n][0].pk + ')"><i class="fa fa-trash"></i></button></td></tr>');
+        $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + analisis[n][0].pk + '"><td>' + analisis[n][0].fields.codigo + '</td><td>' + analisis[n][0].fields.nombre + '</td><td><input id="edit-cot-pr-' + analisis[n][0].pk + '" name="edit-cot-precios[]" value='+ analisis[n][0].fields.precio +' hidden>$' + analisis[n][0].fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value="'+analisis_cotizacion[n][0].fields.cantidad+'"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="edit-cot-de-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-descuentos[]" min=0 value='+parseInt(analisis_cotizacion[n][0].fields.descuento)+' onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-iva-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-ivas[]" min=0 value='+parseInt(analisis_cotizacion[n][0].fields.iva)+' onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-to-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-totales[]" value='+ analisis_cotizacion[n][0].fields.total +' readonly></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + analisis[n][0].pk + ')"><i class="fa fa-trash"></i></button></td></tr>');
         $('#editar-cot-subtotal').val(data_cotizacion[0].fields.subtotal);
-        $('#editar-cot-descuento').val(data_cotizacion[0].fields.descuento);
-        $('#editar-cot-iva').val(data_cotizacion[0].fields.iva);
+        $('#editar-cot-envio').val(data_cotizacion[0].fields.envio);
         $('#editar-cot-total').val(data_cotizacion[0].fields.total);
 
         // A los análisis que ya están seleccionados les marcaremos su checkbox marcado
@@ -83,10 +88,12 @@ function error_datos_cotizacion() {
     $('#ver_id_cot').html("");
     $('#fecha').html("");
     $('#cliente_nombre').html("");
+    $('#cliente_empresa').html("");
+    $('#cliente_correo').html("");
+    $('#cliente_telefono').html("");
     $('#vendedor').html("");
     $('#n_subtotal').html("");
-    $('#n_iva').html("");
-    $('#n_descuento').html("");
+    $('#n_envio').html("");
     $('#n_total').html("");
     $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }

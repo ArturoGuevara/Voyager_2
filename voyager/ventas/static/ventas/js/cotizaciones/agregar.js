@@ -9,9 +9,6 @@ $(document).ready(function () {
     $('#agregar-cot').on('hidden.bs.modal', function () {
         $('#tabla-analisis-info').empty()
     });
-    // Para actualizar el total al crear una nueva cotización
-    $('#descuento').on("change", add_calc_total);
-    $('#iva').on("change", add_calc_total);
 });
 
 /* FUNCIONES PARA CREAR COTIZACIÓN */
@@ -47,16 +44,13 @@ function cargar_cot() {
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
-                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$ ' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="add_calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td></tr>');
-                    subtotal += parseFloat(precio);
+                    var total_analisis = parseInt(precio) + (parseInt(precio) * 0.16)
+                    $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="add_calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="descuentos[]" min=0 value=0 onchange="add_calc_total()"></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="ivas[]" min=0 value=16 onchange="add_calc_total()"></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="totales[]" value='+ total_analisis +' readonly></td></tr>');
+                    subtotal += parseFloat(total_analisis);
                 }
                 total = subtotal;
                 // Asignar valores al input de subtotal y total
                 $('#subtotal').val(subtotal);
-                var ivaa = $('#iva').val();
-                var iva_total = parseInt(ivaa) / 100;
-                var iva = iva_total * total;
-                total = total + iva;
                 $('#total').val(total);
             },
             error: function (data) {
@@ -72,6 +66,9 @@ function cargar_cot() {
 function crear_cotizacion() {
     var checked = [];
     var cantidades = [];
+    var descuentos = [];
+    var ivas = [];
+    var totales = [];
     // Obtenemos las id de los análisis seleccionados
     $("input[name='cot[]']:checked").each(function () {
         checked.push(parseInt($(this).val()));
@@ -83,20 +80,26 @@ function crear_cotizacion() {
         var id = $(this).data('id');
         check_is_not_empty($(this).val(), "#res-cot-an-" + id + "");
     });
+    $("input[name='descuentos[]").each(function () {
+        descuentos.push(parseInt($(this).val()));
+    });
+    $("input[name='ivas[]").each(function () {
+        ivas.push(parseInt($(this).val()));
+    });
+    $("input[name='totales[]").each(function () {
+        totales.push(parseFloat($(this).val()));
+    });
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
     // Obtener valor de los inputs
     var cliente = $('#cliente').val();
     var subtotal = $('#subtotal').val();
-    var descuento = $('#descuento').val();
-    var iva = $('#iva').val();
+    var envio = $('#envio').val();
     var total = $('#total').val();
 
     // Validamos que no estén vacíos los inputs
     check_is_not_empty(cliente, '#cliente');
     check_is_not_empty(subtotal, '#subtotal');
-    check_is_not_empty(descuento, '#descuento');
-    check_is_not_empty(iva, '#iva');
     check_is_not_empty(total, '#total');
 
     $.ajax({
@@ -106,11 +109,13 @@ function crear_cotizacion() {
         data: {
             cliente: cliente,
             subtotal: subtotal,
-            descuento: descuento,
-            iva: iva,
             total: total,
+            envio: envio,
             'checked[]': checked,
             'cantidades[]': cantidades,
+            'ivas[]': ivas,
+            'descuentos[]': descuentos,
+            'totales[]': totales,
             'csrfmiddlewaretoken': token
         },
         type: "POST",
@@ -166,9 +171,30 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         pr.push(val);
     });
+    var iva = [];
+    $("input[name='ivas[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        iva.push(val);
+    });
+    var desc = [];
+    $("input[name='descuentos[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        desc.push(val);
+    });
+    var tots = [];
+    $("input[name='totales[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        tots.push(val);
+    });
     var sub = document.getElementById("subtotal");
     var total = document.getElementById("total");
-    var iva = document.getElementById("iva");
+    var envio = document.getElementById("envio");
     var precios = [];
     var i = 0;
     $("input[name='cantidades[]']").each(function () {
@@ -190,20 +216,24 @@ function add_calc_total() {
     var subtotal = 0;
     i = 0;
     for (p in precios) {
-        subtotal = subtotal + precios[i];
-        console.log(p);
+        desc[i] = desc[i] / 100;
+        var temp = precios[i] - (precios[i] * desc[i]);
+        iva[i] = iva[i] / 100;
+        temp = temp + (temp * iva[i]);
+        tots[i] = temp;
+        subtotal = subtotal + tots[i];
         i = i + 1;
     }
-    console.log(subtotal);
+    i = 0;
+    $("input[name='totales[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        $(this).val(tots[i]);
+        i = i + 1;
+    });
     sub.value = subtotal;
-    total.value = sub.value;
-    var desc = document.getElementById("descuento");
-    var d = parseInt(desc.value) / 100;
-    var t = parseInt(total.value);
-    var temp = t * d;
-    var tot = t - temp;
-    var ivaa = parseInt(iva.value) / 100;
-    ivaa = tot * ivaa;
-    tot = tot + ivaa;
-    total.value = tot;
+    if (envio.value < 1) {
+        envio.value = envio.value * -1;
+    }
+    total.value = subtotal + parseInt(envio.value);
 }

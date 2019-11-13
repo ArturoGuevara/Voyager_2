@@ -6,12 +6,18 @@
 {% endblock %}
 
 {% block content %}
-
+{{ request.session.crear_staff_status }}
 <div class="text-md-left text-center">
     <h2>Usuarios
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección puedes visualizar, editar y eliminar a los usuarios.">
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus usuarios">
             <i class="fa fa-question-circle fa-lg"></i>
         </button>
+        <div class="text-center text-md-right">
+            {% if request.session.userrole == 'Director' %}
+            <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón sirve para agregar un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
+            {% endif %}
+            <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para agregar un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
+        </div>
     </h2>
 </div>
 <div id="table" class="table-responsive table-full-width">
@@ -21,7 +27,7 @@
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
             <th class="text-center">Estatus <i class="fa fa-sort"></i></th>
             <th class="text-center">Empresa <i class="fa fa-sort"></i></th>
-            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de un usurio individual o eliminar un usuario.">Acciones</th>
+            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine un usuario">Acciones <i class="fa fa-question-circle fa-lg"></th>
         </thead>
         <tbody>
             {% for c in usuarios %}
@@ -54,4 +60,5 @@
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <script src="{% static 'cuentas/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'cuentas/js/usuario.js' %}" type="text/javascript"></script>
+    <script src="{% static 'cuentas/js/notificaciones_usuario.js' %}" type="text/javascript"></script>
 {% endblock %}

@@ -27,27 +27,24 @@ class OrdenInterna(models.Model):
         ('No', 'No'),
     )
     IDIOMA = (
-        ('8809 ES', '8809 ES'),
-        ('8992 EN', '8992 EN'),
+        ('Español', 'Español'),
+        ('Inglés', 'Inglés'),
     )
     ESTADOS = (
-        ('invisible', 'invisible'),
-        ('fantasma', 'fantasma'),
-        ('activo', 'activo'),
-        ('borrado', 'borrado'),
+        ('Invisible', 'Invisible'),
+        ('Fantasma', 'Fantasma'),
+        ('Creada', 'Creada'),
+        ('Enviada', 'Enviada'),
+        ('En laboratorio', 'En laboratorio'),
+        ('Resultados', 'Resultados'),
+        ('Borrado', 'Borrado'),
     )
 
-    #Observaciones
+    pagado = models.CharField(max_length=2, choices=SN, default="No")
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
-    idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
-    mrl = models.CharField(max_length=200, blank=True)
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
-    fecha_eri = models.DateField(null=True, blank=True) #fecha esperada de recibo de informes
-    notif_e = models.CharField(max_length=2, choices=SN, blank=True) #notificación de envío
-    fecha_lab = models.DateField(null=True, blank=True) #fecha de llegada al lab
-    fecha_ei = models.DateField(null=True, blank=True) #fecha de envio de informes
-    envio_ti = models.CharField(max_length=2, choices=SN, blank=True) #envio de todos los informes
-    cliente_cr = models.CharField(max_length=2, choices=SN, blank=True) #cliente confirmó de recibido
+    #Observaciones
+    idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
 
     class Meta:
         verbose_name = 'Orden Interna'
@@ -56,51 +53,7 @@ class OrdenInterna(models.Model):
     def __str__(self):
         return "%s %s" % (self.idOI, self.estatus)
 
-class Muestra(models.Model):
-    id_muestra = models.AutoField(primary_key=True)
-    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
-    oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
-    producto = models.CharField(max_length=50)
-    variedad = models.CharField(max_length=50)
-    pais_origen = models.CharField(max_length=50)
-    codigo_muestra = models.CharField(max_length=50)
-    agricultor = models.CharField(max_length=50)
-    ubicacion = models.CharField(max_length=75)
-    estado = models.CharField(max_length=20)
-    parcela = models.CharField(max_length=50)
-    fecha_muestreo = models.DateField()
-    destino = models.CharField(max_length=50)
-    idioma = models.CharField(max_length=20)
-    estado_muestra = models.BooleanField()
-    num_interno_informe = models.CharField(max_length=50, null=True, blank=True)
-    fechah_recibo = models.DateTimeField(null=True, blank=True)
-    fecha_forma = models.DateField()
-    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura
-    orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
-
-
-
-class Cotizacion(models.Model):
-    id_cotizacion = models.AutoField(primary_key=True)
-    usuario_c = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='cliente')
-    usuario_v = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='ventas')
-    descuento = models.DecimalField(max_digits=100, decimal_places=4)
-    subtotal = models.DecimalField(max_digits=100, decimal_places=2)
-    iva = models.DecimalField(max_digits=100, decimal_places=2)
-    total = models.DecimalField(max_digits=100, decimal_places=2)
-    status = models.BooleanField(default=True)
-    fecha_creada = models.DateField(default=timezone.now)
-
-    class Meta:
-        verbose_name = 'Cotización'
-        verbose_name_plural = 'Cotizaciones'
-
-    def __str__(self):
-        return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
-
 ######### MODEL USV04-04 ########
-
-
 class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
@@ -108,7 +61,6 @@ class Pais(models.Model):
     def __str__(self):
         return "%s" % (self.nombre)
 
-######### MODEL USV04-04 ########
 
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
@@ -123,10 +75,7 @@ class Analisis(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.nombre, self.codigo)
-
-######### MODEL USV04-04 ########
-
-
+    
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
@@ -134,8 +83,56 @@ class Nota(models.Model):
     def __str__(self):
         return "%s" % (self.descripcion)
 
-
 ######### MODEL USV04-04 ########
+
+class Muestra(models.Model):
+    id_muestra = models.AutoField(primary_key=True) #1-Número de muestra
+    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE) #No visible
+    oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE) #No visible
+    producto = models.CharField(max_length=50) #2-Producto
+    variedad = models.CharField(max_length=50) #2.5 Variedad
+    pais_origen = models.CharField(max_length=50) #--------------PENDIENTE DE VISIBILIDAD
+    codigo_muestra = models.CharField(max_length=50) #3-Código muestra
+    mrl = models.CharField(max_length=200, blank=True) #5-MRL
+    ubicacion = models.CharField(max_length=75)#--------------PENDIENTE DE VISIBILIDAD
+    estado = models.CharField(max_length=20)#--------------PENDIENTE DE VISIBILIDAD
+    parcela = models.CharField(max_length=50)#--------------PENDIENTE DE VISIBILIDAD
+    fecha_muestreo = models.DateField()#--------------PENDIENTE DE VISIBILIDAD
+    destino = models.CharField(max_length=50)#--------------PENDIENTE DE VISIBILIDAD
+    idioma = models.CharField(max_length=20)#--------------PENDIENTE DE VISIBILIDAD
+    estado_muestra = models.BooleanField()#--------------PENDIENTE DE VISIBILIDAD
+    num_interno_informe = models.CharField(max_length=50, null=True, blank=True)#6-Número interno de informe
+    fechah_recibo = models.DateTimeField(null=True, blank=True)#7-Fecha de recibo de informe
+    fecha_eri = models.DateTimeField(null=True, blank=True)#8-Fecha esperada de recibo de informes
+    muestreador = models.CharField(max_length=50) #9-Muestreador
+    fecha_forma = models.DateField()#--------------PENDIENTE DE VISIBILIDAD
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura
+    orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
+    #Opciones de sí/no
+    SN = (
+        ('Sí', 'Sí'),
+        ('No', 'No'),
+    )
+    enviado = models.CharField(max_length=2, choices=SN, default="No")#10-Enviado
+
+
+
+class Cotizacion(models.Model):
+    id_cotizacion = models.AutoField(primary_key=True)
+    usuario_c = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='cliente')
+    usuario_v = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, related_name='ventas')
+    envio = models.DecimalField(max_digits=100, decimal_places=2)
+    subtotal = models.DecimalField(max_digits=100, decimal_places=2)
+    total = models.DecimalField(max_digits=100, decimal_places=2)
+    status = models.BooleanField(default=True)
+    fecha_creada = models.DateField(default=timezone.now)
+
+    class Meta:
+        verbose_name = 'Cotización'
+        verbose_name_plural = 'Cotizaciones'
+
+    def __str__(self):
+        return "%s %s" % (self.id_cotizacion, self.usuario_c.user.username)
 
 class AnalisisCotizacion(models.Model):
     id_analisis_cotizacion = models.AutoField(primary_key=True)
@@ -143,6 +140,9 @@ class AnalisisCotizacion(models.Model):
     cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
     fecha = models.DateField()
+    descuento = models.DecimalField(max_digits=100, decimal_places=4, default=0)
+    iva = models.DecimalField(max_digits=100, decimal_places=2, default=16)
+    total = models.DecimalField(max_digits=100, decimal_places=2, default=0)
 
     class Meta:
         verbose_name = 'Analisis Cotizacion'

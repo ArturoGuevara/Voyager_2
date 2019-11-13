@@ -14,14 +14,27 @@
                 </div>
                 <div class="container d-block" id="ver-resumen-cot">
                     <div class="row">
+                      <div class="col-sm-12 col-md-8 p-0">
+                          <span>Vendedor: </span><span class="text-secondary" id="vendedor">El Vendedor</span>
+                      </div>
+                      <div class="col-sm-12 col-md-4 p-0">
                         <span>Fecha de creación: </span><span class="text-secondary" id="fecha"> 99/99/9999</span>
+                      </div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-12 col-md-6 p-0">
+                        <div class="col-sm-12 col-md-8 p-0">
                             <span>Cliente: </span><span class="text-secondary" id="cliente_nombre">El Cliente</span>
                         </div>
-                        <div class="col-sm-12 col-md-6 p-0">
-                            <span>Vendedor: </span><span class="text-secondary" id="vendedor">El Vendedor</span>
+                        <div class="col-sm-12 col-md-4 p-0">
+                            <span>Empresa: </span><span class="text-secondary" id="cliente_empresa">IFC</span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 col-md-8 p-0">
+                            <span>Correo: </span><span class="text-secondary" id="cliente_correo">cliente@cliente.com</span>
+                        </div>
+                        <div class="col-sm-12 col-md-4 p-0">
+                            <span>Teléfono: </span><span class="text-secondary" id="cliente_telefono">1239876543</span>
                         </div>
                     </div>
                     <div class="text-center">
@@ -35,6 +48,10 @@
                                     <th scope="col">Nombre</th>
                                     <th scope="col">Cantidad</th>
                                     <th scope="col">Precio</th>
+                                    <th scope="col">% Descuento</th>
+                                    <th scope="col">% IVA</th>
+                                    <th scope="col">Total Análisis</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -46,10 +63,7 @@
                         <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
                     </div>
                     <div class="row">
-                        <span>IVA: </span><span class="text-secondary" id="n_iva"> 16% ($ 32.00)</span>%
-                    </div>
-                    <div class="row">
-                        <span>Descuento: </span><span class="text-secondary" id="n_descuento">10</span>%
+                        <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
                     </div>
                     <div class="row border border-success bg-success">
                         <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
@@ -82,6 +96,9 @@
                                             <th>Nombre</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
+                                            <th>% Descuento</th>
+                                            <th>% IVA</th>
+                                            <th>Total Análisis</th>
                                             <th>Acción</th>
                                         </thead>
                                         <tbody id="editar-cot-tabla-analisis-resumen">
@@ -91,28 +108,21 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-4">
                                     <label for="subtotal">Subtotal</label>
                                     <input type="number" class="form-control" id="editar-cot-subtotal" readonly>
                                     <div class="invalid-feedback">
                                         El SubTotal no puede estar vacío
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-3">
-                                    <label for="descuento">% Descuento</label>
-                                    <input type="number" class="form-control" id="editar-cot-descuento" value="0" min=0 max=100>
+                                <div class="form-group col-sm-4">
+                                    <label for="envio">Costo de Envío</label>
+                                    <input type="number" class="form-control" id="editar-cot-envio" name="editar-cot-envio" value="0" min="0" onchange="calc_total()">
                                     <div class="invalid-feedback">
-                                        Por favor introduce una valor para el descuento
+                                        Por favor introduce un costo de envío
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-3">
-                                    <label for="iva">% IVA</label>
-                                    <input type="number" class="form-control" id="editar-cot-iva" value="16" min=0 max=100>
-                                    <div class="invalid-feedback">
-                                        Por favor introduce una valor para el IVA
-                                    </div>
-                                </div>
-                                <div class="form-group col-sm-3">
+                                <div class="form-group col-sm-4">
                                     <label for="total">Total</label>
                                     <input type="number" class="form-control" id="editar-cot-total" readonly>
                                     <div class="invalid-feedback">

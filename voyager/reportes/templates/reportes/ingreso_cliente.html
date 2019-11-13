@@ -7,7 +7,7 @@
 <h2 class="mb-3 mt-3">Información del solicitante
     <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
             data-placement="right"
-            data-content="En esta sección debes agregar información sobre el origen de la muestra y preferencias de resultados"
+            data-content="Proporcione información general para ingreso de muestra"
             data-trigger="hover">
         <i class="fa fa-question-circle fa-lg"></i>
     </button>
@@ -23,7 +23,7 @@
                         <h4 class="card-title">Datos del Solicitante
                             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
                                     data-placement="right"
-                                    data-content="En esta sección debes agregar información sobre el origen de la muestra"
+                                    data-content="Ingrese información sobre origen de muestra"
                                     data-trigger="hover">
                                 <i class="fa fa-question-circle fa-lg"></i>
                             </button>
@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-md-5 pr-1">
                             <div class="form-group">
-                                <label for="nombre">Nombre del Agricultor</label>
+                                <label for="nombre">Nombre del Solicitante</label>
                                 <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1" required>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-md-4 pr-1">
                             <div class="form-group">
-                                <label>País de Origen</label>
+                                <label>País de Origen de Muestra</label>
                                 <select name="pais" class="form-control" id="pais" onchange="estado()" required>
                                     <option selected value="" disabled>Selecciona el país...</option>
                                     <option value="Afganistán">Afganistán</option>
@@ -302,7 +302,7 @@
                         </div>
                         <div id="label-estado" class="col-md-4 px-1" hidden>
                             <div class="form-group">
-                                <label>Estado de Origen</label>
+                                <label>Estado de Origen de Muestra</label>
                                 <select name="estado1" class="form-control" id="estado1" hidden>
                                     <option selected value="" disabled>Selecciona el estado...</option>
                                     <option value="Aguascalientes">Aguascalientes</option>
@@ -354,7 +354,7 @@
                         <h4 class="card-title">Datos del los resultados
                             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
                                     data-placement="right"
-                                    data-content="En esta sección debes agregar información sobre preferencias de los resultados"
+                                    data-content="Ingrese información sobre preferencias con los resultados"
                                     data-trigger="hover">
                                 <i class="fa fa-question-circle fa-lg"></i>
                             </button>
@@ -383,14 +383,14 @@
         <div class="col-md-2">
             <a href="/reportes/" class="btn btn-danger btn-block"
                 data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Cancelar la solicitud de ingreso de muestra">
+                data-content="Cancelar solicitud de ingreso de muestra">
                 Cancelar
             </a>
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-success btn-block"
                 data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Continuar con la solicitud de ingreso de muestra, se deberá agregar más información">
+                data-content="Cambia a pestaña de información de muestras">
                 Continuar
             </button>
         </div>

@@ -19,6 +19,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.core.exceptions import ValidationError
+import locale
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -123,10 +124,17 @@ def consultar_orden(request):
         analisis_muestras = {}
         facturas_muestras = {}
         if request.method == 'POST':
+            if not (request.POST.get('id')):
+                raise Http404
             id = request.POST.get('id')
             #oi = orden interna
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
+                solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
+                s_empresa = solicitante.empresa.empresa
+                s_correo = solicitante.user.email
+                solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
+                solicitante = solicitante[1:-1]
                 data = serializers.serialize("json", [oi], ensure_ascii = False)
                 data = data[1:-1]
                 muestras = Muestra.objects.filter(oi = oi)
@@ -163,7 +171,10 @@ def consultar_orden(request):
                             "correo":email,
                             "empresa":empresa,
                             "dict_am":analisis_muestras,
-                            "facturas":facturas_muestras}
+                            "facturas":facturas_muestras,
+                            "solicitante":solicitante,
+                            "s_empresa":s_empresa,
+                            "s_correo":s_correo}
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
@@ -178,7 +189,7 @@ def consultar_orden(request):
             response = JsonResponse({"error": "No se mandó por el método correcto"})
             response.status_code = 500
             # Regresamos la respuesta de error interno del servidor
-            return response    
+            return response
     else:
         raise Http404
 
@@ -230,31 +241,8 @@ def actualizar_orden(request):
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
-            oi.formato_ingreso_muestra = request.POST['formato_ingreso_muestra']
             oi.idioma_reporte = request.POST['idioma_reporte']
-            oi.mrl = request.POST['mrl']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_eri'] == "":
-                oi.fecha_eri = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_eri = request.POST['fecha_eri']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_lab'] == "":
-                oi.fecha_lab = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_lab = request.POST['fecha_lab']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_ei'] == "":
-                oi.fecha_ei = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_ei = request.POST['fecha_ei']
-
-            oi.notif_e = request.POST['notif_e']
-            oi.envio_ti = request.POST['envio_ti']
-            oi.cliente_cr = request.POST['cliente_cr']
+            oi.pagado = request.POST['pagado']
             #Guardar
             oi.save()
 
@@ -262,8 +250,16 @@ def actualizar_orden(request):
             oi_actualizada = OrdenInterna.objects.get(idOI = request.POST['idOI'])
             data = serializers.serialize("json", [oi_actualizada], ensure_ascii = False)
             data = data[1:-1]
+            try:
+                locale.setlocale(locale.LC_TIME, 'es_co.utf8') #your language encoding
+            except:
+                locale.setlocale(locale.LC_TIME, 'es_co')
+            fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
             # Regresamos información actualizada
-            return JsonResponse({"data": data})
+            return JsonResponse(
+                {"data": data,
+                "fecha_formato": fecha_formato}
+                )
 
 
 def validacion_dhl(codigo):
