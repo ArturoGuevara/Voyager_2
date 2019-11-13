@@ -1027,7 +1027,6 @@ class TestEditaOrdenesInternas(TestCase):
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
         self.assertContains(response, "fantasma")
-        self.assertContains(response, "mexico")
 
 
     def test_model(self):

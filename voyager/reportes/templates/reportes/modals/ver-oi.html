@@ -19,6 +19,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="visualizar_info">
+                            <h3 id="titulov_idOI"></h3>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <input type="hidden" class="form-control" id="visualizar_idOI" name="visualizar_idOI">
@@ -36,14 +37,17 @@
                                     <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Envío</label>
+                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
                                     <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
                                 </div>
                             </div>
                             <div class="form-row">
-
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_guia_envio">Pagado</label>
+                                    <input type="text" class="form-control" id="visualizar_pagado" placeholder="Pagado" disabled>
+                                </div>
                             </div>
-                            <div class="form-row">
+                            <div class="form-row" style="display: none;">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_link_resultados">Link de Resultados</label>
                                     <input type="text" class="form-control" id="visualizar_link_resultados" placeholder="Link de resultados" disabled>
@@ -52,9 +56,9 @@
 
                             <div id="info-cliente">
                                 <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
-                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa"></p>
+                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa">Empresa no disponible</p>
 
-                                <label for="visualizar_usuario_nombre"><b>Usuario:</b></label>
+                                <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
                                 <p id="visualizar_usuario_nombre" name="visualizar_usuario_nombre">Nombre no disponible</p>
 
                                 <label for="visualizar_usuario_email"><b>Correo:</b></label>
@@ -75,52 +79,9 @@
                         <div class="tab-pane container fade" id="visualizar_observaciones">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_formato_ingreso_muestra">Formato de ingreso de muestra</label>
-                                    <input type="text" class="form-control" id="visualizar_formato_ingreso_muestra" name="visualizar_formato_ingreso_muestra" placeholder="Formato" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
                                     <label for="visualizar_idioma_reporte">Idioma del reporte: </label>
                                     <p id="visualizar_idioma_reporte">Idioma no disponible</p>
                                 </div>
-                            </div>
-
-
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_mrl">MRL</label>
-                                    <input type="text" class="form-control" id="visualizar_mrl" name="visualizar_mrl" placeholder="MRL" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_lab">Fecha de llegada al laboratorio</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_lab" name="visualizar_fecha_lab" disabled>
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_ei">Fecha de envío al laboratorio</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_ei" name="visualizar_fecha_ei" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_eri">Fecha de recibo de informes</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_eri" name="visualizar_fecha_eri" disabled>
-                                </div>
-                            </div>
-
-
-                            <div class="form-group">
-                                <label for="visualizar_notif_e">Notificación de envío al cliente</label>
-                                <p id="visualizar_notif_e" name="visualizar_fecha_eri"></p>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="visualizar_envio_ti">Envío de todos los informes</label>
-                                <p id="visualizar_envio_ti" name="visualizar_envio_ti"></p>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="visualizar_cliente_cr">El cliente confirmó de recibido</label>
-                                <p id="visualizar_cliente_cr" name="visualizar_cliente_cr"></p>
                             </div>
 
                         </div>
@@ -146,6 +107,7 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="editar_info">
+                            <h3 id="tituloe_idOI"></h3>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <input type="hidden" class="form-control" id="editar_idOI" name="editar_idOI">
@@ -171,14 +133,20 @@
                                     <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Envío</label>
+                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
                                     <input type="text" class="form-control" id="editar_guia_envio" placeholder="Guía de envío">
                                 </div>
                             </div>
                             <div class="form-row">
-
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_estatus">Pagado</label>
+                                    <select name="editar_estatus" id="editar_pagado" class="form-control">
+                                        <option name="Sí" id="Sí" value="Sí">Sí</option>
+                                        <option name="No" id="No" value="No">No</option>
+                                    </select>
+                                </div>
                             </div>
-                            <div class="form-row">
+                            <div class="form-row" style="display: none;">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_link_resultados">Link de Resultados</label>
                                     <input type="text" class="form-control" id="editar_link_resultados" name="editar_link_resultados" placeholder="Link de resultados">
@@ -189,7 +157,7 @@
                                 <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
                                 <p id="editar_usuario_empresa" name="editar_usuario_empresa"></p>
 
-                                <label for="visualizar_usuario_nombre"><b>Usuario:</b></label>
+                                <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
                                 <p id="editar_usuario_nombre" name="editar_usuario_nombre">Nombre no disponible</p>
 
                                 <label for="visualizar_usuario_email"><b>Correo:</b></label>
@@ -206,69 +174,15 @@
                             </div>
                         </div>
 
-
                         <div class="tab-pane container fade" id="editar_observaciones">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_formato_ingreso_muestra">Formato de ingreso de muestra</label>
-                                    <input type="text" class="form-control" id="editar_formato_ingreso_muestra" name="editar_formato_ingreso_muestra" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
                                     <label for="idioma_reporte">Idioma del reporte: </label>
                                     <p>
-                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="8809 ES">8809 ES
-                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="8992 EN">8992 EN
+                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="Español">Español
+                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="Inglés">Inglés
                                     </p>
                                 </div>
-                            </div>
-
-
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_mrl">MRL</label>
-                                    <input type="text" class="form-control" id="editar_mrl" name="editar_mrl" placeholder="MRL">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_lab">Fecha de llegada al laboratorio</label>
-                                    <input type="date" class="form-control" id="editar_fecha_lab" name="editar_fecha_lab" placeholder="">
-                                </div>
-                            </div>
-
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_ei">Fecha de envío al laboratorio</label>
-                                    <input type="date" class="form-control" id="editar_fecha_ei" name="editar_fecha_ei" placeholder="">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_eri">Fecha de recibo de informes</label>
-                                    <input type="date" class="form-control" id="editar_fecha_eri" name="editar_fecha_eri" placeholder="">
-                                </div>
-                            </div>
-
-
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="editar_notif_e" name="editar_notif_e">
-                                    <span class="form-check-sign"></span>
-                                    Notificación de envío al cliente
-                                </label>
-                            </div>
-
-
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="editar_envio_ti" name="editar_envio_ti">
-                                    <span class="form-check-sign"></span>
-                                    Envío de todos los informes
-                                </label>
-                            </div>
-
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="checkbox" id="editar_cliente_cr" name="editar_cliente_cr">
-                                    <span class="form-check-sign"></span>
-                                    El cliente confirmó de recibido
-                                </label>
                             </div>
 
                         </div>
