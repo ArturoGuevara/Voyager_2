@@ -724,6 +724,8 @@ class ConsultarOrdenesInternasViewTests(TestCase):
 
     #Función para crear al usuario fantasma quien creará las ordenes internas
     def create_phantom(self):
+        emp = Empresa(empresa="Phantom Inc.")
+        emp.save()
         user = User.objects.create_user(
             'danny_phantom',
             'danny@phantom.com',
@@ -739,6 +741,7 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         user_phantom.apellido_materno = "Phantom"
         user_phantom.telefono = "9114364"
         user_phantom.estado = True
+        user_phantom.empresa = emp
         user_phantom.save()   #Guardar usuario de IFC
 
     #Función para crear al usuario fantasma quien creará las ordenes internas
