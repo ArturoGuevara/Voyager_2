@@ -130,6 +130,11 @@ def consultar_orden(request):
             #oi = orden interna
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
+                solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
+                s_empresa = solicitante.empresa.empresa
+                s_correo = solicitante.user.email
+                solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
+                solicitante = solicitante[1:-1]
                 data = serializers.serialize("json", [oi], ensure_ascii = False)
                 data = data[1:-1]
                 muestras = Muestra.objects.filter(oi = oi)
@@ -166,7 +171,10 @@ def consultar_orden(request):
                             "correo":email,
                             "empresa":empresa,
                             "dict_am":analisis_muestras,
-                            "facturas":facturas_muestras}
+                            "facturas":facturas_muestras,
+                            "solicitante":solicitante,
+                            "s_empresa":s_empresa,
+                            "s_correo":s_correo}
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
@@ -248,7 +256,10 @@ def actualizar_orden(request):
                 locale.setlocale(locale.LC_TIME, 'es_co')
             fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
             # Regresamos información actualizada
-            return JsonResponse({"data": data, "fecha_formato":fecha_formato})
+            return JsonResponse(
+                {"data": data,
+                "fecha_formato": fecha_formato}
+                )
 
 
 def validacion_dhl(codigo):
