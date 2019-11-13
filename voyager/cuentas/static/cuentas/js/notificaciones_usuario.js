@@ -10,7 +10,7 @@ function verificar_notificaciones(){
             if (response.result == true){
                 showNotification('top','right','Se ha guardado el usuario exitosamente');
             }else if (response.result == false){
-                showNotification('top','right','Ah ocurrido un error, inténtelo de nuevo más tarde');
+                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde');
             }else{
 
             }
