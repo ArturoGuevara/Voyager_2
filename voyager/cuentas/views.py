@@ -235,12 +235,16 @@ def guardar_staff(request):
         ): #verificar que se envían todos los datos
         request.session['crear_staff_status'] = False
         return redirect('/cuentas/usuarios')
-
+    
     user_name = request.POST.get('nombre')[0:2] \
                 + request.POST.get('apellido_paterno')[0:2] \
                 + request.POST.get('apellido_materno')[0:2] \
                 + str(IFCUsuario.objects.all().count()) #crear un username único para el usuario tomando las 2 primeras
                 # letras del nombre y cada apellido más el número de usuarios en el sistema
+
+    if (len(request.POST.get('contraseña')) < 8):   # Verificar que la contrasena sea mayor o igual a 8 caracteres
+        request.session['crear_staff_status'] = False
+        return redirect('/cuentas/usuarios')
 
     if (request.POST.get('contraseña') != request.POST.get('contraseña2')): #verificar que las contraseñas sean iguales
         request.session['crear_staff_status'] = False
