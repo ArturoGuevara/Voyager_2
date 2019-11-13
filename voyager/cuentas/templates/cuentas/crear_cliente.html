@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Crear cliente</h1>
+<h1>Crear Cliente</h1>
     <div class="card col-12">
         <form action="../guardar_cliente/" method="post" id="form_client">
             {% csrf_token %}
@@ -27,7 +27,7 @@
 
             <div class="row">
                 <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
-                    <label for="{{ form.correo.id_for_label }}">Correo electrónico:</label>
+                    <label for="{{ form.correo.id_for_label }}">Correo Electrónico:</label>
                     {{ form.correo }}
                     <div class="invalid_mail p-3" hidden>
                         <p style="color:red">Este correo ha sido usado</p>
