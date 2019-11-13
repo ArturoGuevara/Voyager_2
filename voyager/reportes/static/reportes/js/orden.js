@@ -88,7 +88,6 @@ function cargar_info_oi(){
 }
 
 function guardar_muestra(id_muestra){
-    //var idOI = $('#editar_idOI').val();
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
     num_interno = $(ni).val();
     var fr = "#editar_muestra_fecha_recibo_" + id_muestra;
@@ -164,7 +163,6 @@ function submit(){
         dataType: 'json',
         success: function (response) {
             var data = JSON.parse(response.data);
-            //var fecha_formato = JSON.parse(response.fecha_formato);
             var fecha_formato = response.fecha_formato;
             data = data.fields;
             var track = '#oi-' + idOI + " .oi_estatus";
