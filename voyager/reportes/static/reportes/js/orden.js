@@ -130,6 +130,7 @@ function submit(){
     var estatus = $('#editar_estatus').val();
     var localidad = $('#editar_localidad').val();
     var fecha_envio = $('#editar_fecha_envio').val();
+    var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
     var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
     var pagado = $('#editar_pagado').val();
@@ -154,6 +155,7 @@ function submit(){
             'estatus': estatus,
             'localidad': localidad,
             'fecha_envio': fecha_envio,
+            'fecha_recepcion_m': fecha_recepcion_m,
             'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,

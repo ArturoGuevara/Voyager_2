@@ -238,6 +238,12 @@ def actualizar_orden(request):
                 oi.fecha_envio = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_envio = request.POST['fecha_envio']
+            
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_recepcion_m'] == "":
+                oi.fecha_recepcion_m = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_recepcion_m = request.POST['fecha_recepcion_m']
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
@@ -254,7 +260,10 @@ def actualizar_orden(request):
                 locale.setlocale(locale.LC_TIME, 'es_co.utf8') #your language encoding
             except:
                 locale.setlocale(locale.LC_TIME, 'es_co')
-            fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
+            try:
+                fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
+            except:
+                fecha_formato = "Ninguna"
             # Regresamos información actualizada
             return JsonResponse(
                 {"data": data,

@@ -39,7 +39,13 @@
                     <td class="pt-3 oiData oi_empresa">{{ o.usuario.empresa }}</td>
                     <td class="pt-3 oiData oi_usuario">{{ o.usuario.user }}</td>
                     <td class="pt-3 oiData oi_fecha_envio">
-                        {% language 'es-co' %} {{ o.fecha_envio|date:'d/M/Y' }} {% endlanguage %}
+                        {% language 'es-co' %}
+                            {% if o.fecha_envio %}
+                                {{ o.fecha_envio|date:'d/M/Y' }}
+                            {% else %}
+                                Ninguna
+                            {% endif %}
+                        {% endlanguage %}
                     </td>
                     <td class="pt-3 oiData oi_pagado">{{ o.pagado }}</td>
                     <td colspan="4">
