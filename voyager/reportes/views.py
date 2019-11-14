@@ -74,10 +74,10 @@ def ordenes_internas(request):
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
-    estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
+    estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
-    ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
+    ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
 
@@ -244,6 +244,12 @@ def actualizar_orden(request):
                 oi.fecha_recepcion_m = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_recepcion_m = request.POST['fecha_recepcion_m']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_llegada_lab'] == "":
+                oi.fecha_llegada_lab = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
