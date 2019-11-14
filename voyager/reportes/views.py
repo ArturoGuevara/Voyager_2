@@ -19,6 +19,14 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.core.exceptions import ValidationError
+from .forms import EnviarResultadosForm
+import os
+import time
+import random
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileType, Disposition, ContentId)
+import urllib.request as urllib
+import base64
 import locale
 
 # Create your views here.
@@ -74,6 +82,8 @@ def ordenes_internas(request):
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
+    if request.session.get('success_sent',None) == None:
+        request.session['success_sent']=0
     estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
@@ -89,8 +99,9 @@ def ordenes_internas(request):
         'ordenes_activas': ordenes_activas,
         'form': form,
         'successcode': response,
+        'success_sent': request.session['success_sent'],
     }
-
+    request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
 
 @login_required
@@ -492,3 +503,87 @@ def borrar_orden_interna(request):
         raise Http404
 
 ############### USVP09-24 ##################
+
+
+############### UST04-34 ##################
+def consultar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+    #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre == "SuperUser"
+        ):
+        raise Http404
+    if request.method!='POST':
+        raise Http404
+    if not request.POST.get('id'):
+        raise Http404
+    id = request.POST.get('id')
+    oi = OrdenInterna.objects.get(idOI=id)
+    muestras = Muestra.objects.filter(oi=oi)
+    empresa = None
+    if muestras:
+        empresa = muestras.first().usuario.empresa
+    data = {}
+    data = serializers.serialize("json", [empresa], ensure_ascii=False)
+    data = data[1:-1]
+    return JsonResponse({"data": data,})
+
+def enviar_archivo(request):
+    mail_code = 0
+    if request.method == 'POST':
+        form = EnviarResultadosForm(request.POST, request.FILES)
+        if form.is_valid():
+            mail_code = handle_upload_document(request.FILES['archivo_resultados'],
+                                        request.POST.get('email_destino'),
+                                        request.POST.get('subject'),
+                                        request.POST.get('body'),
+                                   )
+    if mail_code == 202:
+        request.session['success_sent'] = 1
+    else:
+        request.session['success_sent'] = -1
+    return redirect('/reportes/ordenes_internas')
+
+def handle_upload_document(f,dest,subject,body):
+    path = './archivos-reportes/resultados'
+    path+=str(datetime.date.today())
+    path+=str(int(random.uniform(1,100000)))
+    with open(path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return send_mail(path,dest,subject,body)
+
+def send_mail(path,dest,subject,body):
+    message = Mail(
+        from_email='A0127373@itesm.mx',
+        to_emails=dest,
+        subject=subject,
+        html_content=body)
+
+    pdf_path = path
+
+    with open(pdf_path, 'rb') as f:
+        data = f.read()
+
+    encoded = base64.b64encode(data).decode()
+
+    attachment = Attachment()
+    attachment.file_content = FileContent(encoded)
+    attachment.file_type = FileType('application/pdf')
+    attachment.file_name = FileName('Results.pdf')
+    attachment.disposition = Disposition('attachment')
+    attachment.content_id = ContentId('Example Content ID')
+    message.attachment = attachment
+
+    try:
+        with open('./API_KEY.txt','r') as f:
+            key = f.read()
+        sendgrid_client = SendGridAPIClient(key)
+        response = sendgrid_client.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+        return response.status_code
+    except Exception as e:
+        print(e.message)
