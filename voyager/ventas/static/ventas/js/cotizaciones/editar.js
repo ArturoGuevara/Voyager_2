@@ -44,11 +44,14 @@ $('#btn-canc-edit-cot').click(function(){
     restaurar_modal_ver_cot();
     // Reiniciamos al default los valores de la cotización
     visualizar_cotizacion(id_cotizacion);
+    // Se reinicia el arreglo de Análisis
+    che = [];
 });
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
-    // Restauramos la variable global que almacena la id de la cotización clickeada
+    // Restauramos la variable global que almacena la id de la cotización clickeada y los Análisis
     id_cotizacion = 0;
+    che = [];
 });
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
@@ -120,6 +123,7 @@ $("input[name='editar-cot-an[]']").click(function (){
             che.splice(i, 1);
           }
         }
+        calc_total();
     }
 });
 
@@ -132,8 +136,10 @@ function guardar_cambios_cot(){
         var descuentos = [];
         var ivas = [];
         var totales = [];
-        // Obtenemos las id de los análisis seleccionados
+
         checked = che;
+        che = [];
+        // Obtenemos las id de los análisis seleccionados
         // $("input[name='editar-cot-an[]']:checked").each(function () {
         //     checked.push(parseInt($(this).val()));
         // });
