@@ -29,7 +29,8 @@
                 <th>Vendedor <i class="fa fa-sort"></i></th>
                 <th>Total <i class="fa fa-sort"></i></th>
                 <th>Fecha creada <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                <th>Estado <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
@@ -40,14 +41,19 @@
                     <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
                     <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
                     <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
+                    {% if c.aceptado == True %}
+                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Aceptado</td>
+                    {% else %}
+                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Pendiente</td>
+                    {% endif %}
                     <td class="pt-3 cotizaciones_acciones">
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
                         {% if c.aceptado == False %}
-                        <button type="button" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
-                            <i class='fa fa-check'></i>
-                        </button>
+                          <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
+                              <i class='fa fa-check'></i>
+                          </button>
                         {% endif %}
                         {% if request.session.userrole == "Ventas" or request.session.userrole == "SuperUser" %}
                             <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">

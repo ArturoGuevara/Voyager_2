@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-info modal-dialog-centered modal-" role="document">
         <div class="modal-content bg-info">
             <div class="modal-header">
-                <button type="button text-align-right" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" class="text-white">×</span>
                 </button>
             </div>
@@ -12,13 +12,15 @@
                     <i class="nc-icon nc-bell-55" id="delete-icon-modal"></i>
                     <h4 class="text-uppercase mt-4">¡Estás a punto de aceptar una cotización!</h4>
                     <p class="">
-                        Si le das a aceptar no podrás modificar la cotización
+                        Si acepta ya no podrá modificar los datos de la cotización
                     </p>
                 </div>
             </div>
             <div class="modal-footer">
+              <div class="float-left">
                 <button type="button" class="btn btn-primary border-0 text-white ml-auto" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success bg-white border-white text-dark" onclick="aceptar_cotizacion()">Aceptar</button>
+              </div>
+                <button type="button" class="btn btn-success bg-white border-white text-dark" onclick="confirmar_aceptar_cotizacion()">Aceptar</button>
             </div>
         </div>
     </div>
