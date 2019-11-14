@@ -574,7 +574,6 @@ class TestEditarCotizaciones(TestCase):
             {'error': 'La cotización no contiene analisis'}
         )
 
-
 class TestEliminarCotizaciones(TestCase):
     #Tests de cotizaciones
     def set_up_everything(self):
@@ -834,18 +833,35 @@ class TestAceptarCotizaciones(TestCase):
         a2.pais = pais
         a2.save()   #Guardar el análisis
 
-        def test_accept_cotizacion_1(self):
-            cotizacion = Cotizacion.objects.first()
-            contador = Cotizacion.objects.filter(status=False).count()
-            self.assertEquals(3, contador)
-            response = self.client.get('/ventas/cotizaciones')
-            self.assertNotContains(response, "Aceptado")
+    def test_accept_cotizacion_1(self):
+        self.set_up_all_cot()
+        self.client.login(username='vent',password='testpassword')
+        cotizacion = Cotizacion.objects.first()
+        contador = Cotizacion.objects.filter(aceptado=False).count()
+        self.assertEquals(3, contador)
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertNotContains(response, "Aceptado")
 
         # Si truena está bien, porque el analisis no existe
-        def test_accept_cotizacion_2(self):
-            cotizacion = Cotizacion.objects.first()
-            cotizacion.aceptado = True;
-            contador = Cotizacion.objects.filter(status=True).count()
-            self.assertEquals(1, contador)
-            response = self.client.get('/ventas/cotizaciones')
-            self.assertContains(response, "Aceptado")
+    def test_accept_cotizacion_2(self):
+        self.set_up_all_cot()
+        self.client.login(username='vent',password='testpassword')
+        cotizacion = Cotizacion.objects.first()
+        cotizacion.aceptado = True;
+        cotizacion.save()
+        contador = Cotizacion.objects.filter(aceptado=True).count()
+        self.assertEquals(1, contador)
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertContains(response, "Aceptado")
+
+    def test_accept_cotizacion_3(self):
+        #Test de acceso a url sin Log In
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertRedirects(response, '/cuentas/login?next=/ventas/cotizaciones', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_accept_cotizacion_4(self):
+        #Test de acceso a url con Log In como Director
+        self.set_up_all_cot() #Set up de datos
+        self.client.login(username='dir',password='testpassword')
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertEqual(response.status_code,302)
