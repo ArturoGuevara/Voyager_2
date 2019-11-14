@@ -11,3 +11,10 @@ class codigoDHL(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+
+
+class EnviarResultadosForm(forms.Form):
+    archivo_resultados = forms.FileField()
+    email_destino = forms.EmailField()
+    subject = forms.CharField()
+    body = forms.CharField()
