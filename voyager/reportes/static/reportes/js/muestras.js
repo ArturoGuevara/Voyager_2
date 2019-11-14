@@ -87,3 +87,31 @@ function continuar_parte_muestras(){
     $('#info-solicitante').removeClass('d-block').addClass('d-none');
     $('#info-muestras').addClass('d-block').removeClass('d-none');
 }
+
+$('.btn-plantilla').click(function(){
+    // Obtenemos el target del contenedor que se tiene que desplegar
+    var target = $(this).data('target');
+    // Si ha sido clickeado antes, escondemos todos los contenedores
+    if($(this).hasClass('clicked')){
+        $(this).removeClass('clicked');
+        $('#containerProductoAgricola').collapse('hide');
+        $('#containerProductoProcesado').collapse('hide');
+        $('#containerProductoMicrobiologia').collapse('hide');
+    }else{ // Si es la primera vez que se clickea, le agregamos la clase nada más
+        $(this).addClass('clicked');    
+    }
+
+    if(target === 'agricola'){
+        $('#containerProductoAgricola').collapse('show');
+        $('#containerProductoProcesado').collapse('hide');
+        $('#containerProductoMicrobiologia').collapse('hide');
+    }else if(target === 'procesado'){
+        $('#containerProductoProcesado').collapse('show');
+        $('#containerProductoAgricola').collapse('hide');
+        $('#containerProductoMicrobiologia').collapse('hide');
+    }else if(target === 'microbiologia'){
+        $('#containerProductoMicrobiologia').collapse('show');
+        $('#containerProductoAgricola').collapse('hide');
+        $('#containerProductoProcesado').collapse('hide');
+    }
+});

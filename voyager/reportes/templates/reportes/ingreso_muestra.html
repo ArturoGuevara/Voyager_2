@@ -1,6 +1,13 @@
 {% extends 'root/base.html' %}
 {% load static %}
 
+{% block optionalCSS %}
+<style>
+    .btn-plantilla{
+        width: 33% !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
@@ -384,11 +391,39 @@
             </div>
         </div>
     </div>
+    
     <div id="info-muestras" class="d-none container-fluid px-0">
         <div class="row mx-0">
             <div class="card w-100">
                 <div class="card-body">
-                    asda
+                    <div class="text-center">
+                        <button class="btn btn-warning btn-plantilla" type="button" data-target="agricola">Producto Agrícola</button>
+                        <button class="btn btn-success btn-plantilla" type="button" data-target="procesado">Producto Procesado</button>
+                        <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia">Producto Microbiología</button>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoAgricola">
+                                <div class="card card-body">
+                                    1
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoProcesado">
+                                <div class="card card-body">
+                                    2
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoMicrobiologia">
+                                <div class="card card-body">
+                                    3
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
