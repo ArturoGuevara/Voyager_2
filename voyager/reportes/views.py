@@ -28,7 +28,10 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        return render(request, 'reportes/ingreso_muestra.html')   #Cargar la plantilla necesaria
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página y muestra estado deudor
+            return render(request, 'reportes/deudor.html')
+        return render(request, 'reportes/deudor.html')
+        #return render(request, 'reportes/ingreso_muestra.html')   #Cargar la plantilla necesaria
     else:
         raise Http404
 
