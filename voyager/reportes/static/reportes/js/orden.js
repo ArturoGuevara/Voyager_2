@@ -523,25 +523,19 @@ function enviar_resultados(){
         valid_form=false;
         $("#div-archivo").css("border-color", "red");
     }
-    console.log("A");
-    console.log(valid_form);
-    if(check_is_not_empty($("#email_destino").val(),"#email_destino")){
+    else{
+        $("#div-archivo").css("border-color", "grey");
+    }
+    if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
         valid_form=false;
     }
-    console.log("B");
-    console.log(valid_form);
-    if(check_is_not_empty($("#subject").val(),"#subject")){
+    if(!check_is_not_empty($("#subject").val(),"#subject")){
         valid_form=false;
     }
-    console.log("C");
-    console.log(valid_form);
-    if(check_is_not_empty($("#body").val(),"#body")){
+    if(!check_is_not_empty($("#body").val(),"#body")){
         valid_form=false;
     }
-    console.log("D");
-    console.log(valid_form);
-    if(valid_form){
-        console.log("SENDING");
-        //document.getElementById("submit_resultados_form").submit();
+    if(valid_form==true){
+        document.getElementById("submit_resultados_form").submit();
     }
 }

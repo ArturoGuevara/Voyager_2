@@ -83,4 +83,14 @@
             showNotification('top','right','No se encontró la Orden Interna')
         </script>
     {% endif %}
+
+    {% if success_sent == 1 %}
+        <script>
+            showNotification('top','right','Resultados enviados exitósamente')
+        </script>
+    {% elif success_sent == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error en el envío')
+        </script>
+    {% endif %}
 {% endblock %}

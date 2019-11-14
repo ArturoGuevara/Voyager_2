@@ -81,6 +81,8 @@ def ordenes_internas(request):
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
+    if request.session.get('success_sent',None) == None:
+        request.session['success_sent']=0
     estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
@@ -96,8 +98,9 @@ def ordenes_internas(request):
         'ordenes_activas': ordenes_activas,
         'form': form,
         'successcode': response,
+        'success_sent': request.session['success_sent'],
     }
-
+    request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
 
 @login_required
@@ -533,15 +536,20 @@ def consultar_empresa(request):
     return JsonResponse({"data": data,})
 
 def enviar_archivo(request):
+    mail_code = 0
     if request.method == 'POST':
         form = EnviarResultadosForm(request.POST, request.FILES)
         if form.is_valid():
-            handle_upload_document(request.FILES['archivo_resultados'],
+            mail_code = handle_upload_document(request.FILES['archivo_resultados'],
                                         request.POST.get('email_destino'),
                                         request.POST.get('subject'),
                                         request.POST.get('body'),
                                    )
-    return redirect('ordenes_internas')
+    if mail_code == 202:
+        request.session['success_sent'] = 1
+    else:
+        request.session['success_sent'] = -1
+    return redirect('/reportes/ordenes_internas')
 
 def handle_upload_document(f,dest,subject,body):
     path = './archivos-reportes/resultados'
@@ -550,9 +558,9 @@ def handle_upload_document(f,dest,subject,body):
     with open(path, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
-    sendmail(path,dest,subject,body)
+    return send_mail(path,dest,subject,body)
 
-def sendmail(path,dest,subject,body):
+def send_mail(path,dest,subject,body):
     message = Mail(
         from_email='A0127373@itesm.mx',
         to_emails=dest,
@@ -575,10 +583,13 @@ def sendmail(path,dest,subject,body):
     message.attachment = attachment
 
     try:
-        sendgrid_client = SendGridAPIClient('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')
+        with open('./API_KEY.txt','r') as f:
+            key = f.read()
+        sendgrid_client = SendGridAPIClient(key)
         response = sendgrid_client.send(message)
         print(response.status_code)
         print(response.body)
         print(response.headers)
+        return response.status_code
     except Exception as e:
         print(e.message)
