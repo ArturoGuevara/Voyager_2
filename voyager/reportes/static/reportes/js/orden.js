@@ -64,6 +64,7 @@ function cargar_info_oi(){
             $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
+            $('#e_observaciones').val(data.observaciones);
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "Español"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -139,6 +140,7 @@ function submit(){
 
     //pestaña de observaciones
     var formato_ingreso_muestra = $('#editar_formato_ingreso_muestra').val();
+    var observaciones = $('#e_observaciones').val();
 
     //checar radio seleccionado, si ninguno, se toma default español
     var idioma_reporte;
@@ -163,6 +165,7 @@ function submit(){
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
+            'observaciones': observaciones,
             'pagado': pagado,
             'csrfmiddlewaretoken': token,
         },
@@ -385,6 +388,7 @@ function visualizar_info_oi(id) {
                 }
             }
             $('.accordion_muestras').html(html_muestras);
+            $('#v_observaciones').val(data.observaciones);
 
             //Construir tabla de facturas
             var html_facturas =`

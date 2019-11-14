@@ -47,6 +47,7 @@ class OrdenInterna(models.Model):
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     #Observaciones
     idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
+    observaciones = models.TextField(blank=True)
 
     class Meta:
         verbose_name = 'Orden Interna'
