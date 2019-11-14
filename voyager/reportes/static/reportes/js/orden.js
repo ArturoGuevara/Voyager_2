@@ -57,6 +57,7 @@ function cargar_info_oi(){
             $('#editar_idOI').val(id_oi);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
+            $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_pagado').val(data.pagado)
@@ -354,6 +355,7 @@ function visualizar_info_oi(id) {
             $('#visualizar_idOI').val(id);
             $('#visualizar_estatus').val(data.estatus);
             $('#visualizar_localidad').val(data.localidad);
+            $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
             $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
