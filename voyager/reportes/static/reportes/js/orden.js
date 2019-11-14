@@ -438,9 +438,52 @@ function confirmar_borrar_oi(){
             },
             error: function(data){
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Ah ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
             }
         });
     }
 
+}
+
+function cargar_enviar(id){
+    var id_oi = id;
+    var token = csrftoken;
+    $.ajax({
+        url: "/reportes/consultar_empresa/",
+        data: {
+            id: id,
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            var data = JSON.parse(response.data);
+            $('#email_destino').val(data.fields.correo_resultados);
+        },
+        error: function(data){
+            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
+        }
+    });
+}
+
+function enviar_resultados(){
+    var valid_form=true;
+    if($("#archivo_resultados").val()==""){
+        valid_form=false;
+        $("#div-archivo").css("border-color", "red");
+    }
+    else{
+        $("#div-archivo").css("border-color", "grey");
+    }
+    if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#subject").val(),"#subject")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#body").val(),"#body")){
+        valid_form=false;
+    }
+    if(valid_form==true){
+        document.getElementById("submit_resultados_form").submit();
+    }
 }

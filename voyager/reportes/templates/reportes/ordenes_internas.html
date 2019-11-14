@@ -51,7 +51,7 @@
                             <i class='fas fa-trash'></i>
                         </button>
                         {% endif %}
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
+                        <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
                             Enviar
                         </button>
                     </td>
@@ -64,6 +64,7 @@
     {% include './modals/paquete.html' %}
     {% include './modals/borrar-orden.html' %}
     {% include './modals/ver-oi.html' %}
+    {% include './modals/enviar-resultados.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -85,6 +86,16 @@
     {% elif successcode == "204" %}
         <script>
             showNotification('top','right','No se encontró la Orden Interna')
+        </script>
+    {% endif %}
+
+    {% if success_sent == 1 %}
+        <script>
+            showNotification('top','right','Resultados enviados exitósamente')
+        </script>
+    {% elif success_sent == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
 {% endblock %}
