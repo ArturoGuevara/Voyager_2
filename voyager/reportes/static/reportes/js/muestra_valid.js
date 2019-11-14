@@ -10,4 +10,4 @@ var yyyy = today.getFullYear();
     }
 
 today = yyyy+'-'+mm+'-'+dd;
-document.getElementById("fecha_muestreo").setAttribute("max", today);
+//document.getElementById("fecha_muestreo").setAttribute("max", today);
