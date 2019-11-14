@@ -397,29 +397,171 @@
             <div class="card w-100">
                 <div class="card-body">
                     <div class="text-center">
-                        <button class="btn btn-warning btn-plantilla" type="button" data-target="agricola">Producto Agrícola</button>
-                        <button class="btn btn-success btn-plantilla" type="button" data-target="procesado">Producto Procesado</button>
-                        <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia">Producto Microbiología</button>
+                        <button class="btn btn-warning btn-plantilla" type="button" data-target="agricola"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Agrícola</button>
+                        <button class="btn btn-success btn-plantilla" type="button" data-target="procesado"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Procesado</button>
+                        <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Microbiología</button>
                     </div>
                     <div class="row mt-2">
                         <div class="col-12">
                             <div class="collapse" id="containerProductoAgricola">
                                 <div class="card card-body">
-                                    1
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-agricola">
+                                            <thead>
+                                              <tr>
+                                                  <th>#</th>
+                                                  <th>Producto</th>
+                                                  <th>Variedad</th>
+                                                  <th>País de Origen</th>
+                                                  <th>Código de Muestra</th>
+                                                  <th>Proveedor</th>
+                                                  <th>Nombre de Empresa</th>
+                                                  <th>Código de Trazabilidad</th>
+                                                  <th>Agricultor</th>
+                                                  <th>Dirección</th>
+                                                  <th>Parcela</th>
+                                                  <th>Ubicación de Muestreo</th>
+                                                  <th>Fecha de Muestreo</th>
+                                                  <th>Urgente</th>
+                                                  <th>Análisis 1</th>
+                                                  <th>Análisis 2</th>
+                                                  <th>Análisis 3</th>
+                                                  <th>Análisis 4</th>
+                                                  <th>Análisis 5</th>
+                                                  <th>Análisis 6</th>
+                                                  <th>Idioma</th>
+                                                  <th>Muestreador</th>
+                                                  <th>País de Destino</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr>
+                                                  <th>1</th>
+                                                  <th>2</th>
+                                                  <th>3</th>
+                                                  <th>4</th>
+                                                  <th>5</th>
+                                                  <th>6</th>
+                                                  <th>7</th>
+                                                  <th>8</th>
+                                                  <th>9</th>
+                                                  <th>10</th>
+                                                  <th>11</th>
+                                                  <th>12</th>
+                                                  <th>13</th>
+                                                  <th>14</th>
+                                                  <th>15</th>
+                                                  <th>16</th>
+                                                  <th>17</th>
+                                                  <th>18</th>
+                                                  <th>19</th>
+                                                  <th>20</th>
+                                                  <th>21</th>
+                                                  <th>22</th>
+                                                  <th>23</th>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="collapse" id="containerProductoProcesado">
                                 <div class="card card-body">
-                                    2
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-procesado">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Nombre del Cliente</th>
+                                                    <th>Tipo de muestra</th>
+                                                    <th>Descripción de la muestra</th>
+                                                    <th>Fecha de Muestreo</th>
+                                                    <th>Análisis 1</th>
+                                                    <th>Análisis 2</th>
+                                                    <th>Análisis 3</th>
+                                                    <th>Análisis 4</th>
+                                                    <th>Análisis 5</th>
+                                                    <th>Análisis 6</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <th>1</th>
+                                                    <th>2</th>
+                                                    <th>3</th>
+                                                    <th>4</th>
+                                                    <th>5</th>
+                                                    <th>6</th>
+                                                    <th>7</th>
+                                                    <th>8</th>
+                                                    <th>9</th>
+                                                    <th>10</th>
+                                                    <th>11</th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="collapse" id="containerProductoMicrobiologia">
                                 <div class="card card-body">
-                                    3
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-micro">
+                                            <thead>
+                                                <tr>
+                                                    <th>#</th>
+                                                    <th>Tipo de Muestra</th>
+                                                    <th>Nombre Cliente</th>
+                                                    <th>Lote/Código</th>
+                                                    <th>Muestreador</th>
+                                                    <th>Fecha</th>
+                                                    <th>Análisis 1</th>
+                                                    <th>Análisis 2</th>
+                                                    <th>Análisis 3</th>
+                                                    <th>Análisis 4</th>
+                                                    <th>Análisis 5</th>
+                                                    <th>Análisis 6</th>
+                                                    <th>Método de Referencia</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                              <tr>
+                                                  <th>1</th>
+                                                  <th>2</th>
+                                                  <th>3</th>
+                                                  <th>4</th>
+                                                  <th>5</th>
+                                                  <th>6</th>
+                                                  <th>7</th>
+                                                  <th>8</th>
+                                                  <th>9</th>
+                                                  <th>10</th>
+                                                  <th>11</th>
+                                                  <th>12</th>
+                                                  <th>13</th>
+                                              </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
