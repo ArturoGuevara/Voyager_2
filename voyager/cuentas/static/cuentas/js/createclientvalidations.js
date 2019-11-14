@@ -1,3 +1,5 @@
+var correo_verificar = false;
+
       var token = csrftoken;
       $(document).ready(function () {
           $("#correo").on("keyup",val_mail);
@@ -18,11 +20,13 @@
                      $("#submit").prop('disabled', true);
                      if($('#correo').val()!='') {
                          $(".invalid_mail").prop('hidden', false);
+                         correo_verificar = false;
                      }
                  }
                  else{
                      $("#submit").prop('disabled', false);
                      $(".invalid_mail").prop('hidden', true);
+                     correo_verificar = true;
                  }
               }
           });

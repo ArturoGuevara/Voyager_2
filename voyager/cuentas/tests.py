@@ -330,6 +330,7 @@ class TestCuentasUsuarios(TestCase):
         rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
         empresa =  Empresa.objects.create(empresa='TestInc')
+        empresa_ifc = Empresa.objects.create(empresa='IFC')
 
         clientes1 = IFCUsuario.objects.create(
                                                         rol =rol_clientes,
@@ -464,6 +465,124 @@ class TestCuentasUsuarios(TestCase):
         url = reverse('usuarios')
         self.assertEquals(resolve(url).func,lista_usuarios)
 
+    def test_acceso_denegado_crear_staff(self):
+        # Test de acceso sin previo log in
+        response = self.client.get('/cuentas/crear_staff/')
+        self.assertRedirects(response, '/cuentas/login?next=/cuentas/crear_staff/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_acceso_permitido_crear_staff(self):
+        # Test de acceso con director loggeado
+        self.set_up_Users()
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.get('/cuentas/crear_staff/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_acceso_denegado_no_director_crear_staff(self):
+        # Test de acceso con alguien que no es director
+        self.set_up_Users()
+        self.client.login(username='client', password='testpassword')
+        response = self.client.get('/cuentas/crear_staff/')
+        self.assertEqual(response.status_code, 404)
+
+    def test_crear_staff_todos_los_campos(self):
+        # Test de crear un usuario de staff de manera exitosa
+        self.set_up_Users()
+        id_rol = Rol.objects.get(nombre='Ventas').id
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.post('/cuentas/guardar_staff/', {
+                                                                'nombre' : 'Juanito',
+                                                                'apellido_paterno' : 'testpassword',
+                                                                'apellido_materno' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'id_rol' : id_rol,
+                                                                'contraseña' : 'testpassword',
+                                                                'contraseña2' : 'testpassword'
+                                                                })
+        session = None
+        if self.client.session:
+            session = self.client.session
+        self.assertEqual(session['crear_staff_status'], True)
+
+    def test_crear_staff_cambios_vacios(self):
+        # Test de crear un usuario de staff enviando campos vacios
+        self.set_up_Users()
+        id_rol = Rol.objects.get(nombre='Ventas').id
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.post('/cuentas/guardar_staff/', {
+                                                                'nombre' : 'Juanito',
+                                                                'apellido_paterno' : 'testpassword',
+                                                                'apellido_materno' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+
+                                                                'id_rol' : id_rol,
+                                                                'contraseña' : 'testpassword',
+                                                                'contraseña2' : 'testpassword'
+                                                                })
+        session = None
+        if self.client.session:
+            session = self.client.session
+        self.assertEqual(session['crear_staff_status'], False)
+
+    def test_crear_staff_datos_invalidos(self):
+        # Test de crear un usuario de staff enviando campos vacios
+        self.set_up_Users()
+        id_rol = Rol.objects.get(nombre='Ventas').id
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.post('/cuentas/guardar_staff/', {
+                                                                'nombre' : 'Juanito',
+                                                                'apellido_paterno' : 'testpassword',
+                                                                'apellido_materno' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'id_rol' : id_rol,
+                                                                'contraseña' : 'testpassword',
+                                                                'contraseña2' : 'testpassword2'
+                                                                })
+        session = None
+        if self.client.session:
+            session = self.client.session
+        self.assertEqual(session['crear_staff_status'], False)
+
+    def test_crear_staff_correo_repetido(self):
+        # Test de crear un usuario de staff enviando un correo repetido
+        self.set_up_Users()
+        id_rol = Rol.objects.get(nombre='Ventas').id
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.post('/cuentas/guardar_staff/', {
+                                                                'nombre' : 'Juanito',
+                                                                'apellido_paterno' : 'testpassword',
+                                                                'apellido_materno' : 'testpassword',
+                                                                'correo' : 'test@testuser.com',
+                                                                'telefono': '1234567890',
+                                                                'id_rol' : id_rol,
+                                                                'contraseña' : 'testpassword',
+                                                                'contraseña2' : 'testpassword2'
+                                                                })
+        session = None
+        if self.client.session:
+            session = self.client.session
+        self.assertEqual(session['crear_staff_status'], False)
+
+    def test_crear_staff_contrasena_debil(self):
+        # Test de crear un usuario de staff con una contrasena debil
+        self.set_up_Users()
+        id_rol = Rol.objects.get(nombre='Ventas').id
+        self.client.login(username='direc', password='testpassword')
+        response = self.client.post('/cuentas/guardar_staff/', {
+                                                                'nombre' : 'Juanito',
+                                                                'apellido_paterno' : 'testpassword',
+                                                                'apellido_materno' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'id_rol' : id_rol,
+                                                                'contraseña' : '12',
+                                                                'contraseña2' : '12'
+                                                                })
+        session = None
+        if self.client.session:
+            session = self.client.session
+        self.assertEqual(session['crear_staff_status'], False)
 
 #####USA05-41##########
 
