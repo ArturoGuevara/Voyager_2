@@ -13,9 +13,9 @@
     </button>
 </h2>
 
-<form action="{% url 'ingresar_muestras' %}" method="post">
+<form action="{% url 'ingresar_muestras' %}" id="ingreso-cliente-form" method="post">
     {% csrf_token %}
-    <div class="row mt-0 pt-0 mb-0 pb-0">
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -34,13 +34,19 @@
                         <div class="col-md-5 pr-1">
                             <div class="form-group">
                                 <label for="nombre">Nombre del Solicitante</label>
-                                <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1" required>
+                                <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1">
+                                <div class="invalid-feedback">
+                                    El nombre del solicitante no puede estar vacío
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-7 pl-1">
                             <div class="form-group">
                                 <label>Dirección</label>
-                                <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion" required>
+                                <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion">
+                                <div class="invalid-feedback">
+                                    La dirección no puede estar vacía
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -48,8 +54,8 @@
                         <div class="col-md-4 pr-1">
                             <div class="form-group">
                                 <label>País de Origen de Muestra</label>
-                                <select name="pais" class="form-control" id="pais" onchange="estado()" required>
-                                    <option selected value="" disabled>Selecciona el país...</option>
+                                <select name="pais" class="form-control" id="pais" onchange="estado()">
+                                    <option selected disabled>Selecciona el país...</option>
                                     <option value="Afganistán">Afganistán</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Alemania">Alemania</option>
@@ -298,6 +304,9 @@
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabue">Zimbabue</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    El país no puede estar vacío
+                                </div>
                             </div>
                         </div>
                         <div id="label-estado" class="col-md-4 px-1" hidden>
@@ -346,7 +355,7 @@
             </div>
         </div>
     </div>
-    <div class="row mt-0 pt-0 mb-0 pb-0">
+    <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
@@ -365,11 +374,14 @@
                         <div class="col-md-4 pr-1">
                             <div class="form-group">
                                 <label>Idioma de los Resultados</label>
-                                <select class="form-control" id="idioma" name="idioma" required>
+                                <select class="form-control" id="idioma" name="idioma">
                                     <option selected value="" disabled>Selecciona el idioma...</option>
                                     <option value="8809">Español</option>
                                     <option value="8992">Inglés</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Selecciona un idioma para los resultados
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -377,26 +389,16 @@
             </div>
         </div>
     </div>
-    <div class="row mt-1 pt-1 pb-5">
-        <div class="col-md-7">
-        </div>
-        <div class="col-md-2">
-            <a href="/reportes/" class="btn btn-danger btn-block"
-                data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Cancelar solicitud de ingreso de muestra">
-                Cancelar
-            </a>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-success btn-block"
-                data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Cambia a pestaña de información de muestras">
-                Continuar
-            </button>
-        </div>
-    </div>
 </form>
 
+<div class="text-right">
+    <button type="btn" class="btn btn-success"
+        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+        data-content="Cambia a pestaña de información de muestras"
+        onclick="validar_info_solicitante()">
+        Continuar
+    </button>
+</div>
 {% endblock content %}
 
 {% block optionalJS %}
