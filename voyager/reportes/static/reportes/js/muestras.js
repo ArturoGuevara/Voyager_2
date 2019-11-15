@@ -32,7 +32,9 @@ function enviar_muestra() {
     document.getElementById("enviar").value = 1;
 }
 
-
+var cnt_ingreso_agricola = 1;
+var cnt_ingreso_procesado = 1;
+var cnt_ingreso_microbiologia = 1;
 
 function validar_info_solicitante() {
     var dict = {
@@ -118,16 +120,6 @@ $('.btn-plantilla').click(function(){
 
 function validar_producto_procesado(){
     // Validamos los arreglos de inputs
-    $("input[name='ids[]']").each(function(){
-        var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#numero-muestra-'+id);
-        check_just_numbers($(this).val(),'#numero-muestra-'+id);
-    });
-    $("input[name='nombreClientes[]']").each(function(){
-        var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#nombre-cliente-'+id);
-        check_just_letters($(this).val(),'#nombre-cliente-'+id);
-    });
     $("input[name='tipoMuestra[]']").each(function(){
         var id = $(this).data('id');
         check_is_not_empty($(this).val(),'#tipo-muestra-'+id);
@@ -144,5 +136,18 @@ function validar_producto_procesado(){
     $("input[name='analisis1[]']").each(function(){
         var id = $(this).data('id');
         check_is_not_empty($(this).val(),'#primer-analisis-'+id);
+    });
+}
+
+function agregar_fila_procesado(){
+    $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestra-'+cnt_ingreso_procesado+'" name="tipoMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestra-'+cnt_ingreso_procesado+'" name="descripcionMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacía</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreo-'+cnt_ingreso_procesado+'" name="fechaMuestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="primer-analisis-'+cnt_ingreso_procesado+'" name="analisis1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisis-'+cnt_ingreso_procesado+'" name="analisis2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisis-'+cnt_ingreso_procesado+'" name="analisis3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisis-'+cnt_ingreso_procesado+'" name="analisis4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisis-'+cnt_ingreso_procesado+'" name="analisis5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisis-'+cnt_ingreso_procesado+'" name="analisis6[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_filar_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
+    cnt_ingreso_procesado+=1;
+}
+
+function quitar_filar_procesado(id){
+    $('.fila-tabla-procesado').each(function(){
+        if(id == $(this).data('id')){
+            $(this).remove();
+        }
     });
 }
