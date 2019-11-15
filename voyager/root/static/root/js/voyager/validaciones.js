@@ -8,7 +8,6 @@ var check_is_not_empty = function(value, id){
         return true;
     }
 }
-
 // Función para validar que el campo sólo tenga chars y espacios en blanco
 var check_just_letters = function(value, id){
     if (/^[a-zA-Z\s]*$/.test(value)){
@@ -19,7 +18,6 @@ var check_just_letters = function(value, id){
         return false;
     }
 }
-
 // Función para validar que el campo sólo tenga números
 var check_just_numbers = function(value, id){
     if (/^-?\d+\.?\d*$/.test(value)){
@@ -30,7 +28,6 @@ var check_just_numbers = function(value, id){
         return false;
     }
 }
-
 // Función para validar que el campo tiene el formato de fecha
 var check_is_date = function(value,id){
     if(/^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/.test(value)){
