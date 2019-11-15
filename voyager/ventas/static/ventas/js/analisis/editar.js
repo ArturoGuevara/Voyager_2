@@ -51,9 +51,16 @@ function editar_analisis(){
         var descripcion = $('#editar_desc_analisis').val();
         var precio = $('#editar_precio_analisis').val();
         var tiempo =  $('#editar-duracion').val();
-        var unidad_min = $('#editar-cantidad').val();
-        var acreditacion =$('#editar-acreditacion').val();
-        var pais = $('#editar-pais').val();
+        var unidad_min = $('#editar_cantidad').val();
+        var pais = $('#editar_pais').val();
+        var acreditacion;
+
+        if ($('#editar_acreditacion_1').prop('checked') == true){
+          acreditacion = 1;
+        }
+        else {
+          acreditacion = 0;
+        }
 
         // Validar que los inputs no estén vacíos
         check_is_not_empty(nombre,'#editar_nombre_analisis');
@@ -61,6 +68,8 @@ function editar_analisis(){
         check_is_not_empty(descripcion,'#editar_desc_analisis');
         check_is_not_empty(precio,'#editar_precio_analisis');
         check_is_not_empty(tiempo,'#editar-duracion');
+        check_is_not_empty(unidad_min,'#editar-cantidad');
+        check_is_not_empty(pais,'#editar-pais');
 
         $.ajax({
             url: "editar_analisis/"+id,
@@ -73,6 +82,10 @@ function editar_analisis(){
                 descripcion: descripcion,
                 precio: precio,
                 tiempo: tiempo,
+                unidad_min: unidad_min,
+                pais: pais,
+                acreditacion: acreditacion,
+
                 'csrfmiddlewaretoken': token
             },
             type: "POST",
@@ -85,6 +98,13 @@ function editar_analisis(){
                 cambiar_valores_analisis_tabla('.analisis-desc', data.fields.descripcion, id);
                 cambiar_valores_analisis_tabla('.analisis-precio', '$'+data.fields.precio, id);
                 cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
+                if(data.fields.acreditacion == 1){
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', "Q", id);
+                }
+                else{
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', "-", id);
+                }
+
 
                 // Si todo salió bien esconderemos el bloque de editar y mostraremos el de visualizar
                 $('#ver_analisis').modal('hide');
