@@ -77,7 +77,7 @@ def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
-    return render(request, 'reportes/index.html')
+    return render(request, 'cuentas/home.html')
 
 
 @login_required

@@ -25,9 +25,9 @@ function cargar_analisis(id){
                 // Obtener la info que se regresa del controlador
                 var data = JSON.parse(response.data);
                 // Precargamos los datos en los span
-                cargar_info_modal_ver(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
+                cargar_info_modal_ver(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion,data.fields.unidad_min,data.fields.acreditacion,data.fields.pais,);
                 // Precargamos los datos en los input
-                cargar_info_modal_editar(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion);
+                cargar_info_modal_editar(data.fields.codigo,data.fields.nombre,data.fields.precio,data.fields.tiempo,data.fields.descripcion,data.fields.unidad_min,data.fields.acreditacion,data.fields.pais,);
                 // Guardamos en la variable global la id del análisis que se está visualizando por si se quiere modificar
                 id_analisis = id;
             },
@@ -50,6 +50,9 @@ function editar_analisis(){
         var descripcion = $('#editar_desc_analisis').val();
         var precio = $('#editar_precio_analisis').val();
         var tiempo =  $('#editar-duracion').val();
+        var unidad_min = $('#editar-').val();
+        var acreditacion =$('#editar-duracion').val();
+        var pais = $('#editar-duracion').val();
 
         // Validar que los inputs no estén vacíos
         check_is_not_empty(nombre,'#editar_nombre_analisis');

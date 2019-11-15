@@ -26,7 +26,7 @@ class LazyEncoder(DjangoJSONEncoder):
 # Vista del index
 @login_required
 def indexView(request):
-    return render(request, 'ventas/index.html')
+    return render(request, 'cuentas/home.html')
 
 # Create your views here.
 

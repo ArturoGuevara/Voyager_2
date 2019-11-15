@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLongTitle">Información de Análisis</h5>
+                <h3 class="modal-title w-100 text-center" id="exampleModalLongTitle">Información de Análisis</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -29,6 +29,21 @@
                     <div class="row my-3">
                         <div class="col-sm-12 font-weight-bold">
                             Descripción: <span id="descripcion_analisis" class="text-justify font-weight-normal">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, at aperiam voluptatum soluta cumque, et veniam doloremque deleniti adipisci placeat, quo quam iste libero inventore ea beatae provident repudiandae animi.</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            Cantidad de muestra mínima: <span id="cantidad_min" class="text-justify font-weight-normal">500gr</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            País: <span id="pais" class="text-justify font-weight-normal">México</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            Acreditación: <span id="acreditacion" class="text-justify font-weight-normal">Sí</span>
                         </div>
                     </div>
                 </div>
@@ -66,12 +81,46 @@
                         </div>
                         <div class="form-group">
                             <label for="inputDescripcion">Descripción</label>
-                            <input type="text" class="form-control input-analisis" id="editar_desc_analisis" placeholder="Descripción de Análisis">
+                            <textarea class="form-control input-analisis" id="editar_desc_analisis" placeholder="Descripción de Análisis"></textarea>
                             <div class="invalid-feedback">
                                 Por favor introduce una descripción
                             </div>
                         </div>
-                    </form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCantidad">Cantidad de muestra mínima</label>
+                            <input type="text" class="form-control input-analisis" id="editar_cantidad" placeholder="500gr">
+                            <div class="invalid-feedback">
+                                Por favor introduce la cantidad de muestra mínima
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                                <label for="pais">País</label>
+                                <select class="form-control" id="pais" name="pais">
+                                    {% for pais in paises %}
+                                        <option value="{{pais.id_pais}}">{{pais.nombre}}</option>
+                                    {% endfor%}
+                                </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        Acreditación
+                        <div class="col">
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="1">
+                                <label class="form-check-label" for="acreditacion">
+                                Si
+                                </label>
+                            </div>
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="0"  checked>
+                                <label class="form-check-label" for="acreditacion">
+                                No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 </div>
             </div>
             <div class="modal-footer">
