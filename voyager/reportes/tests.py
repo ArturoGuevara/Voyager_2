@@ -12,6 +12,8 @@ from ventas.models import Factura
 from django.test.client import Client
 from .views import ordenes_internas
 import datetime
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileType, Disposition, ContentId)
 
 # Create your tests here.
 class DHLTests(TestCase):
@@ -921,45 +923,42 @@ class TestEditaOrdenesInternas(TestCase):
         usuario_clientes = User.objects.create_user('soport', 'soporttest@testuser.com', 'testpassword')
         empresa =  Empresa.objects.create(empresa='TestInc')
 
-        clientes1 = IFCUsuario.objects.create(
-                                                        rol =rol_soporte,
-                                                        user = usuario_clientes,
-                                                        nombre = 'soporte',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono = '5234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+        clientes1 = IFCUsuario.objects.create(rol =rol_soporte,
+                                                user = usuario_clientes,
+                                                nombre = 'soporte',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
         clientes1.save()
 
         usuario_clientes = User.objects.create_user('client', 'client@testuser.com', 'testpassword')
-        clientes2 = IFCUsuario.objects.create(
-                                                        rol =rol_cliente,
-                                                        user = usuario_clientes,
-                                                        nombre = 'otro',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono = '5234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+        clientes2 = IFCUsuario.objects.create(rol =rol_cliente,
+                                                user = usuario_clientes,
+                                                nombre = 'otro',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
         clientes2.save()
 
         #Crea usuario Director
         usuario_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
         rol_dir = Rol.objects.create(nombre='Director')
 
-        dir = IFCUsuario.objects.create(
-                                                        rol = rol_dir,
-                                                        user = usuario_dir,
-                                                        nombre = 'dir',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno = 'test',
-                                                        telefono = '3234567',
-                                                        estado = True,
-                                                        empresa=empresa,
-                                                      )
+        dir = IFCUsuario.objects.create(rol = rol_dir,
+                                            user = usuario_dir,
+                                            nombre = 'dir',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa,
+                                          )
         dir.save()
 
 
@@ -967,46 +966,48 @@ class TestEditaOrdenesInternas(TestCase):
         usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
         rol_ventas = Rol.objects.create(nombre='Ventas')
 
-        ventas = IFCUsuario.objects.create(
-                                                        rol = rol_ventas,
-                                                        user = usuario_ventas,
-                                                        nombre = 'ventas',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno = 'test',
-                                                        telefono = '3234567',
-                                                        estado = True,
-                                                        empresa=empresa
-                                                      )
+        ventas = IFCUsuario.objects.create(rol = rol_ventas,
+                                                user = usuario_ventas,
+                                                nombre = 'ventas',
+                                                apellido_paterno = 'test',
+                                                apellido_materno = 'test',
+                                                telefono = '3234567',
+                                                estado = True,
+                                                empresa=empresa
+                                              )
         ventas.save()
 
         #Crea usuario Facturacion
         user_facturacion = User.objects.create_user('fact', 'facttest@testuser.com', 'testpassword')
         rol_facturacion = Rol.objects.create(nombre='Facturacion')
-        facturacion = IFCUsuario.objects.create(
-                                                        rol = rol_facturacion,
-                                                        user = user_facturacion,
-                                                        nombre ='facturacion',
-                                                        apellido_paterno = 'test',
-                                                        apellido_materno ='test',
-                                                        telefono ='4234567',
-                                                        estado =True,
-                                                        empresa=empresa
-                                                      )
+        facturacion = IFCUsuario.objects.create(rol = rol_facturacion,
+                                                    user = user_facturacion,
+                                                    nombre ='facturacion',
+                                                    apellido_paterno = 'test',
+                                                    apellido_materno ='test',
+                                                    telefono ='4234567',
+                                                    estado =True,
+                                                    empresa=empresa
+                                                  )
         facturacion.save()
 
         #Crear orden interna para cliente
-        oi = OrdenInterna.objects.create(
-                                                    usuario = clientes1,
-                                                    estatus = "fantasma",
-                                                    localidad = "mexico",
-                                                )
+        oi = OrdenInterna.objects.create(usuario = clientes1,
+                                            estatus = "fantasma",
+                                            localidad = "mexico",
+                                        )
         oi.save()
 
     #Tests
     def test_acceso_denegado(self):
         #Test de acceso a url sin Log In
         response = self.client.get('/reportes/ordenes_internas')
-        self.assertRedirects(response, '/cuentas/login?next=/reportes/ordenes_internas', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+        self.assertRedirects(response,
+                                '/cuentas/login?next=/reportes/ordenes_internas',
+                                status_code=302, target_status_code=301,
+                                msg_prefix='',
+                                fetch_redirect_response=True
+                             )
 
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Cliente
@@ -1050,3 +1051,83 @@ class TestEditaOrdenesInternas(TestCase):
         #URL testing.
         url = reverse('ordenes_internas')
         self.assertEquals(resolve(url).func,ordenes_internas)
+
+
+class EnviarResultados(TestCase):
+    def setup(self):
+        rol_soporte = Rol.objects.create(nombre='Soporte')
+        rol_cliente = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('soport', 'soporttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes1 = IFCUsuario.objects.create(
+                                                        rol =rol_soporte,
+                                                        user = usuario_clientes,
+                                                        nombre = 'soporte',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa=empresa,
+                                                      )
+        clientes1.save()
+        #Crea usuario Director
+        usuario_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
+        rol_dir = Rol.objects.create(nombre='Director')
+
+        dir = IFCUsuario.objects.create(rol = rol_dir,
+                                            user = usuario_dir,
+                                            nombre = 'dir',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa,
+                                        )
+        dir.save()
+
+    def test_no_login(self):
+        response = self.client.get(reverse('enviar_archivo'))   #Ir al url de envío de resultados
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    #probar que el usario no pueda ingresar a la página si no tiene el rol adecuado
+    def test_no_login_different_role(self):
+        self.setup()
+        #ingresar como un usuario cliente
+        self.client.login(username='soport', password='testpassword')
+        response = self.client.get(reverse('enviar_archivo'))
+        self.assertEqual(response.status_code, 404)
+
+    def test_no_post(self):   #Prueba si no existe metodo post
+        self.setup()
+        self.client.login(username='direc',password='testpassword')
+        response = self.client.get(reverse('enviar_archivo'))
+        self.assertEqual(response.status_code,404)
+
+    def test_post_empty(self):    #Prueba si no se manda nada en el post
+        self.setup()
+        self.client.login(username='direc',password='testpassword')
+        response = self.client.post(reverse('enviar_archivo'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
+        self.setup()
+        self.client.login(username='direc',password='testpassword')
+        response = self.client.post(reverse('enviar_archivo'),{'email_destino':"A01207945@itesm.mx",
+                                                                  'body':"Cuerpo del correo",
+                                                                  })
+        self.assertEqual(response.status_code,404)
+
+    def test_mail_correcto(self):
+        message = Mail(
+            from_email='A0127373@itesm.mx',
+            to_emails='A0127373@itesm.mx',
+            subject="Asunto",
+            html_content="Contenido")
+        try:
+            with open('./API_KEY.txt', 'r') as f:
+                key = f.read()
+            sendgrid_client = SendGridAPIClient(key)
+            response = sendgrid_client.send(message)
+            self.assertEqual(response.status_code,202)
+        except Exception as e:
+            print(e.message)
