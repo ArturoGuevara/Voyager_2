@@ -13,13 +13,17 @@ $("#submit-analisis-button").click(function(){
     var descripcion_r = $('#precio').val();
     var precio_r = $('#descripcion').val();
     var tiempo_r =  $('#duracion').val();
+    var pais_r = $('#pais').val();
+    var unidad_min_r = $('#unidad_min').val();
 
     var dict = {
         1 : check_is_not_empty(nombre_r, '#nombre'),
         3 : check_is_not_empty(codigo_r, '#codigo'),
         4 : check_is_not_empty(descripcion_r, '#precio'),
         5 : check_is_not_empty(precio_r, '#descripcion'),
-        6 : check_is_not_empty(tiempo_r, '#duracion')
+        6 : check_is_not_empty(tiempo_r, '#duracion'),
+        7 : check_is_not_empty(pais_r, '#pais'),
+        8 : check_is_not_empty(unidad_min_r, '#unidad_min')
     }
 
     for(var key in dict) {

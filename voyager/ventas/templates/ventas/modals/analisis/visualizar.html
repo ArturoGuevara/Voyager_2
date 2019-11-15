@@ -23,27 +23,25 @@
                             Precio: <span id="precio_analisis" class="text-justify font-weight-normal">$1,000</span>
                         </div>
                         <div class="col-sm-12 col-md-6 font-weight-bold">
-                            Fecha: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                            Duración aproximada: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Cantidad mínima: <span id="cantidad_min_analisis" class="text-justify font-weight-normal">5kg</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            País: <span id="pais_analisis" class="text-justify font-weight-normal">Wakanda</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            Acreditación: <span id="acreditacion_analisis" class="text-justify font-weight-normal">Nope</span>
                         </div>
                     </div>
                     <div class="row my-3">
                         <div class="col-sm-12 font-weight-bold">
                             Descripción: <span id="descripcion_analisis" class="text-justify font-weight-normal">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, at aperiam voluptatum soluta cumque, et veniam doloremque deleniti adipisci placeat, quo quam iste libero inventore ea beatae provident repudiandae animi.</span>
-                        </div>
-                    </div>
-                    <div class="row my-3">
-                        <div class="col-sm-12 font-weight-bold">
-                            Cantidad de muestra mínima: <span id="cantidad_min" class="text-justify font-weight-normal">500gr</span>
-                        </div>
-                    </div>
-                    <div class="row my-3">
-                        <div class="col-sm-12 font-weight-bold">
-                            País: <span id="pais" class="text-justify font-weight-normal">México</span>
-                        </div>
-                    </div>
-                    <div class="row my-3">
-                        <div class="col-sm-12 font-weight-bold">
-                            Acreditación: <span id="acreditacion" class="text-justify font-weight-normal">Sí</span>
                         </div>
                     </div>
                 </div>
@@ -96,9 +94,9 @@
                         </div>
                         <div class="form-group col-md-6">
                                 <label for="pais">País</label>
-                                <select class="form-control" id="pais" name="pais">
+                                <select class="form-control" id="editar_pais" name="pais">
                                     {% for pais in paises %}
-                                        <option value="{{pais.id_pais}}">{{pais.nombre}}</option>
+                                        <option id="editar_pais_{{pais.id_pais}}" value="{{pais.id_pais}}">{{pais.nombre}}</option>
                                     {% endfor%}
                                 </select>
                         </div>
@@ -107,13 +105,13 @@
                         Acreditación
                         <div class="col">
                             <div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="1">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="editar_acreditacion_1" value="1">
                                 <label class="form-check-label" for="acreditacion">
                                 Si
                                 </label>
                             </div>
                             <div class="form-check ml-5">
-                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion" value="0"  checked>
+                                <input class="form-check-input" type="radio" name="acreditacion" id="editar_acreditacion_2" value="0">
                                 <label class="form-check-label" for="acreditacion">
                                 No
                                 </label>

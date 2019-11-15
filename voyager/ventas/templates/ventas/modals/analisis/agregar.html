@@ -49,14 +49,21 @@
                         <div class="col">
                             <label for="unidad_min">Cantidad de muestra mínima</label>
                             <input type="text" maxlength="50" class="form-control" id="unidad_min" placeholder="500 gr." name="unidad_min">
+                            <div class="invalid-feedback">
+                                Por favor introduce una cantidad de muestra mínima
+                            </div>
                         </div>
                         <div class="col">
                                 <label for="pais">País</label>
                                 <select class="form-control" id="pais" name="pais">
+                                        <option value="" disabled selected>Seleccione un país...</option>
                                     {% for pais in paises %}
                                         <option value="{{pais.id_pais}}">{{pais.nombre}}</option>
                                     {% endfor%}
                                 </select>
+                                <div class="invalid-feedback">
+                                    Por favor introduce un país
+                                </div>
                         </div>
                     </div>
                     <div class="form-row">

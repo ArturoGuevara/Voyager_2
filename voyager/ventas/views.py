@@ -54,10 +54,13 @@ def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
+            data = []
             analisis = Analisis.objects.get(id_analisis = id)
+            pais = Pais.objects.get(pk=analisis.pais.pk)
             if analisis:
-                data = serializers.serialize("json", [analisis], ensure_ascii = False)
-                data = data[1:-1]
+                data.append(serializers.serialize("json", [analisis], ensure_ascii = False))
+                # data = data[1:-1]
+                data.append(serializers.serialize("json", [pais], ensure_ascii = False))
                 return JsonResponse({"data": data})
             else:
                 response = JsonResponse({"error": "No existe ese análisis"})
@@ -82,7 +85,7 @@ def editar_analisis(request, id):
             analisis = Analisis.objects.get(id_analisis = id)
             if analisis:
                 #Que ningún campo esté vacío
-                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo']):
+                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo'] and is_not_empty(request.POST['tiempo'])):
                     # Actualizamos campos
                     analisis.nombre = request.POST['nombre']
                     analisis.codigo = request.POST['codigo']
