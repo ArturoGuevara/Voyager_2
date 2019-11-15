@@ -146,8 +146,6 @@ def consultar_orden(request):
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
                 solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
-                s_empresa = solicitante.empresa.empresa
-                s_correo = solicitante.user.email
                 solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
                 solicitante = solicitante[1:-1]
                 data = serializers.serialize("json", [oi], ensure_ascii = False)
@@ -157,13 +155,13 @@ def consultar_orden(request):
                 if muestras:
                     for muestra in muestras:
                         data_muestras.append(muestra)
-
                     usuario = muestras[0].usuario
                     user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
                     user_serialize = user_serialize[1:-1]
                     vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-                    email = usuario.user.email
+                    email = usuario.empresa.correo_resultados
                     empresa = usuario.empresa.empresa
+                    telefono = usuario.empresa.telefono
                     analisis_muestras = {}
                     facturas_muestras = {}
                     for muestra in muestras:
@@ -185,11 +183,10 @@ def consultar_orden(request):
                             "usuario":user_serialize,
                             "correo":email,
                             "empresa":empresa,
+                            "telefono":telefono,
                             "dict_am":analisis_muestras,
                             "facturas":facturas_muestras,
-                            "solicitante":solicitante,
-                            "s_empresa":s_empresa,
-                            "s_correo":s_correo}
+                            "solicitante":solicitante}
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})

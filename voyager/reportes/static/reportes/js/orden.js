@@ -47,11 +47,11 @@ function cargar_info_oi(){
             }
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
-            $('#editar_usuario_empresa').text(response.s_empresa);
-            var n = solicitante.nombre + " " + solicitante.apellido_paterno + " " + solicitante.apellido_materno;
+            $('#editar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#editar_usuario_nombre').text(n);
-            $('#editar_usuario_email').text(response.s_correo);
-            $('#editar_usuario_telefono').text(solicitante.telefono);
+            $('#editar_usuario_email').text(response.correo);
+            $('#editar_usuario_telefono').text(response.telefono);
             //pestaña de información
             $('#tituloe_idOI').text("Orden Interna #" + id_oi);
             $('#editar_idOI').val(id_oi);
@@ -369,11 +369,11 @@ function visualizar_info_oi(id) {
             $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
-            $('#visualizar_usuario_empresa').text(response.s_empresa);
-            var n = solicitante.nombre + " " + solicitante.apellido_paterno + " " + solicitante.apellido_materno;
+            $('#visualizar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#visualizar_usuario_nombre').text(n);
-            $('#visualizar_usuario_email').text(response.s_correo);
-            $('#visualizar_usuario_telefono').text(solicitante.telefono);
+            $('#visualizar_usuario_email').text(response.correo);
+            $('#visualizar_usuario_telefono').text(response.telefono);
 
             //pestaña de observaciones
             $('#visualizar_idioma_reporte').text(data.idioma_reporte);
