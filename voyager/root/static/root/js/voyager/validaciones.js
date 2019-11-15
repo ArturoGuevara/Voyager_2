@@ -10,7 +10,7 @@ var check_is_not_empty = function(value, id){
 }
 // Función para validar que el campo sólo tenga chars y espacios en blanco
 var check_just_letters = function(value, id){
-    if (/^[a-zA-Z\s]*$/.test(value)){
+    if (/^[a-zA-Z\s]+$/.test(value)){
         $(id).removeClass('is-invalid');
         return true;
     }else{

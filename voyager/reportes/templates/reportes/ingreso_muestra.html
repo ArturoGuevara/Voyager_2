@@ -511,7 +511,7 @@
                                                     <th>
                                                         <input type="text" class="form-control" data-id="1" id="numero-muestra-1" name="ids[]">
                                                         <div class="invalid-feedback">
-                                                            El número de muestra no puede estar vacío
+                                                            El número de muestra no puede estar vacío ni contener letras
                                                         </div>
                                                     </th>
                                                     <th>
@@ -535,7 +535,7 @@
                                                     <th>
                                                         <input type="text" class="form-control" data-id="1" id="fecha-muestreo-1" name="fechaMuestreo[]">
                                                         <div class="invalid-feedback">
-                                                            La fecha de muestreo no puede estar vacía
+                                                            La fecha de muestreo no puede estar vacía y debe seguir el formato DD/MM/YYYY
                                                         </div>
                                                     </th>
                                                     <th>
@@ -681,7 +681,7 @@
     <button class="btn btn-info d-none" id="btn-muestra-guardar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Guarda la información registrada para que edite después">
         Guardar
     </button>
-    <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
+    <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_producto_procesado()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
         Enviar
     </button>
 </div>
