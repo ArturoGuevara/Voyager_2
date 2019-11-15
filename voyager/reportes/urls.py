@@ -13,4 +13,6 @@ urlpatterns = [
     path('borrar_orden/', views.borrar_orden_interna, name='borrar_orden'),
     path('muestra_enviar',views.muestra_enviar,name='muestra_enviar'),
     path('validacionDhl', views.validacion_codigo, name='validacion_codigo'),
+    path('consultar_empresa/',views.consultar_empresa, name='consultar_empresa'),
+    path('enviar_archivo/',views.enviar_archivo, name='enviar_archivo'),
 ]

@@ -1,0 +1,51 @@
+<div class="modal fade" role="dialog" id="modal-enviar-resultados">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 align="center">Enviar resultados</h3>
+                <br>
+                <form action="{% url 'enviar_archivo' %}" method="POST" id="submit_resultados_form" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-row form-control" id="div-archivo">
+                        <label for="archivo_resultados">Archivo resultados:</label>
+                        <input type="file" class="form-control-file" id="archivo_resultados" name="archivo_resultados">
+                        <div class="invalid-feedback">
+                            Por favor selecciona un archivo
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-5">
+                            <label for="email_destino">Destinatario</label>
+                            <input type="email" class="form-control" id="email_destino" placeholder="Email" name="email_destino" readonly>
+                            <div class="invalid-feedback">
+                                Por favor ingresa el destinatario
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <label for="subject">Asunto</label>
+                            <input class="form-control" id="subject" type="text" placeholder="Asunto del correo" name="subject">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el asunto del correo
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="body">Cuerpo del correo</label>
+                            <textarea rows="10" class="form-control" id="body" name="body"></textarea>
+                            <div class="invalid-feedback">
+                                Por favor ingresa el cuerpo del correo
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-success float-right" id="button_send_mail" onclick="enviar_resultados()">
+                            Enviar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
