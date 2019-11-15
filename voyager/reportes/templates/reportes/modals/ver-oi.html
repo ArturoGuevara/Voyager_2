@@ -86,7 +86,109 @@
 
                         </div>
                         <div class="tab-pane container fade" id="visualizar_facturacion">
-                            <div id="visualizar_tabla_facturas"></div>
+                            <!--<div id="visualizar_tabla_facturas"></div>-->
+                            <!---------------------->
+                            <!--<h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>-->
+                            
+                            
+                            
+                            <div class="container d-block" id="ver-resumen-cot">
+                                    <div class="row">
+                                      <div class="col-sm-12 col-md-6 p-0">
+                                          <span>Responsable de pago: </span><span class="text-secondary" id="f_responsable">No hay responsable de pagos</span>
+                                      </div>
+                                      <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Correo: </span><span class="text-secondary" id="f_correo">No hay correo</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Teléfono: </span><span class="text-secondary" id="f_telefono">No hay teléfono</span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Empresa: </span><span class="text-secondary" id="f_empresa">No hay empresa</span>
+                                        </div>
+
+                                    </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Número de factura: </span><span class="text-secondary" id="f_numeroF">No hay número de factura</span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Fecha de facturación: </span><span class="text-secondary" id="f_fechaF"> No hay fecha disponible</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Complemento de pago: </span><span class="text-secondary" id="f_complemento"> No hay complemento de pago</span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Cobrar envío: </span><span class="text-secondary" id="f_cobrar_envio">Sí/No</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Envío de Factura: </span><span class="text-secondary" id="f_envio_factura">Sí/No</span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Fecha de envío de Factura: </span><span class="text-secondary" id="f_fecha_envio_factura">No hay fecha de envío de factura</span>
+                                        </div>
+                                    </div>
+                                    
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Pago de Factura: </span><span class="text-secondary" id="f_pago_factura">Sí/No</span>
+                                        </div>
+                                        <div class="col-sm-12 col-md-6 p-0">
+                                            <span>Enviar informes: </span><span class="text-secondary" id="f_enviar_informes">Sí/No</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-8 p-0">
+                                            <span> Orden de Compra: </span><span class="text-secondary" id="f_orden_compra">No hay orden de compra</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <h3>Análisis</h3>
+                                    </div>
+                                    <div class="row table-responsive border border-dark">
+                                        <table class="table" id="analisis_tabla">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">Código</th>
+                                                    <th scope="col">Nombre</th>
+                                                    <th scope="col">Cantidad</th>
+                                                    <th scope="col">Precio</th>
+                                                    <th scope="col">% Descuento</th>
+                                                    <th scope="col">% IVA</th>
+                                                    <th scope="col">Total Análisis</th>
+                
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="row">
+                                        <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
+                                    </div>
+                                    <div class="row">
+                                        <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
+                                    </div>
+                                    <div class="row border border-success bg-success">
+                                        <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
+                                    </div>
+                                </div>
+                                <br>
+                                <!----------------------------->
                         </div>
                     </div>
                 </div>

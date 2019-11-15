@@ -18,6 +18,7 @@ $('#submitForm').on('click', function () {
 });
 
 // boton para abrir modal de actualizar oi y carga los campos
+
 function cargar_info_oi(){
     $.ajax({
         url: "consultar_orden/",
@@ -83,9 +84,14 @@ function cargar_info_oi(){
                 }
             }
             $('.edicion_muestras').html(html_muestras);
+
+            //facturación
+
         }
     })
 }
+
+
 
 function guardar_muestra(id_muestra){
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
@@ -335,6 +341,7 @@ function visualizar_info_oi(id) {
         success: function (response) {
             //datos de la orden interna
             var data = JSON.parse(response.data);
+            console.log(data);
             data = data.fields;
             //datos de las muestras
             var muestras = JSON.parse(response.muestras);
@@ -378,8 +385,7 @@ function visualizar_info_oi(id) {
             }
             $('.accordion_muestras').html(html_muestras);
 
-            //Construir tabla de facturas
-            var html_facturas =`
+            /*var html_facturas =`
             <table class="table table-hover table-striped">
                 <thead>
                     <th>Nombre</th>
@@ -395,12 +401,21 @@ function visualizar_info_oi(id) {
             html_facturas = html_facturas+ `
                     </tbody>
                 </table>
-            `;
-            $('#visualizar_tabla_facturas').html(html_facturas);
+            `;*/
+            //Construir tabla de facturas
+            $('#f_responsable').val(response.correo_responsable);
+            $('#f_correo').val(response.correo_responsable);
+            $('#f_telefono').val(response.telefono);
+            $('#f_empresa').val(response.empresa);
+
+
+            //$('#visualizar_tabla_facturas').html(html_facturas);
 
         }
     })
 }
+
+
 
 $(document).ready(function(){
     // Cuando se cierra el modal para confirmar el borrado de la OI, reajusta la variable global a 0

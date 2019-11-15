@@ -164,6 +164,8 @@ def consultar_orden(request):
                     vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
                     email = usuario.user.email
                     empresa = usuario.empresa.empresa
+                    correo_responsable = usuario.empresa.correo_pagos
+                    telefono = usuario.empresa.telefono
                     analisis_muestras = {}
                     facturas_muestras = {}
                     for muestra in muestras:
@@ -189,8 +191,9 @@ def consultar_orden(request):
                             "facturas":facturas_muestras,
                             "solicitante":solicitante,
                             "s_empresa":s_empresa,
-                            "s_correo":s_correo}
-                        )
+                            "s_correo":s_correo,
+                            "correo_responsable": correo_responsable,
+                            "telefono":telefono}
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
                     #response.status_code = 500
