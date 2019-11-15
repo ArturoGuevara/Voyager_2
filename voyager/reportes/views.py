@@ -36,6 +36,8 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
+            raise Http404    #Aquí despliega que el cliente debe dinero
         return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
         raise Http404
@@ -53,6 +55,8 @@ def ingresar_muestras(request):
         user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
+            raise Http404      #Aquí despliega que el cliente debe dinero
         if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
         else:

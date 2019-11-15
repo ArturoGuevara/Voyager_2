@@ -81,6 +81,31 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
             }
         });
     }
+
+    if (data_cotizacion[0].fields.aceptado){
+      $('#btn-editar-cot').remove();
+    }
+    else if ($('#btn-editar-cot').length == 0){
+      var boton = $('<button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>');
+      $('#btn-espacio').append(boton);
+      $('#btn-editar-cot').click(function(){
+
+          $("input[name='editar-cot-an[]']:checked").each(function () {
+              che.push(parseInt($(this).val()));
+          });
+
+          // Alternar botones
+          $(this).removeClass('d-inline').addClass('d-none');
+          $('#btn-space-edit').addClass('d-none');
+          $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
+          $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
+
+          //Alternar contenedores
+          $('#ver-resumen-cot').removeClass('d-block').addClass('d-none');
+          $('#editar-resumen-cot').removeClass('d-none').addClass('d-block');
+      });
+    }
+
 }
 
 function error_datos_cotizacion() {

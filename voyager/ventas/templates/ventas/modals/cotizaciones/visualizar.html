@@ -164,12 +164,13 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
-                <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
-                {% endif %}
+            <div id="btn-espacio" class="modal-footer">
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
+                {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+                <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
+                <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                {% endif %}
             </div>
         </div>
     </div>

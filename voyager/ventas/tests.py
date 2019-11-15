@@ -574,7 +574,6 @@ class TestEditarCotizaciones(TestCase):
             {'error': 'La cotización no contiene analisis'}
         )
 
-
 class TestEliminarCotizaciones(TestCase):
     #Tests de cotizaciones
     def set_up_everything(self):
@@ -713,3 +712,156 @@ class TestEliminarCotizaciones(TestCase):
             except:
                 var = True
                 self.assertEquals(var, True)
+
+class TestAceptarCotizaciones(TestCase):
+    def set_up_all_cot(self):
+
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+
+        clientes1 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes1.save()
+
+        usuario_clientes = User.objects.create_user('otro', 'otro@testuser.com', 'testpassword')
+        clientes2 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'otro',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes2.save()
+
+        #Crea usuario Director
+        usuario_dir = User.objects.create_user('direc', 'test@testuser.com', 'testpassword')
+        rol_dir = Rol.objects.create(nombre='Director')
+
+        dir = IFCUsuario.objects.create(
+                                        rol = rol_dir,
+                                        user = usuario_dir,
+                                        nombre = 'dir',
+                                        apellido_paterno = 'test',
+                                        apellido_materno = 'test',
+                                        telefono = '3234567',
+                                        estado = True,
+                                        empresa=empresa,
+                                        )
+        dir.save()
+
+
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+
+        ventas = IFCUsuario.objects.create(
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        ventas.save()
+
+        #Crea cotizaciones
+        cotizacion = Cotizacion.objects.create(
+                                                usuario_c = clientes1,
+                                                usuario_v = ventas,
+                                                subtotal = 5000,
+                                                envio = 150,
+                                                total = 123,
+                                                status = True,
+                                                fecha_creada = date.today()
+                                                )
+        cotizacion.save()
+        cotizacion2 = Cotizacion.objects.create(
+                                                usuario_c = clientes2,
+                                                usuario_v = ventas,
+                                                subtotal = 24,
+                                                envio = 150,
+                                                total = 456,
+                                                status = True,
+                                                fecha_creada = date.today()
+                                                )
+        cotizacion2.save()
+        cotizacion3 = Cotizacion.objects.create(
+                                                usuario_c = clientes1,
+                                                usuario_v = ventas,
+                                                subtotal = 5000,
+                                                envio = 150,
+                                                total = 789,
+                                                status = True,
+                                                fecha_creada = date.today()
+                                                )
+        cotizacion3.save()
+
+        pais = Pais() # Crear un pais para los analisis
+        pais.nombre = "México"
+        pais.save()
+        a1 = Analisis() #Crear un objeto de Analisis
+        a1.codigo = "A1"
+        a1.nombre = "Pest"
+        a1.descripcion = "agropecuario"
+        a1.precio = 213132423.12
+        a1.unidad_min = "500 gr"
+        a1.tiempo = "1 - 2 días"
+        a1.pais = pais
+        a1.save()   #Guardar el análisis
+        a2 = Analisis()  #Crear un objeto de Analisis
+        a2.codigo = "A2"
+        a2.nombre = "icida"
+        a2.descripcion = "agro"
+        a2.precio = 2132423.12
+        a2.unidad_min = "1 kg."
+        a2.tiempo = "3 - 5 días"
+        a2.pais = pais
+        a2.save()   #Guardar el análisis
+
+    def test_accept_cotizacion_1(self):
+        self.set_up_all_cot()
+        self.client.login(username='vent',password='testpassword')
+        cotizacion = Cotizacion.objects.first()
+        contador = Cotizacion.objects.filter(aceptado=False).count()
+        self.assertEquals(3, contador)
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertNotContains(response, "Aceptado")
+
+        # Si truena está bien, porque el analisis no existe
+    def test_accept_cotizacion_2(self):
+        self.set_up_all_cot()
+        self.client.login(username='vent',password='testpassword')
+        cotizacion = Cotizacion.objects.first()
+        cotizacion.aceptado = True;
+        cotizacion.save()
+        contador = Cotizacion.objects.filter(aceptado=True).count()
+        self.assertEquals(1, contador)
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertContains(response, "Aceptado")
+
+    def test_accept_cotizacion_3(self):
+        #Test de acceso a url sin Log In
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertRedirects(response, '/cuentas/login?next=/ventas/cotizaciones', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_accept_cotizacion_4(self):
+        #Test de acceso a url con Log In como Director
+        self.set_up_all_cot() #Set up de datos
+        self.client.login(username='dir',password='testpassword')
+        response = self.client.get('/ventas/cotizaciones')
+        self.assertEqual(response.status_code,302)
