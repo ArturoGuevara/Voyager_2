@@ -22,16 +22,6 @@ function estado() {
     }
 }
 
-function guardar_muestra() {
-    var enviar = document.getElementById("enviar").value;
-    document.getElementById("enviar").value = 0;
-}
-
-function enviar_muestra() {
-    var enviar = document.getElementById("enviar").value;
-    document.getElementById("enviar").value = 1;
-}
-
 var cnt_ingreso_agricola = 1;
 var cnt_ingreso_procesado = 1;
 var cnt_ingreso_microbiologia = 1;
@@ -140,8 +130,10 @@ function validar_producto_procesado(){
 }
 
 function agregar_fila_procesado(){
-    $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestra-'+cnt_ingreso_procesado+'" name="tipoMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestra-'+cnt_ingreso_procesado+'" name="descripcionMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacía</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreo-'+cnt_ingreso_procesado+'" name="fechaMuestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="primer-analisis-'+cnt_ingreso_procesado+'" name="analisis1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisis-'+cnt_ingreso_procesado+'" name="analisis2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisis-'+cnt_ingreso_procesado+'" name="analisis3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisis-'+cnt_ingreso_procesado+'" name="analisis4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisis-'+cnt_ingreso_procesado+'" name="analisis5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisis-'+cnt_ingreso_procesado+'" name="analisis6[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_filar_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
+    $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestra-'+cnt_ingreso_procesado+'" name="tipoMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestra-'+cnt_ingreso_procesado+'" name="descripcionMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacía</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreo-'+cnt_ingreso_procesado+'" name="fechaMuestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="primer-analisis-'+cnt_ingreso_procesado+'" name="analisis1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisis-'+cnt_ingreso_procesado+'" name="analisis2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisis-'+cnt_ingreso_procesado+'" name="analisis3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisis-'+cnt_ingreso_procesado+'" name="analisis4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisis-'+cnt_ingreso_procesado+'" name="analisis5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisis-'+cnt_ingreso_procesado+'" name="analisis6[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_filar_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
     cnt_ingreso_procesado+=1;
+    // El datepicker que se agrega activarlo
+    $(".datepicker" ).datepicker();
 }
 
 function quitar_filar_procesado(id){
