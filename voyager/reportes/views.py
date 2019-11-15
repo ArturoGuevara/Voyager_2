@@ -506,6 +506,7 @@ def borrar_orden_interna(request):
 
 
 ############### UST04-34 ##################
+@login_required
 def consultar_empresa(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
@@ -529,7 +530,17 @@ def consultar_empresa(request):
     data = data[1:-1]
     return JsonResponse({"data": data,})
 
+@login_required
 def enviar_archivo(request):
+    if request.method != 'POST':
+        raise Http404
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el usuario logeado
+    #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre == "SuperUser"
+        ):
+        raise Http404
     mail_code = 0
     if request.method == 'POST':
         form = EnviarResultadosForm(request.POST, request.FILES)
@@ -539,6 +550,8 @@ def enviar_archivo(request):
                                         request.POST.get('subject'),
                                         request.POST.get('body'),
                                    )
+        else:
+            raise Http404
     if mail_code == 202:
         request.session['success_sent'] = 1
     else:
