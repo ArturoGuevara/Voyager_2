@@ -1,55 +1,71 @@
 {% extends 'root/base.html' %}
 {% load static %}
 
+{% block optionalCSS %}
+<style>
+    .btn-plantilla{
+        width: 33% !important;
+    }
+    #tabla-procesado > tr > th{
+        font-size: 10px !important;
+    }
+</style>
+{% endblock %}
 
 {% block content %}
 
-<h2 class="mb-3 mt-3">Información del solicitante
-    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
-            data-placement="right"
-            data-content="Proporcione información general para ingreso de muestra"
-            data-trigger="hover">
+<h2 class="mb-3 mt-3 d-block" id="title-1">Información del solicitante
+    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="Proporcione información general para ingreso de muestra" data-trigger="hover">
         <i class="fa fa-question-circle fa-lg"></i>
     </button>
 </h2>
 
-<form action="{% url 'ingresar_muestras' %}" method="post">
+<h2 class="mb-3 mt-3 d-none" id="title-2">Información de muestra
+    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="Proporcione información detallada de las muestras" data-trigger="hover">
+        <i class="fa fa-question-circle fa-lg"></i>
+    </button>
+</h2>
+
+<form id="ingreso-cliente-form" method="post">
     {% csrf_token %}
-    <div class="row mt-0 pt-0 mb-0 pb-0">
-        <div class="col-md-12">
-            <div class="card">
+    <div id="info-solicitante" class="d-block container-fluid px-0">
+        <div class="row mx-0">
+            <div class="card w-100">
                 <div class="card-body">
                     <div class="card-header">
                         <h4 class="card-title">Datos del Solicitante
-                            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
-                                    data-placement="right"
-                                    data-content="Ingrese información sobre origen de muestra"
-                                    data-trigger="hover">
+                            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="Ingrese información sobre origen de muestra" data-trigger="hover">
                                 <i class="fa fa-question-circle fa-lg"></i>
                             </button>
                         </h4>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-5 pr-1">
+                        <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="nombre">Nombre del Solicitante</label>
-                                <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1" required>
+                                <input type="text" class="form-control" placeholder="Pedro Perez Lopez" value="" id="nombre" name="nombre" minlength="1">
+                                <div class="invalid-feedback">
+                                    El nombre del solicitante no puede estar vacío
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-7 pl-1">
+                        <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label>Dirección</label>
-                                <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion" required>
+                                <input type="text" class="form-control" placeholder="Juan Pablo II, Chihuahua, Chihuahua" value="" id="direccion" name="direccion">
+                                <div class="invalid-feedback">
+                                    La dirección no puede estar vacía
+                                </div>
                             </div>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 pr-1">
+                        <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label>País de Origen de Muestra</label>
-                                <select name="pais" class="form-control" id="pais" onchange="estado()" required>
-                                    <option selected value="" disabled>Selecciona el país...</option>
+                                <select name="pais" class="form-control" id="pais">
+                                    <option selected disabled>Selecciona el país...</option>
                                     <option value="Afganistán">Afganistán</option>
                                     <option value="Albania">Albania</option>
                                     <option value="Alemania">Alemania</option>
@@ -298,78 +314,44 @@
                                     <option value="Zambia">Zambia</option>
                                     <option value="Zimbabue">Zimbabue</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    El país no puede estar vacío
+                                </div>
                             </div>
                         </div>
-                        <div id="label-estado" class="col-md-4 px-1" hidden>
+                        <div id="label-estado" class="col-md-6 col-sm-12" hidden>
                             <div class="form-group">
                                 <label>Estado de Origen de Muestra</label>
-                                <select name="estado1" class="form-control" id="estado1" hidden>
-                                    <option selected value="" disabled>Selecciona el estado...</option>
-                                    <option value="Aguascalientes">Aguascalientes</option>
-                                    <option value="Baja California">Baja California</option>
-                                    <option value="Baja California Sur">Baja California Sur</option>
-                                    <option value="Campeche">Campeche</option>
-                                    <option value="Coahuila">Coahuila</option>
-                                    <option value="Colima">Colima</option>
-                                    <option value="Chiapas">Chiapas</option>
-                                    <option value="Chihuahua">Chihuahua</option>
-                                    <option value="Ciudad de México">Ciudad de México</option>
-                                    <option value="Durango">Durango</option>
-                                    <option value="Estado de México">Estado de México</option>
-                                    <option value="Guanajuato">Guanajuato</option>
-                                    <option value="Guerrero">Guerrero</option>
-                                    <option value="Hidalgo">Hidalgo</option>
-                                    <option value="Jalisco">Jalisco</option>
-                                    <option value="Michoacán">Michoacán</option>
-                                    <option value="Morelos">Morelos</option>
-                                    <option value="Nayarit">Nayarit</option>
-                                    <option value="Nuevo León">Nuevo León</option>
-                                    <option value="Oaxaca">Oaxaca</option>
-                                    <option value="Puebla">Puebla</option>
-                                    <option value="Querétaro">Querétaro</option>
-                                    <option value="Quintana Roo">Quintana Roo</option>
-                                    <option value="San Luis Potosí">San Luis Potosí</option>
-                                    <option value="Sinaloa">Sinaloa</option>
-                                    <option value="Sonora">Sonora</option>
-                                    <option value="Tabasco">Tabasco</option>
-                                    <option value="Tamaulipas">Tamaulipas</option>
-                                    <option value="Tlaxcala">Tlaxcala</option>
-                                    <option value="Veracruz">Veracruz</option>
-                                    <option value="Yucatán">Yucatán</option>
-                                    <option value="Zacatecas">Zacatecas</option>
-                                </select>
-                                <input type="text" class="form-control" value="" id="estado2" name="estado2" minlength="1" hidden>
+                                <input type="text" class="form-control" id="estado" name="estado">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="row mt-0 pt-0 mb-0 pb-0">
-        <div class="col-md-12">
-            <div class="card">
+        <div class="row mx-0">
+            <div class="card w-100">
                 <div class="card-body">
                     <div class="card-header">
                         <h4 class="card-title">Datos del los resultados
-                            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
-                                    data-placement="right"
-                                    data-content="Ingrese información sobre preferencias con los resultados"
-                                    data-trigger="hover">
+                            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="Ingrese información sobre preferencias con los resultados" data-trigger="hover">
                                 <i class="fa fa-question-circle fa-lg"></i>
                             </button>
                         </h4>
                     </div>
                     <br>
                     <div class="row">
-                        <div class="col-md-4 pr-1">
+                        <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label>Idioma de los Resultados</label>
-                                <select class="form-control" id="idioma" name="idioma" required>
+                                <select class="form-control" id="idioma" name="idioma">
                                     <option selected value="" disabled>Selecciona el idioma...</option>
                                     <option value="8809">Español</option>
                                     <option value="8992">Inglés</option>
                                 </select>
+                                <div class="invalid-feedback">
+                                    Selecciona un idioma para los resultados
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -377,28 +359,200 @@
             </div>
         </div>
     </div>
-    <div class="row mt-1 pt-1 pb-5">
-        <div class="col-md-7">
-        </div>
-        <div class="col-md-2">
-            <a href="/reportes/" class="btn btn-danger btn-block"
-                data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Cancelar solicitud de ingreso de muestra">
-                Cancelar
-            </a>
-        </div>
-        <div class="col-md-2">
-            <button type="submit" class="btn btn-success btn-block"
-                data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Cambia a pestaña de información de muestras">
-                Continuar
-            </button>
+    
+    <div id="info-muestras" class="d-none container-fluid px-0">
+        <div class="row mx-0">
+            <div class="card w-100">
+                <div class="card-body">
+                    <div class="text-center">
+                        <button class="btn btn-warning btn-plantilla" type="button" data-target="agricola"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Agrícola</button>
+                        <button class="btn btn-success btn-plantilla" type="button" data-target="procesado"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Procesado</button>
+                        <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia"
+                        data-container="body" 
+                        data-toggle="popover" 
+                        data-trigger="hover" 
+                        data-placement="top" 
+                        data-img="http://placehold.it/400x200">Producto Microbiología</button>
+                    </div>
+                    <div class="row mt-2">
+                        <form action="">
+                            {% csrf_token %}
+                            <div class="col-12">
+                                <div class="collapse" id="containerProductoAgricola">
+                                    <div class="card card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="tabla-agricola">
+                                                <thead>
+                                                  <tr>
+                                                      <th>#</th>
+                                                      <th>Producto</th>
+                                                      <th>Variedad</th>
+                                                      <th>País de Origen</th>
+                                                      <th>Código de Muestra</th>
+                                                      <th>Proveedor</th>
+                                                      <th>Nombre de Empresa</th>
+                                                      <th>Código de Trazabilidad</th>
+                                                      <th>Agricultor</th>
+                                                      <th>Dirección</th>
+                                                      <th>Parcela</th>
+                                                      <th>Ubicación de Muestreo</th>
+                                                      <th>Fecha de Muestreo</th>
+                                                      <th>Urgente</th>
+                                                      <th>Análisis 1</th>
+                                                      <th>Análisis 2</th>
+                                                      <th>Análisis 3</th>
+                                                      <th>Análisis 4</th>
+                                                      <th>Análisis 5</th>
+                                                      <th>Análisis 6</th>
+                                                      <th>Idioma</th>
+                                                      <th>Muestreador</th>
+                                                      <th>País de Destino</th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr>
+                                                      <th>1</th>
+                                                      <th>2</th>
+                                                      <th>3</th>
+                                                      <th>4</th>
+                                                      <th>5</th>
+                                                      <th>6</th>
+                                                      <th>7</th>
+                                                      <th>8</th>
+                                                      <th>9</th>
+                                                      <th>10</th>
+                                                      <th>11</th>
+                                                      <th>12</th>
+                                                      <th>13</th>
+                                                      <th>14</th>
+                                                      <th>15</th>
+                                                      <th>16</th>
+                                                      <th>17</th>
+                                                      <th>18</th>
+                                                      <th>19</th>
+                                                      <th>20</th>
+                                                      <th>21</th>
+                                                      <th>22</th>
+                                                      <th>23</th>
+                                                  </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="collapse" id="containerProductoProcesado">
+                                    <div class="card card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="tabla-procesado">
+                                                <thead>
+                                                <tr>
+                                                    <th>Tipo de muestra</th>
+                                                    <th>Descripción de muestra</th>
+                                                    <th>Fecha muestreo</th>
+                                                    <th>Análisis 1</th>
+                                                    <th>Análisis 2</th>
+                                                    <th>Análisis 3</th>
+                                                    <th>Análisis 4</th>
+                                                    <th>Análisis 5</th>
+                                                    <th>Análisis 6</th>
+                                                    <th>Eliminar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-procesado-body">
+                                                
+                                            </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-info" onclick="agregar_fila_procesado()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="collapse" id="containerProductoMicrobiologia">
+                                    <div class="card card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-striped" id="tabla-micro">
+                                                <thead>
+                                                    <tr>
+                                                        <th>#</th>
+                                                        <th>Tipo de Muestra</th>
+                                                        <th>Nombre Cliente</th>
+                                                        <th>Lote/Código</th>
+                                                        <th>Muestreador</th>
+                                                        <th>Fecha</th>
+                                                        <th>Análisis 1</th>
+                                                        <th>Análisis 2</th>
+                                                        <th>Análisis 3</th>
+                                                        <th>Análisis 4</th>
+                                                        <th>Análisis 5</th>
+                                                        <th>Análisis 6</th>
+                                                        <th>Método de Referencia</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                  <tr>
+                                                      <th>1</th>
+                                                      <th>2</th>
+                                                      <th>3</th>
+                                                      <th>4</th>
+                                                      <th>5</th>
+                                                      <th>6</th>
+                                                      <th>7</th>
+                                                      <th>8</th>
+                                                      <th>9</th>
+                                                      <th>10</th>
+                                                      <th>11</th>
+                                                      <th>12</th>
+                                                      <th>13</th>
+                                                  </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </form>
+
+<div class="text-right">
+    <button type="btn" class="btn btn-primary d-inline" id="btn-muestra-continuar" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Cambia a pestaña de información de muestras" onclick="validar_info_solicitante()">
+        Continuar
+    </button>
+    <button class="btn btn-danger d-none" id="btn-muestra-regresar" onclick="regresar_parte_solicitante()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Regrese al ingreso de información del solicitante">
+        Atrás
+    </button>
+    <button class="btn btn-info d-none" id="btn-muestra-guardar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Guarda la información registrada para que edite después">
+        Guardar
+    </button>
+    <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_producto_procesado()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
+        Enviar
+    </button>
+</div>
 
 {% endblock content %}
 
 {% block optionalJS %}
 <script src="{% static 'reportes/js/muestras.js' %}" type="text/javascript"></script>
+<script src="{% static 'reportes/js/muestra_valid.js' %}" type="text/javascript"></script>
 {% endblock %}

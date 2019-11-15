@@ -1,5 +1,6 @@
 from django import forms
 from .models import OrdenInterna
+from django.forms import formset_factory
 from django.utils.translation import ugettext_lazy as _
 
 #Form de crear paquete DHL
@@ -12,6 +13,10 @@ class codigoDHL(forms.Form):
         required=False
     )
 
+# Form de Producto Procesado
+class ProductoProcesadoForm(forms.Form):
+    numero_muestra = forms.IntegerField
+ProcesadoFormSet = formset_factory(ProductoProcesadoForm, extra=1)
 
 class EnviarResultadosForm(forms.Form):
     archivo_resultados = forms.FileField()

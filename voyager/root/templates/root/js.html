@@ -17,9 +17,16 @@
 <!-- Archivos Opcionales Creados por el Equipo -->
 <script src="{% static 'root/js/voyager/notificaciones.js' %}" type="text/javascript"></script>
 <script src="{% static 'root/js/voyager/validaciones.js' %}" type="text/javascript"></script>
-<!-- Inicializar pop overs -->
 <script>
-    $(function () {
-      $('[data-toggle="popover"]').popover()
+    $(document).ready(function(){
+        // Inicializar popovers
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            content: function () {
+            return '<img class="img-fluid" src="'+$(this).data('img') + '" />';
+            }
+        });
+        // Inicializar datepickers
+        $(".datepicker" ).datepicker();
     });
 </script>
