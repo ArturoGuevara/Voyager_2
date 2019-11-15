@@ -27,24 +27,34 @@
                                     <input type="text" class="form-control" id="visualizar_estatus" placeholder="estatus" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_envio">Fecha Envío</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
+                                    <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_recepcion_m" name="visualizar_fecha_recepcion_m" placeholder="Fecha de recepción" disabled>
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_guia_envio">Pagado</label>
                                     <input type="text" class="form-control" id="visualizar_pagado" placeholder="Pagado" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
+                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
+                                    <input type="date" class="form-control" id="visualizar_fecha_llegada_lab" placeholder="Fecha de llegada" disabled>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_localidad">Localidad</label>
+                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
                                 </div>
                             </div>
                             <div class="form-row" style="display: none;">
@@ -83,7 +93,10 @@
                                     <p id="visualizar_idioma_reporte">Idioma no disponible</p>
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <label for="visualizar_observaciones">Observaciones</label>
+                                <textarea rows="4" cols="50" id="v_observaciones" disabled></textarea>
+                            </div>
                         </div>
                         <div class="tab-pane container fade" id="visualizar_facturacion">
                             <div id="visualizar_tabla_facturas"></div>
@@ -123,18 +136,8 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_envio">Fecha Envío</label>
-                                    <input type="date" class="form-control" id="editar_fecha_envio" name="editar_fecha_envio" placeholder="Fecha de envío">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="editar_guia_envio" placeholder="Guía de envío">
+                                    <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
+                                    <input type="date" class="form-control" id="editar_fecha_recepcion_m" name="editar_fecha_recepcion_m" placeholder="Fecha de recepción">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -144,6 +147,26 @@
                                         <option name="Sí" id="Sí" value="Sí">Sí</option>
                                         <option name="No" id="No" value="No">No</option>
                                     </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
+                                    <input type="date" class="form-control" id="editar_fecha_envio" name="editar_fecha_envio" placeholder="Fecha de envío">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
+                                    <input type="text" class="form-control" id="editar_guia_envio" placeholder="Guía de envío">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
+                                    <input type="date" class="form-control" id="editar_fecha_llegada_lab" name="editar_fecha_llegada_lab" placeholder="Fecha de envío">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="visualizar_localidad">Localidad</label>
+                                    <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
                                 </div>
                             </div>
                             <div class="form-row" style="display: none;">
@@ -184,7 +207,10 @@
                                     </p>
                                 </div>
                             </div>
-
+                            <div class="form-row">
+                                <label for="visualizar_observaciones">Observaciones</label>
+                                <textarea rows="4" cols="50" id="e_observaciones"></textarea>
+                            </div>
                         </div>
                         <div class="tab-pane container fade" id="editar_facturacion">
                             <div id="visualizar_tabla_facturas"></div>
