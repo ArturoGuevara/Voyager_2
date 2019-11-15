@@ -511,8 +511,8 @@ def borrar_orden_interna(request):
 
 ############### UST04-34 ##################
 @login_required
-def consultar_empresa(request): #devuelve la empresa de un usurio a partir de una orden interna
-    user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+def consultar_empresa_muestras(request): #devuelve la empresa de un usurio a partir de una orden interna
+    """user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
     if not (user_logged.rol.nombre == "Soporte"
                 or user_logged.rol.nombre == "Director"
@@ -527,12 +527,38 @@ def consultar_empresa(request): #devuelve la empresa de un usurio a partir de un
     oi = OrdenInterna.objects.get(idOI = id)
     muestras = Muestra.objects.filter(oi = oi) #Se obtienen todas las muestras de una orden interna
     empresa = None
+    data_muestras = []
     if muestras: #A partir de una muestra, se obtiene la información del usuario y de su empresa
         empresa = muestras.first().usuario.empresa
-    data = {}
+        for muestra in muestras:
+            data_muestras.append(serializers.serialize("json",[muestra],ensure_ascii = False))
+    data = []
+    data.append(serializers.serialize("json", [empresa], ensure_ascii = False)) #El objeto de tipo empresa se encapsula en un formato JSON
+    return JsonResponse({"data": data}) #Se envía el JSON con la empresa"""
+
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el usuario logeado
+    # Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+            or user_logged.rol.nombre == "Director"
+            or user_logged.rol.nombre == "SuperUser"
+    ):
+        raise Http404
+    if request.method != 'POST':  # Si no se envía un post, el acceso es denegado
+        raise Http404
+    if not request.POST.get('id'):  # Si no se envía el campo requerido, el acceso es denegado
+        raise Http404
+    id = request.POST.get('id')
+    oi = OrdenInterna.objects.get(idOI=id)
+    muestras = Muestra.objects.filter(oi=oi)  # Se obtienen todas las muestras de una orden interna
+    empresa = None
+    data_muestras = []
+    if muestras:  # A partir de una muestra, se obtiene la información del usuario y de su empresa
+        empresa = muestras.first().usuario.empresa
+        for muestra in muestras:
+            data_muestras.append(muestra)
+    vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
     data = serializers.serialize("json", [empresa], ensure_ascii = False) #El objeto de tipo empresa se encapsula en un formato JSON
-    data = data[1:-1]
-    return JsonResponse({"data": data,}) #Se envía el JSON con la empresa
+    return JsonResponse({"data": data,"muestras":vector_muestras})  # Se envía el JSON con la empresa
 
 @login_required
 def enviar_archivo(request): #envía un archivo de resultados por correo

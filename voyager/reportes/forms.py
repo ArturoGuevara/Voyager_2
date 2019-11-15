@@ -18,3 +18,4 @@ class EnviarResultadosForm(forms.Form):
     email_destino = forms.EmailField()
     subject = forms.CharField()
     body = forms.CharField()
+    muestra = forms.IntegerField()
