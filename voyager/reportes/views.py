@@ -507,7 +507,7 @@ def borrar_orden_interna(request):
 
 ############### UST04-34 ##################
 @login_required
-def consultar_empresa(request):
+def consultar_empresa(request): #devuelve la empresa de un usurio a partir de una orden interna
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
     if not (user_logged.rol.nombre == "Soporte"
@@ -515,26 +515,26 @@ def consultar_empresa(request):
                 or user_logged.rol.nombre == "SuperUser"
         ):
         raise Http404
-    if request.method!='POST':
+    if request.method!='POST': #Si no se envía un post, el acceso es denegado
         raise Http404
-    if not request.POST.get('id'):
+    if not request.POST.get('id'): #Si no se envía el campo requerido, el acceso es denegado
         raise Http404
     id = request.POST.get('id')
-    oi = OrdenInterna.objects.get(idOI=id)
-    muestras = Muestra.objects.filter(oi=oi)
+    oi = OrdenInterna.objects.get(idOI = id)
+    muestras = Muestra.objects.filter(oi = oi) #Se obtienen todas las muestras de una orden interna
     empresa = None
-    if muestras:
+    if muestras: #A partir de una muestra, se obtiene la información del usuario y de su empresa
         empresa = muestras.first().usuario.empresa
     data = {}
-    data = serializers.serialize("json", [empresa], ensure_ascii=False)
+    data = serializers.serialize("json", [empresa], ensure_ascii = False) #El objeto de tipo empresa se encapsula en un formato JSON
     data = data[1:-1]
-    return JsonResponse({"data": data,})
+    return JsonResponse({"data": data,}) #Se envía el JSON con la empresa
 
 @login_required
-def enviar_archivo(request):
-    if request.method != 'POST':
+def enviar_archivo(request): #envía un archivo de resultados por correo
+    if request.method != 'POST': #Si no se envía un post, el acceso es denegado
         raise Http404
-    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el usuario logeado
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
     if not (user_logged.rol.nombre == "Soporte"
                 or user_logged.rol.nombre == "Director"
@@ -552,51 +552,46 @@ def enviar_archivo(request):
                                    )
         else:
             raise Http404
-    if mail_code == 202:
+    if mail_code == 202: #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
         request.session['success_sent'] = 1
     else:
         request.session['success_sent'] = -1
     return redirect('/reportes/ordenes_internas')
 
-def handle_upload_document(f,dest,subject,body):
+def handle_upload_document(file,dest,subject,body): #Esta función guarda el archivo de resultados a enviar
     path = './archivos-reportes/resultados'
-    path+=str(datetime.date.today())
-    path+=str(int(random.uniform(1,100000)))
-    with open(path, 'wb+') as destination:
-        for chunk in f.chunks():
+    path += str(datetime.date.today())
+    path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
+        for chunk in file.chunks():
             destination.write(chunk)
     return send_mail(path,dest,subject,body)
 
-def send_mail(path,dest,subject,body):
+def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid para enviar el correo
     message = Mail(
-        from_email='A0127373@itesm.mx',
-        to_emails=dest,
-        subject=subject,
-        html_content=body)
-
+        from_email = 'A0127373@itesm.mx',
+        to_emails = dest,
+        subject = subject,
+        html_content = body) #Se fijan los parametros del correo
     pdf_path = path
-
-    with open(pdf_path, 'rb') as f:
-        data = f.read()
-
-    encoded = base64.b64encode(data).decode()
-
-    attachment = Attachment()
+    with open(pdf_path, 'rb') as file: #Se obtiene el archivo a enviar
+        data = file.read()
+    encoded = base64.b64encode(data).decode() #Se codifica el contenido del archivo
+    attachment = Attachment() #Se agregan los parámetros del archivo a enviar
     attachment.file_content = FileContent(encoded)
     attachment.file_type = FileType('application/pdf')
     attachment.file_name = FileName('Results.pdf')
     attachment.disposition = Disposition('attachment')
     attachment.content_id = ContentId('Example Content ID')
     message.attachment = attachment
-
     try:
-        with open('./API_KEY.txt','r') as f:
-            key = f.read()
-        sendgrid_client = SendGridAPIClient(key)
+        with open('./API_KEY.txt','r') as file: #Se obtiene la llave del API para autenticar
+            key = file.read()
+        sendgrid_client = SendGridAPIClient(key) #Se envía el correo
         response = sendgrid_client.send(message)
         print(response.status_code)
         print(response.body)
         print(response.headers)
-        return response.status_code
+        return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
