@@ -47,21 +47,24 @@ function cargar_info_oi(){
             }
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
-            $('#editar_usuario_empresa').text(response.s_empresa);
-            var n = solicitante.nombre + " " + solicitante.apellido_paterno + " " + solicitante.apellido_materno;
+            $('#editar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#editar_usuario_nombre').text(n);
-            $('#editar_usuario_email').text(response.s_correo);
-            $('#editar_usuario_telefono').text(solicitante.telefono);
+            $('#editar_usuario_email').text(response.correo);
+            $('#editar_usuario_telefono').text(response.telefono);
             //pestaña de información
             $('#tituloe_idOI').text("Orden Interna #" + id_oi);
             $('#editar_idOI').val(id_oi);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
+            $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
+            $('#editar_fecha_llegada_lab').val(data.fecha_llegada_lab);
             $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
+            $('#e_observaciones').val(data.observaciones);
             //hacer check a radio input del idioma
             if(data.idioma_reporte == "Español"){
                 $('#editar_idioma_reporteES').prop('checked', true);
@@ -129,12 +132,15 @@ function submit(){
     var estatus = $('#editar_estatus').val();
     var localidad = $('#editar_localidad').val();
     var fecha_envio = $('#editar_fecha_envio').val();
+    var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
+    var fecha_llegada_lab = $('#editar_fecha_llegada_lab').val();
     var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
     var pagado = $('#editar_pagado').val();
 
     //pestaña de observaciones
     var formato_ingreso_muestra = $('#editar_formato_ingreso_muestra').val();
+    var observaciones = $('#e_observaciones').val();
 
     //checar radio seleccionado, si ninguno, se toma default español
     var idioma_reporte;
@@ -153,10 +159,13 @@ function submit(){
             'estatus': estatus,
             'localidad': localidad,
             'fecha_envio': fecha_envio,
+            'fecha_recepcion_m': fecha_recepcion_m,
+            'fecha_llegada_lab': fecha_llegada_lab,
             'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
+            'observaciones': observaciones,
             'pagado': pagado,
             'csrfmiddlewaretoken': token,
         },
@@ -354,15 +363,17 @@ function visualizar_info_oi(id) {
             $('#visualizar_idOI').val(id);
             $('#visualizar_estatus').val(data.estatus);
             $('#visualizar_localidad').val(data.localidad);
+            $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
+            $('#visualizar_fecha_llegada_lab').val(data.fecha_llegada_lab);
             $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
-            $('#visualizar_usuario_empresa').text(response.s_empresa);
-            var n = solicitante.nombre + " " + solicitante.apellido_paterno + " " + solicitante.apellido_materno;
+            $('#visualizar_usuario_empresa').text(response.empresa);
+            var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#visualizar_usuario_nombre').text(n);
-            $('#visualizar_usuario_email').text(response.s_correo);
-            $('#visualizar_usuario_telefono').text(solicitante.telefono);
+            $('#visualizar_usuario_email').text(response.correo);
+            $('#visualizar_usuario_telefono').text(response.telefono);
 
             //pestaña de observaciones
             $('#visualizar_idioma_reporte').text(data.idioma_reporte);
@@ -377,6 +388,7 @@ function visualizar_info_oi(id) {
                 }
             }
             $('.accordion_muestras').html(html_muestras);
+            $('#v_observaciones').val(data.observaciones);
 
             //Construir tabla de facturas
             var html_facturas =`
@@ -438,9 +450,52 @@ function confirmar_borrar_oi(){
             },
             error: function(data){
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Ah ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
             }
         });
     }
 
+}
+
+function cargar_enviar(id){
+    var id_oi = id;
+    var token = csrftoken;
+    $.ajax({
+        url: "/reportes/consultar_empresa/",
+        data: {
+            id: id,
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            var data = JSON.parse(response.data);
+            $('#email_destino').val(data.fields.correo_resultados);
+        },
+        error: function(data){
+            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
+        }
+    });
+}
+
+function enviar_resultados(){
+    var valid_form=true;
+    if($("#archivo_resultados").val()==""){
+        valid_form=false;
+        $("#div-archivo").css("border-color", "red");
+    }
+    else{
+        $("#div-archivo").css("border-color", "grey");
+    }
+    if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#subject").val(),"#subject")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#body").val(),"#body")){
+        valid_form=false;
+    }
+    if(valid_form==true){
+        document.getElementById("submit_resultados_form").submit();
+    }
 }

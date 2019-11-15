@@ -39,7 +39,13 @@
                     <td class="pt-3 oiData oi_empresa">{{ o.usuario.empresa }}</td>
                     <td class="pt-3 oiData oi_usuario">{{ o.usuario.user }}</td>
                     <td class="pt-3 oiData oi_fecha_envio">
-                        {% language 'es-co' %} {{ o.fecha_envio|date:'d/M/Y' }} {% endlanguage %}
+                        {% language 'es-co' %}
+                            {% if o.fecha_envio %}
+                                {{ o.fecha_envio|date:'d/M/Y' }}
+                            {% else %}
+                                Ninguna
+                            {% endif %}
+                        {% endlanguage %}
                     </td>
                     <td class="pt-3 oiData oi_pagado">{{ o.pagado }}</td>
                     <td colspan="4">
@@ -51,9 +57,11 @@
                             <i class='fas fa-trash'></i>
                         </button>
                         {% endif %}
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
-                            Enviar
-                        </button>
+                        {% if o.usuario.estatus_pago != "Deudor" %}
+                            <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
+                                Enviar
+                            </button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endif %}
@@ -64,6 +72,7 @@
     {% include './modals/paquete.html' %}
     {% include './modals/borrar-orden.html' %}
     {% include './modals/ver-oi.html' %}
+    {% include './modals/enviar-resultados.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -85,6 +94,16 @@
     {% elif successcode == "204" %}
         <script>
             showNotification('top','right','No se encontró la Orden Interna')
+        </script>
+    {% endif %}
+
+    {% if success_sent == 1 %}
+        <script>
+            showNotification('top','right','Resultados enviados exitósamente')
+        </script>
+    {% elif success_sent == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
 {% endblock %}

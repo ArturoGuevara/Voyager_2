@@ -6,6 +6,7 @@ function restaurar_modal_ver_cot(){
     $('#btn-canc-edit-cot').removeClass('d-inline').addClass('d-none');
     $('#btn-guar-editar-cot').removeClass('d-inline').addClass('d-none');
     $('#btn-editar-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-space-edit').removeClass('d-none');
 
     // Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-none').addClass('d-block');
@@ -27,9 +28,13 @@ function restaurar_modal_ver_cot(){
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
+    $("input[name='editar-cot-an[]']:checked").each(function () {
+        che.push(parseInt($(this).val()));
+    });
     $(this).removeClass('d-inline').addClass('d-none');
     $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
     $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-space-edit').addClass('d-none');
 
     //Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-block').addClass('d-none');
@@ -39,11 +44,14 @@ $('#btn-canc-edit-cot').click(function(){
     restaurar_modal_ver_cot();
     // Reiniciamos al default los valores de la cotización
     visualizar_cotizacion(id_cotizacion);
+    // Se reinicia el arreglo de Análisis
+    che = [];
 });
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
-    // Restauramos la variable global que almacena la id de la cotización clickeada
+    // Restauramos la variable global que almacena la id de la cotización clickeada y los Análisis
     id_cotizacion = 0;
+    che = [];
 });
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
@@ -57,6 +65,11 @@ function editar_cot_eliminar_an(id){
     $('input[name="editar-cot-an[]"]').each(function (){
         if(id == $(this).data('id')){
             $(this).prop('checked', false);
+            for(var i = 0; i < che.length; i++){
+              if ( che[i] === id) {
+                che.splice(i, 1);
+              }
+            }
         }
     });
     calc_total();
@@ -76,6 +89,7 @@ $("input[name='editar-cot-an[]']").click(function (){
 
     // Si el análisis no está en la tabla agregarlo y si sí está quitarlo
     if(flag == 0){
+        che.push(parseInt($(this).val()));
         // Obtenemos el token de django para el ajax
         var token = csrftoken;
         $.ajax({
@@ -104,6 +118,12 @@ $("input[name='editar-cot-an[]']").click(function (){
                 $(this).remove();
             }
         });
+        for(var i = 0; i < che.length; i++){
+          if ( che[i] === parseInt(id)) {
+            che.splice(i, 1);
+          }
+        }
+        calc_total();
     }
 });
 
@@ -116,10 +136,13 @@ function guardar_cambios_cot(){
         var descuentos = [];
         var ivas = [];
         var totales = [];
+
+        checked = che;
+        che = [];
         // Obtenemos las id de los análisis seleccionados
-        $("input[name='editar-cot-an[]']:checked").each(function () {
-            checked.push(parseInt($(this).val()));
-        });
+        // $("input[name='editar-cot-an[]']:checked").each(function () {
+        //     checked.push(parseInt($(this).val()));
+        // });
         // Obtenemos las cantidades de los análisis seleccionados
         $("input[name='editar-cot-cantidades[]']").each(function () {
             cantidades.push(parseInt($(this).val()));
