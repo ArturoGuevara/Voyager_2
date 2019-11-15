@@ -476,6 +476,33 @@ def borrar_cotizacion(request, id):
         raise Http404
 ############### USV02-02###################
 
+############### USV16-50 ###################
+@login_required
+def aceptar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+            if cotizacion:
+                cotizacion.aceptado = True
+                cotizacion.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe esa cotización"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USV16-50 ###################
+
 
 # EXTRAS
 def is_not_empty(data):

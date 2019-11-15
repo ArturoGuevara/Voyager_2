@@ -75,7 +75,7 @@ class Analisis(models.Model):
 
     def __str__(self):
         return "%s %s" % (self.nombre, self.codigo)
-    
+
 class Nota(models.Model):
     id_nota = models.AutoField(primary_key=True)
     descripcion = models.CharField(max_length=100)
@@ -125,6 +125,7 @@ class Cotizacion(models.Model):
     subtotal = models.DecimalField(max_digits=100, decimal_places=2)
     total = models.DecimalField(max_digits=100, decimal_places=2)
     status = models.BooleanField(default=True)
+    aceptado = models.BooleanField(default=False)
     fecha_creada = models.DateField(default=timezone.now)
 
     class Meta:

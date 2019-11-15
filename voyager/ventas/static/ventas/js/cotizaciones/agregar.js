@@ -3,6 +3,7 @@
 /* VARIABLES GLOBALES */
 var id_cotizacion = 0;
 var cantidad;
+var che = [];
 /* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
 $(document).ready(function () {
     // Cuando se cierra el modal de bootstrap por dar click afuera, limpiar la tabla de análisis seleccionados en el resumen
