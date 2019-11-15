@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
-from .forms import codigoDHL
+from .forms import codigoDHL, ProductoProcesadoForm
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect

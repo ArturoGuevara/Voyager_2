@@ -115,3 +115,34 @@ $('.btn-plantilla').click(function(){
         $('#containerProductoProcesado').collapse('hide');
     }
 });
+
+function validar_producto_procesado(){
+    // Validamos los arreglos de inputs
+    $("input[name='ids[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#numero-muestra-'+id);
+        check_just_numbers($(this).val(),'#numero-muestra-'+id);
+    });
+    $("input[name='nombreClientes[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#nombre-cliente-'+id);
+        check_just_letters($(this).val(),'#nombre-cliente-'+id);
+    });
+    $("input[name='tipoMuestra[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#tipo-muestra-'+id);
+    });
+    $("input[name='descripcionMuestra[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#descripcion-muestra-'+id);
+    });
+    $("input[name='fechaMuestreo[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#fecha-muestreo-'+id);
+        check_is_date($(this).val(),'#fecha-muestreo-'+id);
+    });
+    $("input[name='analisis1[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#primer-analisis-'+id);
+    });
+}
