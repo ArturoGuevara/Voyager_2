@@ -194,7 +194,8 @@ def consultar_orden(request):
                             "s_correo":s_correo,
                             "correo_responsable": correo_responsable,
                             "telefono":telefono}
-                else:
+                    )
+                else:       
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
                     #response.status_code = 500
                     return response

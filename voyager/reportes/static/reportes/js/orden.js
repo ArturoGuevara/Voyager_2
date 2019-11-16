@@ -341,7 +341,7 @@ function visualizar_info_oi(id) {
         success: function (response) {
             //datos de la orden interna
             var data = JSON.parse(response.data);
-            console.log(data);
+            console.log(response);
             data = data.fields;
             //datos de las muestras
             var muestras = JSON.parse(response.muestras);
@@ -355,7 +355,6 @@ function visualizar_info_oi(id) {
             }
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
-
             //pestaña de información
             $('#titulov_idOI').text("Orden Interna #" + id);
             $('#visualizar_idOI').val(id);
@@ -403,10 +402,10 @@ function visualizar_info_oi(id) {
                 </table>
             `;*/
             //Construir tabla de facturas
-            $('#f_responsable').val(response.correo_responsable);
-            $('#f_correo').val(response.correo_responsable);
-            $('#f_telefono').val(response.telefono);
-            $('#f_empresa').val(response.empresa);
+            $('#f_responsable').html(response.correo_responsable);
+            $('#f_correo').html(response.correo_responsable);
+            $('#f_telefono').html(response.telefono);
+            $('#f_empresa').html(response.empresa);
 
 
             //$('#visualizar_tabla_facturas').html(html_facturas);
