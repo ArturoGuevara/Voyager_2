@@ -45,6 +45,15 @@ class OrdenInterna(models.Model):
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     #Observaciones
     idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
+    #Facturación
+    num_factura = models.CharField(max_length=50, blank=True) #Número de factura
+    fecha_facturacion = models.DateField(null=True, blank=True) #Fecha de facturación
+    fecha_envio_facturas = models.DateField(null=True, blank=True) #Fecha de envío de facturas
+    complemento_pago = models.CharField(max_length=50, blank=True) #Complemento de pago
+    cobrar_envio = models.CharField(max_length=2, choices=SN, blank=True) #Cobrar envío
+    envio_factura = models.CharField(max_length=2, choices=SN, blank=True) #Envío de factura
+    pago_factura = models.CharField(max_length=2, choices=SN, blank=True) #Pago de factura
+    enviar_informes = models.CharField(max_length=2, choices=SN, blank=True) #Enviar informes
 
     class Meta:
         verbose_name = 'Orden Interna'
