@@ -36,7 +36,7 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
         analisis = Analisis.objects.all()
         paises = Pais.objects.all()
         context = {

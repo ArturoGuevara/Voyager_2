@@ -125,7 +125,9 @@
                 </div>
             </div>
             <div class="modal-footer">
+                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
                 <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
+                {% endif %}
                 <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Guardar</button>
             </div>
         </div>
