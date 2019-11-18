@@ -117,6 +117,7 @@ class Muestra(models.Model):
         ('No', 'No'),
     )
     enviado = models.CharField(max_length=2, choices=SN, default="No")#10-Enviado
+    prueba_campo = models.CharField(max_length=10,default="")
 
 
 
