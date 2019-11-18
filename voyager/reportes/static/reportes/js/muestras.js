@@ -105,6 +105,35 @@ function validar_producto_procesado(){
     });
 }
 
+function validar_producto_micro(){
+    // Validamos los arreglos de inputs
+    $("input[name='tipo_muestra[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#tipo_muestra_'+id);
+    });
+    $("input[name='nombre_cliente[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#nombre_cliente_'+id);
+    });
+    $("input[name='lote_codigo[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#lote_codigo_'+id);
+    });
+    $("input[name='muestreador[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#muestreador_'+id);
+    });
+    $("input[name='fecha_muestreo[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#fecha_muestreo_'+id);
+        check_is_date($(this).val(),'#fecha_muestreo_'+id);
+    });
+    $("input[name='analisis_1[]']").each(function(){
+        var id = $(this).data('id');
+        check_is_not_empty($(this).val(),'#analisis_1_'+id);
+    });
+}
+
 function agregar_fila_procesado(){
     $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestra-'+cnt_ingreso_procesado+'" name="tipoMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestra-'+cnt_ingreso_procesado+'" name="descripcionMuestra[]"><div class="invalid-feedback">Este campo no puede estar vacía</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreo-'+cnt_ingreso_procesado+'" name="fechaMuestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="primer-analisis-'+cnt_ingreso_procesado+'" name="analisis1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisis-'+cnt_ingreso_procesado+'" name="analisis2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisis-'+cnt_ingreso_procesado+'" name="analisis3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisis-'+cnt_ingreso_procesado+'" name="analisis4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisis-'+cnt_ingreso_procesado+'" name="analisis5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisis-'+cnt_ingreso_procesado+'" name="analisis6[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_filar_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
     cnt_ingreso_procesado+=1;
@@ -114,6 +143,21 @@ function agregar_fila_procesado(){
 
 function quitar_filar_procesado(id){
     $('.fila-tabla-procesado').each(function(){
+        if(id == $(this).data('id')){
+            $(this).remove();
+        }
+    });
+}
+
+function agregar_fila_micro(){
+    $('#tabla-micro-body').append('<tr class="fila-tabla-micro" data-id="'+cnt_ingreso_microbiologia+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="tipo_muestra_'+cnt_ingreso_microbiologia+'" name="tipo_muestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="nombre_cliente_'+cnt_ingreso_microbiologia+'" name="nombre_cliente[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="lote_codigo_'+cnt_ingreso_microbiologia+'" name="lote_codigo[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="muestreador_'+cnt_ingreso_microbiologia+'" name="muestreador[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha_muestreo_'+cnt_ingreso_procesado+'" name="fecha_muestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_1_'+cnt_ingreso_microbiologia+'" name="analisis_1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_2_'+cnt_ingreso_microbiologia+'" name="analisis_2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_3_'+cnt_ingreso_microbiologia+'" name="analisis_3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_4_'+cnt_ingreso_microbiologia+'" name="analisis_4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_5_'+cnt_ingreso_microbiologia+'" name="analisis_5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_6_'+cnt_ingreso_microbiologia+'" name="analisis_6[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_micro('+cnt_ingreso_microbiologia+')"><i class="fa fa-trash"></i></button></td></tr>');
+    cnt_ingreso_microbiologia+=1;
+    // El datepicker que se agrega activarlo
+    $(".datepicker" ).datepicker();
+}
+
+function quitar_fila_micro(id){
+    $('.fila-tabla-micro').each(function(){
         if(id == $(this).data('id')){
             $(this).remove();
         }

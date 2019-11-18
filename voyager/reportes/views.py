@@ -28,6 +28,7 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileT
 import urllib.request as urllib
 import base64
 import locale
+from .forms import MicroFormSet
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -49,6 +50,16 @@ def ingreso_muestra(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
+        if request.method == 'POST':
+            formset = MicroFormSet(request.POST)
+            if formset.is_valid():
+                for form in formset:
+                    # extract name from each form and save
+                    tipo_muestra = form.cleaned_data.get('tipo_muestra')
+                    # save book instance
+                    if tipo_muestra:
+                        print(tipo_muestra)
+
     else:
         raise Http404
 
@@ -346,7 +357,6 @@ def validacion_codigo(request):
 
             codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
             oi_seleccionadas = request.POST.getlist('oiselected')    #Obtiene datos de la form
-
             resp = validacion_dhl(codigo)   #Valida codigo ingresado en Form
 
 
