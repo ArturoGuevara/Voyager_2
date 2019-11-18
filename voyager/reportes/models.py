@@ -16,7 +16,9 @@ class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
     localidad = models.CharField(max_length=50, blank=True)
+    fecha_recepcion_m = models.DateField(null=True, blank=True)
     fecha_envio = models.DateField(null=True, blank=True)
+    fecha_llegada_lab = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
     guia_envio = models.CharField(max_length=50, blank=True)
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
@@ -45,6 +47,7 @@ class OrdenInterna(models.Model):
     estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
     #Observaciones
     idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
+    observaciones = models.TextField(blank=True)
 
     class Meta:
         verbose_name = 'Orden Interna'

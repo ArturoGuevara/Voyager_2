@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
-from .forms import codigoDHL
+from .forms import codigoDHL, ProductoProcesadoForm
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -36,39 +36,19 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404    #Aquí despliega que el cliente debe dinero
-        return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página y muestra estado deudor
+            return render(request, 'reportes/deudor.html')
+        return render(request, 'reportes/ingreso_muestra.html')   #Cargar la plantilla necesaria
     else:
         raise Http404
-
+    
+# Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
-def ingresar_muestras(request):
-    if (request.session._session   #Revisión de sesión iniciada
-            and request.POST.get('nombre')   #Los post son enviados desde la página anterior
-            and request.POST.get('direccion')   #Checar todos los post necesarios para continuar con la forma
-            and request.POST.get('pais')
-            and request.POST.get('idioma')
-            and (request.POST.get('estado1') or (request.POST.get('estado2'))
-    )
-        ):
-        user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
+def ingreso_muestra(request):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404      #Aquí despliega que el cliente debe dinero
-        if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
-            estado = request.POST.get('estado1')
-        else:
-            estado = request.POST.get('estado2')
-        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)   #Obtener todas las cotizaciones del usuario loggeado
-        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,   #Cargar todas las variables POST dentro de la siguiente plantilla
-                                                                  'nombre': request.POST.get('nombre'),
-                                                                  'direccion': request.POST.get('direccion'),
-                                                                  'pais': request.POST.get('pais'),
-                                                                  'estado': estado,
-                                                                  'idioma': request.POST.get('idioma'),
-                                                                  })
     else:
         raise Http404
 
@@ -88,10 +68,10 @@ def ordenes_internas(request):
 
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
-    estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
+    estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
-    ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
+    ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
 
@@ -146,8 +126,6 @@ def consultar_orden(request):
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
                 solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
-                s_empresa = solicitante.empresa.empresa
-                s_correo = solicitante.user.email
                 solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
                 solicitante = solicitante[1:-1]
                 data = serializers.serialize("json", [oi], ensure_ascii = False)
@@ -157,13 +135,13 @@ def consultar_orden(request):
                 if muestras:
                     for muestra in muestras:
                         data_muestras.append(muestra)
-
                     usuario = muestras[0].usuario
                     user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
                     user_serialize = user_serialize[1:-1]
                     vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-                    email = usuario.user.email
+                    email = usuario.empresa.correo_resultados
                     empresa = usuario.empresa.empresa
+                    telefono = usuario.empresa.telefono
                     analisis_muestras = {}
                     facturas_muestras = {}
                     for muestra in muestras:
@@ -185,11 +163,10 @@ def consultar_orden(request):
                             "usuario":user_serialize,
                             "correo":email,
                             "empresa":empresa,
+                            "telefono":telefono,
                             "dict_am":analisis_muestras,
                             "facturas":facturas_muestras,
-                            "solicitante":solicitante,
-                            "s_empresa":s_empresa,
-                            "s_correo":s_correo}
+                            "solicitante":solicitante}
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
@@ -253,10 +230,23 @@ def actualizar_orden(request):
                 oi.fecha_envio = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_envio = request.POST['fecha_envio']
+            
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_recepcion_m'] == "":
+                oi.fecha_recepcion_m = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_recepcion_m = request.POST['fecha_recepcion_m']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_llegada_lab'] == "":
+                oi.fecha_llegada_lab = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
 
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
+            oi.observaciones = request.POST['observaciones']
             oi.pagado = request.POST['pagado']
             #Guardar
             oi.save()
@@ -269,7 +259,10 @@ def actualizar_orden(request):
                 locale.setlocale(locale.LC_TIME, 'es_co.utf8') #your language encoding
             except:
                 locale.setlocale(locale.LC_TIME, 'es_co')
-            fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
+            try:
+                fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
+            except:
+                fecha_formato = "Ninguna"
             # Regresamos información actualizada
             return JsonResponse(
                 {"data": data,
