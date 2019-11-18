@@ -461,7 +461,7 @@ function cargar_enviar(id){
     var id_oi = id;
     var token = csrftoken;
     $.ajax({
-        url: "/reportes/consultar_empresa/",
+        url: "/reportes/consultar_empresa_muestras/",
         data: {
             id: id,
             'csrfmiddlewaretoken': token,
@@ -469,7 +469,10 @@ function cargar_enviar(id){
         type: "POST",
         success: function(response){
             var data = JSON.parse(response.data);
-            $('#email_destino').val(data.fields.correo_resultados);
+            var muestras = JSON.parse(response.muestras);
+            $('#email_destino').val(data[0].fields.correo_resultados);
+            var html_drop = dropdown_muestras(muestras);
+            $('#muestra').html(html_drop);
         },
         error: function(data){
             $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
@@ -498,4 +501,12 @@ function enviar_resultados(){
     if(valid_form==true){
         document.getElementById("submit_resultados_form").submit();
     }
+}
+
+function dropdown_muestras(muestras){
+    var ans="";
+    for(muestra in muestras){
+        ans+="<option value='"+muestras[muestra].pk+"'>Muestra "+muestras[muestra].pk+"</option>"
+    }
+    return ans;
 }
