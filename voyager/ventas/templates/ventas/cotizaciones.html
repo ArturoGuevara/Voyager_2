@@ -87,7 +87,7 @@
                     <td>${{ a.precio }}</td>
                     <td>{{ a.tiempo }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
+                        <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
                     </td>
                     <td>
                         <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
@@ -101,6 +101,7 @@
     {% include './modals/cotizaciones/visualizar.html' %}
     {% include './modals/cotizaciones/borrar-cot.html' %}
     {% include './modals/cotizaciones/aceptar-cot.html' %}
+    {% include './modals/analisis/visualizar.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -110,4 +111,6 @@
     <script src="{% static 'ventas/js/cotizaciones/editar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/borrar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/aceptar_cotizacion.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/analisis/editar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/analisis/catalogo.js' %}" type="text/javascript"></script>
 {% endblock %}
