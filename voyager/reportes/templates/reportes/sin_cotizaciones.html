@@ -1,0 +1,22 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block optionalCSS %}
+<style>
+    body{
+        background-color: rgb(243,245,258,0.3) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center">
+    <h3>Aún no existe ninguna cotización</h3>
+    <h5>Estamos trabajando en ello, si existe algún problema comuniquese con nosotros.</h5>
+    <img class="w-50" src="{% static 'reportes/img/loadingRocket.gif' %}" alt="Gif de cohete esperando a ser lanzado">
+</div>
+
+{% endblock content %}
+
+{% block optionalJS %}{% endblock %}

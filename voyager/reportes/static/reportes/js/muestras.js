@@ -153,7 +153,8 @@ function quitar_filar_procesado(id){
     });
 }
 
-function agregar_fila_micro(){
+function agregar_fila_micro(analisis){
+    console.log(analisis)
     $('#tabla-micro-body').append('<tr class="fila-tabla-micro" data-id="'+cnt_ingreso_microbiologia+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="tipo_muestra_'+cnt_ingreso_microbiologia+'" name="tipo_muestra[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="nombre_cliente_'+cnt_ingreso_microbiologia+'" name="nombre_cliente[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="lote_codigo_'+cnt_ingreso_microbiologia+'" name="lote_codigo[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="muestreador_'+cnt_ingreso_microbiologia+'" name="muestreador[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha_muestreo_'+cnt_ingreso_procesado+'" name="fecha_muestreo[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_1_'+cnt_ingreso_microbiologia+'" name="analisis_1[]"><div class="invalid-feedback">Seleccione un análisis</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_2_'+cnt_ingreso_microbiologia+'" name="analisis_2[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_3_'+cnt_ingreso_microbiologia+'" name="analisis_3[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_4_'+cnt_ingreso_microbiologia+'" name="analisis_4[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_5_'+cnt_ingreso_microbiologia+'" name="analisis_5[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="analisis_6_'+cnt_ingreso_microbiologia+'" name="analisis_6[]"></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="metodo_referencia_'+cnt_ingreso_microbiologia+'" name="metodo_referencia[]"></td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_micro('+cnt_ingreso_microbiologia+')"><i class="fa fa-trash"></i></button></td></tr>');
 
     cnt_ingreso_microbiologia+=1;
@@ -168,3 +169,4 @@ function quitar_fila_micro(id){
         }
     });
 }
+

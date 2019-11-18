@@ -38,9 +38,38 @@ def ingreso_cliente(request):
             raise Http404
         if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página y muestra estado deudor
             return render(request, 'reportes/deudor.html')
-        return render(request, 'reportes/ingreso_muestra.html')   #Cargar la plantilla necesaria
+        arr_analisis = []
+        ctz = Cotizacion.objects.filter(usuario_c = user_logged)
+        if len(ctz) > 0 :
+            for c in ctz:
+                analisis = AnalisisCotizacion.objects.filter(cotizacion = c)
+                for a in analisis:
+                    arr_analisis.append(a)
+            context = {
+                'arr_analisis': arr_analisis
+            }
+            return render(request, 'reportes/ingreso_muestra.html',context)   #Cargar la plantilla necesaria
+        else:
+            return render(request, 'reportes/sin_cotizaciones.html')
     else:
         raise Http404
+
+def obtener_analisis(request):
+    if request.session._session:   #Revisión de sesión iniciada
+        user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
+        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+            raise Http404
+        arr_analisis = []
+        ctz = Cotizacion.objects.filter(usuario_c = user_logged)
+        if len(ctz) > 0 :
+            for c in ctz:
+                analisis = AnalisisCotizacion.objects.filter(cotizacion = c)
+                for a in analisis:
+                    arr_analisis.append(a)
+            context = {
+                'arr_analisis': arr_analisis
+            }
+            return render(request, 'reportes/ingreso_muestra.html',context)   #Cargar la plantilla necesaria
     
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
