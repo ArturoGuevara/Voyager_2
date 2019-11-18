@@ -28,7 +28,6 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileT
 import urllib.request as urllib
 import base64
 import locale
-from .forms import MicroFormSet
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
