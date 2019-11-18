@@ -21,7 +21,7 @@ def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         return render(request,'cuentas/home.html')
-    return render(request, 'cuentas/index.html')
+    return render(request, 'cuentas/home.html')
 
 #Vista de Login
 def loginView(request):
@@ -196,9 +196,11 @@ def guardar_cliente(request):
             and request.POST.get('apellido_materno')
             and request.POST.get('telefono')
         ): #verificar que se envían todos los datos
+        request.session['crear_cliente_status'] = False
         raise Http404
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
+        request.session['crear_cliente_status'] = False
         raise Http404
     user_name = request.POST.get('nombre')[0:2] \
                 + request.POST.get('apellido_paterno')[0:2] \
@@ -206,12 +208,15 @@ def guardar_cliente(request):
                 + str(IFCUsuario.objects.all().count()) #crear un username único para el usuario tomando las 2 primeras
                 # letras del nombre y cada apellido más el número de usuarios en el sistema
     if (request.POST.get('contraseña') != request.POST.get('contraseña2')): #verificar que las contraseñas sean iguales
+        request.session['crear_cliente_status'] = False
         raise Http404
     num_mails = User.objects.filter(email=request.POST.get('correo'))
     if num_mails.count() > 0: #verificar que no haya usuarios con el mismo correo
+        request.session['crear_cliente_status'] = False
         raise Http404
     empresa = Empresa.objects.filter(id=request.POST.get('empresa'))
     if not empresa: #verificar que exista una empresa con el código enviado
+        request.session['crear_cliente_status'] = False
         raise Http404
     user = User.objects.create_user(user_name, request.POST.get('correo'), request.POST.get('contraseña'))
     user.save()
@@ -225,7 +230,8 @@ def guardar_cliente(request):
     new_client.estado = True
     new_client.empresa = empresa.first()
     new_client.save() #guardar nuevo cliente
-    return HttpResponseRedirect(reverse("home")) #redirigir a home
+    request.session['crear_cliente_status'] = True
+    return redirect('/cuentas/usuarios') #redirigir a home
 
 @login_required
 def verificar_correo(request):
@@ -304,6 +310,15 @@ def notificar_crear_staff(request):         # Funcion que se llama con un ajax p
     if 'crear_staff_status' in request.session:
         result = request.session['crear_staff_status']
         del request.session['crear_staff_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def notificar_crear_cliente(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'crear_cliente_status' in request.session:
+        result = request.session['crear_cliente_status']
+        del request.session['crear_cliente_status']
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})

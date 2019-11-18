@@ -26,7 +26,7 @@ class LazyEncoder(DjangoJSONEncoder):
 # Vista del index
 @login_required
 def indexView(request):
-    return render(request, 'ventas/index.html')
+    return render(request, 'cuentas/home.html')
 
 # Create your views here.
 
@@ -54,10 +54,13 @@ def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
+            data = []
             analisis = Analisis.objects.get(id_analisis = id)
+            pais = Pais.objects.get(pk=analisis.pais.pk)
             if analisis:
-                data = serializers.serialize("json", [analisis], ensure_ascii = False)
-                data = data[1:-1]
+                data.append(serializers.serialize("json", [analisis], ensure_ascii = False))
+                # data = data[1:-1]
+                data.append(serializers.serialize("json", [pais], ensure_ascii = False))
                 return JsonResponse({"data": data})
             else:
                 response = JsonResponse({"error": "No existe ese análisis"})
@@ -82,13 +85,20 @@ def editar_analisis(request, id):
             analisis = Analisis.objects.get(id_analisis = id)
             if analisis:
                 #Que ningún campo esté vacío
-                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo']):
+                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo'] and is_not_empty(request.POST['tiempo']) and is_not_empty(request.POST['unidad_min']) and is_not_empty(request.POST['pais'])):
                     # Actualizamos campos
+                    pais = Pais.objects.get(pk = request.POST['pais'])
                     analisis.nombre = request.POST['nombre']
                     analisis.codigo = request.POST['codigo']
                     analisis.descripcion = request.POST['descripcion']
                     analisis.precio = request.POST['precio']
                     analisis.tiempo = request.POST['tiempo']
+                    analisis.unidad_min = request.POST['unidad_min']
+                    analisis.pais = pais
+                    if request.POST['acreditacion'] == "1":
+                        analisis.acreditacion = True
+                    else:
+                        analisis.acreditacion = False
                     # Guardamos cambios
                     analisis.save()
                     # Obtenemos los nuevos valores
@@ -159,9 +169,10 @@ def agregar_analisis(request):
                 n_duracion = form.cleaned_data['duracion']
                 n_pais = form.cleaned_data['pais']
                 n_unidad_min = form.cleaned_data['unidad_min']
-                n_acreditacion = form.cleaned_data['acreditacion']
+                n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
+                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
