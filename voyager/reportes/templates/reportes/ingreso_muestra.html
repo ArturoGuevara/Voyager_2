@@ -533,7 +533,7 @@
                                                     <th>Nombre Cliente</th>
                                                     <th>Lote/Código</th>
                                                     <th>Muestreador</th>
-                                                    <th>Fecha</th>
+                                                    <th>Fecha Muestreo</th>
                                                     <th>Análisis 1</th>
                                                     <th>Análisis 2</th>
                                                     <th>Análisis 3</th>
@@ -545,19 +545,74 @@
                                             </thead>
                                             <tbody>
                                               <tr>
-                                                  <th>1</th>
-                                                  <th>2</th>
-                                                  <th>3</th>
-                                                  <th>4</th>
-                                                  <th>5</th>
-                                                  <th>6</th>
-                                                  <th>7</th>
-                                                  <th>8</th>
-                                                  <th>9</th>
-                                                  <th>10</th>
-                                                  <th>11</th>
-                                                  <th>12</th>
-                                                  <th>13</th>
+                                                  <th>
+                                                      <input type="text" class="form-control" data-id= 1  name="id_micro[]">
+                                                        <div class="invalid-feedback">
+                                                            
+                                                        </div>
+                                                </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=tipo_muestra_1 name="tipo_muestra[]">
+                                                        <div class="invalid-feedback">
+                                                            El tipo de muestra no puede estar vacio
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=nombre_cliente_1 name="nombre_cliente[]">
+                                                        <div class="invalid-feedback">
+                                                            El nombre de cliente no puede estar vacio
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=codigo_muestra_1 name="codigo_muestra[]">
+                                                        <div class="invalid-feedback">
+                                                            El codigo de muestra no puede estar vacio
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=muestreador_1 name="muestreador[]">
+                                                        <div class="invalid-feedback">
+                                                            El muestreador no puede estar vacio
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=fecha_muestreo_1 name="fecha_muestreo[]">
+                                                        <div class="invalid-feedback">
+                                                            La fecha de muestreo no puede estar vacia
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_1_1 name="analisis_1[]">
+                                                        <div class="invalid-feedback">
+                                                            El análisis 1 no puede estar vacio
+                                                        </div>
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_2_1 name="analisis_2[]">
+                                                        
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_3_1 name="analisis_3[]">
+                                                        
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_4_1 name="analisis_4[]">
+                                                        
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_5_1 name="analisis_5[]">
+                                                        
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" data-id= 1 id=analisis_6_1 name="analisis_6[]">
+                                                        
+                                                  </th>
+                                                  <th>
+                                                        <input type="text" class="form-control" name="metodo_referencia[]">
+                                                        <div class="invalid-feedback">
+                                                            El metodo de referencia no puede estar vacio
+                                                        </div>
+                                                  </th>
                                               </tr>
                                             </tbody>
                                         </table>
@@ -586,6 +641,7 @@
         Enviar
     </button>
 </div>
+
 {% endblock content %}
 
 {% block optionalJS %}
