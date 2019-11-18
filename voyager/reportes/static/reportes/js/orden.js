@@ -468,13 +468,10 @@ function cargar_enviar(id){
         },
         type: "POST",
         success: function(response){
-            console.log(response);
             var data = JSON.parse(response.data);
-            console.log(data);
             var muestras = JSON.parse(response.muestras);
             $('#email_destino').val(data[0].fields.correo_resultados);
             var html_drop = dropdown_muestras(muestras);
-            console.log(html_drop);
             $('#muestra').html(html_drop);
         },
         error: function(data){
