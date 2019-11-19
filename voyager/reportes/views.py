@@ -39,8 +39,6 @@ def ingreso_cliente(request):
         if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404    #Aquí despliega que el cliente debe dinero
         cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged).filter(status=True).filter(aceptado=True)
-        print("*************")
-        print(cotizaciones.count())
         if cotizaciones.count() == 0:
             return render(request, 'reportes/faltan_cotizaciones.html')
         else:
