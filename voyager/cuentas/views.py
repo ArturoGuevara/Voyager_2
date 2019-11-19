@@ -199,7 +199,7 @@ def guardar_cliente(request):
         request.session['crear_cliente_status'] = False
         raise Http404
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
         request.session['crear_cliente_status'] = False
         raise Http404
     user_name = request.POST.get('nombre')[0:2] \
