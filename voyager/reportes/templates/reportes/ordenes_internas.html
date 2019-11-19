@@ -1,5 +1,6 @@
 {% extends 'root/base.html' %}
 {% load static %}
+{% load i18n %}
 
 {% block optionalCSS %}
 <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
@@ -9,24 +10,26 @@
 {% block content %}
     <div class="text-md-left text-center">
         <h2>Órdenes Internas
-            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todas tus ordenes internas y administrarlas.">
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus órdenes internas">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
         </h2>
     </div>
-    
+    {% if request.session.userrole != 'Director' %}
     <div class="text-center text-md-right">
-        <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Este botón te sirve para registrar un código de rastreo de DHL a varias ordenes internas a la vez."><i class="nc-icon nc-email-83"></i> Paquete</button>
+        <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Despliega modal, seleccione órdenes e ingrese código de rastreo de DHL"><i class="nc-icon nc-email-83"></i> Paquete</button>
     </div>
+    {% endif %}
     <div id="table" class="table-responsive table-full-width">
         <table class="table table-hover table-responsive table-striped" id="tabla_ordenes_internas">
             <thead>
-                <th># <i class="fa fa-sort"></i></th>
+                <th># OI<i class="fa fa-sort"></i></th>
                 <th>Estatus <i class="fa fa-sort"></i></th>
                 <th>Empresa <i class="fa fa-sort"></i></th>
-                <th>Usuario <i class="fa fa-sort"></i></th>
-                <th>Localidad <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de una orden interna, editarla, enviar resultados o eliminarla.">Acciones</th>
+                <th>Solicitante <i class="fa fa-sort"></i></th>
+                <th>Fecha envío <i class="fa fa-sort"></i></th>
+                <th>Pagado <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, edite o elimine una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></th>
             </thead>
             <tbody>
                 {% for o in ordenes %}
@@ -36,21 +39,31 @@
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
                     <td class="pt-3 oiData oi_empresa">{{ o.usuario.empresa }}</td>
                     <td class="pt-3 oiData oi_usuario">{{ o.usuario.user }}</td>
-                    <td class="pt-3 oiData oi_localidad">{{ o.localidad }}</td>
+                    <td class="pt-3 oiData oi_fecha_envio">
+                        {% language 'es-co' %}
+                            {% if o.fecha_envio %}
+                                {{ o.fecha_envio|date:'d/M/Y' }}
+                            {% else %}
+                                Ninguna
+                            {% endif %}
+                        {% endlanguage %}
+                    </td>
+                    <td class="pt-3 oiData oi_pagado">{{ o.pagado }}</td>
                     <td colspan="4">
                         <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>
-                        </button>
-                        <button type="button" class="btn btn-warning" onclick="cargar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-orden-interna">
-                            <i class='fas fa-edit'></i>
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target="">
-                            <i class='fas fa-paper-plane'></i>
                         </button>
                         {% if request.session.userrole == "Soporte" or request.session.userrole == "SuperUser" %}
                         <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
+                        {% endif %}
+                        {% if o.usuario.estatus_pago != "Deudor" %}
+                        {% if request.session.userrole != 'Director' and request.session.userrole != 'Ventas' %}
+                            <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
+                                Enviar
+                            </button>
+                        {% endif %}
                         {% endif %}
                     </td>
                 </tr>
@@ -60,10 +73,9 @@
         </table>
     </div>
     {% include './modals/paquete.html' %}
-    {% include './modals/ver-orden.html' %}
     {% include './modals/borrar-orden.html' %}
-    {% include './modals/visualizar-orden.html' %}
-    {% include './modals/actualizar_oi.html' %}
+    {% include './modals/ver-oi.html' %}
+    {% include './modals/enviar-resultados.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -71,6 +83,7 @@
     <script src="{% static 'reportes/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'reportes/js/orden.js' %}" type="text/javascript"></script>
     <script src="{% static 'reportes/js/validacion.js' %}" type="text/javascript"></script>
+    <script src="{% static 'reportes/js/ver-editar-oi.js' %}" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 
     {% if successcode == "200" %}
@@ -84,6 +97,16 @@
     {% elif successcode == "204" %}
         <script>
             showNotification('top','right','No se encontró la Orden Interna')
+        </script>
+    {% endif %}
+
+    {% if success_sent == 1 %}
+        <script>
+            showNotification('top','right','Resultados enviados exitósamente')
+        </script>
+    {% elif success_sent == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
 {% endblock %}

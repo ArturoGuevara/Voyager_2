@@ -17,18 +17,32 @@ $(document).ready(function() {
 });
 
 /* Funciones para reemplazar valores en la tabla e inputs */
-function cargar_info_modal_ver(codigo, nombre, precio, tiempo, descripcion){
+function cargar_info_modal_ver(codigo, nombre, precio, tiempo, descripcion, unidad_min, acreditacion, pais){
     $('#codigo_analisis').html(codigo);
     $('#nombre_analisis').html(nombre);
     $('#precio_analisis').html(precio);
     $('#fecha_analisis').html(tiempo);
+    if(acreditacion){
+        $('#acreditacion_analisis').html('Sí');
+    }else {
+        $('#acreditacion_analisis').html('No');
+    }
+    $('#cantidad_min_analisis').html(unidad_min);
+    $('#pais_analisis').html(pais);
     $('#descripcion_analisis').html(descripcion);
 }
-function cargar_info_modal_editar(codigo, nombre, precio, tiempo, descripcion){
+function cargar_info_modal_editar(codigo, nombre, precio, tiempo, descripcion, unidad_min, acreditacion, pais, id_pais){
     $('#editar_codigo_analisis').val(codigo);
     $('#editar_nombre_analisis').val(nombre);
     $('#editar_precio_analisis').val(precio);
     $('#editar-duracion').val(tiempo);
+    if(acreditacion){
+        $('#editar_acreditacion_1').prop('checked', true);
+    }else {
+        $('#editar_acreditacion_2').prop('checked', true);
+    }
+    $('#editar_cantidad').val(unidad_min);
+    $('#editar_pais').find('#editar_pais_'+id_pais).prop('selected', true);
     $('#editar_desc_analisis').val(descripcion);
 }
 function cambiar_valores_analisis_tabla(clase,value,id){

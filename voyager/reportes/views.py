@@ -19,6 +19,15 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from django.core.exceptions import ValidationError
+from .forms import EnviarResultadosForm
+import os
+import time
+import random
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileType, Disposition, ContentId)
+import urllib.request as urllib
+import base64
+import locale
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -27,6 +36,8 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
+            raise Http404    #Aquí despliega que el cliente debe dinero
         return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
         raise Http404
@@ -44,6 +55,8 @@ def ingresar_muestras(request):
         user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
+        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
+            raise Http404      #Aquí despliega que el cliente debe dinero
         if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
         else:
@@ -64,19 +77,21 @@ def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
-    return render(request, 'reportes/index.html')
+    return render(request, 'cuentas/home.html')
 
 
 @login_required
 def ordenes_internas(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
-    estatus_OI_paquetes = "activo"  #Estatus a buscar de OI para crear paquete
+    if request.session.get('success_sent',None) == None:
+        request.session['success_sent']=0
+    estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
 
     ordenes = OrdenInterna.objects.all()
-    ordenes_activas = OrdenInterna.objects.filter(estatus=estatus_OI_paquetes).order_by('idOI')
+    ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
     form = codigoDHL()
 
 
@@ -88,8 +103,9 @@ def ordenes_internas(request):
         'ordenes_activas': ordenes_activas,
         'form': form,
         'successcode': response,
+        'success_sent': request.session['success_sent'],
     }
-
+    request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
 
 @login_required
@@ -112,77 +128,82 @@ def oi_guardar(request, form, template_name):
 
 @login_required
 def consultar_orden(request):
-
-    data = {}
-    vector_muestras= None
-    user_serialize= None
-    email={}
-    empresa={}
-    analisis_muestras={}
-    facturas_muestras={}
-
-    if request.method != 'POST':
-        raise Http404
-    if not request.POST.get('id'):
-        raise Http404
-
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
-    if not (
-            user_logged.rol.nombre == "Soporte"
-            or user_logged.rol.nombre == "Facturacion"
-            or user_logged.rol.nombre == "SuperUser"
-            or user_logged.rol.nombre=="Ventas"
-        ):
-        raise Http404
-    if request.method == 'POST':
-        id = request.POST.get('id')
-        #oi = orden interna
-        oi = OrdenInterna.objects.get(idOI = id)
-        if oi:
-            data = serializers.serialize("json", [oi], ensure_ascii = False)
-            data = data[1:-1]
-            muestras = Muestra.objects.filter(oi = oi)
-            data_muestras= []
+    if (user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas"):
+        data = {}
+        vector_muestras = None
+        user_serialize = None
+        email = {}
+        empresa = {}
+        analisis_muestras = {}
+        facturas_muestras = {}
+        if request.method == 'POST':
+            if not (request.POST.get('id')):
+                raise Http404
+            id = request.POST.get('id')
+            #oi = orden interna
+            oi = OrdenInterna.objects.get(idOI = id)
+            if oi:
+                solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
+                solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
+                solicitante = solicitante[1:-1]
+                data = serializers.serialize("json", [oi], ensure_ascii = False)
+                data = data[1:-1]
+                muestras = Muestra.objects.filter(oi = oi)
+                data_muestras= []
+                if muestras:
+                    for muestra in muestras:
+                        data_muestras.append(muestra)
+                    usuario = muestras[0].usuario
+                    user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
+                    user_serialize = user_serialize[1:-1]
+                    vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+                    email = usuario.empresa.correo_resultados
+                    empresa = usuario.empresa.empresa
+                    telefono = usuario.empresa.telefono
+                    analisis_muestras = {}
+                    facturas_muestras = {}
+                    for muestra in muestras:
+                        #recuperas todos los analisis de una muestra
+                        #ana_mue es objeto de tabla AnalisisMuestra
+                        ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
+                        analisis = []
+                        if muestra.factura:
+                            facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
+                        else:
+                            facturas_muestras[muestra.id_muestra] = "no hay"
 
-            if muestras:
-                for muestra in muestras:
-                    data_muestras.append(muestra)
-
-                usuario = muestras[0].usuario
-                user_serialize = serializers.serialize("json", [usuario], ensure_ascii=False)
-                user_serialize = user_serialize[1:-1]
-                vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
-                email = usuario.user.email
-                empresa = usuario.empresa.empresa
-                analisis_muestras = {}
-                facturas_muestras = {}
-                for muestra in muestras:
-                    #recuperas todos los analisis de una muestra
-                    #ana_mue es objeto de tabla AnalisisMuestra
-                    ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
-                    analisis = []
-                    if muestra.factura:
-                        facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
-                    else:
-                        facturas_muestras[muestra.id_muestra] = "no hay"
-
-                    for a in ana_mue:
-                        analisis.append(a.analisis.codigo)
-                    analisis_muestras[muestra.id_muestra] =  analisis
-
-        else:
-            raise Http404
-
-        return JsonResponse(
+                        for a in ana_mue:
+                            analisis.append(a.analisis.codigo)
+                        analisis_muestras[muestra.id_muestra] =  analisis
+                    return JsonResponse(
                             {"data": data,
                             "muestras":vector_muestras,
                             "usuario":user_serialize,
                             "correo":email,
                             "empresa":empresa,
+                            "telefono":telefono,
                             "dict_am":analisis_muestras,
-                            "facturas":facturas_muestras}
+                            "facturas":facturas_muestras,
+                            "solicitante":solicitante}
                         )
+                else:
+                    response = JsonResponse({"error": "Hubo un error con las muestras"})
+                    #response.status_code = 500
+                    return response
+            else:
+                response = JsonResponse({"error": "No existe esa orden interna"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else:
+        raise Http404
 
 @login_required
 def actualizar_muestra(request):
@@ -230,33 +251,23 @@ def actualizar_orden(request):
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_envio = request.POST['fecha_envio']
 
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_recepcion_m'] == "":
+                oi.fecha_recepcion_m = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_recepcion_m = request.POST['fecha_recepcion_m']
+
+            #Para las fechas checar si están vacías o formato incorrecto
+            if request.POST['fecha_llegada_lab'] == "":
+                oi.fecha_llegada_lab = None
+            else: #falta checar formato incorrecto, se hace en front
+                oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
+
             oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
-            oi.formato_ingreso_muestra = request.POST['formato_ingreso_muestra']
             oi.idioma_reporte = request.POST['idioma_reporte']
-            oi.mrl = request.POST['mrl']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_eri'] == "":
-                oi.fecha_eri = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_eri = request.POST['fecha_eri']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_lab'] == "":
-                oi.fecha_lab = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_lab = request.POST['fecha_lab']
-
-            #Para las fechas checar si están vacías o formato incorrecto
-            if request.POST['fecha_ei'] == "":
-                oi.fecha_ei = None
-            else: #falta checar formato incorrecto, se hace en front
-                oi.fecha_ei = request.POST['fecha_ei']
-
-            oi.notif_e = request.POST['notif_e']
-            oi.envio_ti = request.POST['envio_ti']
-            oi.cliente_cr = request.POST['cliente_cr']
+            oi.observaciones = request.POST['observaciones']
+            oi.pagado = request.POST['pagado']
             #Guardar
             oi.save()
 
@@ -264,8 +275,19 @@ def actualizar_orden(request):
             oi_actualizada = OrdenInterna.objects.get(idOI = request.POST['idOI'])
             data = serializers.serialize("json", [oi_actualizada], ensure_ascii = False)
             data = data[1:-1]
+            try:
+                locale.setlocale(locale.LC_TIME, 'es_co.utf8') #your language encoding
+            except:
+                locale.setlocale(locale.LC_TIME, 'es_co')
+            try:
+                fecha_formato = oi_actualizada.fecha_envio.strftime("%d/%b/%Y")
+            except:
+                fecha_formato = "Ninguna"
             # Regresamos información actualizada
-            return JsonResponse({"data": data})
+            return JsonResponse(
+                {"data": data,
+                "fecha_formato": fecha_formato}
+                )
 
 
 def validacion_dhl(codigo):
@@ -498,3 +520,105 @@ def borrar_orden_interna(request):
         raise Http404
 
 ############### USVP09-24 ##################
+
+
+############### UST04-34 ##################
+@login_required
+def consultar_empresa_muestras(request): #devuelve la empresa de un usurio a partir de una orden interna
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el usuario logeado
+    # Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+            or user_logged.rol.nombre == "Director"
+            or user_logged.rol.nombre == "SuperUser"
+    ):
+        raise Http404
+    if request.method != 'POST':  # Si no se envía un post, el acceso es denegado
+        raise Http404
+    if not request.POST.get('id'):  # Si no se envía el campo requerido, el acceso es denegado
+        raise Http404
+    id = request.POST.get('id')
+    oi = OrdenInterna.objects.get(idOI=id)
+    muestras = Muestra.objects.filter(oi=oi)  # Se obtienen todas las muestras de una orden interna
+    empresa = None
+    data_muestras = []
+    if muestras:  # A partir de una muestra, se obtiene la información del usuario y de su empresa
+        empresa = muestras.first().usuario.empresa
+        for muestra in muestras:
+            data_muestras.append(muestra)
+    vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
+    data = serializers.serialize("json", [empresa], ensure_ascii = False) #El objeto de tipo empresa se encapsula en un formato JSON
+    return JsonResponse({"data": data,"muestras":vector_muestras})  # Se envía el JSON con la empresa
+
+@login_required
+def enviar_archivo(request): #envía un archivo de resultados por correo
+    if request.method != 'POST': #Si no se envía un post, el acceso es denegado
+        raise Http404
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
+    #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre == "SuperUser"
+        ):
+        raise Http404
+    mail_code = 0
+    if request.method == 'POST':
+        form = EnviarResultadosForm(request.POST, request.FILES)
+        if form.is_valid():
+            mail_code = handle_upload_document(request.FILES['archivo_resultados'],
+                                        request.POST.get('email_destino'),
+                                        request.POST.get('subject'),
+                                        request.POST.get('body'),
+                                        request.POST.get('muestra'),
+                                   )
+        else:
+            raise Http404
+    if mail_code == 202: #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
+        request.session['success_sent'] = 1
+    else:
+        request.session['success_sent'] = -1
+    return redirect('/reportes/ordenes_internas')
+
+def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
+    path = './archivos-reportes/resultados'
+    path += str(datetime.date.today())
+    path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    muestras = Muestra.objects.filter(id_muestra=muestra)
+    if muestras:
+        muestra_object = muestras.first()
+        muestra_object.link_resultados = path
+        muestra_object.save()
+    else:
+        return 404
+    with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
+        for chunk in file.chunks():
+            destination.write(chunk)
+    return send_mail(path,dest,subject,body)
+
+def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid para enviar el correo
+    message = Mail(
+        from_email = 'A0127373@itesm.mx',
+        to_emails = dest,
+        subject = subject,
+        html_content = body) #Se fijan los parametros del correo
+    pdf_path = path
+    with open(pdf_path, 'rb') as file: #Se obtiene el archivo a enviar
+        data = file.read()
+    encoded = base64.b64encode(data).decode() #Se codifica el contenido del archivo
+    attachment = Attachment() #Se agregan los parámetros del archivo a enviar
+    attachment.file_content = FileContent(encoded)
+    attachment.file_type = FileType('application/pdf')
+    attachment.file_name = FileName('Results.pdf')
+    attachment.disposition = Disposition('attachment')
+    attachment.content_id = ContentId('Example Content ID')
+    message.attachment = attachment
+    try:
+        with open('./API_KEY.txt','r') as file: #Se obtiene la llave del API para autenticar
+            key = file.read()
+        sendgrid_client = SendGridAPIClient(key) #Se envía el correo
+        response = sendgrid_client.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+        return response.status_code #Se regresa el código de la API
+    except Exception as e:
+        print(e.message)

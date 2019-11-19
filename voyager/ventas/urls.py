@@ -13,4 +13,6 @@ urlpatterns = [
     path('agregar_analisis/', views.agregar_analisis, name='agregar_analisis'),
     path('visualizar_cotizacion/<int:id>', views.visualizar_cotizacion, name='visualizar_cotizacion'),
     path('actualizar_cotizacion/<int:id>', views.actualizar_cotizacion, name='actualizar_cotizacion'),
+    path('borrar_cotizacion/<int:id>', views.borrar_cotizacion, name='borrar_cotizacion'),
+    path('aceptar_cotizacion/<int:id>', views.aceptar_cotizacion, name='aceptar_cotizacion'),
 ]

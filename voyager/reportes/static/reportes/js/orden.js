@@ -12,34 +12,19 @@ function validarFecha(str, id){
     }
 }
 
-// Función que crea y muestra alerta
-function showNotification(from, align, msg){
-    color = Math.floor((Math.random() * 4) + 1);
-	$.notify({
-		icon: "nc-icon nc-app",
-        message: msg,
-	},{
-		timer: 4000,
-		placement: {
-			from: from,
-			align: align
-		}
-	});
-}
-
 // boton dentro de forma oi que guarda
 $('#submitForm').on('click', function () {
     $('#actualizar_oi').modal('toggle');
 });
 
 // boton para abrir modal de actualizar oi y carga los campos
-function cargar_info_oi(id) {
+function cargar_info_oi(){
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
         dataType: 'json',
         data: {
-            'id':id,
+            'id':id_oi,
             'csrfmiddlewaretoken': token
         },
         success: function (response) {
@@ -55,62 +40,42 @@ function cargar_info_oi(id) {
                 var usuario = JSON.parse(response.usuario);
                 usuario = usuario.fields;
             }
-
-            var correo = response.correo;
+            //datos del solicitante
+            if(response.solicitante != null){
+                var solicitante = JSON.parse(response.solicitante);
+                solicitante = solicitante.fields;
+            }
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
             $('#editar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#editar_usuario_nombre').text(n);
             $('#editar_usuario_email').text(response.correo);
-            $('#editar_usuario_telefono').text(usuario.telefono);
+            $('#editar_usuario_telefono').text(response.telefono);
             //pestaña de información
-            $('#editar_idOI').val(id);
+            $('#tituloe_idOI').text("Orden Interna #" + id_oi);
+            $('#editar_idOI').val(id_oi);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
+            $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
+            $('#editar_fecha_llegada_lab').val(data.fecha_llegada_lab);
             $('#editar_guia_envio').val(data.guia_envio)
+            $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
-            $('#editar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
+            $('#e_observaciones').val(data.observaciones);
             //hacer check a radio input del idioma
-            if(data.idioma_reporte == "8809 ES"){
+            if(data.idioma_reporte == "Español"){
                 $('#editar_idioma_reporteES').prop('checked', true);
                 $('#editar_idioma_reporteEN').prop('checked', false);
-            }else if(data.idioma_reporte == "8992 EN"){
+            }else if(data.idioma_reporte == "Inglés"){
                 $('#editar_idioma_reporteES').prop('checked', false);
                 $('#editar_idioma_reporteEN').prop('checked', true);
             }else{
                 $('#editar_idioma_reporteES').prop('checked', false);
                 $('#editar_idioma_reporteEN').prop('checked', false);
             }
-            $('#editar_mrl').val(data.mrl);
-            $('#editar_fecha_eri').val(data.fecha_eri);
-            $('#editar_fecha_lab').val(data.fecha_lab);
-            $('#editar_fecha_ei').val(data.fecha_ei);
-
-
-
-            //Hacer check a las checkboxes
-            if(data.notif_e == "Sí"){
-                document.getElementById("editar_notif_e").checked = true;
-            }
-            else{
-                document.getElementById("editar_notif_e").checked = false;
-            }
-            if(data.envio_ti == "Sí"){
-                document.getElementById("editar_envio_ti").checked = true;
-            }
-            else{
-                document.getElementById("editar_envio_ti").checked = false;
-            }
-            if(data.cliente_cr == "Sí"){
-                document.getElementById("editar_cliente_cr").checked = true;
-            }
-            else{
-                document.getElementById("editar_cliente_cr").checked = false;
-            }
-
             var html_muestras = "";
             if(muestras != null){
                 for (let mue in muestras){
@@ -126,7 +91,6 @@ function cargar_info_oi(id) {
 }
 
 function guardar_muestra(id_muestra){
-    //var idOI = $('#editar_idOI').val();
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
     num_interno = $(ni).val();
     var fr = "#editar_muestra_fecha_recibo_" + id_muestra;
@@ -168,41 +132,24 @@ function submit(){
     var estatus = $('#editar_estatus').val();
     var localidad = $('#editar_localidad').val();
     var fecha_envio = $('#editar_fecha_envio').val();
+    var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
+    var fecha_llegada_lab = $('#editar_fecha_llegada_lab').val();
     var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
+    var pagado = $('#editar_pagado').val();
 
     //pestaña de observaciones
     var formato_ingreso_muestra = $('#editar_formato_ingreso_muestra').val();
+    var observaciones = $('#e_observaciones').val();
 
     //checar radio seleccionado, si ninguno, se toma default español
-    var idioma_reporte;
+    var idioma_reporte="";
     if (document.getElementById("editar_idioma_reporteES").checked){
-        idioma_reporte = "8809 ES";
+        idioma_reporte = "Español";
     }
     else if (document.getElementById("editar_idioma_reporteEN").checked){
-        idioma_reporte = "8992 EN";
+        idioma_reporte = "Inglés";
     }
-
-    var mrl = $('#editar_mrl').val();
-    var fecha_eri = $('#editar_fecha_eri').val();
-    var fecha_lab = $('#editar_fecha_lab').val();
-    var fecha_ei = $('#editar_fecha_ei').val();
-
-    //Recuperar value de las checkboxes
-    var notif_e = "No"
-    if (document.getElementById("editar_notif_e").checked){
-        notif_e = "Sí"
-    }
-    var envio_ti = "No"
-    if (document.getElementById("editar_envio_ti").checked){
-        envio_ti = "Sí"
-    }
-    var cliente_cr = "No"
-    if (document.getElementById("editar_cliente_cr").checked){
-        cliente_cr = "Sí"
-    }
-
-
     //Código ajax que guarda los datos
     $.ajax({
         url: 'actualizar_orden/',
@@ -212,30 +159,29 @@ function submit(){
             'estatus': estatus,
             'localidad': localidad,
             'fecha_envio': fecha_envio,
+            'fecha_recepcion_m': fecha_recepcion_m,
+            'fecha_llegada_lab': fecha_llegada_lab,
             'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
-            'mrl': mrl,
-            'fecha_eri': fecha_eri,
-            'fecha_lab': fecha_lab,
-            'fecha_ei': fecha_ei,
-            'notif_e': notif_e,
-            'envio_ti': envio_ti,
-            'cliente_cr': cliente_cr,
+            'observaciones': observaciones,
+            'pagado': pagado,
             'csrfmiddlewaretoken': token,
         },
         dataType: 'json',
         success: function (response) {
             var data = JSON.parse(response.data);
+            var fecha_formato = response.fecha_formato;
             data = data.fields;
-            var track = '#oi-'+idOI + " .oi_estatus";
+            var track = '#oi-' + idOI + " .oi_estatus";
             $(track).text(data.estatus);
-            track = '#oi-'+idOI + " .oi_localidad";
-            $(track).text(data.localidad);
+            track = '#oi-' + idOI + " .oi_pagado";
+            $(track).text(data.pagado);
+            track = '#oi-' + idOI + " .oi_fecha_envio";
+            $(track).text(fecha_formato);
+            $('#modal-visualizar-orden').modal('hide');
             showNotification('top','right','Se han guardado tus cambios');
-            $('#actualizar_oi').modal('toggle');
-            $('#modal-orden-interna').modal('toggle');
         }
     });
 }
@@ -367,7 +313,6 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
                         </thead>
                         <tbody>`;
 
-
     for(let a in analisis){
         html = html+ `
             <tr>
@@ -375,7 +320,6 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
             </tr>
         `;
     }
-
     html = html+ `</tbody>
                     </table>
                 </div>
@@ -388,6 +332,7 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
 
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
+    id_oi = id;
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
@@ -405,34 +350,33 @@ function visualizar_info_oi(id) {
             //datos del usuario
             var usuario = JSON.parse(response.usuario);
             usuario = usuario.fields;
-            var correo = response.correo;
+            //datos del solicitante
+            if(response.solicitante != null){
+                var solicitante = JSON.parse(response.solicitante);
+                solicitante = solicitante.fields;
+            }
             var analisis_muestras = response.dict_am;
             var facturas = response.facturas;
 
             //pestaña de información
+            $('#titulov_idOI').text("Orden Interna #" + id);
             $('#visualizar_idOI').val(id);
             $('#visualizar_estatus').val(data.estatus);
             $('#visualizar_localidad').val(data.localidad);
+            $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
-            $('#visualizar_guia_envio').val(data.guia_envio)
+            $('#visualizar_fecha_llegada_lab').val(data.fecha_llegada_lab);
+            $('#visualizar_guia_envio').val(data.guia_envio);
+            $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#visualizar_usuario_nombre').text(n);
             $('#visualizar_usuario_email').text(response.correo);
-            $('#visualizar_usuario_telefono').text(usuario.telefono);
+            $('#visualizar_usuario_telefono').text(response.telefono);
 
             //pestaña de observaciones
-            $('#visualizar_formato_ingreso_muestra').val(data.formato_ingreso_muestra);
-            //hacer check a radio input del idioma
             $('#visualizar_idioma_reporte').text(data.idioma_reporte);
-            $('#visualizar_mrl').val(data.mrl);
-            $('#visualizar_fecha_eri').val(data.fecha_eri);
-            $('#visualizar_fecha_lab').val(data.fecha_lab);
-            $('#visualizar_fecha_ei').val(data.fecha_ei);
-            $('#visualizar_notif_e').text(data.notif_e)
-            $('#visualizar_envio_ti').text(data.envio_ti);
-            $('#visualizar_cliente_cr').text(data.cliente_cr);
 
             var html_muestras = "";
             if(muestras != null){
@@ -444,6 +388,7 @@ function visualizar_info_oi(id) {
                 }
             }
             $('.accordion_muestras').html(html_muestras);
+            $('#v_observaciones').val(data.observaciones);
 
             //Construir tabla de facturas
             var html_facturas =`
@@ -505,9 +450,63 @@ function confirmar_borrar_oi(){
             },
             error: function(data){
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Ah ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
             }
         });
     }
 
+}
+
+function cargar_enviar(id){
+    var id_oi = id;
+    var token = csrftoken;
+    $.ajax({
+        url: "/reportes/consultar_empresa_muestras/",
+        data: {
+            id: id,
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            var data = JSON.parse(response.data);
+            var muestras = JSON.parse(response.muestras);
+            $('#email_destino').val(data[0].fields.correo_resultados);
+            var html_drop = dropdown_muestras(muestras);
+            $('#muestra').html(html_drop);
+        },
+        error: function(data){
+            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
+        }
+    });
+}
+
+function enviar_resultados(){
+    var valid_form=true;
+    if($("#archivo_resultados").val()==""){
+        valid_form=false;
+        $("#div-archivo").css("border-color", "red");
+    }
+    else{
+        $("#div-archivo").css("border-color", "grey");
+    }
+    if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#subject").val(),"#subject")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#body").val(),"#body")){
+        valid_form=false;
+    }
+    if(valid_form==true){
+        document.getElementById("submit_resultados_form").submit();
+    }
+}
+
+function dropdown_muestras(muestras){
+    var ans="";
+    for(muestra in muestras){
+        ans+="<option value='"+muestras[muestra].pk+"'>Muestra "+muestras[muestra].pk+"</option>"
+    }
+    return ans;
 }

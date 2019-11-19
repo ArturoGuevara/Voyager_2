@@ -20,7 +20,7 @@ function showNotification(from, align, msg){
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_usuario(id) {
     $.ajax({
-        url: "consultar_usuario/"+id,
+        url: "/cuentas/consultar_usuario/"+id,
         type: "POST",
         dataType: 'json',
         data: {
@@ -52,8 +52,14 @@ function cargar_info_usuario(id) {
                 $('#tabla_cont').empty();
             }
             //pestaña de información
-            $('#input_nombre').val(data.nombre);
+            $('#nombre').text(data.nombre);
+            $('#apellido_paterno').text(data.apellido_paterno);
+            $('#apellido_materno').text(data.apellido_materno);
+            $('#telefono').text(data.telefono);
+            $('#correo').text(response.mail);
+            $('#empresa').text(response.nombre_empresa);
             $('#id_usuario').val(data.user);
+            $('#estatus').text(data.estatus_pago);
             if (data.estatus_pago == "NA"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA" selected>NA</option>');
@@ -87,7 +93,7 @@ function submit(){
     var id = $('#id_usuario').val();
     //Código ajax que guarda los datos
     $.ajax({
-        url: 'actualizar_usuario/',
+        url: '/cuentas/actualizar_usuario/',
         type: "POST",
         data: {
             'id': id,

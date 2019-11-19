@@ -12,7 +12,12 @@ urlpatterns = [
     path('consultar_usuario/<int:id>', views.consultar_usuario, name='consultar_usuario'),
     path('actualizar_usuario/', views.actualizar_usuario, name='actualizar_usuario'),
     path('crear_cliente/', views.crear_cliente, name='crear_cliente'),
+    path('crear_staff/', views.crear_staff, name='crear_staff'),
     path('guardar_cliente/', views.guardar_cliente, name='guardar_cliente'),
+    path('guardar_staff/', views.guardar_staff, name='guardar_staff'),
+    path('notificar_crear_staff/', views.notificar_crear_staff, name='notificar_crear_staff'),
     path('verificar_correo/',views.verificar_correo, name='verificar_correo'),
     path('', views.indexView, name=''),
+    path('clientes/',views.lista_clientes, name='clientes'),
+    path('notificar_crear_cliente/', views.notificar_crear_cliente, name='notificar_crear_cliente'),
 ]

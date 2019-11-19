@@ -1,17 +1,12 @@
 // ######### USV03-03 ########
 
-/* FUNCIONES QUE SE EJECUTAN AL CARGAR LA PÁGINA */
-$(document).ready(function() {
-    $('#editar-cot-descuento').on("change", calc_total);
-    $('#editar-cot-iva').on("change", calc_total);
-});
-
 /* FUNCIONES PARA MOSTRAR/OCULTAR LA EDICIÓN DE UNA COTIZACIÓN */
 function restaurar_modal_ver_cot(){
     // Alternar botones
     $('#btn-canc-edit-cot').removeClass('d-inline').addClass('d-none');
     $('#btn-guar-editar-cot').removeClass('d-inline').addClass('d-none');
     $('#btn-editar-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-space-edit').removeClass('d-none');
 
     // Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-none').addClass('d-block');
@@ -33,9 +28,13 @@ function restaurar_modal_ver_cot(){
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
+    $("input[name='editar-cot-an[]']:checked").each(function () {
+        che.push(parseInt($(this).val()));
+    });
     $(this).removeClass('d-inline').addClass('d-none');
     $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
     $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
+    $('#btn-space-edit').addClass('d-none');
 
     //Alternar contenedores
     $('#ver-resumen-cot').removeClass('d-block').addClass('d-none');
@@ -45,11 +44,14 @@ $('#btn-canc-edit-cot').click(function(){
     restaurar_modal_ver_cot();
     // Reiniciamos al default los valores de la cotización
     visualizar_cotizacion(id_cotizacion);
+    // Se reinicia el arreglo de Análisis
+    che = [];
 });
 $('#ver_cotizacion').on('hidden.bs.modal', function () {
     restaurar_modal_ver_cot();
-    // Restauramos la variable global que almacena la id de la cotización clickeada
+    // Restauramos la variable global que almacena la id de la cotización clickeada y los Análisis
     id_cotizacion = 0;
+    che = [];
 });
 
 /* FUNCIONES AL EDITAR LOS ANÁLISIS DE LA COTIZACION */
@@ -63,6 +65,11 @@ function editar_cot_eliminar_an(id){
     $('input[name="editar-cot-an[]"]').each(function (){
         if(id == $(this).data('id')){
             $(this).prop('checked', false);
+            for(var i = 0; i < che.length; i++){
+              if ( che[i] === id) {
+                che.splice(i, 1);
+              }
+            }
         }
     });
     calc_total();
@@ -82,6 +89,7 @@ $("input[name='editar-cot-an[]']").click(function (){
 
     // Si el análisis no está en la tabla agregarlo y si sí está quitarlo
     if(flag == 0){
+        che.push(parseInt($(this).val()));
         // Obtenemos el token de django para el ajax
         var token = csrftoken;
         $.ajax({
@@ -97,8 +105,10 @@ $("input[name='editar-cot-an[]']").click(function (){
                 // Obtener la info que se regresa del controlador
                 var data = JSON.parse(response.data);
 
+                var total_analisis = parseInt(data.fields.precio) + (parseInt(data.fields.precio) * 0.16)
+
                 // Agremoas el análisis seleccionado a la tabla
-                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="editar-cot-precios[]" value='+data.fields.precio +' hidden>$ ' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
+                $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + id +'"><td>' + data.fields.codigo + '</td><td>' + data.fields.nombre + '</td><td><input id="edit-cot-pr-' + id + '" name="edit-cot-precios[]" value='+ data.fields.precio +' hidden>$' + data.fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + id + '" data-id="' + id + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value=1><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="edit-cot-de-' + id + '" data-id="' + id + '" name="edit-cot-descuentos[]" min=0 value=0 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-iva-' + id + '" data-id="' + id + '" name="edit-cot-ivas[]" min=0 value=16 onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-to-' + id + '" data-id="' + id + '" name="edit-cot-totales[]" value='+ total_analisis +' readonly></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + id + ')"><i class="fa fa-trash"></i></button></td></tr>');
                 calc_total();
             },
         });
@@ -108,6 +118,12 @@ $("input[name='editar-cot-an[]']").click(function (){
                 $(this).remove();
             }
         });
+        for(var i = 0; i < che.length; i++){
+          if ( che[i] === parseInt(id)) {
+            che.splice(i, 1);
+          }
+        }
+        calc_total();
     }
 });
 
@@ -117,10 +133,16 @@ function guardar_cambios_cot(){
     if(id_cotizacion > 0){
         var checked = [];
         var cantidades = [];
+        var descuentos = [];
+        var ivas = [];
+        var totales = [];
+
+        checked = che;
+        che = [];
         // Obtenemos las id de los análisis seleccionados
-        $("input[name='editar-cot-an[]']:checked").each(function () {
-            checked.push(parseInt($(this).val()));
-        });
+        // $("input[name='editar-cot-an[]']:checked").each(function () {
+        //     checked.push(parseInt($(this).val()));
+        // });
         // Obtenemos las cantidades de los análisis seleccionados
         $("input[name='editar-cot-cantidades[]']").each(function () {
             cantidades.push(parseInt($(this).val()));
@@ -128,20 +150,26 @@ function guardar_cambios_cot(){
             var id = $(this).data('id');
             check_is_not_empty($(this).val(), "#edit-cot-an-" + id + "");
         });
+        $("input[name='edit-cot-descuentos[]").each(function () {
+            descuentos.push(parseInt($(this).val()));
+        });
+        $("input[name='edit-cot-ivas[]").each(function () {
+            ivas.push(parseInt($(this).val()));
+        });
+        $("input[name='edit-cot-totales[]").each(function () {
+            totales.push(parseFloat($(this).val()));
+        });
         // Obtenemos el token de django para el ajax
         var token = csrftoken;
         // Obtener valor de los inputs
         var cliente = $('#editar-cot-cliente').val();
+        var envio = $('#editar-cot-envio').val();
         var subtotal = $('#editar-cot-subtotal').val();
-        var descuento = $('#editar-cot-descuento').val();
-        var iva = $('#editar-cot-iva').val();
         var total = $('#editar-cot-total').val();
 
         // Validamos que no estén vacíos los inputs
         check_is_not_empty(cliente, '#editar-cot-cliente');
         check_is_not_empty(subtotal, '#editar-cot-subtotal');
-        check_is_not_empty(descuento, '#editar-cot-descuento');
-        check_is_not_empty(iva, '#editar-cot-iva');
         check_is_not_empty(total, '#editar-cot-total');
 
         if(checked.length != 0){
@@ -152,11 +180,13 @@ function guardar_cambios_cot(){
                 data: {
                     cliente: cliente,
                     subtotal: subtotal,
-                    descuento: descuento,
-                    iva: iva,
                     total: total,
+                    envio: envio,
                     'checked[]': checked,
                     'cantidades[]': cantidades,
+                    'descuentos[]': descuentos,
+                    'ivas[]': ivas,
+                    'totales[]': totales,
                     'csrfmiddlewaretoken': token
                 },
                 type: "POST",
@@ -186,20 +216,50 @@ function guardar_cambios_cot(){
 }
 function calc_total() {
     var pr = [];
-    $("input[name='editar-cot-precios[]']").each(function () {
+    $("input[name='edit-cot-precios[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
         // Checamos que no estén vacíos los inputs del precio
         var val = parseInt($(this).val());
         pr.push(val);
     });
+    var iva = [];
+    $("input[name='edit-cot-ivas[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        if(val < 1){
+            val = val*-1;
+            $(this).val(val);
+        }
+        iva.push(val);
+    });
+    var desc = [];
+    $("input[name='edit-cot-descuentos[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        if(val < 1){
+            val = val*-1;
+            $(this).val(val);
+        }
+        desc.push(val);
+    });
+    var tots = [];
+    $("input[name='edit-cot-totales[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        var val = parseInt($(this).val());
+        tots.push(val);
+    });
     var sub = document.getElementById("editar-cot-subtotal");
     var total = document.getElementById("editar-cot-total");
-    var iva = document.getElementById("editar-cot-iva");
+    var envio = document.getElementById("editar-cot-envio");
     var precios = [];
     var i = 0;
     $("input[name='editar-cot-cantidades[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
         // Checamos que no estén vacíos los inputs de cantidad
+
         var val = $(this).val();
         if(val < 1){
             val = val*-1;
@@ -215,20 +275,24 @@ function calc_total() {
     var subtotal = 0;
     i = 0;
     for (p in precios) {
-        subtotal = subtotal + precios[i];
-        console.log(p);
+        desc[i] = desc[i] / 100;
+        var temp = precios[i] - (precios[i] * desc[i]);
+        iva[i] = iva[i] / 100;
+        temp = temp + (temp * iva[i]);
+        tots[i] = temp;
+        subtotal = subtotal + tots[i];
         i = i + 1;
     }
-    console.log(subtotal);
+    i = 0;
+    $("input[name='edit-cot-totales[]']").each(function () {
+        //cantidades.push(parseInt($(this).val()));
+        // Checamos que no estén vacíos los inputs del precio
+        $(this).val(tots[i]);
+        i = i + 1;
+    });
     sub.value = subtotal;
-    total.value = sub.value;
-    var desc = document.getElementById("editar-cot-descuento");
-    var d = parseInt(desc.value) / 100;
-    var t = parseInt(total.value);
-    var temp = t * d;
-    var tot = t - temp;
-    var ivaa = parseInt(iva.value) / 100;
-    ivaa = tot * ivaa;
-    tot = tot + ivaa;
-    total.value = tot;
+    if (envio.value < 1) {
+        envio.value = envio.value * -1;
+    }
+    total.value = subtotal + parseInt(envio.value);
 }

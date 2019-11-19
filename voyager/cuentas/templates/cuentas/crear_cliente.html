@@ -3,7 +3,7 @@
 
 {% block content %}
 
-<h1>Crear Usuario</h1>
+<h1>Crear Cliente</h1>
     <div class="card col-12">
         <form action="../guardar_cliente/" method="post" id="form_client">
             {% csrf_token %}
@@ -27,7 +27,7 @@
 
             <div class="row">
                 <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
-                    <label for="{{ form.correo.id_for_label }}">Correo electrónico:</label>
+                    <label for="{{ form.correo.id_for_label }}">Correo Electrónico:</label>
                     {{ form.correo }}
                     <div class="invalid_mail p-3" hidden>
                         <p style="color:red">Este correo ha sido usado</p>
@@ -66,7 +66,7 @@
                 <div class="col-md-7">
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
-                    <a href="{% url 'home' %}" class="btn btn-danger btn-block"
+                    <a href="{% url 'usuarios' %}" class="btn btn-danger btn-block"
                         data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
                         data-content="Cancelar la creación de un nuevo usuario">
                             Cancelar

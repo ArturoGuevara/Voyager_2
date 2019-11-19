@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.core import serializers
 from django.http import HttpResponse
@@ -25,7 +26,7 @@ class LazyEncoder(DjangoJSONEncoder):
 # Vista del index
 @login_required
 def indexView(request):
-    return render(request, 'ventas/index.html')
+    return render(request, 'cuentas/home.html')
 
 # Create your views here.
 
@@ -35,7 +36,7 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
         analisis = Analisis.objects.all()
         paises = Pais.objects.all()
         context = {
@@ -51,12 +52,15 @@ def ver_catalogo(request):
 @login_required
 def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
+            data = []
             analisis = Analisis.objects.get(id_analisis = id)
+            pais = Pais.objects.get(pk=analisis.pais.pk)
             if analisis:
-                data = serializers.serialize("json", [analisis], ensure_ascii = False)
-                data = data[1:-1]
+                data.append(serializers.serialize("json", [analisis], ensure_ascii = False))
+                # data = data[1:-1]
+                data.append(serializers.serialize("json", [pais], ensure_ascii = False))
                 return JsonResponse({"data": data})
             else:
                 response = JsonResponse({"error": "No existe ese análisis"})
@@ -74,20 +78,27 @@ def cargar_analisis(request, id):
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
             analisis = Analisis.objects.get(id_analisis = id)
             if analisis:
                 #Que ningún campo esté vacío
-                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo']):
+                if is_not_empty(request.POST['nombre']) and is_not_empty(request.POST['codigo']) and is_not_empty(request.POST['descripcion']) and is_not_empty(request.POST['precio']) and is_not_empty(request.POST['tiempo'] and is_not_empty(request.POST['tiempo']) and is_not_empty(request.POST['unidad_min']) and is_not_empty(request.POST['pais'])):
                     # Actualizamos campos
+                    pais = Pais.objects.get(pk = request.POST['pais'])
                     analisis.nombre = request.POST['nombre']
                     analisis.codigo = request.POST['codigo']
                     analisis.descripcion = request.POST['descripcion']
                     analisis.precio = request.POST['precio']
                     analisis.tiempo = request.POST['tiempo']
+                    analisis.unidad_min = request.POST['unidad_min']
+                    analisis.pais = pais
+                    if request.POST['acreditacion'] == "1":
+                        analisis.acreditacion = True
+                    else:
+                        analisis.acreditacion = False
                     # Guardamos cambios
                     analisis.save()
                     # Obtenemos los nuevos valores
@@ -117,7 +128,7 @@ def editar_analisis(request, id):
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -146,7 +157,7 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
@@ -158,9 +169,10 @@ def agregar_analisis(request):
                 n_duracion = form.cleaned_data['duracion']
                 n_pais = form.cleaned_data['pais']
                 n_unidad_min = form.cleaned_data['unidad_min']
-                n_acreditacion = form.cleaned_data['acreditacion']
+                n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
+                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
@@ -194,7 +206,7 @@ def ver_cotizaciones(request):
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
             if usuario_log.rol.nombre == "Ventas":
                 cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
                 analisis = Analisis.objects.all()
@@ -209,7 +221,7 @@ def ver_cotizaciones(request):
                 context = {
                     'cotizaciones': cotizaciones,
                 }
-            elif usuario_log.rol.nombre == "SuperUser":
+            elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
                 cotizaciones = Cotizacion.objects.all()
                 analisis = Analisis.objects.all()
                 clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
@@ -264,18 +276,20 @@ def crear_cotizacion(request):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         c = Cotizacion()
                         c.usuario_c = cliente
                         c.usuario_v = user_logged
-                        c.descuento = request.POST.get('descuento')
+                        c.envio = request.POST.get('envio')
                         c.subtotal = request.POST.get('subtotal')
-                        c.iva = request.POST.get('iva')
                         c.total = request.POST.get('total')
                         c.status = True
                         c.save()
@@ -288,6 +302,9 @@ def crear_cotizacion(request):
                             ac.cotizacion = c
                             ac.cantidad = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})
@@ -325,17 +342,19 @@ def actualizar_cotizacion(request,id):
         if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
-            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('descuento') and request.POST.get('iva') and request.POST.get('total')):
+            if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
                 checked = request.POST.getlist('checked[]')
                 cantidad = request.POST.getlist('cantidades[]')
+                descuento = request.POST.getlist('descuentos[]')
+                iva = request.POST.getlist('ivas[]')
+                totales = request.POST.getlist('totales[]')
                 if len(checked) != 0 and checked[0] != 'NaN':
                     if len(cantidad) != 0 and cantidad[0] != 'NaN':
                         cliente = IFCUsuario.objects.get(pk=request.POST.get('cliente'))
                         edit_cotizacion = Cotizacion.objects.get(id_cotizacion = id)
                         edit_cotizacion.usuario_c = cliente
-                        edit_cotizacion.descuento = request.POST.get('descuento')
+                        edit_cotizacion.envio = request.POST.get('envio')
                         edit_cotizacion.subtotal = request.POST.get('subtotal')
-                        edit_cotizacion.iva = request.POST.get('iva')
                         edit_cotizacion.total = request.POST.get('total')
                         edit_cotizacion.status = True
                         edit_cotizacion.save()
@@ -356,7 +375,10 @@ def actualizar_cotizacion(request,id):
                             ac.analisis = a
                             ac.cotizacion = edit_cotizacion
                             ac.cantidad = cantidad[index]
-                            ac.fecha = fecha
+                            ac.fecha = datetime.datetime.now().date()
+                            ac.descuento = descuento[index]
+                            ac.iva = iva[index]
+                            ac.total = totales[index]
                             ac.save()
                             index = index + 1
                         response = JsonResponse({"Success": "OK"})
@@ -390,11 +412,13 @@ def actualizar_cotizacion(request,id):
 def visualizar_cotizacion(request, id):
     # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente"  or user_logged.rol.nombre == "Director":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
+            empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)
+            usuario = User.objects.get(pk = cotizacion.usuario_c.user.pk)
             if cotizacion:  # Verificar si la cotizacion existe
-                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion=cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion)  # Cargar registros de tabla analisis_cotizacion
                 if analisis_cotizacion:
                     data_analisis = []
                     data_cotizacion_analisis = []
@@ -415,6 +439,9 @@ def visualizar_cotizacion(request, id):
                     data.append(data_analisis)
                     data.append(data_cotizacion_analisis)
 
+                    data.append(serializers.serialize("json", [empresa], ensure_ascii = False))
+                    data.append(serializers.serialize("json", [usuario], ensure_ascii = False))
+
                     response =  JsonResponse({"info": data})
                     response.status_code = 200
                     return response
@@ -432,6 +459,60 @@ def visualizar_cotizacion(request, id):
             response.status_code = 500
             return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
 ###############  USV04-04##################
+
+############### USV02-02###################
+@login_required
+def borrar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+            if cotizacion:
+                cotizacion.status = False
+                cotizacion.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe esa cotización"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USV02-02###################
+
+############### USV16-50 ###################
+@login_required
+def aceptar_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+            if cotizacion:
+                cotizacion.aceptado = True
+                cotizacion.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe esa cotización"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USV16-50 ###################
 
 
 # EXTRAS

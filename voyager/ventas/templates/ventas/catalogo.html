@@ -9,15 +9,17 @@
 {% block content %}
 <div class="text-md-left text-center">
     <h2>Catálogo de Análisis
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En esta sección eres capaz de visualizar todos tus análisis disponibles para cotizar y administrarlos.">
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus análisis">
           <i class="fa fa-question-circle fa-lg"></i>
         </button>
     </h2>
 </div>
-
+{% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
 <div class="text-center text-md-right">
-    <button type="button" class="btn btn-success" id="btn-agregar-analisis" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para desplegar un modal que te pedirá la información para registrar un nuevo análisis."><i class="nc-icon nc-simple-add"></i> Análisis</button>
+    <button type="button" class="btn btn-success" id="btn-agregar-analisis" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Despliega modal e ingrese información para registro de análisis."><i class="nc-icon nc-simple-add"></i> Análisis</button>
 </div>
+{% endif %}
+
 <div class="table-responsive table-full-width">
     <table class="table table-hover table-responsive table-striped" id="tabla_analisis">
         <thead>
@@ -26,7 +28,8 @@
             <th>Descripción <i class="fa fa-sort"></i></th>
             <th>Precio <i class="fa fa-sort"></i></th>
             <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
-            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Esta sección de la tabla contiene los botones para visualizar los detalles de un análisis individual o eliminarlo.">Acciones</th>
+            <th>Acreditado<i class="fa fa-sort"></i></th>
+            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine un análisis">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
         </thead>
         <tbody>
         {% for a in analisis %}
@@ -36,9 +39,16 @@
                 <td class="analisis-desc" data-id="{{ a.id_analisis }}">{{ a.descripcion }}</td>
                 <td class="analisis-precio" data-id="{{ a.id_analisis }}">${{ a.precio }}</td>
                 <td class="analisis-tiempo" data-id="{{ a.id_analisis }}">{{ a.tiempo }}</td>
+                {% if a.acreditacion %}
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}">Q</td>
+                {% else %}
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}">-</td>
+                {% endif %}
                 <td class="analisis-acciones" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
+                    {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
                     <button type="button" class="btn btn-danger" onclick="borrar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#borrar_analisis"><i class="fa fa-trash tabla-icon"></i></button>
+                    {% endif %}
                 </td>
             </tr>
         {% endfor %}
@@ -64,5 +74,5 @@
              <script>
                 showNotification('top','right','Hubo un error en el registro')
             </script>
-    {% endif %}
+        {% endif %}
 {% endblock %}
