@@ -143,7 +143,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_estatus">Pagado</label>
-                                    <select name="editar_estatus" id="editar_pagado" class="form-control">
+                                    <select name="editar_pagado" id="editar_pagado" class="form-control">
                                         <option name="Sí" id="Sí" value="Sí">Sí</option>
                                         <option name="No" id="No" value="No">No</option>
                                     </select>
@@ -156,7 +156,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="editar_guia_envio" placeholder="Guía de envío">
+                                    <input type="text" class="form-control" id="editar_guia_envio" name="editar_guia_envio" placeholder="Guía de envío">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
@@ -200,7 +200,7 @@
                         <div class="tab-pane container fade" id="editar_observaciones">
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="idioma_reporte">Idioma del reporte: </label>
+                                    <label for="editar_idioma_reporte">Idioma del reporte: </label>
                                     <p>
                                         <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="Español">Español
                                         <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="Inglés">Inglés
