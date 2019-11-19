@@ -423,7 +423,8 @@ def muestra_enviar(request): #guia para guardar muestras
                     oi = muestras_hoy[0].oi #si se ha registrado una muestra en el mismo día, usar la misma orden interna
                     for m in muestras_hoy:
                         if m.oi.estatus != 'borrado':
-                            oi = m.oi
+                            if m.usuario == user_logged:
+                                oi = m.oi
                     if oi.estatus == 'borrado':
                         oi = OrdenInterna()
                         oi.usuario = phantom_user

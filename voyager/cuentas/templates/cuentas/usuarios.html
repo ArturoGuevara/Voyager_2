@@ -34,6 +34,7 @@
         <thead>
             <th class="text-center"># <i class="fa fa-sort"></i></th>
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
+            <th class="text-center">Rol <i class="fa fa-sort"></i></th>
             <th class="text-center">Estatus <i class="fa fa-sort"></i></th>
             <th class="text-center">Empresa <i class="fa fa-sort"></i></th>
             <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine a un usuario">Acciones <i class="fa fa-question-circle fa-lg"></th>
@@ -43,6 +44,7 @@
             <tr id="usuario-{{c.user.id}}">
                 <td class="pt-3 u_id">{{ c.user.id }}</td>
                 <td class="pt-3 u_nombre">{{ c.nombre}} {{ c.apellido_paterno }} {{ c.apellido_materno }}</td>
+                <td class="pt-3 u_nombre">{{ c.rol.nombre }}</td>
                 <td class="pt-3 u_estatus">{{ c.estatus_pago }}</td>
                 <td class="pt-3 u_empresa">{{ c.empresa }}</td>
                 <td>
