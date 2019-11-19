@@ -19,6 +19,7 @@ $('#submitForm').on('click', function () {
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(){
+    console.log("EDITAR...");
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
@@ -55,6 +56,8 @@ function cargar_info_oi(){
             //pestaña de información
             $('#tituloe_idOI').text("Orden Interna #" + id_oi);
             $('#editar_idOI').val(id_oi);
+            console.log("ESTATUS ");
+            console.log(data.estatus);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
             $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
@@ -143,7 +146,7 @@ function submit(){
     var observaciones = $('#e_observaciones').val();
 
     //checar radio seleccionado, si ninguno, se toma default español
-    var idioma_reporte;
+    var idioma_reporte="";
     if (document.getElementById("editar_idioma_reporteES").checked){
         idioma_reporte = "Español";
     }
