@@ -71,7 +71,9 @@
                     <div class="float-left">
                         <button type="button" class="btn btn-secondary ml-auto border-0" data-dismiss="modal">Cerrar</button>
                     </div>
+                    {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
                     <button name="submitForm" id="submitForm" type="button" class="btn btn-success ml-3">Guardar</button>
+                    {% endif %}
                 </div>
             </form>
         </div>
