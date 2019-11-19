@@ -1123,11 +1123,8 @@ class EnviarResultados(TestCase):
             to_emails='A0127373@itesm.mx',
             subject="Asunto",
             html_content="Contenido")
-        try:
-            with open('./API_KEY.txt', 'r') as f:
-                key = f.read()
-            sendgrid_client = SendGridAPIClient(key)
-            response = sendgrid_client.send(message)
-            self.assertEqual(response.status_code,202)
-        except Exception as e:
-            print(e.message)
+        with open('./API_KEY.txt', 'r') as f:
+            key = f.read()
+        sendgrid_client = SendGridAPIClient(key)
+        response = sendgrid_client.send(message)
+        self.assertEqual(response.status_code,202)
