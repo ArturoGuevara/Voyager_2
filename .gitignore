@@ -133,6 +133,6 @@ venv.bak/
 
 #Ignorar Migraciones
 **/migrations/**
-voyager/voyager/settings.py
+/voyager/voyager/settings.py
 
 /voyager/API_KEY.txt
