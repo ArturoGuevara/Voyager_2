@@ -55,8 +55,6 @@ function cargar_info_oi(){
             //pestaña de información
             $('#tituloe_idOI').text("Orden Interna #" + id_oi);
             $('#editar_idOI').val(id_oi);
-            console.log("ESTATUS ");
-            console.log(data.estatus);
             $('#editar_estatus').val(data.estatus);
             $('#editar_localidad').val(data.localidad);
             $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
