@@ -143,7 +143,7 @@ function submit(){
     var observaciones = $('#e_observaciones').val();
 
     //checar radio seleccionado, si ninguno, se toma default español
-    var idioma_reporte;
+    var idioma_reporte="";
     if (document.getElementById("editar_idioma_reporteES").checked){
         idioma_reporte = "Español";
     }
