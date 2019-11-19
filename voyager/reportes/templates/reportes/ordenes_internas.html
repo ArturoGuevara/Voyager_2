@@ -59,7 +59,7 @@
                         </button>
                         {% endif %}
                         {% if o.usuario.estatus_pago != "Deudor" %}
-                        {% if request.session.userrole != 'Director' %}
+                        {% if request.session.userrole != 'Director' and request.session.userrole != 'Ventas' %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
                                 Enviar
                             </button>
