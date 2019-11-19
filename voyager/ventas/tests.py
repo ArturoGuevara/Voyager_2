@@ -230,7 +230,7 @@ class TestCotizaciones(TestCase):
         self.set_up_Users() #Set up de datos
         self.client.login(username='direc',password='testpassword')
         response = self.client.get('/ventas/cotizaciones')
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,200)
 
     def test_acceso_permitido(self):
         #Test de acceso a url con Log In como Cliente
@@ -468,7 +468,7 @@ class TestEditarCotizaciones(TestCase):
         self.set_up_Users() #Set up de datos
         self.client.login(username='direc',password='testpassword')
         response = self.client.get('/ventas/cotizaciones')
-        self.assertEqual(response.status_code,404)
+        self.assertEqual(response.status_code,200)
 
     def test_acceso_permitido(self):
         #Test de acceso a url con Log In como Cliente

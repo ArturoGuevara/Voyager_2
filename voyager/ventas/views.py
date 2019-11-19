@@ -206,7 +206,7 @@ def ver_cotizaciones(request):
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
             if usuario_log.rol.nombre == "Ventas":
                 cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
                 analisis = Analisis.objects.all()
@@ -221,7 +221,7 @@ def ver_cotizaciones(request):
                 context = {
                     'cotizaciones': cotizaciones,
                 }
-            elif usuario_log.rol.nombre == "SuperUser":
+            elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
                 cotizaciones = Cotizacion.objects.all()
                 analisis = Analisis.objects.all()
                 clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
@@ -412,7 +412,7 @@ def actualizar_cotizacion(request,id):
 def visualizar_cotizacion(request, id):
     # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente"  or user_logged.rol.nombre == "Director":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
             empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)

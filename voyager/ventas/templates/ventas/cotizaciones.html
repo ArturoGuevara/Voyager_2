@@ -107,7 +107,11 @@
 {% block optionalJS %}
     <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/agregar.js' %}" type="text/javascript"></script>
+    {% if request.session.userrole == "Cliente" or request.session.userrole == "Director" %}
+    <script src="{% static 'ventas/js/cotizaciones/visualizar_para_cliente.js' %}" type="text/javascript"></script>
+    {% else %}
     <script src="{% static 'ventas/js/cotizaciones/visualizar.js' %}" type="text/javascript"></script>
+    {% endif %}
     <script src="{% static 'ventas/js/cotizaciones/editar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/borrar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/aceptar_cotizacion.js' %}" type="text/javascript"></script>
