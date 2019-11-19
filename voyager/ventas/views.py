@@ -412,7 +412,7 @@ def actualizar_cotizacion(request,id):
 def visualizar_cotizacion(request, id):
     # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente":  # Verificar el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente"  or user_logged.rol.nombre == "Director":  # Verificar el tipo de usuario logeado
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
             empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)
