@@ -39,7 +39,7 @@
                         </div>
                         <div class="col">
                                 <label for="precio">Precio</label>
-                                <input type="number" class="form-control" id="precio" placeholder="$100.00" name="precio">
+                                <input type="number" class="form-control" id="precio" placeholder="$100.00" name="precio" onchange="check_is_negative(this.value,this.id)" min=0>
                                 <div class="invalid-feedback">
                                     Por favor introduce un precio
                                 </div>
