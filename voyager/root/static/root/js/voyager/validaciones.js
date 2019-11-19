@@ -38,3 +38,11 @@ var check_is_date = function(value,id){
         return false;
     }
 }
+
+var check_is_negative = function(value,id){
+    var val = value;
+    if(val < 1){
+        val = val*-1;
+        $('#'+id).val(val);
+    }
+}

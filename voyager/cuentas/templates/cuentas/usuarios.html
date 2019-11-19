@@ -10,21 +10,21 @@
 <div class="text-md-left text-center">
     {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser'%}
     <h2>Usuarios
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus usuarios">
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre a los usuarios del sistema.">
             <i class="fa fa-question-circle fa-lg"></i>
         </button>
     {% else %}
     <h2>Clientes
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus clientes">
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre a los clientes.">
             <i class="fa fa-question-circle fa-lg"></i>
         </button>
     {% endif %}
         <div class="text-center text-md-right">
             {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
-                <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón sirve para agregar un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
+                <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
             {% endif %}
             {% if request.session.userrole == 'Director' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
-                <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para agregar un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
+                <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
             {% endif %}
         </div>
     </h2>
@@ -36,7 +36,7 @@
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
             <th class="text-center">Estatus <i class="fa fa-sort"></i></th>
             <th class="text-center">Empresa <i class="fa fa-sort"></i></th>
-            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine un usuario">Acciones <i class="fa fa-question-circle fa-lg"></th>
+            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine a un usuario">Acciones <i class="fa fa-question-circle fa-lg"></th>
         </thead>
         <tbody>
             {% for c in usuarios %}

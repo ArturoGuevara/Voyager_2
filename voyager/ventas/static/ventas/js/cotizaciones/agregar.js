@@ -177,6 +177,10 @@ function add_calc_total() {
         //cantidades.push(parseInt($(this).val()));
         // Checamos que no estén vacíos los inputs del precio
         var val = parseInt($(this).val());
+        if(val < 1){
+            val = val*-1;
+            $(this).val(val);
+        }
         iva.push(val);
     });
     var desc = [];
@@ -184,6 +188,10 @@ function add_calc_total() {
         //cantidades.push(parseInt($(this).val()));
         // Checamos que no estén vacíos los inputs del precio
         var val = parseInt($(this).val());
+        if(val < 1){
+            val = val*-1;
+            $(this).val(val);
+        }
         desc.push(val);
     });
     var tots = [];
