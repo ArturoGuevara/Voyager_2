@@ -92,6 +92,10 @@ def ordenes_internas(request):
 
     ordenes = OrdenInterna.objects.all()
     ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
+    dict_clientes = {}
+    for orden in ordenes_activas:
+        muestras_orden = Muestra.objects.filter(oi=orden)
+        dict_clientes[orden] = muestras_orden.first().usuario
     form = codigoDHL()
 
 
@@ -104,6 +108,7 @@ def ordenes_internas(request):
         'form': form,
         'successcode': response,
         'success_sent': request.session['success_sent'],
+        'clientes': dict_clientes,
     }
     request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
@@ -268,6 +273,7 @@ def actualizar_orden(request):
             oi.idioma_reporte = request.POST['idioma_reporte']
             oi.observaciones = request.POST['observaciones']
             oi.pagado = request.POST['pagado']
+            oi.usuario = user_logged
             #Guardar
             oi.save()
 
