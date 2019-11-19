@@ -19,7 +19,6 @@ $('#submitForm').on('click', function () {
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_oi(){
-    console.log("EDITAR...");
     $.ajax({
         url: "consultar_orden/",
         type: "POST",
