@@ -8,7 +8,7 @@
             </a>
         </div>
         <ul class="nav">
-            {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Ventas' or request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#adminUsersDropdown">
                     <i class="nc-icon nc-badge"></i>
