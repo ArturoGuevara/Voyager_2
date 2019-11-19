@@ -221,9 +221,11 @@
 
                 </div>
                 <div class="text-right">
+                    {% if request.session.userrole != 'Ventas' %}
                     <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
                         Editar
                     </button>
+                    {% endif %}
                     <button type="button" class="btn btn-danger d-none float-left" id="btn-cancelar-editar-oi">
                         Cancelar
                     </button>
