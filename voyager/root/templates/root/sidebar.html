@@ -80,7 +80,7 @@
                 </a>
                 <div class="collapse" id="ventasDropdown">
                     <ul class="nav">
-                        {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
+                        {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/ver_catalogo">
                                     <span>Catálogo de análisis</span>
