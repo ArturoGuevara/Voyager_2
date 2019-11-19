@@ -83,7 +83,7 @@ def indexView(request):
 @login_required
 def ordenes_internas(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
 
     if request.session.get('success_sent',None) == None:
@@ -250,7 +250,7 @@ def actualizar_orden(request):
                 oi.fecha_envio = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_envio = request.POST['fecha_envio']
-            
+
             #Para las fechas checar si están vacías o formato incorrecto
             if request.POST['fecha_recepcion_m'] == "":
                 oi.fecha_recepcion_m = None
