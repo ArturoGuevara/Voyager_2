@@ -92,7 +92,7 @@ def consultar_usuario(request, id):
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "SuperUser":
+            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
                 usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
                 rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
                 if usuario:
