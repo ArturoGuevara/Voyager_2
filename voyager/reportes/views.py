@@ -95,7 +95,7 @@ def ordenes_internas(request):
     dict_clientes = {}
     for orden in ordenes_activas:
         muestras_orden = Muestra.objects.filter(oi=orden)
-        dict_clientes[orden.idOI] = muestras_orden.first().usuario
+        dict_clientes[orden] = muestras_orden.first().usuario
     form = codigoDHL()
 
 
@@ -108,7 +108,7 @@ def ordenes_internas(request):
         'form': form,
         'successcode': response,
         'success_sent': request.session['success_sent'],
-        'clientes': dict_clientes,
+        'ordenes_clientes': dict_clientes,
     }
     request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)

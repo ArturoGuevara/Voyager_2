@@ -32,25 +32,13 @@
                 <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, edite o elimine una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></th>
             </thead>
             <tbody>
-                {% for o in ordenes %}
+                {% for o,value in ordenes_clientes.items %}
                 {% if o.estatus != 'borrado' %}
                 <tr id="oi-{{o.idOI}}">
                     <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
-                    <td class="pt-3 oiData oi_empresa">
-                        {% for key,value in clientes.items %}
-                            {% if key == o.idOI %}
-                                {{value.empresa}}
-                            {% endif %}
-                        {% endfor %}
-                    </td>
-                    <td class="pt-3 oiData oi_usuario">
-                        {% for key,value in clientes.items %}
-                            {% if key == o.idOI %}
-                                {{value.user}}
-                            {% endif %}
-                        {% endfor %}
-                    </td>
+                    <td class="pt-3 oiData oi_empresa">{{value.empresa}}</td>
+                    <td class="pt-3 oiData oi_usuario">{{value.user}}</td>
                     <td class="pt-3 oiData oi_fecha_envio">
                         {% language 'es-co' %}
                             {% if o.fecha_envio %}
