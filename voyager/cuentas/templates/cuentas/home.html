@@ -6,6 +6,58 @@
 
 <!--Este es el front end de la forma de login-->
 {% block content %}
-    <h1>Bienvenido {{ user.nombre }} ({{ request.session.userrole }})</h1>
+
+    <h2>Perfil
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y modifique su información de usuario.">
+          <i class="fa fa-question-circle fa-lg"></i>
+        </button>
+    </h2>
+    <div class="text-center text-md-right">
+        <button id="btn-agregar-cot" class="btn btn-info d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione para ir a editar su información de usuario"><i class="fa fa-pen"></i> Editar</button>
+    </div>
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-4">
+                    <b><label for="nombre">Nombre:</label></b>
+                    <p id="nombre">{{ifc.nombre}}</p>
+                </div>
+                <div class="col-4">
+                    <b><label for="apellido_p">Apellido Paterno:</label></b>
+                    <p id="apellido_p">{{ifc.apellido_paterno}}</p>
+                </div>
+                <div class="col-4">
+                    <b><label for="apellido_m">Apellido Materno:</label></b>
+                    <p id="apellido_m">{{ifc.apellido_materno}}</p>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <b><label for="telefono">Teléfono:</label></b>
+                    <p id="telefono">{{ifc.telefono}}</p>
+                </div>
+                <div class="col-4">
+                    <b><label for="correo">Correo:</label></b>
+                    <p id="correo">{{ifc.user.email}}</p>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-4">
+                    <b><label for="empresa">Empresa:</label></b>
+                    <p id="empresa">{{ifc.empresa.empresa}}</p>
+                </div>
+                <div class="col-4">
+                    <b><label for="pago">Estado de Pago:</label></b>
+                    <p id="pago">{{ifc.estatus_pago}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
 
 {% endblock %}

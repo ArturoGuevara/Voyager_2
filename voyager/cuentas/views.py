@@ -20,8 +20,8 @@ from django.http import HttpResponseRedirect
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
-        return render(request,'cuentas/home.html')
-    return render(request, 'cuentas/home.html')
+        return render(request,'cuentas/home.html', {'ifc': user_logged})
+    return render(request,'cuentas/home.html', {'ifc': user_logged})
 
 #Vista de Login
 def loginView(request):
@@ -65,9 +65,8 @@ def verifyLogin(request):
 @login_required
 def homeView(request):
     #Aquí se genera la vista de la pagina home del usuario
-    return render(request,'cuentas/home.html', {
-            #'user': ifc_user
-    })
+    user_logged = IFCUsuario.objects.get(user = request.user) 
+    return render(request,'cuentas/home.html', {'ifc': user_logged})
 
 @login_required
 def logoutControler(request):
