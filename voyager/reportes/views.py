@@ -39,7 +39,13 @@ def ingreso_cliente(request):
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
             return render(request, 'reportes/bloqueado.html')
         else:
-            analisis = Analisis.objects.all()
+            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged)
+            analisis = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
+            for c in cotizaciones:
+                cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+                for a in cot:
+                    analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
+                    analisis = analisis | analisis_temp
             context = {
                 'analisis': analisis
             }
