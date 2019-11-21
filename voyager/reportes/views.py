@@ -107,8 +107,10 @@ def ordenes_internas(request):
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
         for orden in ordenes_activas:
             muestras_orden = Muestra.objects.filter(oi=orden)
-            dict_clientes[orden] = muestras_orden.first().usuario
+            if muestras_orden:
+                dict_clientes[orden] = muestras_orden.first().usuario
         form = codigoDHL()
+
 
 
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
