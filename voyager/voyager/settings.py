@@ -100,7 +100,7 @@ FLAGS = {
     ],
     'FLAG_WITH_REQUIRED_CONDITIONS': []
 }
-
+#
 WSGI_APPLICATION = 'voyager.wsgi.application'
 LOGIN_REDIRECT_URL = '/cuentas/home/'
 LOGOUT_REDIRECT_URL = '/cuentas/login/'
