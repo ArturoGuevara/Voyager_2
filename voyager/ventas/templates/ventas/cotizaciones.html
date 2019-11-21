@@ -7,6 +7,9 @@
 {% endblock %}
 
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Cotizaciones' as my_flag %}
+
     <div class="text-md-left text-center">
         <h2>Cotizaciones
             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus cotizaciones">
@@ -14,6 +17,7 @@
             </button>
         </h2>
     </div>
+    {% if my_flag %}
     <div class="text-center text-md-right">
         {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
             <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione los análisis para crear una nueva cotización"><i class="nc-icon nc-simple-add"></i> Cotización</button>
@@ -97,6 +101,7 @@
             </tbody>
         </table>
     </div>
+    {% endif %}
     {% include './modals/cotizaciones/agregar.html' %}
     {% include './modals/cotizaciones/visualizar.html' %}
     {% include './modals/cotizaciones/borrar-cot.html' %}

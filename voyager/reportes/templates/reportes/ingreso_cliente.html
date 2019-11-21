@@ -3,7 +3,8 @@
 
 
 {% block content %}
-
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Ingresar_Muestra' as my_flag %}
 <h2 class="mb-3 mt-3">Información del solicitante
     <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover"
             data-placement="right"
@@ -13,8 +14,10 @@
     </button>
 </h2>
 
+
 <form action="{% url 'ingresar_muestras' %}" method="post">
     {% csrf_token %}
+    {% if my_flag %}
     <div class="row mt-0 pt-0 mb-0 pb-0">
         <div class="col-md-12">
             <div class="card">
@@ -395,6 +398,7 @@
             </button>
         </div>
     </div>
+    {% endif %}
 </form>
 
 {% endblock content %}
