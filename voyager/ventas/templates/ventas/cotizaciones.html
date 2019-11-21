@@ -101,6 +101,8 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+    {% include 'root/feature_not_ready.html' %}
     {% endif %}
     {% include './modals/cotizaciones/agregar.html' %}
     {% include './modals/cotizaciones/visualizar.html' %}

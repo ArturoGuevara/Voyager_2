@@ -75,6 +75,8 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+    {% include 'root/feature_not_ready.html' %}
     {% endif %}
     {% include './modals/paquete.html' %}
     {% include './modals/borrar-orden.html' %}

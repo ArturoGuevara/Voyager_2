@@ -58,6 +58,8 @@
         </tbody>
     </table>
 </div>
+{% else %}
+{% include 'root/feature_not_ready.html' %}
 {% endif %}
 {% include './modals/analisis/agregar.html' %}
 {% include './modals/analisis/borrar.html' %}
