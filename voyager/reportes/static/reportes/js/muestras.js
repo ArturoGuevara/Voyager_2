@@ -60,7 +60,7 @@ $('.btn-plantilla').click(function(){
         $('#containerProductoProcesado').collapse('hide');
         $('#containerProductoMicrobiologia').collapse('hide');
     }else{ // Si es la primera vez que se clickea, le agregamos la clase nada más
-        $(this).addClass('clicked');    
+        $(this).addClass('clicked');
     }
     if(target === 'agricola'){
         $('#containerProductoAgricola').collapse('show');
