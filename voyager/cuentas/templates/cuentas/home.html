@@ -1,6 +1,11 @@
 {% extends 'root/base.html' %}
 {% load static %}
 
+{% block optionalCSS %}
+    <link href="{% static 'ventas/css/styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
+{% endblock %}
+
 <!--Este es el front end de la forma de login-->
 {% block content %}
 
@@ -95,7 +100,7 @@
                         <b><label for="telefono">Teléfono:</label></b>
                         <input type="text" name="telefono" class="form-control" value="{{ifc.telefono}}" maxlength="30" id="telefono">
                         <div class="invalid-feedback">
-                            Por favor introduce el telefono
+                            Por favor introduce de más de 8 caracteres
                         </div>
                     </div>
                 </div>
@@ -112,20 +117,17 @@
                                 <b><label for="pass2">Confirmar Contraseña::</label></b>
                                 <input type="password" name="pass2" class="form-control" minlength="8" id="pass2">
                                 <div class="invalid-feedback">
-                                    Las contraseñas no coinciden
+                                    Las contraseñas no coincide
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <h4 class="card-subtitle text-muted">Ingrese su contraseña para validar los cambios</h4><br>
+                <h4 class="card-subtitle text-muted mt-2">Ingrese su contraseña para validar los cambios</h4><br>
                 <div class="form-row">
                     <div class="form-group col-4">
                         <b><label for="ver">Contraseña Actual:</label></b>
                         <input type="password" name="ver" class="form-control" minlength="8" id="ver">
-                        <div class="invalid-feedback">
-                            Las contraseña es incorrecta
-                        </div>
                     </div>
                 </div>
                 <div class="row mt-1 pt-1 pb-5">
@@ -135,14 +137,14 @@
                         <button id="btn-cancelar-perfil" class="btn btn-danger btn-block d-inline">Cancelar</button>
                     </div>
                     <div class="col-md-2 col-sm-2 col-lg-2">
-                        <button id="btn-guardar-perfil" class="btn btn-success btn-block d-inline">Guardar</button>
+                        <button id="btn-guardar-perfil" class="btn btn-success btn-block d-inline" onclick="guardar_perfil({{ ifc.pk }})" data-toggle="modal" data-target="#guardar_perfil">Guardar</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-{% include './modals/info_usuario.html' %}
+{% include './modals/guardar-perfil.html' %}
 
 {% endblock content %}
 
@@ -150,5 +152,6 @@
     <script src='https://kit.fontawesome.com/a076d05399.js'></script>
     <script src="{% static 'cuentas/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'cuentas/js/perfil.js' %}" type="text/javascript"></script>
+    <script src="{% static 'cuentas/js/editar_perfil.js' %}" type="text/javascript"></script>
     <script src="{% static 'cuentas/js/notificaciones_usuario.js' %}" type="text/javascript"></script>
 {% endblock %}

@@ -12,6 +12,7 @@ from .forms import ClientForm
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.hashers import check_password
 
 # Create your views here.
 
@@ -65,7 +66,7 @@ def verifyLogin(request):
 @login_required
 def homeView(request):
     #Aquí se genera la vista de la pagina home del usuario
-    user_logged = IFCUsuario.objects.get(user = request.user) 
+    user_logged = IFCUsuario.objects.get(user = request.user)
     return render(request,'cuentas/home.html', {'ifc': user_logged})
 
 @login_required
