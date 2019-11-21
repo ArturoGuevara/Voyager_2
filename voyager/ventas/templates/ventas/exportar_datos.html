@@ -1,0 +1,69 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="text-md-left text-center">
+        <h2>Exportar datos
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En este módulo se puede descargar en formato csv los contenidos de la base de datos">
+                <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        </h2>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <form>
+                <label for="cotizaciones">Cotizaciones</label>
+                <input type="text" value="cotizaciones" id="cotizaciones" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form>
+                <label for="cotizaciones">Usuarios</label>
+                <input type="text" value="usuario" id="usuario" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form>
+                <label for="muestras">Muestras</label>
+                <input type="text" value="muestras" id="muestras" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form>
+                <label for="muestras">Análisis</label>
+                <input type="text" value="analisis" id="analisis" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form>
+                <label for="paquetes">Paquetes</label>
+                <input type="text" value="paquetes" id="paquetes" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+        <div class="col-sm-2">
+            <form>
+                <label for="orden">Orden Interna</label>
+                <input type="text" value="orden" id="orden" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-sm-2">
+            <form>
+                <label for="empresa">Empresa</label>
+                <input type="text" value="empresa" id="empresa" name="table" hidden>
+                <button type="submit" class="btn btn-success">Descargar</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block optionalJS %}
+{% endblock %}

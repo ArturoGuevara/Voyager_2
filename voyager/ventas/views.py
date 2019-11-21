@@ -514,6 +514,18 @@ def aceptar_cotizacion(request, id):
         raise Http404
 ############### USV16-50 ###################
 
+############### USV18-52 ###################
+@login_required
+def exportar_datos(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    return render(request, 'ventas/exportar_datos.html')
+
 
 # EXTRAS
 def is_not_empty(data):
