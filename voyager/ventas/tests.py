@@ -974,12 +974,13 @@ class GenerarCSV(TestCase):
         self.setup()
         self.client.login(username='vent', password='testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"cotizaciones",})
+        file_content = response.content.decode('utf-8')
+        self.assertEqual(file_content,'\r\n')
         self.assertEqual(response.get('Content-Disposition'), 'attachment; filename="'+"cotizaciones"+'.csv"')
-        self.assertEqual(response.content.decode('utf-8'), '\r\n')
 
     def test_csv_populated(self):
         self.setup()
         self.client.login(username='vent', password='testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"usuarios",})
         file_content = response.content.decode('utf-8')
-        self.assertContains(file_content, 'ventas')
+        self.assertIn('ventas', file_content)

@@ -539,7 +539,7 @@ def generar_csv_respaldo(request):
         raise Http404
     if request.method != 'POST':
         raise Http404
-    if not request.POST["table"]:
+    if not request.POST.get("table"):
         raise Http404
     table = request.POST["table"]
     all_rows = None
