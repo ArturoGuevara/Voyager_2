@@ -128,7 +128,7 @@ function error_datos_cotizacion() {
 }
 
 $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
-    $('#imprimir-pdf').hide();                                          // Ocular botones que no son necesarios para el PDF
+    $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
     $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
     $('#terminos').show();                                              // Mostrar terminos y logo para el PDF
     $('#terminos-img').show();
