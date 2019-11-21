@@ -36,11 +36,8 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404    #Aquí despliega que el cliente debe dinero
-        cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged).filter(status=True).filter(aceptado=True)
-        if cotizaciones.count() == 0:
-            return render(request, 'reportes/faltan_cotizaciones.html')
+        if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
+            return render(request, 'reportes/bloqueado.html')
         else:
             return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
     else:
@@ -59,7 +56,7 @@ def ingresar_muestras(request):
         user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
+        if user_logged.estatus_pago=="Deudor":   #Si el usuario es deudor
             raise Http404      #Aquí despliega que el cliente debe dinero
         if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
             estado = request.POST.get('estado1')
