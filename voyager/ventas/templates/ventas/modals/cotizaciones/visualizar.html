@@ -1,7 +1,7 @@
 <!-- Modal que forma parte de la USV04-04 -->
 <div class="modal fade" id="ver_cotizacion" tabindex="-1" role="dialog" style="top:-20% !important;" aria-labelledby="ver_cotizacion_modal" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
+        <div class="modal-content" id="pdf-content">
             <div class="modal-header">
                 <h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -167,6 +167,7 @@
             <div id="btn-espacio" class="modal-footer">
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
+                <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
                 {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
                 <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
                 <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
