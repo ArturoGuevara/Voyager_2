@@ -36,43 +36,14 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404    #Aquí despliega que el cliente debe dinero
-        cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged).filter(status=True).filter(aceptado=True)
-        if cotizaciones.count() == 0:
-            return render(request, 'reportes/faltan_cotizaciones.html')
+        if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
+            return render(request, 'reportes/bloqueado.html')
         else:
-            return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
-    else:
-        raise Http404
-
-@login_required   #Redireccionar a login si no ha iniciado sesión
-def ingresar_muestras(request):
-    if (request.session._session   #Revisión de sesión iniciada
-            and request.POST.get('nombre')   #Los post son enviados desde la página anterior
-            and request.POST.get('direccion')   #Checar todos los post necesarios para continuar con la forma
-            and request.POST.get('pais')
-            and request.POST.get('idioma')
-            and (request.POST.get('estado1') or (request.POST.get('estado2'))
-    )
-        ):
-        user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404      #Aquí despliega que el cliente debe dinero
-        if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
-            estado = request.POST.get('estado1')
-        else:
-            estado = request.POST.get('estado2')
-        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)   #Obtener todas las cotizaciones del usuario loggeado
-        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,   #Cargar todas las variables POST dentro de la siguiente plantilla
-                                                                  'nombre': request.POST.get('nombre'),
-                                                                  'direccion': request.POST.get('direccion'),
-                                                                  'pais': request.POST.get('pais'),
-                                                                  'estado': estado,
-                                                                  'idioma': request.POST.get('idioma'),
-                                                                  })
+            analisis = Analisis.objects.all()
+            context = {
+                'analisis': analisis
+            }
+            return render(request, 'reportes/ingreso_muestra.html', context)
     else:
         raise Http404
 
