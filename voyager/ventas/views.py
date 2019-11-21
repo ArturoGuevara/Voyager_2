@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
+from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
 from cuentas.models import IFCUsuario, Empresa
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -15,6 +15,8 @@ import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 from django.core.serializers.json import DjangoJSONEncoder
+import random
+import csv
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -526,6 +528,48 @@ def exportar_datos(request):
         raise Http404
     return render(request, 'ventas/exportar_datos.html')
 
+@login_required
+def generar_csv_respaldo(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST["table"]:
+        raise Http404
+    table = request.POST["table"]
+    all_rows = None
+    field_names = []
+    if table == "cotizaciones":
+        all_rows = Cotizacion.objects.all()
+    elif table == "usuarios":
+        all_rows = IFCUsuario.objects.all()
+    elif table == "muestras":
+        all_rows = Muestra.objects.all()
+    elif table == "analisis":
+        all_rows = Analisis.objects.all()
+    elif table == "paquetes":
+        all_rows = Paquete.objects.all()
+    elif table == "ordenes":
+        all_rows = OrdenInterna.objects.all()
+    elif table == "empresas":
+        all_rows = Empresa.objects.all()
+    else:
+        raise Http404
+    for dicts in all_rows.values():
+        field_names = dicts.keys()
+        break
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+table+'.csv"'
+    writer = csv.DictWriter(response,fieldnames=field_names)
+    writer.writeheader()
+    for row in all_rows.values():
+        writer.writerow(row)
+    return response
 
 # EXTRAS
 def is_not_empty(data):

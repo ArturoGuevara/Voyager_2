@@ -1,0 +1,5 @@
+id_cotizacion,usuario_c_id,usuario_v_id,envio,subtotal,total,status,aceptado,fecha_creada
+1,3,2,15.00,1000.00,1234.00,True,False,2019-10-22
+2,3,2,15.00,9999.99,199999.99,True,False,2019-10-22
+3,3,2,15.00,9998.99,19876425.00,True,False,2019-10-22
+4,3,2,55.00,14900.20,14955.20,False,True,2019-11-19

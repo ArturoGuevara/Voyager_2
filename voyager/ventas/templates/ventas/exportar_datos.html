@@ -11,44 +11,50 @@
     </div>
     <div class="row">
         <div class="col-sm-2">
-            <form>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
                 <label for="cotizaciones">Cotizaciones</label>
                 <input type="text" value="cotizaciones" id="cotizaciones" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
         <div class="col-sm-2">
-            <form>
-                <label for="cotizaciones">Usuarios</label>
-                <input type="text" value="usuario" id="usuario" name="table" hidden>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
+                <label for="usuarios">Usuarios</label>
+                <input type="text" value="usuarios" id="usuarios" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
         <div class="col-sm-2">
-            <form>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
                 <label for="muestras">Muestras</label>
                 <input type="text" value="muestras" id="muestras" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
         <div class="col-sm-2">
-            <form>
-                <label for="muestras">Análisis</label>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
+                <label for="analisis">Análisis</label>
                 <input type="text" value="analisis" id="analisis" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
         <div class="col-sm-2">
-            <form>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
                 <label for="paquetes">Paquetes</label>
                 <input type="text" value="paquetes" id="paquetes" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
         <div class="col-sm-2">
-            <form>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
                 <label for="orden">Orden Interna</label>
-                <input type="text" value="orden" id="orden" name="table" hidden>
+                <input type="text" value="ordenes" id="orden" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
@@ -56,9 +62,10 @@
     <br>
     <div class="row">
         <div class="col-sm-2">
-            <form>
-                <label for="empresa">Empresa</label>
-                <input type="text" value="empresa" id="empresa" name="table" hidden>
+            <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                {% csrf_token %}
+                <label for="empresas">Empresas</label>
+                <input type="text" value="empresas" id="empresas" name="table" hidden>
                 <button type="submit" class="btn btn-success">Descargar</button>
             </form>
         </div>
