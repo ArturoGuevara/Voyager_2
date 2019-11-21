@@ -39,7 +39,11 @@ def ingreso_cliente(request):
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
             return render(request, 'reportes/bloqueado.html')
         else:
-            return render(request, 'reportes/ingreso_muestra.html')   #Cargar la plantilla necesaria
+            analisis = Analisis.objects.all()
+            context = {
+                'analisis': analisis
+            }
+            return render(request, 'reportes/ingreso_muestra.html', context)
     else:
         raise Http404
 

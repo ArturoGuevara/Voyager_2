@@ -545,5 +545,15 @@
 </div>
 {% endblock content %}
 {% block optionalJS %}
+<script>
+    var analisis = [];
+    {% for a in analisis %}
+        var individual = [
+            '{{ a.id_analisis }}',
+            '{{ a.nombre }}'
+        ]
+        analisis.push(individual);
+    {% endfor %}
+</script>
 <script src="{% static 'reportes/js/muestras.js' %}" type="text/javascript"></script>
 {% endblock %}
