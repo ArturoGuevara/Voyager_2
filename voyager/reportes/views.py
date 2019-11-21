@@ -28,6 +28,7 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileT
 import urllib.request as urllib
 import base64
 import locale
+from flags.state import flag_enabled
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -86,6 +87,14 @@ def indexView(request):
 
 @login_required
 def ordenes_internas(request):
+
+    ordenes = {}
+    ordenes_activas = {}
+    dict_clientes = {}
+    form = None
+    response = None
+
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
@@ -93,18 +102,18 @@ def ordenes_internas(request):
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
     estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
+    if flag_enabled('Modulo_Ordenes_Internas', request=request):
+        ordenes = OrdenInterna.objects.all()
+        ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
+        for orden in ordenes_activas:
+            muestras_orden = Muestra.objects.filter(oi=orden)
+            if muestras_orden:
+                dict_clientes[orden] = muestras_orden.first().usuario
+        form = codigoDHL()
 
-    ordenes = OrdenInterna.objects.all()
-    ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
-    dict_clientes = {}
-    for orden in ordenes_activas:
-        muestras_orden = Muestra.objects.filter(oi=orden)
-        if muestras_orden:
-            dict_clientes[orden] = muestras_orden.first().usuario
-    form = codigoDHL()
 
 
-    response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
+        response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
 
 
     context = {

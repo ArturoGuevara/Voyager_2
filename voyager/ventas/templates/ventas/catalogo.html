@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Catalogo' as my_flag %}
 <div class="text-md-left text-center">
     <h2>Catálogo de Análisis
         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus análisis">
@@ -14,6 +16,7 @@
         </button>
     </h2>
 </div>
+{% if my_flag %}
 {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
 <div class="text-center text-md-right">
     <button type="button" class="btn btn-success" id="btn-agregar-analisis" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Despliega modal e ingrese información para registro de análisis."><i class="nc-icon nc-simple-add"></i> Análisis</button>
@@ -55,6 +58,9 @@
         </tbody>
     </table>
 </div>
+{% else %}
+{% include 'root/feature_not_ready.html' %}
+{% endif %}
 {% include './modals/analisis/agregar.html' %}
 {% include './modals/analisis/borrar.html' %}
 {% include './modals/analisis/visualizar.html' %}
