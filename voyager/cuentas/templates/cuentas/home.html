@@ -1,8 +1,5 @@
 {% extends 'root/base.html' %}
-<script>
-  {% block jquery%}
-  {% endblock %}
-</script>
+{% load static %}
 
 <!--Este es el front end de la forma de login-->
 {% block content %}
@@ -12,52 +9,146 @@
           <i class="fa fa-question-circle fa-lg"></i>
         </button>
     </h2>
-    <div class="text-center text-md-right">
-        <button id="btn-agregar-cot" class="btn btn-info d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione para ir a editar su información de usuario"><i class="fa fa-pen"></i> Editar</button>
+    <div id="perfil-info" class="d-inline">
+        <div class="text-center text-md-right">
+            <button id="btn-editar-perfil" class="btn btn-info d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione para ir a editar su información de usuario">  <i class="fa fa-user-edit"></i> Editar</button>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <b><label for="nombre">Nombre:</label></b>
+                        <p id="nombre">{{ifc.nombre}}</p>
+                    </div>
+                    <div class="col-4">
+                        <b><label for="apellido_p">Apellido Paterno:</label></b>
+                        <p id="apellido_p">{{ifc.apellido_paterno}}</p>
+                    </div>
+                    <div class="col-4">
+                        <b><label for="apellido_m">Apellido Materno:</label></b>
+                        <p id="apellido_m">{{ifc.apellido_materno}}</p>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-4">
+                        <b><label for="correo">Correo:</label></b>
+                        <p id="correo">{{ifc.user.email}}</p>
+                    </div>
+                    <div class="col-4">
+                        <b><label for="telefono">Teléfono:</label></b>
+                        <p id="telefono">{{ifc.telefono}}</p>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-4">
+                        <b><label for="empresa">Empresa:</label></b>
+                        <p id="empresa">{{ifc.empresa.empresa}}</p>
+                    </div>
+                    <div class="col-4">
+                        <b><label for="pago">Estado de Pago:</label></b>
+                        <p id="pago">{{ifc.estatus_pago}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <br>
-    <div class="card">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-4">
-                    <b><label for="nombre">Nombre:</label></b>
-                    <p id="nombre">{{ifc.nombre}}</p>
+    <div id="perfil-editar" class="d-none">
+        <br>
+        <div class="card">
+            <div class="card-body">
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <b><label for="nombre">Nombre:</label></b>
+                        <input type="text" name="nombre" class="form-control" value="{{ifc.nombre}}" maxlength="30" id="nombre">
+                        <div class="invalid-feedback">
+                            Por favor introduce un nombre
+                        </div>
+                    </div>
+                    <div class="form-group col-4">
+                        <b><label for="apellido_p">Apellido Paterno:</label></b>
+                        <input type="text" name="apellido_p" class="form-control" value="{{ifc.apellido_paterno}}" maxlength="30" id="apellido_p">
+                        <div class="invalid-feedback">
+                            Por favor introduce el apellido paterno
+                        </div>
+                    </div>
+                    <div class="form-group col-4">
+                        <b><label for="apellido_m">Apellido Materno:</label></b>
+                        <input type="text" name="apellido_m" class="form-control" value="{{ifc.apellido_materno}}" maxlength="30" id="apellido_m">
+                        <div class="invalid-feedback">
+                            Por favor introduce el apellido materno
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <b><label for="apellido_p">Apellido Paterno:</label></b>
-                    <p id="apellido_p">{{ifc.apellido_paterno}}</p>
+                <br>
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <b><label for="correo">Correo:</label></b>
+                        <input type="text" name="correo" class="form-control" value="{{ifc.user.email}}" maxlength="30" id="correo">
+                        <div class="invalid-feedback">
+                            Por favor introduce el correo
+                        </div>
+                    </div>
+                    <div class="form-group col-4">
+                        <b><label for="telefono">Teléfono:</label></b>
+                        <input type="text" name="telefono" class="form-control" value="{{ifc.telefono}}" maxlength="30" id="telefono">
+                        <div class="invalid-feedback">
+                            Por favor introduce el telefono
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <b><label for="apellido_m">Apellido Materno:</label></b>
-                    <p id="apellido_m">{{ifc.apellido_materno}}</p>
+                <br>
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-subtitle text-muted">Llene los campos sólo si desea cambiar la contraseña</h4><br>
+                        <div class="form-row">
+                            <div class="form-group col-4">
+                                <b><label for="pass1">Nueva Contraseña:</label></b>
+                                <input type="password" name="pass1" class="form-control" minlength="8" id="pass1">
+                            </div>
+                            <div class="form-group col-4">
+                                <b><label for="pass2">Confirmar Contraseña::</label></b>
+                                <input type="password" name="pass2" class="form-control" minlength="8" id="pass2">
+                                <div class="invalid-feedback">
+                                    Las contraseñas no coinciden
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-4">
-                    <b><label for="telefono">Teléfono:</label></b>
-                    <p id="telefono">{{ifc.telefono}}</p>
+                <h4 class="card-subtitle text-muted">Ingrese su contraseña para validar los cambios</h4><br>
+                <div class="form-row">
+                    <div class="form-group col-4">
+                        <b><label for="ver">Contraseña Actual:</label></b>
+                        <input type="password" name="ver" class="form-control" minlength="8" id="ver">
+                        <div class="invalid-feedback">
+                            Las contraseña es incorrecta
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <b><label for="correo">Correo:</label></b>
-                    <p id="correo">{{ifc.user.email}}</p>
-                </div>
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-4">
-                    <b><label for="empresa">Empresa:</label></b>
-                    <p id="empresa">{{ifc.empresa.empresa}}</p>
-                </div>
-                <div class="col-4">
-                    <b><label for="pago">Estado de Pago:</label></b>
-                    <p id="pago">{{ifc.estatus_pago}}</p>
+                <div class="row mt-1 pt-1 pb-5">
+                    <div class="col-md-7">
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-lg-2">
+                        <button id="btn-cancelar-perfil" class="btn btn-danger btn-block d-inline">Cancelar</button>
+                    </div>
+                    <div class="col-md-2 col-sm-2 col-lg-2">
+                        <button id="btn-guardar-perfil" class="btn btn-success btn-block d-inline">Guardar</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+{% include './modals/info_usuario.html' %}
 
+{% endblock content %}
 
-
+{% block optionalJS %}
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="{% static 'cuentas/js/table.js' %}" type="text/javascript"></script>
+    <script src="{% static 'cuentas/js/perfil.js' %}" type="text/javascript"></script>
+    <script src="{% static 'cuentas/js/notificaciones_usuario.js' %}" type="text/javascript"></script>
 {% endblock %}
