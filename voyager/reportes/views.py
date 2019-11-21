@@ -99,7 +99,8 @@ def ordenes_internas(request):
     dict_clientes = {}
     for orden in ordenes_activas:
         muestras_orden = Muestra.objects.filter(oi=orden)
-        dict_clientes[orden] = muestras_orden.first().usuario
+        if muestras_orden:
+            dict_clientes[orden] = muestras_orden.first().usuario
     form = codigoDHL()
 
 
