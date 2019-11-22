@@ -1,3 +1,7 @@
+$( document ).ready(function() {
+    $('#terminos').hide();          // Ocultar elementos que solo aparecen para el PDF
+    $('#terminos-img').hide();
+});
 // ######### USV04-04 ########
 function visualizar_cotizacion(id) {
     // Verificar que el analisis existe
@@ -122,3 +126,16 @@ function error_datos_cotizacion() {
     $('#n_total').html("");
     $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }
+
+$('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
+    $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
+    $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#terminos').show();                                              // Mostrar terminos y logo para el PDF
+    $('#terminos-img').show();
+    var printContents = document.getElementById("pdf-content").innerHTML;   // Acciones para detonar la impresion desde el navegador
+    var originalContents = document.body.innerHTML;
+	document.body.innerHTML = printContents;
+	window.print();
+	document.body.innerHTML = originalContents;
+    location.reload();
+});
