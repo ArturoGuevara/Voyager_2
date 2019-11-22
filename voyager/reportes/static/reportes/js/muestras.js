@@ -136,6 +136,7 @@ function validar_ingreso_muestra(){
     validar_producto_procesado();
     validar_producto_microbiologia();
     validar_producto_agricola();
+    enviar_ingreso_muestra();
 }
 function validar_producto_agricola(){
     // Validamos los arreglos de inputs
@@ -244,4 +245,96 @@ function validar_producto_microbiologia(){
         var id = $(this).data('id');
         check_is_not_empty($(this).val(),'#metodo-referenciaMB-'+id);
     });
+}
+
+function enviar_ingreso_muestra(){
+    // Obtener valor de los inputs
+    var nombre = $('#nombre').val();
+    var direccion = $('#direccion').val();
+    var pais = $('#pais').val();
+    var estado = $('#estado').val();
+    var idioma = $('#idioma').val();
+    
+    // Información de formato agrícola (19 arreglos)
+    var productoAG = iterar_input("productoAG","input");
+    var variedadAG = iterar_input("variedadAG","input");
+    var paisOrigenAG = iterar_input("paisOrigenAG","input");
+    var codigoMuestraAG = iterar_input("codigoMuestraAG","input");
+    var proveedorAG = iterar_input("proveedorAG","input");
+    var codigoTrazabilidadAG = iterar_input("codigoTrazabilidadAG","input");
+    var agricultorAG = iterar_input("agricultorAG","input");
+    var direccionAG = iterar_input("direccionAG","input");
+    var parcelaAG = iterar_input("parcelaAG","input");
+    var ubicacionMuestreoAG = iterar_input("ubicacionMuestreoAG","input");
+    var fechaMuestreoAG = iterar_input("fechaMuestreoAG","input");
+    var urgenteAG = iterar_input("urgenteAG","input");
+    var muestreadorAG = iterar_input("muestreadorAG","input");
+    var paisDestinoAG = iterar_input("paisDestinoAG","input");
+    var analisis1AG = iterar_input("analisis1AG","select");
+    var analisis2AG = iterar_input("analisis2AG","select");
+    var analisis3AG = iterar_input("analisis3AG","select");
+    var analisis4AG = iterar_input("analisis4AG","select");
+    var analisis5AG = iterar_input("analisis5AG","select");
+    var analisis6AG = iterar_input("analisis6AG","select");
+    
+    // Información de formato de producto procesado (8 arreglos)
+    var tipoMuestraPR = iterar_input("tipoMuestraPR","input");
+    var descripcionMuestraPR = iterar_input("descripcionMuestraPR","input");
+    var fechaMuestreoPR = iterar_input("fechaMuestreoPR","input");
+    var analisis1PR = iterar_input("analisis1PR","select");
+    var analisis2PR = iterar_input("analisis2PR","select");
+    var analisis3PR = iterar_input("analisis3PR","select");
+    var analisis4PR = iterar_input("analisis4PR","select");
+    var analisis5PR = iterar_input("analisis5PR","select");
+    var analisis6PR = iterar_input("analisis6PR","select");
+    
+    // Información de formato de microbiología (10 arreglos)
+    var tipoMuestraMB = iterar_input("tipoMuestraMB","input");
+    var loteCodigoMB = iterar_input("loteCodigoMB","input");
+    var muestreadorMB = iterar_input("muestreadorMB","input");
+    var fechaMuestreoMB = iterar_input("fechaMuestreoMB","input");
+    var metodoReferenciaMB = iterar_input("metodoReferenciaMB","input");
+    var analisis1MB = iterar_input("analisis1MB","select");
+    var analisis2MB = iterar_input("analisis2MB","select");
+    var analisis3MB = iterar_input("analisis3MB","select");
+    var analisis4MB = iterar_input("analisis4MB","select");
+    var analisis5MB = iterar_input("analisis5MB","select");
+    var analisis6MB = iterar_input("analisis6MB","select");
+    
+    // Obtenemos el token de django para el ajax
+    var token = csrftoken;
+/*
+    $.ajax({
+        url: "registrar_ingreso_muestra/",
+        dataType: 'json',
+        // Seleccionar información que se mandara al controlador
+        data: {
+            cliente: cliente,
+            subtotal: subtotal,
+            total: total,
+            envio: envio,
+            'checked[]': checked,
+            'cantidades[]': cantidades,
+            'ivas[]': ivas,
+            'descuentos[]': descuentos,
+            'totales[]': totales,
+            'csrfmiddlewaretoken': token
+        },
+        type: "POST",
+        success: function (response) {
+            
+        },
+        error: function (data) {
+            //alert(data.status);
+            //alert(data.responseJSON.error);
+        }
+    }); */
+}
+
+function iterar_input(name, type){
+    var aux = [];
+    $(type+"[name='"+name+"[]']").each(function () {
+        aux.push($(this).val());
+    });
+    return aux;
 }
