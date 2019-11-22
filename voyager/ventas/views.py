@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais
+from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
 from cuentas.models import IFCUsuario, Empresa
 from django.contrib.auth.models import User
 from django.http import JsonResponse
@@ -15,9 +15,10 @@ import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 from django.core.serializers.json import DjangoJSONEncoder
+import random
+import csv
+from reportes.forms import codigoDHL
 from flags.state import flag_enabled
-
-
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -519,6 +520,107 @@ def aceptar_cotizacion(request, id):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 ############### USV16-50 ###################
+
+############### USV18-52 ###################
+@login_required
+def exportar_datos(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    if request.session.get('success_code',None) == None:
+        request.session['success_code'] = 0
+    context = {'success_code': request.session['success_code'],}
+    request.session['success_code'] = 0
+    if flag_enabled('Modulo_Catalogo', request=request):
+        context = {'success_code': request.session['success_code'], }
+    else:
+        context = {}
+    return render(request, 'ventas/exportar_datos.html',context)
+
+@login_required
+def generar_csv_respaldo(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get("table"):
+        raise Http404
+    table = request.POST["table"]
+    all_rows = None
+    field_names = []
+    if table == "cotizaciones":
+        all_rows = Cotizacion.objects.all()
+    elif table == "usuarios":
+        all_rows = IFCUsuario.objects.all()
+    elif table == "muestras":
+        all_rows = Muestra.objects.all()
+    elif table == "analisis":
+        all_rows = Analisis.objects.all()
+    elif table == "paquetes":
+        all_rows = Paquete.objects.all()
+    elif table == "ordenes":
+        all_rows = OrdenInterna.objects.all()
+    elif table == "empresas":
+        all_rows = Empresa.objects.all()
+    else:
+        raise Http404
+    for dicts in all_rows.values():
+        field_names = dicts.keys()
+        break
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+table+'.csv"'
+    writer = csv.DictWriter(response,fieldnames=field_names)
+    writer.writeheader()
+    for row in all_rows.values():
+        writer.writerow(row)
+    return response
+
+@login_required
+def descargar_paquete(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get("codigo_dhl"):
+        raise Http404
+    form = codigoDHL(request.POST)
+    if not form.is_valid():
+        request.session['success_code'] = -1
+        return redirect('/ventas/exportar_datos')
+    codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
+    paquetes = Paquete.objects.filter(codigo_dhl = codigo)
+    paquete = None
+    if not paquetes:
+        request.session['success_code'] = -1
+        return redirect('/ventas/exportar_datos')
+    else:
+        paquete = paquetes.first()
+    field_names = []
+    all_rows = Muestra.objects.filter(paquete = paquete)
+    for dicts in all_rows.values():
+        field_names = dicts.keys()
+        break
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+codigo+'.csv"'
+    writer = csv.DictWriter(response,fieldnames=field_names)
+    writer.writeheader()
+    for row in all_rows.values():
+        writer.writerow(row)
+    return response
 
 
 # EXTRAS
