@@ -20,4 +20,7 @@ urlpatterns = [
     path('', views.indexView, name=''),
     path('clientes/',views.lista_clientes, name='clientes'),
     path('notificar_crear_cliente/', views.notificar_crear_cliente, name='notificar_crear_cliente'),
+    path('guardar_perfil/', views.guardar_perfil, name='guardar_perfil'),
+    path('notificar_guardar_perfil/', views.notificar_guardar_perfil, name='notificar_guardar_perfil'),
+    path('notificar_error_perfil/', views.notificar_error_perfil, name='notificar_error_perfil'),
 ]

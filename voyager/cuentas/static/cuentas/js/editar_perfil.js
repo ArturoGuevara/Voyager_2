@@ -1,11 +1,18 @@
 //######### USA09-45 ########
 
-/* Funciones que se ejecutan al cargar la página */
-$(document).ready(function() {
-    // Cuando se cierra el modal para confirmar el borrado de la cotizacion, reajusta la variable global a 0
-    $('#guardar_perfil').on('hidden.bs.modal', function () {
-       id_perfil = 0;
-    });
+$('#pass1').change(function(){
+    if($('#pass2').val() != $(this).val()) {
+        $('#pass2').addClass('is-invalid');
+    }
+    else{
+        $('#pass2').removeClass('is-invalid');
+    }
+    if($(this).val().length < 8){
+        $(this).addClass('is-invalid');
+    }
+    else{
+        $(this).removeClass('is-invalid');
+    }
 });
 
 $('#pass2').change(function(){
@@ -16,12 +23,6 @@ $('#pass2').change(function(){
         $(this).removeClass('is-invalid');
     }
 });
-
-function guardar_perfil(id){
-    if (id > 0){
-        id_perfil = id;     // Carga el id de la cotización que se quiere borrar en la variable global
-    }
-}
 
 function confirmar_guardar_perfil(){
     // Obtenemos el token de django para el ajax
@@ -55,6 +56,23 @@ function confirmar_guardar_perfil(){
       }
     }
 
+    if(pass1 != ""){
+      if(pass1.length >= 8){
+        $('#pass1').removeClass('is-invalid');
+        if(pass1 != pass2){
+          $('#pass2').addClass('is-invalid');
+          flag = false;
+        }
+        else{
+          $('#pass2').removeClass('is-invalid');
+        }
+      }
+      else{
+        $('#pass1').addClass('is-invalid');
+        flag = false;
+      }
+    }
+
     var confirmar = check_is_not_empty(ver, '#ver');
 
     if(confirmar == false){
@@ -65,21 +83,29 @@ function confirmar_guardar_perfil(){
         $('#ver').removeClass('is-invalid');
     }
 
-    if (id_perfil > 0 && flag){
+    if (flag){
         // Guardar variables globales en locales
-        var id =  id_perfil;
         var token = csrftoken;
         $.ajax({
-            url: "editar_perfil/"+id,
+            url: "/cuentas/guardar_perfil/",
             // Seleccionar información que se mandara al controlador
             data: {
-                id:id,
+                nombre: nombre,
+                a_p: a_p,
+                a_m: a_m,
+                correo: correo,
+                telefono: telefono,
+                pass1: pass1,
+                pass2: pass2,
+                ver: ver,
                 'csrfmiddlewaretoken': token
             },
             type: "POST",
             success: function(){
-                id_perfil = 0;
                 $('#guardar_perfil').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
+                setTimeout(function () {
+                    location.reload();
+                }, 100);
             },
         });
 

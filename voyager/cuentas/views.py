@@ -13,6 +13,7 @@ from django.http import Http404
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 
@@ -319,6 +320,69 @@ def notificar_crear_cliente(request):         # Funcion que se llama con un ajax
     if 'crear_cliente_status' in request.session:
         result = request.session['crear_cliente_status']
         del request.session['crear_cliente_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def guardar_perfil(request):
+    if not request.session._session:
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not (request.POST.get('nombre')
+            and request.POST.get('a_p')
+            and request.POST.get('a_m')
+            and request.POST.get('correo')
+            and request.POST.get('telefono')
+            and request.POST.get('ver')
+        ): #verificar que se envían todos los datos
+        request.session['guardar_perfil_status'] = False
+        return redirect('/cuentas/home/') #redirigir a home
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    num_mails = User.objects.filter(email=request.POST.get('correo'))
+    total = 0
+    for u in num_mails:
+        if (u.pk == user_logged.user.pk):
+            total = 1
+    if num_mails.count() > total: #verificar que no haya usuarios con el mismo correo
+        request.session['guardar_perfil_status'] = False
+        return redirect('/cuentas/home/') #redirigir a home
+    if not (check_password(request.POST.get('ver'), user_logged.user.password)):
+        request.session['error_perfil_status'] = True
+        return redirect('/cuentas/home/') #redirigir a home
+    user = user_logged.user
+    user.email = request.POST.get('correo')
+    if (request.POST.get('pass1') != "" and request.POST.get('pass2') != ""):
+        if (request.POST.get('pass1') == request.POST.get('pass2')): #verificar que las contraseñas sean iguales
+            user.set_password(request.POST.get('pass1'))
+        else:
+            request.session['guardar_perfil_status'] = False
+            return redirect('/cuentas/home/') #redirigir a home
+    user.save()
+    update_session_auth_hash(request, user)
+    user_logged.nombre = request.POST.get('nombre')
+    user_logged.apellido_paterno = request.POST.get('a_p')
+    user_logged.apellido_materno = request.POST.get('a_m')
+    user_logged.telefono = request.POST.get('telefono')
+    user_logged.save() #guardar nuevo cliente
+    request.session['guardar_perfil_status'] = True
+    return redirect('/cuentas/home/') #redirigir a home
+
+@login_required
+def notificar_guardar_perfil(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'guardar_perfil_status' in request.session:
+        result = request.session['guardar_perfil_status']
+        del request.session['guardar_perfil_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def notificar_error_perfil(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'error_perfil_status' in request.session:
+        result = request.session['error_perfil_status']
+        del request.session['error_perfil_status']
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})
