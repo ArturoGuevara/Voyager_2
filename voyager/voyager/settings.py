@@ -82,7 +82,7 @@ TEMPLATES = [
 ]
 
 FLAGS = {
-    
+
     'Modulo_Cotizaciones': [
         {'condition': 'boolean', 'value': True},
     ],
