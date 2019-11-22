@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="exampleModalLongTitle">Información de Análisis</h5>
+                <h3 class="modal-title w-100 text-center" id="exampleModalLongTitle">Información de Análisis</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -23,7 +23,20 @@
                             Precio: <span id="precio_analisis" class="text-justify font-weight-normal">$1,000</span>
                         </div>
                         <div class="col-sm-12 col-md-6 font-weight-bold">
-                            Fecha: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                            Duración aproximada: <span id="fecha_analisis" class="text-justify font-weight-normal">01/10/2019</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            Cantidad mínima: <span id="cantidad_min_analisis" class="text-justify font-weight-normal">5kg</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6 font-weight-bold">
+                            País: <span id="pais_analisis" class="text-justify font-weight-normal">Wakanda</span>
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-sm-12 font-weight-bold">
+                            Acreditación: <span id="acreditacion_analisis" class="text-justify font-weight-normal">Nope</span>
                         </div>
                     </div>
                     <div class="row my-3">
@@ -33,9 +46,6 @@
                     </div>
                 </div>
                 <div class="d-none m-4" id="editar_info">
-                    <div class="alert alert-danger d-none" id="edit-analisis-error">
-                        <strong>¡Error! </strong><span id="message-error-alert"></span>
-                    </div>
                     <form>
                         <div class="form-row">
                             <div class="form-group col-md-6">
@@ -56,31 +66,68 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="inputPrecio">Precio</label>
-                                <input type="text" class="form-control input-analisis" id="editar_precio_analisis" placeholder="3500">
+                                <input type="number" class="form-control input-analisis" id="editar_precio_analisis" placeholder="3500" onchange="check_is_negative(this.value,this.id)" min=0>
                                 <div class="invalid-feedback">
                                     Por favor introduce un precio
                                 </div>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="inputFecha">Fecha</label>
-                                <input type="text" class="form-control input-analisis" id="editar_fecha_analisis" placeholder="3">
-                                <div class="invalid-feedback">
-                                    Por favor introduce un número de días
-                                </div>
+                                <label for="inputDuracion">Duración aproximada</label>
+                                <input type="text" class="form-control input-analisis" readonly id="editar-duracion" name="editar-duracion">
+                                <div id="slider-range-editar"></div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputDescripcion">Descripción</label>
-                            <input type="text" class="form-control input-analisis" id="editar_desc_analisis" placeholder="Descripción de Análisis">
+                            <textarea class="form-control input-analisis" id="editar_desc_analisis" placeholder="Descripción de Análisis"></textarea>
                             <div class="invalid-feedback">
                                 Por favor introduce una descripción
                             </div>
                         </div>
-                    </form>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="inputCantidad">Cantidad de muestra mínima</label>
+                            <input type="text" class="form-control input-analisis" id="editar_cantidad" placeholder="500gr">
+                            <div class="invalid-feedback">
+                                Por favor introduce la cantidad de muestra mínima
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                                <label for="pais">País</label>
+                                <select class="form-control" id="editar_pais" name="pais">
+                                    {% for pais in paises %}
+                                        <option id="editar_pais_{{pais.id_pais}}" value="{{pais.id_pais}}">{{pais.nombre}}</option>
+                                    {% endfor%}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor selecciona el país del análisis
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        Acreditación
+                        <div class="col">
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="editar_acreditacion_1" value="1">
+                                <label class="form-check-label" for="acreditacion">
+                                Si
+                                </label>
+                            </div>
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="editar_acreditacion_2" value="0">
+                                <label class="form-check-label" for="acreditacion">
+                                No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
                 </div>
             </div>
             <div class="modal-footer">
+                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
                 <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
+                {% endif %}
                 <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Guardar</button>
             </div>
         </div>

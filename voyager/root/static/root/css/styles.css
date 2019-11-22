@@ -1,0 +1,35 @@
+.btn {
+    cursor: pointer !important;
+}
+
+table th:hover{
+    font-weight: bolder !important;
+    cursor: pointer !important;
+}
+
+/* MEDIA QUERIES */
+/*  Device = Tablets, Ipads (portrait) Screen = B/w 768px to 1024px | iPad Pro Portrait */
+@media (min-width: 768px) and (max-width: 1024px) {
+    
+}
+
+/*  Device = Tablets, Ipads (landscape) Screen = B/w 768px to 1024px | iPad, Pixel LG 2 y iPhone X Landscape */
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    div.modal-backdrop.fade.show{
+        display: none !important;
+    }
+}
+
+/* Device = Low Resolution Tablets, Mobiles (Landscape) Screen = B/w 481px to 767px | iPad Portrait, Celulares Landscape */
+@media (min-width: 575px) and (max-width: 768px) {
+    div.modal-backdrop.fade.show{
+        display: none !important;
+    }
+}
+
+/* Device = Most of the Smartphones Mobiles (Portrait) Screen = B/w 320px to 479px | Celulares Portrait */
+@media (min-width: 320px) and (max-width: 575px) {
+    div.modal-backdrop.fade.show{
+        display: none !important;
+    }
+}

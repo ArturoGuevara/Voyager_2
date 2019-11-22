@@ -1,0 +1,17 @@
+<!-- Vista principal de la USV07-07 -->
+{% extends 'root/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<h1>Ventas</h1>
+<div class="text-center text-md-right">
+    <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Este botón te sirve para agregar un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
+</div>
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
+{% endblock %}

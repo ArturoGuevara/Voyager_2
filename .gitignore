@@ -130,3 +130,9 @@ venv.bak/
 .idea/**/sonarIssues.xml
 .idea/**/markdown-navigator.xml
 .idea/**/markdown-navigator/
+
+#Ignorar Migraciones
+**/migrations/**
+voyager/voyager/settings.py
+
+/voyager/API_KEY.txt

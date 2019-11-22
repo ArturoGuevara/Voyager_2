@@ -1,0 +1,101 @@
+<!-- Modal que forma parte de la USV07-07 -->
+<div class="modal fade" id="agregar_analisis" tabindex="-1" role="dialog" aria-labelledby="agragar_analisis_modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title w-100 text-center" id="exampleModalLongTitle">Agregar Análisis</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="{% url 'agregar_analisis' %}" method="POST" id="submit-analisis-form">
+                    {% csrf_token %}
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="nombre">Nombre corto</label>
+                            <input type="text" maxlength="100" class="form-control" id="nombre" placeholder="Pesticidas" name="nombre">
+                            <div class="invalid-feedback">
+                                Por favor introduce un nombre corto
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                            <div class="col">
+                                <label for="descripcion">Descripción</label>
+                                <textarea rows="10" maxlength="100" class="md-textarea form-control" id="descripcion" name="descripcion" placeholder="Introduce una descripción."></textarea>
+                                <div class="invalid-feedback">
+                                    Por favor introduce una descripción
+                                </div>
+                            </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="codigo">Código</label>
+                            <input type="text" maxlength="50" class="form-control" id="codigo" placeholder="H-DPL001" name="codigo">
+                            <div class="invalid-feedback">
+                                Por favor introduce un código
+                            </div>
+                        </div>
+                        <div class="col">
+                                <label for="precio">Precio</label>
+                                <input type="number" class="form-control" id="precio" placeholder="$100.00" name="precio" onchange="check_is_negative(this.value,this.id)" min=0>
+                                <div class="invalid-feedback">
+                                    Por favor introduce un precio
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="unidad_min">Cantidad de muestra mínima</label>
+                            <input type="text" maxlength="50" class="form-control" id="unidad_min" placeholder="500 gr." name="unidad_min">
+                            <div class="invalid-feedback">
+                                Por favor introduce una cantidad de muestra mínima
+                            </div>
+                        </div>
+                        <div class="col">
+                                <label for="pais">País</label>
+                                <select class="form-control" id="pais" name="pais">
+                                        <option value="" disabled selected>Seleccione un país...</option>
+                                    {% for pais in paises %}
+                                        <option value="{{pais.id_pais}}">{{pais.nombre}}</option>
+                                    {% endfor%}
+                                </select>
+                                <div class="invalid-feedback">
+                                    Por favor introduce un país
+                                </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-5">
+                                <label for="duracion">Duración aproximada</label>
+                                <input type="text" class="form-control" readonly id="duracion" name="duracion" >
+                                <div id="slider-range"></div>
+                        </div>
+                    </div>
+                    <div class="form-row mt-3 mt-lg-5">
+                        Acreditación
+                        <div class="col">
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion_1" value=1>
+                                <label class="form-check-label" for="acreditacion">
+                                Sí
+                                </label>
+                            </div>
+                            <div class="form-check ml-5">
+                                <input class="form-check-input" type="radio" name="acreditacion" id="acreditacion_2" value=0 checked>
+                                <label class="form-check-label" for="acreditacion">
+                                No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer" align-items-center>
+                        <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
+                        <button type="button" class="btn btn-success" id="submit-analisis-button">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

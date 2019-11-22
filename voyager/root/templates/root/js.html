@@ -1,14 +1,32 @@
 {% load static %}
-<!--   Core JS Files   -->
+<!-- Core JS Files -->
 <script src="{% static 'root/js/core/jquery.3.2.1.min.js' %}" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="{% static 'root/js/core/popper.min.js' %}" type="text/javascript"></script>
 <script src="{% static 'root/js/core/bootstrap.min.js' %}" type="text/javascript"></script>
 
-<!--   Optional JS -->
+<!-- Optional Plugin JS -->
 <script src="{% static 'root/js/plugins/bootstrap-switch.js' %}"></script><!--  Plugin for Switches -->
 <script src="{% static 'root/js/plugins/chartist.min.js' %}"></script><!--  Chartist Plugin  -->
 <script src="{% static 'root/js/plugins/bootstrap-notify.js' %}"></script><!--  Notifications Plugin    -->
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script> <!-- Tables Plugin -->
 
 <!-- Light Bootstrap Template JS -->
 <script src="{% static 'root/js/light-bootstrap-dashboard.js' %}" type="text/javascript"></script>
+
+<!-- Archivos Opcionales Creados por el Equipo -->
+<script src="{% static 'root/js/voyager/notificaciones.js' %}" type="text/javascript"></script>
+<script src="{% static 'root/js/voyager/validaciones.js' %}" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+        // Inicializar popovers
+        $('[data-toggle="popover"]').popover({
+            html: true,
+            content: function () {
+            return '<img class="img-fluid" src="'+$(this).data('img') + '" />';
+            }
+        });
+        // Inicializar datepickers
+        $(".datepicker" ).datepicker();
+    });
+</script>

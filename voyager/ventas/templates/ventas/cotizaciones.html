@@ -1,0 +1,127 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block optionalCSS %}
+    <link href="{% static 'ventas/css/styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Cotizaciones' as my_flag %}
+
+    <div class="text-md-left text-center">
+        <h2>Cotizaciones
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus cotizaciones">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        </h2>
+    </div>
+    {% if my_flag %}
+    <div class="text-center text-md-right">
+        {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+            <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione los análisis para crear una nueva cotización"><i class="nc-icon nc-simple-add"></i> Cotización</button>
+            <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Genera resumen para que llene últimos campos">Continuar</button>
+            <button id="btn-cancelar-cot" class="btn btn-danger d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Regresa a la tabla de cotizaciones">Cancelar</button>
+        {% endif %}
+    </div>
+    <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
+        <table class="table table-hover table-responsive table-striped" id="tabla_cotizaciones">
+            <thead>
+                <th># ID <i class="fa fa-sort"></i></th>
+                <th>Cliente <i class="fa fa-sort"></i></th>
+                <th>Vendedor <i class="fa fa-sort"></i></th>
+                <th>Total <i class="fa fa-sort"></i></th>
+                <th>Fecha creada <i class="fa fa-sort"></i></th>
+                <th>Estado <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+            </thead>
+            <tbody id="row-container-cots">
+                {% for c in cotizaciones %}
+                {% if c.status == True %}
+                <tr class="cot-row" data-id="{{c.id_cotizacion}}" id="cotizaciones-{{c.id_cotizacion}}">
+                    <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
+                    <td class="pt-3 cotizaciones_cliente">{{ c.usuario_c }}</td>
+                    <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
+                    <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
+                    <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
+                    {% if c.aceptado == True %}
+                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Aceptado</td>
+                    {% else %}
+                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Pendiente</td>
+                    {% endif %}
+                    <td class="pt-3 cotizaciones_acciones">
+                        <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        {% if request.session.userrole == "Ventas" or request.session.userrole == "SuperUser" %}
+                          {% if c.aceptado == False %}
+                            <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
+                                <i class='fa fa-check'></i>
+                            </button>
+                          {% endif %}
+                            <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
+                                <i class='fa fa-trash'></i>
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div id="container-analisis" class="table-responsive table-full-width d-none">
+        <table class="table table-hover table-responsive table-striped" id="tabla_analisis_2">
+            <thead>
+                <th>Código <i class="fa fa-sort"></i></th>
+                <th>Nombre <i class="fa fa-sort"></i></th>
+                <th>Descripción <i class="fa fa-sort"></i></th>
+                <th>Precio <i class="fa fa-sort"></i></th>
+                <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información extra de análisis.">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Seleccione análisis para agregar a cotización">Checkbox</th>
+            </thead>
+            <tbody>
+                {% for a in analisis %}
+                <tr>
+                    <td>{{ a.codigo }}</td>
+                    <td>{{ a.nombre }}</td>
+                    <td>{{ a.descripcion }}</td>
+                    <td>${{ a.precio }}</td>
+                    <td>{{ a.tiempo }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
+                    </td>
+                    <td>
+                        <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    {% include 'root/feature_not_ready.html' %}
+    {% endif %}
+    {% include './modals/cotizaciones/agregar.html' %}
+    {% include './modals/cotizaciones/visualizar.html' %}
+    {% include './modals/cotizaciones/borrar-cot.html' %}
+    {% include './modals/cotizaciones/aceptar-cot.html' %}
+    {% include './modals/analisis/visualizar.html' %}
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/agregar.js' %}" type="text/javascript"></script>
+    {% if request.session.userrole == "Cliente" or request.session.userrole == "Director" %}
+    <script src="{% static 'ventas/js/cotizaciones/visualizar_para_cliente.js' %}" type="text/javascript"></script>
+    {% else %}
+    <script src="{% static 'ventas/js/cotizaciones/visualizar.js' %}" type="text/javascript"></script>
+    {% endif %}
+    <script src="{% static 'ventas/js/cotizaciones/editar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/borrar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/aceptar_cotizacion.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/analisis/editar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/analisis/catalogo.js' %}" type="text/javascript"></script>
+{% endblock %}

@@ -10,7 +10,6 @@ function estado(){
     estado = document.getElementById("estado2");
     estado.hidden = true;
     estado.required = false;
-    estado.required = true;
     estado.value = "";
   }
   else {

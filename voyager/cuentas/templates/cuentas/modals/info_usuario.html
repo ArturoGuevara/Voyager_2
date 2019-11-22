@@ -1,0 +1,81 @@
+<div class="modal fade" id="modal_info_usuario" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title w-100 text-center" id="exampleModalLongTitle">Información de usuario</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="form" >
+                <div class="modal-body">
+                    <div class="form-row">
+                        <input type="hidden" class="form-control" id="id_usuario" name="id_usuario">
+                        <div class="form-group col-md-4">
+                            <b><label for="nombre">Nombre</label></b>
+                            <p id="nombre">Juan José</p>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <b><label for="apellido_paterno">Apellido Paterno</label></b>
+                            <p id="apellido_paterno">Perez</p>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <b><label for="apellido_materno">Apellido Materno</label></b>
+                            <p id="apellido_materno">Juárez</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <b><label for="correo">Correo</label></b>
+                            <p id="correo">juan@gmail.com</p>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <b><label for="telefono">Teléfono</label></b>
+                            <p id="telefono">4672457457</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <b><label for="empresa">Empresa</label></b>
+                            <p id="empresa">Agrícolas incorporados</p>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <b><label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Actualice el estado de un cliente, si ya pagó, si debe dinero o si no aplica">
+                                <i class="fa fa-question-circle fa-sm"></i>
+                            </button></label></b>
+                            <select name="inputEstatus" id="inputEstatus" class="form-control">
+                                <option name="NA" id="NA">NA</option>
+                                <option name="Deudor" id="Deudor">Deudor</option>
+                                <option name="Pagado" id="Pagado">Pagado</option>
+                            </select>
+                            <!-- <b><label for="estatus">Estatus</label></b>
+                            <p id="estatus">Estatus de pago</p> -->
+                        </div>
+                    </div>
+                    <div class="form-row d-none" id="ordenes_pendientes" name = "ordenes_pendientes">
+                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                            <table class="table table-sm table-bordered table-striped mb-0" id="tabla_usuario" name="tabla_usuario">
+                                <thead>
+                                    <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Estatus</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla_cont" name="tabla_cont">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer mt-3">
+                    <div class="float-left">
+                        <button type="button" class="btn btn-secondary ml-auto border-0" data-dismiss="modal">Cerrar</button>
+                    </div>
+                    {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
+                    <button name="submitForm" id="submitForm" type="button" class="btn btn-success ml-3">Guardar</button>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

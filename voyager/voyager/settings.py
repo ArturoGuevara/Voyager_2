@@ -25,6 +25,11 @@ SECRET_KEY = 'e83dv9no3+9j%i^4en2&lbdj_vq0i9k!)6*b0cl=8eoxn28_ku'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+#comentario
+#comentario2
+#comentario3
+#comentario4
+
 ALLOWED_HOSTS = []
 
 
@@ -42,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'flags',
 
 
 ]
@@ -54,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'flags.middleware.FlagConditionsMiddleware',
 ]
 
 ROOT_URLCONF = 'voyager.urls'
@@ -74,9 +81,29 @@ TEMPLATES = [
     },
 ]
 
+FLAGS = {
+    
+    'Modulo_Cotizaciones': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Catalogo': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ingresar_Muestra': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ordenes_Internas': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Usuarios': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'FLAG_WITH_REQUIRED_CONDITIONS': []
+}
+#
 WSGI_APPLICATION = 'voyager.wsgi.application'
-LOGIN_REDIRECT_URL = 'cuentas/home/'
-LOGOUT_REDIRECT_URL = 'cuenas/login/'
+LOGIN_REDIRECT_URL = '/cuentas/home/'
+LOGOUT_REDIRECT_URL = '/cuentas/login/'
 LOGIN_URL = '/cuentas/login'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases

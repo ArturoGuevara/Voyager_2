@@ -1,0 +1,89 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h1>Crear Cliente</h1>
+    <div class="card col-12">
+        <form action="../guardar_cliente/" method="post" id="form_client">
+            {% csrf_token %}
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="{{ form.nombre.id_for_label }}">Nombre:</label>
+                    {{ form.nombre }}
+                </div>
+
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="{{ form.apellido_paterno.id_for_label }}">Apellido Paterno:</label>
+                    {{ form.apellido_paterno }}
+                </div>
+
+                <div class="fieldWrapper col-sm-4 col-md-4 col-lg-4">
+                    <label for="{{ form.apellido_materno.id_for_label }}">Apellido Materno:</label>
+                    {{ form.apellido_materno }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="{{ form.correo.id_for_label }}">Correo Electrónico:</label>
+                    {{ form.correo }}
+                    <div class="invalid_mail p-3" hidden>
+                        <p style="color:red">Este correo ha sido usado</p>
+                    </div>
+                </div>
+
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="{{ form.telefono.id_for_label }}">Teléfono:</label>
+                    {{ form.telefono }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="{{ form.contraseña.id_for_label }}">Contraseña:</label>
+                    {{ form.contraseña }}
+                </div>
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="{{ form.contraseña2.id_for_label }}">Confirmar Contraseña:</label>
+                    {{ form.contraseña2 }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="invalid_password p-3" hidden>
+                    <p style="color:red">Las contraseñas no coinciden</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="fieldWrapper col-sm-6 col-md-6 col-lg-6">
+                    <label for="{{ form.empresa.id_for_label }}">Empresa:</label>
+                    {{ form.empresa }}
+                </div>
+
+            </div>
+                <div class="row mt-1 pt-1 pb-5">
+                <div class="col-md-7">
+                </div>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <a href="{% url 'usuarios' %}" class="btn btn-danger btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Cancelar la creación de un nuevo usuario">
+                            Cancelar
+                    </a>
+                </div>
+                <div class="col-md-2 col-sm-2 col-lg-2">
+                    <button type="submit" id="submit" class="btn btn-success btn-block"
+                        data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                        data-content="Crear un nuevo usuario de cliente">
+                            Crear
+                    </button>
+                </div>
+              </div>
+        </form>
+    </div>
+{% endblock %}
+
+{% block optionalJS %}
+  <script src="{% static 'cuentas/js/createclientvalidations.js' %}" type="text/javascript"></script>
+{% endblock %}
