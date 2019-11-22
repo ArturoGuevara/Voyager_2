@@ -622,6 +622,50 @@ def descargar_paquete(request):
         writer.writerow(row)
     return response
 
+@login_required
+def cargar_csv(request): #envía un archivo de resultados por correo
+    if request.method != 'POST': #Si no se envía un post, el acceso es denegado
+        raise Http404
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
+    #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Soporte"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre == "SuperUser"
+        ):
+        raise Http404
+    mail_code = 0
+    if request.method == 'POST':
+        form = EnviarResultadosForm(request.POST, request.FILES)
+        if form.is_valid():
+            mail_code = handle_upload_document(request.FILES['archivo_resultados'],
+                                        request.POST.get('email_destino'),
+                                        request.POST.get('subject'),
+                                        request.POST.get('body'),
+                                        request.POST.get('muestra'),
+                                   )
+        else:
+            raise Http404
+    if mail_code == 202: #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
+        request.session['success_sent'] = 1
+    else:
+        request.session['success_sent'] = -1
+    return redirect('/reportes/ordenes_internas')
+
+def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
+    path = './archivos-reportes/resultados'
+    path += str(datetime.date.today())
+    path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    muestras = Muestra.objects.filter(id_muestra=muestra)
+    if muestras:
+        muestra_object = muestras.first()
+        muestra_object.link_resultados = path
+        muestra_object.save()
+    else:
+        return 404
+    with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
+        for chunk in file.chunks():
+            destination.write(chunk)
+    return send_mail(path,dest,subject,body)
 
 # EXTRAS
 def is_not_empty(data):
