@@ -233,9 +233,7 @@
                                             <table class="table table-striped" id="tabla-micro">
                                                 <thead>
                                                     <tr>
-                                                        <th>#</th>
                                                         <th>Tipo de Muestra</th>
-                                                        <th>Nombre Cliente</th>
                                                         <th>Lote/Código</th>
                                                         <th>Muestreador</th>
                                                         <th>Fecha</th>
@@ -246,26 +244,18 @@
                                                         <th>Análisis 5</th>
                                                         <th>Análisis 6</th>
                                                         <th>Método de Referencia</th>
+                                                        <th>Eliminar</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody>
-                                                  <tr>
-                                                      <th>1</th>
-                                                      <th>2</th>
-                                                      <th>3</th>
-                                                      <th>4</th>
-                                                      <th>5</th>
-                                                      <th>6</th>
-                                                      <th>7</th>
-                                                      <th>8</th>
-                                                      <th>9</th>
-                                                      <th>10</th>
-                                                      <th>11</th>
-                                                      <th>12</th>
-                                                      <th>13</th>
-                                                  </tr>
+                                                <tbody id="tabla-microbiologia-body">
+                                                
                                                 </tbody>
                                             </table>
+                                        </div>
+                                        <div class="text-right">
+                                            <button class="btn btn-info" type="button" onclick="agregar_fila_micro()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -287,7 +277,7 @@
     <button class="btn btn-info d-none" id="btn-muestra-guardar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Guarda la información registrada para que edite después">
         Guardar
     </button>
-    <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_producto_procesado()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
+    <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_ingreso_muestra()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
         Enviar
     </button>
 </div>
