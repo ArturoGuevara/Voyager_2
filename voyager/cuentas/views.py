@@ -129,10 +129,12 @@ def lista_usuarios(request):
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
             usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
-            context = {'usuarios':usuarios_dir}
+            usuarios_act = IFCUsuario.objects.filter(estado=True).order_by('user')    #Obtener todos los activos
+            usuarios_ina = IFCUsuario.objects.filter(estado=False).order_by('user')    #Obtener todos los inactivos
+            context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
         elif not usuario_log.rol.nombre == "Cliente":
             rol = Rol.objects.get(nombre="Cliente")
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
