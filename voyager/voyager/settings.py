@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'flags',
 
 
 ]
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'flags.middleware.FlagConditionsMiddleware',
 ]
 
 ROOT_URLCONF = 'voyager.urls'
@@ -79,6 +81,26 @@ TEMPLATES = [
     },
 ]
 
+FLAGS = {
+    
+    'Modulo_Cotizaciones': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Catalogo': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ingresar_Muestra': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ordenes_Internas': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Usuarios': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'FLAG_WITH_REQUIRED_CONDITIONS': []
+}
+#
 WSGI_APPLICATION = 'voyager.wsgi.application'
 LOGIN_REDIRECT_URL = '/cuentas/home/'
 LOGOUT_REDIRECT_URL = '/cuentas/login/'
