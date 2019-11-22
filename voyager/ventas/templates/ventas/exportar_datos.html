@@ -70,7 +70,28 @@
             </form>
         </div>
     </div>
+    <div class="row">
+        <form method="post" action="{% url 'descargar_paquete' %}" >
+            {% csrf_token %}
+            <div class="modal-body">
+                <label for="codigo_dhl">Código Rastreo DHL:</label>
+                <div class="form-group form-row form-inline my-3">
+                    <input type="text" class="form-control" id="codigo_dhl" aria-describedby="codigo_dhl" placeholder="1023456789" name="codigo_dhl" minlength="10" maxlength="10" required>
+                    <button type="submit" class="btn btn-success" id="alertmss">Descargar</button>
+                </div>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
 
 {% block optionalJS %}
+    {% if success_code == 1 %}
+        <script>
+            showNotification('top','right','Archivo de muestras generado')
+        </script>
+    {% elif success_code == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error en el código enviado')
+        </script>
+    {% endif %}
 {% endblock %}

@@ -17,6 +17,7 @@ from .forms import AnalisisForma
 from django.core.serializers.json import DjangoJSONEncoder
 import random
 import csv
+from reportes.forms import codigoDHL
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -526,7 +527,10 @@ def exportar_datos(request):
                 or user_logged.rol.nombre=="Facturacion"
             ):
         raise Http404
-    return render(request, 'ventas/exportar_datos.html')
+    if request.session.get('success_code',None) == None:
+        request.session['success_code']=0
+    context = {'success_code': request.session['success_code'],}
+    return render(request, 'ventas/exportar_datos.html',context)
 
 @login_required
 def generar_csv_respaldo(request):
@@ -570,6 +574,45 @@ def generar_csv_respaldo(request):
     for row in all_rows.values():
         writer.writerow(row)
     return response
+
+@login_required
+def descargar_paquete(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
+    if not (user_logged.rol.nombre == "Ventas"
+                or user_logged.rol.nombre == "SuperUser"
+                or user_logged.rol.nombre == "Director"
+                or user_logged.rol.nombre=="Facturacion"
+            ):
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not request.POST.get("codigo_dhl"):
+        raise Http404
+    form = codigoDHL(request.POST)
+    if not form.is_valid():
+        request.session['success_code'] = -1
+        return redirect('/ventas/exportar_datos')
+    codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
+    paquetes = Paquete.objects.filter(codigo_dhl = codigo)
+    paquete = None
+    if not paquetes:
+        request.session['success_code'] = -1
+        return redirect('/ventas/exportar_datos')
+    else:
+        paquete = paquetes.first()
+    field_names = []
+    all_rows = Muestra.objects.filter(paquete = paquete)
+    for dicts in all_rows.values():
+        field_names = dicts.keys()
+        break
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="'+codigo+'.csv"'
+    writer = csv.DictWriter(response,fieldnames=field_names)
+    writer.writeheader()
+    for row in all_rows.values():
+        writer.writerow(row)
+    return response
+
 
 # EXTRAS
 def is_not_empty(data):

@@ -2,7 +2,7 @@ from django.test import TestCase
 from ventas.forms import AnalisisForma
 from django.urls import reverse, resolve
 from .views import agregar_analisis
-from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion
+from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion, Paquete, Muestra, OrdenInterna
 from cuentas.models import Rol,IFCUsuario,Empresa
 from django.contrib.auth.models import User
 from datetime import datetime, date
@@ -984,3 +984,111 @@ class GenerarCSV(TestCase):
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"usuarios",})
         file_content = response.content.decode('utf-8')
         self.assertIn('ventas', file_content)
+
+class GenerarCSVPaquete(TestCase):
+    def setup(self):
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes1 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes1.save()
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+        ventas = IFCUsuario.objects.create(
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        ventas.save()
+        #Crear paquete
+        paquete = Paquete()
+        paquete.codigo_dhl = "1234567890"
+        paquete.save()
+        #Crea usuario Ventas
+        usuario_soporte = User.objects.create_user('sop', 'soptest@testuser.com', 'testpassword')
+        rol_soporte = Rol.objects.create(nombre='Soporte')
+        soporte = IFCUsuario.objects.create(
+                                            rol = rol_soporte,
+                                            user = usuario_soporte,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'Phantom',
+                                            apellido_materno = 'Phantom',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        soporte.save()
+
+    def create_samples(self):
+        phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",
+                                              apellido_materno="Phantom")  # obtener usuario fantasma (dummy) para crear las ordenes internas
+        cliente = IFCUsuario.objects.get(nombre = 'clientes')
+        paquete = Paquete.objects.all().first()
+        oi = OrdenInterna()
+        oi.usuario = phantom_user
+        oi.estatus = 'fantasma'
+        oi.idioma_reporte = 'Inglés'
+        oi.save()
+        m = Muestra()
+        m.fecha_muestreo = datetime.now().date()
+        m.estado_muestra = True
+        m.fecha_forma = datetime.now().date()
+        m.oi = oi
+        m.usuario = cliente
+        m.paquete = paquete
+        m.producto = "Aguacate"
+        m.save()
+
+    def test_no_login(self): #Test de acceso a url sin Log In
+        response = self.client.post(reverse('descargar_paquete'),{})   #Ir al url de envío de creación del archivo
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    def test_role_incorrect(self):
+        self.setup()
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_no_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.get(reverse('descargar_paquete'))
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_table(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
+        file_content = response.content.decode('utf-8')
+        self.assertEqual(file_content,'\r\n')
+        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename="'+"1234567890"+'.csv"')
+
+    def test_csv_populated(self):
+        self.setup()
+        self.create_samples()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
+        file_content = response.content.decode('utf-8')
+        self.assertIn("Aguacate", file_content)
