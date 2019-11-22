@@ -386,3 +386,29 @@ def notificar_error_perfil(request):         # Funcion que se llama con un ajax 
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})
+############### USA03-39###################
+@login_required
+def borrar_usuario(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            usuario = IFCUsuario.objects.get(user__pk = id)
+            if usuario:
+                usuario.estado = not usuario.estado
+                usuario.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe ese usuario"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USA03-39###################
