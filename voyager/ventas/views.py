@@ -20,7 +20,6 @@ import csv
 from reportes.forms import codigoDHL
 from flags.state import flag_enabled
 
-
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
     def default(self, obj):
@@ -533,8 +532,13 @@ def exportar_datos(request):
             ):
         raise Http404
     if request.session.get('success_code',None) == None:
-        request.session['success_code']=0
+        request.session['success_code'] = 0
     context = {'success_code': request.session['success_code'],}
+    request.session['success_code'] = 0
+    if flag_enabled('Modulo_Catalogo', request=request):
+        context = {'success_code': request.session['success_code'], }
+    else:
+        context = {}
     return render(request, 'ventas/exportar_datos.html',context)
 
 @login_required

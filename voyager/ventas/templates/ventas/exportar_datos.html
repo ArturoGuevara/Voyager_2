@@ -2,6 +2,9 @@
 {% load static %}
 
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Exportar_Datos' as my_flag %}
+{% if my_flag %}
     <div class="text-md-left text-center">
         <h2>Exportar datos
             <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En este módulo se puede descargar en formato csv los contenidos de la base de datos">
@@ -82,6 +85,9 @@
             </div>
         </form>
     </div>
+{% else %}
+    {% include 'root/feature_not_ready.html' %}
+{% endif %}
 {% endblock content %}
 
 {% block optionalJS %}
