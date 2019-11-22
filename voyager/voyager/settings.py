@@ -82,7 +82,7 @@ TEMPLATES = [
 ]
 
 FLAGS = {
-    
+
     'Modulo_Cotizaciones': [
         {'condition': 'boolean', 'value': True},
     ],
@@ -96,6 +96,12 @@ FLAGS = {
         {'condition': 'boolean', 'value': True},
     ],
     'Modulo_Usuarios': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Exportar_Datos': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Editar_Perfil': [
         {'condition': 'boolean', 'value': True},
     ],
     'FLAG_WITH_REQUIRED_CONDITIONS': []
