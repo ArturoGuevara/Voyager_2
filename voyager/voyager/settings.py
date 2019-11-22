@@ -98,10 +98,13 @@ FLAGS = {
     'Modulo_Usuarios': [
         {'condition': 'boolean', 'value': True},
     ],
+    'Modulo_Exportar_Datos': [
+        {'condition': 'boolean', 'value': True},
+    ],
     'Editar_Perfil': [
         {'condition': 'boolean', 'value': True},
     ],
-    'FLAG_WITH_REQUIRED_CONDITIONS': []
+    'FLAG_WITH_REQUIRED_CONDITIONS': [],
 }
 #
 WSGI_APPLICATION = 'voyager.wsgi.application'
