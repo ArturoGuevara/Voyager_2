@@ -8,16 +8,19 @@
 
 <!--Este es el front end de la forma de login-->
 {% block content %}
-
+{% load feature_flags %}
+{% flag_enabled 'Editar_Perfil' as my_flag %}
     <h2>Perfil
         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y modifique su información de usuario.">
           <i class="fa fa-question-circle fa-lg"></i>
         </button>
     </h2>
     <div id="perfil-info" class="d-inline">
+        {% if my_flag %}
         <div class="text-center text-md-right">
             <button id="btn-editar-perfil" class="btn btn-info d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione para ir a editar su información de usuario">  <i class="fa fa-user-edit"></i> Editar</button>
         </div>
+        {% endif %}
         <br>
         <div class="card">
             <div class="card-body">
@@ -60,6 +63,7 @@
             </div>
         </div>
     </div>
+    
     <div id="perfil-editar" class="d-none">
         <br>
         <div class="card">

@@ -98,6 +98,9 @@ FLAGS = {
     'Modulo_Usuarios': [
         {'condition': 'boolean', 'value': True},
     ],
+    'Editar_Perfil': [
+        {'condition': 'boolean', 'value': True},
+    ],
     'FLAG_WITH_REQUIRED_CONDITIONS': []
 }
 #
