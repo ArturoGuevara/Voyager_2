@@ -1036,20 +1036,20 @@ class GenerarCSVPaquete(TestCase):
         soporte.save()
 
     def create_samples(self):
-        phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",
-                                              apellido_materno="Phantom")  # obtener usuario fantasma (dummy) para crear las ordenes internas
+        # obtener usuario fantasma (dummy) para crear las ordenes internas
+        phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom", apellido_materno="Phantom")
         cliente = IFCUsuario.objects.get(nombre = 'clientes')
         paquete = Paquete.objects.all().first()
-        oi = OrdenInterna()
-        oi.usuario = phantom_user
-        oi.estatus = 'fantasma'
-        oi.idioma_reporte = 'Inglés'
-        oi.save()
+        orden_interna = OrdenInterna()
+        orden_interna.usuario = phantom_user
+        orden_interna.estatus = 'fantasma'
+        orden_interna.idioma_reporte = 'Inglés'
+        orden_interna.save()
         m = Muestra()
         m.fecha_muestreo = datetime.now().date()
         m.estado_muestra = True
         m.fecha_forma = datetime.now().date()
-        m.oi = oi
+        m.oi = orden_interna
         m.usuario = cliente
         m.paquete = paquete
         m.producto = "Aguacate"
