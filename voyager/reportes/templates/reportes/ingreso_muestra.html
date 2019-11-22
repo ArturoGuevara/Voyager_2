@@ -128,61 +128,28 @@
                         data-img="http://placehold.it/400x200">Producto Microbiología</button>
                     </div>
                     <div class="row mt-2">
-                        <form action="">
-                            {% csrf_token %}
-                            <div class="col-12">
-                                <div class="collapse" id="containerProductoAgricola">
-                                    <div class="card card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="tabla-agricola">
-                                                <thead>
-                                                  <tr>
-                                                      <th>Producto</th>
-                                                      <th>Variedad</th>
-                                                      <th>País de Origen</th>
-                                                      <th>Código de Muestra</th>
-                                                      <th>Proveedor</th>
-                                                      <th>Código de Trazabilidad</th>
-                                                      <th>Agricultor</th>
-                                                      <th>Dirección</th>
-                                                      <th>Parcela</th>
-                                                      <th>Ubicación de Muestreo</th>
-                                                      <th>Fecha de Muestreo</th>
-                                                      <th>Urgente</th>
-                                                      <th>Muestreador</th>
-                                                      <th>País de Destino</th>
-                                                      <th>Análisis 1</th>
-                                                      <th>Análisis 2</th>
-                                                      <th>Análisis 3</th>
-                                                      <th>Análisis 4</th>
-                                                      <th>Análisis 5</th>
-                                                      <th>Análisis 6</th>
-                                                      <th>Eliminar</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody id="tabla-agricola-body">
-                                                
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn btn-info" type="button" onclick="agregar_fila_agricola()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="collapse" id="containerProductoProcesado">
-                                    <div class="card card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="tabla-procesado">
-                                                <thead>
+                        {% csrf_token %}
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoAgricola">
+                                <div class="card card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-agricola">
+                                            <thead>
                                                 <tr>
-                                                    <th>Tipo de muestra</th>
-                                                    <th>Descripción de muestra</th>
-                                                    <th>Fecha muestreo</th>
+                                                    <th>Producto</th>
+                                                    <th>Variedad</th>
+                                                    <th>País de Origen</th>
+                                                    <th>Código de Muestra</th>
+                                                    <th>Proveedor</th>
+                                                    <th>Código de Trazabilidad</th>
+                                                    <th>Agricultor</th>
+                                                    <th>Dirección</th>
+                                                    <th>Parcela</th>
+                                                    <th>Ubicación de Muestreo</th>
+                                                    <th>Fecha de Muestreo</th>
+                                                    <th>Urgente</th>
+                                                    <th>Muestreador</th>
+                                                    <th>País de Destino</th>
                                                     <th>Análisis 1</th>
                                                     <th>Análisis 2</th>
                                                     <th>Análisis 3</th>
@@ -192,54 +159,85 @@
                                                     <th>Eliminar</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="tabla-procesado-body">
-                                                
+                                            <tbody id="tabla-agricola-body">
+                                            
                                             </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn btn-info" type="button" onclick="agregar_fila_procesado()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
+                                        </table>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn btn-info" type="button" onclick="agregar_fila_agricola()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="collapse" id="containerProductoMicrobiologia">
-                                    <div class="card card-body">
-                                        <div class="table-responsive">
-                                            <table class="table table-striped" id="tabla-micro">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Tipo de Muestra</th>
-                                                        <th>Lote/Código</th>
-                                                        <th>Muestreador</th>
-                                                        <th>Fecha</th>
-                                                        <th>Método de Referencia</th>
-                                                        <th>Análisis 1</th>
-                                                        <th>Análisis 2</th>
-                                                        <th>Análisis 3</th>
-                                                        <th>Análisis 4</th>
-                                                        <th>Análisis 5</th>
-                                                        <th>Análisis 6</th>
-                                                        <th>Eliminar</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="tabla-microbiologia-body">
-                                                
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                        <div class="text-right">
-                                            <button class="btn btn-info" type="button" onclick="agregar_fila_micro()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                        </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoProcesado">
+                                <div class="card card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-procesado">
+                                            <thead>
+                                            <tr>
+                                                <th>Tipo de muestra</th>
+                                                <th>Descripción de muestra</th>
+                                                <th>Fecha muestreo</th>
+                                                <th>Análisis 1</th>
+                                                <th>Análisis 2</th>
+                                                <th>Análisis 3</th>
+                                                <th>Análisis 4</th>
+                                                <th>Análisis 5</th>
+                                                <th>Análisis 6</th>
+                                                <th>Eliminar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tabla-procesado-body">
+                                            
+                                        </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn btn-info" type="button" onclick="agregar_fila_procesado()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </div>
+                        <div class="col-12">
+                            <div class="collapse" id="containerProductoMicrobiologia">
+                                <div class="card card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="tabla-micro">
+                                            <thead>
+                                                <tr>
+                                                    <th>Tipo de Muestra</th>
+                                                    <th>Lote/Código</th>
+                                                    <th>Muestreador</th>
+                                                    <th>Fecha</th>
+                                                    <th>Método de Referencia</th>
+                                                    <th>Análisis 1</th>
+                                                    <th>Análisis 2</th>
+                                                    <th>Análisis 3</th>
+                                                    <th>Análisis 4</th>
+                                                    <th>Análisis 5</th>
+                                                    <th>Análisis 6</th>
+                                                    <th>Eliminar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tabla-microbiologia-body">
+                                            
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="text-right">
+                                        <button class="btn btn-info" type="button" onclick="agregar_fila_micro()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
+                                            <i class="fa fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
