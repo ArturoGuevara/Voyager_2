@@ -6,6 +6,8 @@
 {% endblock %}
 
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Usuarios' as my_flag %}
 {{ request.session.crear_staff_status }}
 <div class="text-md-left text-center">
     {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser'%}
@@ -19,6 +21,7 @@
             <i class="fa fa-question-circle fa-lg"></i>
         </button>
     {% endif %}
+        {% if my_flag %}
         <div class="text-center text-md-right">
             {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
                 <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
@@ -27,8 +30,10 @@
                 <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
             {% endif %}
         </div>
+        {% endif %}
     </h2>
 </div>
+{% if my_flag %}
 <div id="table" class="table-responsive table-full-width">
     <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_usuarios">
         <thead>
@@ -60,7 +65,9 @@
         </tbody>
     </table>
 </div>
-
+{% else %}
+{% include 'root/feature_not_ready.html' %}
+{% endif %}
 
 {% include './modals/info_usuario.html' %}
 {% include './modals/actualizar_usuario.html' %}
