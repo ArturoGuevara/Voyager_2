@@ -15,6 +15,9 @@ import json
 from django.shortcuts import redirect
 from .forms import AnalisisForma
 from django.core.serializers.json import DjangoJSONEncoder
+from flags.state import flag_enabled
+
+
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -26,25 +29,27 @@ class LazyEncoder(DjangoJSONEncoder):
 # Vista del index
 @login_required
 def indexView(request):
-    return render(request, 'cuentas/home.html')
+    return redirect('/cuentas/home/')
 
 # Create your views here.
 
 # CÁTALOGO DE ANÁLISIS
 @login_required
 def ver_catalogo(request):
+    context = {}
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
-        analisis = Analisis.objects.all()
-        paises = Pais.objects.all()
-        context = {
-            'analisis': analisis,
-            'success_code' : request.session['success_code'],
-            'paises' : paises
-        }
-        request.session['success_code'] = 0
+        if flag_enabled('Modulo_Catalogo', request=request):
+            analisis = Analisis.objects.all()
+            paises = Pais.objects.all()
+            context = {
+                'analisis': analisis,
+                'success_code' : request.session['success_code'],
+                'paises' : paises
+            }
+            request.session['success_code'] = 0
         return render(request, 'ventas/catalogo.html', context)
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
@@ -207,29 +212,30 @@ def ver_cotizaciones(request):
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
-            if usuario_log.rol.nombre == "Ventas":
-                cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
-                analisis = Analisis.objects.all()
-                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
-                context = {
-                    'analisis': analisis,
-                    'cotizaciones': cotizaciones,
-                    'clientes': clientes
-                }
-            elif usuario_log.rol.nombre == "Cliente":
-                cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
-                context = {
-                    'cotizaciones': cotizaciones,
-                }
-            elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
-                cotizaciones = Cotizacion.objects.all()
-                analisis = Analisis.objects.all()
-                clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
-                context = {
-                    'analisis': analisis,
-                    'cotizaciones': cotizaciones,
-                    'clientes': clientes
-                }
+            if flag_enabled('Modulo_Cotizaciones', request=request):
+                if usuario_log.rol.nombre == "Ventas":
+                    cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
+                    analisis = Analisis.objects.all()
+                    clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
+                    context = {
+                        'analisis': analisis,
+                        'cotizaciones': cotizaciones,
+                        'clientes': clientes
+                    }
+                elif usuario_log.rol.nombre == "Cliente":
+                    cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
+                    context = {
+                        'cotizaciones': cotizaciones,
+                    }
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
+                    cotizaciones = Cotizacion.objects.all()
+                    analisis = Analisis.objects.all()
+                    clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
+                    context = {
+                        'analisis': analisis,
+                        'cotizaciones': cotizaciones,
+                        'clientes': clientes
+                    }
             return render(request, 'ventas/cotizaciones.html', context)
         else:
             raise Http404

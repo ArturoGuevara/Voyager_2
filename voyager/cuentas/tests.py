@@ -637,3 +637,69 @@ class TestListaUsuarios(TestCase):
     def test_url_resuelta(self):
         url = reverse('clientes')
         self.assertEquals(resolve(url).func,lista_clientes)
+
+class TestActualizarUsuario(TestCase):
+    def setUp(self):
+        user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        rol_clientes = Rol.objects.create(nombre='Clientes')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes = IFCUsuario.objects.create(
+                                                        rol = rol_clientes,
+                                                        user = user_clientes,
+                                                        nombre = 'clientes',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa = empresa
+                                                      )
+        clientes.save()
+    def test_actualizar_usuario_acceso_denegado(self):
+        #Esta prueba simula a un usuario que quiere entrar a algún acceso de la página sin acceder con su cuenta
+        response = self.client.get('/cuentas/home/')
+        self.assertRedirects(response, '/cuentas/login?next=/cuentas/home/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_actualizar_usuario_exitoso(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345678',
+                                                                'pass2' : '12345678',
+                                                                'ver' : 'testpassword'
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 1)
+
+    def test_actualizar_usuario_no_exitoso(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345978',
+                                                                'pass2' : '12345678',
+                                                                'ver' : 'testpassword'
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 0)
+
+    def test_actualizar_usuario_no_verifica(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345978',
+                                                                'pass2' : '12345678',
+                                                                'ver' : ''
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 0)
