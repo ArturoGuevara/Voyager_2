@@ -431,30 +431,30 @@ def muestra_enviar(request): #guia para guardar muestras
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
-                phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")#obtener usuario fantasma (dummy) para crear las ordenes internas
-                muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
+                #phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")#obtener usuario fantasma (dummy) para crear las ordenes internas
+                muestras_hoy=Muestra.objects.filter(usuario=user_logged).filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
                 if muestras_hoy:
                     oi = muestras_hoy[0].oi #si se ha registrado una muestra en el mismo día, usar la misma orden interna
                     for m in muestras_hoy:
-                        if m.oi.estatus != 'borrado':
+                        if m.oi.estatus != 'Borrado':
                             if m.usuario == user_logged:
                                 oi = m.oi
-                    if oi.estatus == 'borrado':
+                    if oi.estatus == 'Borrado':
                         oi = OrdenInterna()
-                        oi.usuario = phantom_user
+                        oi.usuario = user_logged #phantom_user
                         if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
-                            oi.estatus = 'fantasma'
+                            oi.estatus = 'Fantasma'
                         else:
-                            oi.estatus = 'invisible'
+                            oi.estatus = 'Invisible'
                         oi.idioma_reporte = request.POST.get('idioma')
                         oi.save()
                 else: #crear orden interna si no se ha registrado una
                     oi = OrdenInterna()
-                    oi.usuario = phantom_user
+                    oi.usuario = user_logged #phantom_user
                     if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
-                        oi.estatus = 'fantasma'
+                        oi.estatus = 'Fantasma'
                     else:
-                        oi.estatus = 'invisible'
+                        oi.estatus = 'Invisible'
                     oi.idioma_reporte = request.POST.get('idioma')
                     oi.save()
                 muestra = Muestra() #crear muestra a guardar
@@ -524,7 +524,7 @@ def borrar_orden_interna(request):
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
-                oi.estatus = 'borrado'
+                oi.estatus = 'Borrado'
                 oi.save()
                 return HttpResponse('OK')
             else:

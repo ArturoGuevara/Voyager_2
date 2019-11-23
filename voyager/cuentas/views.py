@@ -128,9 +128,9 @@ def lista_usuarios(request):
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
-            usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
-            usuarios_act = IFCUsuario.objects.filter(estado=True).order_by('user')    #Obtener todos los activos
-            usuarios_ina = IFCUsuario.objects.filter(estado=False).order_by('user')    #Obtener todos los inactivos
+            usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
+            usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
+            usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
             context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
         elif not usuario_log.rol.nombre == "Cliente":
             rol = Rol.objects.get(nombre="Cliente")
