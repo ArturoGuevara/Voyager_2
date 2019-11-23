@@ -631,9 +631,10 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
     attachment.content_id = ContentId('Example Content ID')
     message.attachment = attachment
     try:
-        with open('./API_KEY.txt','r') as file: #Se obtiene la llave del API para autenticar
+        with open('./API_KEY.txt','rb') as file: #Se obtiene la llave del API para autenticar
             key = file.read()
-        sendgrid_client = SendGridAPIClient(key) #Se envía el correo
+        key_decoded = key.decode('ascii')
+        sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
         print(response.status_code)
         print(response.body)
@@ -641,3 +642,10 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
+
+def print_archivo(request):
+    with open('./API_KEY.txt','rb') as file:
+        key = file.read()
+    print(key)
+    print(key.decode('ascii'))
+    return HttpResponse("<h1>OK</h1>")

@@ -1123,8 +1123,9 @@ class EnviarResultados(TestCase):
             to_emails='A0127373@itesm.mx',
             subject="Asunto",
             html_content="Contenido")
-        with open('./API_KEY.txt', 'r') as f:
+        with open('./API_KEY.txt', 'rb') as f:
             key = f.read()
-        sendgrid_client = SendGridAPIClient(key)
+        key_decoded = key.decode('ascii')
+        sendgrid_client = SendGridAPIClient(key_decoded)
         response = sendgrid_client.send(message)
         self.assertEqual(response.status_code,202)
