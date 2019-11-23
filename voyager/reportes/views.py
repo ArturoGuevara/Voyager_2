@@ -99,8 +99,29 @@ def registrar_ingreso_muestra(request):
         
 def guardar_muestras(arreglo, tipo):
     formato = arreglo
+    # Variable para iterar en los varios arreglods
+    index = 0
     if tipo == "AG":
-        print("Función guardar muestras AG")
+        m = Muestra()
+        c.usuario_c = cliente
+        c.usuario_v = user_logged
+        c.envio = request.POST.get('envio')
+        c.subtotal = request.POST.get('subtotal')
+        c.total = request.POST.get('total')
+        c.status = True
+        c.save()
+        for id in checked: #Asignar codigo DHL
+            a = Analisis.objects.get(id_analisis = id)
+            ac = AnalisisCotizacion()
+            ac.analisis = a
+            ac.cotizacion = c
+            ac.cantidad = cantidad[index]
+            ac.fecha = datetime.datetime.now().date()
+            ac.descuento = descuento[index]
+            ac.iva = iva[index]
+            ac.total = totales[index]
+            ac.save()
+            index = index + 1
     elif tipo == "PR":
         print("Función guardar muestras PR")
     elif tipo == "MB":
