@@ -139,6 +139,7 @@ def guardar_muestras(arreglo, tipo, user):
             
             
             ac.cantidad = cantidad[index]
+            # Guardamos la muestra e incrementamos el índice de los arreglos
             m.save()
             index = index + 1
     elif tipo == "PR":
