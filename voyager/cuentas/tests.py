@@ -5,6 +5,8 @@ from cuentas.models import Rol,IFCUsuario,Empresa
 from reportes.models import OrdenInterna
 from django.urls import reverse, resolve
 from .views import lista_usuarios,lista_clientes
+from django.contrib.auth import views as auth_views
+from django.core import mail
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
@@ -654,6 +656,7 @@ class TestActualizarUsuario(TestCase):
                                                         empresa = empresa
                                                       )
         clientes.save()
+
     def test_actualizar_usuario_acceso_denegado(self):
         #Esta prueba simula a un usuario que quiere entrar a algún acceso de la página sin acceder con su cuenta
         response = self.client.get('/cuentas/home/')
@@ -703,3 +706,95 @@ class TestActualizarUsuario(TestCase):
                                                                 })
         juanito = IFCUsuario.objects.filter(nombre="Juanito")
         self.assertEqual(juanito.count(), 0)
+
+
+class TestRecoverPassword(TestCase):
+    def setup(self):
+        user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        rol_clientes = Rol.objects.create(nombre='Clientes')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes = IFCUsuario.objects.create(
+                                                        rol = rol_clientes,
+                                                        user = user_clientes,
+                                                        nombre = 'clientes',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa = empresa
+                                                      )
+        clientes.save()
+
+    def test_correct_url_reset_password(self):
+        self.setup()
+        response = self.client.get(reverse('reset_password'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.template_name, ['cuentas/reset_password_mail.html'])
+
+    def test_reset_password_post_empty(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'),{})
+        self.assertEqual(response.status_code, 200)
+
+    def test_reset_password_post_mail_nonexistent(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'client@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertRedirects(response,reverse('password_reset_done'))
+
+    def test_reset_password_post_mail_correct(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        self.assertRedirects(response, reverse('password_reset_done'))
+
+    def test_reset_password_correct_url_password(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        self.assertEqual(response_change_password.status_code, 302)
+
+    def test_reset_password_change_password_incorrect(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        change_url = response_change_password.url
+        response_result_change = self.client.post(change_url,{'new_password1':'lalocura','new_password2':'laslocuras'})
+        self.assertEqual(response_result_change.status_code, 200)
+        self.assertEqual(response_result_change.template_name,['cuentas/reset_password_change.html'])
+        self.assertEqual(True,self.client.login(username = 'client', password = 'testpassword'))
+
+    def test_reset_password_change_password_correct(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        self.assertEqual(response_change_password.status_code, 302)
+        change_url = response_change_password.url
+        response_result_change = self.client.post(change_url,{'new_password1':'lalocura','new_password2':'lalocura'})
+        self.assertEqual(response_result_change.status_code, 302)
+        self.assertRedirects(response_result_change, reverse('password_reset_complete'))
+        self.assertEqual(True, self.client.login(username='client', password='lalocura'))

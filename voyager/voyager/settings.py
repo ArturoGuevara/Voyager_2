@@ -167,7 +167,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-SENDGRID_API_KEY = "API_KEY_recuperar_contra.txt"
+file_API_KEY=open("./API_KEY_recover_password.txt")
+SENDGRID_API_KEY = file_API_KEY.read()
 
 EMAIL_HOST = 'smtp.sendgrid.net'
 EMAIL_HOST_USER = 'apikey'
