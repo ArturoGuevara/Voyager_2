@@ -104,9 +104,13 @@ def guardar_muestras(arreglo, tipo, user):
     if tipo == "AG":        
         for aux in formato:
             m = Muestra()
+            # GENERALES
+            m.id_muestra =
             m.usuario = user
-            m.muestreador
-            
+            m.oi =
+            m.factura =
+            m.orden_compra =
+            m.link_resultados = 
             # FORMATO AG y MB
             m.muestreador =
             # FORMATO AG y PR
@@ -135,11 +139,7 @@ def guardar_muestras(arreglo, tipo, user):
             
             
             ac.cantidad = cantidad[index]
-            ac.fecha = datetime.datetime.now().date()
-            ac.descuento = descuento[index]
-            ac.iva = iva[index]
-            ac.total = totales[index]
-            ac.save()
+            m.save()
             index = index + 1
     elif tipo == "PR":
         print("Función guardar muestras PR")
