@@ -335,7 +335,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -366,7 +366,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
@@ -402,7 +402,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
             self.assertEqual(ansamp.estado,True) #verificar que los registros aparezcan como activos
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles para el primer análisis
         self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2 - 1) #verificar que se disminuyó la cantidad de análisis disponibles para el segundo análisis
@@ -442,7 +442,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
             self.assertEqual(ansamp.estado,False) #verificar que los registros aparezcan como inactivos
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'invisible') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Invisible') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el primer análisis
         self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2) #verificar que no se disminuyó la cantidad de análisis disponibles para el segundo análisis
@@ -473,7 +473,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.count(),0) #verificar que hay 0 entradas en la tabla análisis muestra
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el análisis
         all_samples = Muestra.objects.all()
@@ -508,7 +508,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -534,7 +534,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.last().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un solo registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.last().cantidad,number_analysis2-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -993,7 +993,7 @@ class TestEditaOrdenesInternas(TestCase):
 
         #Crear orden interna para cliente
         oi = OrdenInterna.objects.create(usuario = clientes1,
-                                            estatus = "fantasma",
+                                            estatus = "Fantasma",
                                             localidad = "mexico",
                                         )
         oi.save()
@@ -1027,7 +1027,7 @@ class TestEditaOrdenesInternas(TestCase):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
         self.client.login(username='soport',password='testpassword')
-        orden = OrdenInterna.objects.filter(estatus="fantasma").first()
+        orden = OrdenInterna.objects.filter(estatus="Fantasma").first()
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
         self.assertContains(response, "Fantasma")

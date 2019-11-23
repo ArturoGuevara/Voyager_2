@@ -23,4 +23,5 @@ urlpatterns = [
     path('guardar_perfil/', views.guardar_perfil, name='guardar_perfil'),
     path('notificar_guardar_perfil/', views.notificar_guardar_perfil, name='notificar_guardar_perfil'),
     path('notificar_error_perfil/', views.notificar_error_perfil, name='notificar_error_perfil'),
+    path('borrar_usuario/<int:id>', views.borrar_usuario, name='borrar_usuario'),
 ]
