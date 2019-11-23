@@ -53,10 +53,60 @@ def ingreso_cliente(request):
     else:
         raise Http404
 
-"""@login_required
+@login_required
 def registrar_ingreso_muestra(request):
-    """
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma')):
+                nombre = request.POST.get('nombre')
+                direccion = request.POST.get('direccion')
+                pais = request.POST.get('pais')
+                estado = request.POST.get('estado')
+                idioma = request.POST.get('idioma')
+                matrixAG = request.POST.getlist('matrixAG[]')
+                matrixPR = request.POST.getlist('matrixPR[]')
+                matrixMB = request.POST.getlist('matrixMB[]')
+                if len(matrixAG) != 0 or len(matrixPR) != 0 or len(matrixMB) != 0:
+                    if len(matrixAG) != 0:
+                        guardar_muestras(matrixAG,"AG")
+                    if len(matrixPR) != 0:
+                        guardar_muestras(matrixPR,"PR")
+                    if len(matrixMB) != 0:
+                        guardar_muestras(matrixMB,"MB")
+                    response = JsonResponse({"Success": "OK"})
+                    response.status_code = 200
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+                else:
+                    response = JsonResponse({"error": "Las matrices llegaron vacías"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response    
+            else:
+                response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
 
+        
+def guardar_muestras(arreglo, tipo):
+    formato = arreglo
+    if tipo == "AG":
+        print("Función guardar muestras AG")
+    elif tipo == "PR":
+        print("Función guardar muestras PR")
+    elif tipo == "MB":
+        print("Función guardar muestras MB")
+    print(formato)
+        
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado

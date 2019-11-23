@@ -329,7 +329,7 @@ function enviar_ingreso_muestra(){
     var token = csrftoken;
     
     $.ajax({
-        url: "registrar_ingreso_muestra/",
+        url: "registrar_ingreso_muestra",
         dataType: 'json',
         // Seleccionar información que se mandara al controlador
         data: {
