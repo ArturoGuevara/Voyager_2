@@ -53,7 +53,9 @@ def ingreso_cliente(request):
     else:
         raise Http404
 
-
+"""@login_required
+def registrar_ingreso_muestra(request):
+    """
 
 @login_required
 def indexView(request):

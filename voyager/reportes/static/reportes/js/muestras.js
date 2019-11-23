@@ -256,6 +256,7 @@ function enviar_ingreso_muestra(){
     var idioma = $('#idioma').val();
     
     // Información de formato agrícola (19 arreglos)
+    var matrixAG = []
     var productoAG = iterar_input("productoAG","input");
     var variedadAG = iterar_input("variedadAG","input");
     var paisOrigenAG = iterar_input("paisOrigenAG","input");
@@ -267,7 +268,7 @@ function enviar_ingreso_muestra(){
     var parcelaAG = iterar_input("parcelaAG","input");
     var ubicacionMuestreoAG = iterar_input("ubicacionMuestreoAG","input");
     var fechaMuestreoAG = iterar_input("fechaMuestreoAG","input");
-    var urgenteAG = iterar_input("urgenteAG","input");
+    var urgenteAG = iterar_input("urgenteAG","select");
     var muestreadorAG = iterar_input("muestreadorAG","input");
     var paisDestinoAG = iterar_input("paisDestinoAG","input");
     var analisis1AG = iterar_input("analisis1AG","select");
@@ -276,8 +277,19 @@ function enviar_ingreso_muestra(){
     var analisis4AG = iterar_input("analisis4AG","select");
     var analisis5AG = iterar_input("analisis5AG","select");
     var analisis6AG = iterar_input("analisis6AG","select");
+    // Guardamos los arreglos en otro arreglo
+    matrixAG.push(productoAG);matrixAG.push(variedadAG);
+    matrixAG.push(paisOrigenAG);matrixAG.push(codigoMuestraAG);
+    matrixAG.push(proveedorAG);matrixAG.push(codigoTrazabilidadAG);
+    matrixAG.push(agricultorAG);matrixAG.push(direccionAG);
+    matrixAG.push(parcelaAG);matrixAG.push(ubicacionMuestreoAG);
+    matrixAG.push(fechaMuestreoAG);matrixAG.push(urgenteAG);
+    matrixAG.push(muestreadorAG);matrixAG.push(paisDestinoAG);
+    matrixAG.push(analisis1AG);matrixAG.push(analisis2AG);matrixAG.push(analisis3AG);
+    matrixAG.push(analisis4AG);matrixAG.push(analisis5AG);matrixAG.push(analisis6AG);
     
     // Información de formato de producto procesado (8 arreglos)
+    var matrixPR = [];
     var tipoMuestraPR = iterar_input("tipoMuestraPR","input");
     var descripcionMuestraPR = iterar_input("descripcionMuestraPR","input");
     var fechaMuestreoPR = iterar_input("fechaMuestreoPR","input");
@@ -287,8 +299,15 @@ function enviar_ingreso_muestra(){
     var analisis4PR = iterar_input("analisis4PR","select");
     var analisis5PR = iterar_input("analisis5PR","select");
     var analisis6PR = iterar_input("analisis6PR","select");
-    
+    // Guardamos los arreglos en otro arreglo
+    matrixPR.push(tipoMuestraPR);
+    matrixPR.push(descripcionMuestraPR);
+    matrixPR.push(fechaMuestreoPR);
+    matrixPR.push(analisis1PR);matrixPR.push(analisis2PR);matrixPR.push(analisis3PR);
+    matrixPR.push(analisis4PR);matrixPR.push(analisis5PR);matrixPR.push(analisis6PR);
+        
     // Información de formato de microbiología (10 arreglos)
+    var matrixMB = [];
     var tipoMuestraMB = iterar_input("tipoMuestraMB","input");
     var loteCodigoMB = iterar_input("loteCodigoMB","input");
     var muestreadorMB = iterar_input("muestreadorMB","input");
@@ -300,25 +319,29 @@ function enviar_ingreso_muestra(){
     var analisis4MB = iterar_input("analisis4MB","select");
     var analisis5MB = iterar_input("analisis5MB","select");
     var analisis6MB = iterar_input("analisis6MB","select");
+    // Guardamos los arreglos en otro arreglo
+    matrixMB.push(tipoMuestraMB);matrixMB.push(loteCodigoMB);matrixMB.push(muestreadorMB);
+    matrixMB.push(fechaMuestreoMB);matrixMB.push(metodoReferenciaMB);
+    matrixMB.push(analisis1MB);matrixMB.push(analisis2MB);matrixMB.push(analisis3MB);
+    matrixMB.push(analisis4MB);matrixMB.push(analisis5MB);matrixMB.push(analisis6MB);
     
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
-/*
+    
     $.ajax({
         url: "registrar_ingreso_muestra/",
         dataType: 'json',
         // Seleccionar información que se mandara al controlador
         data: {
-            cliente: cliente,
-            subtotal: subtotal,
-            total: total,
-            envio: envio,
-            'checked[]': checked,
-            'cantidades[]': cantidades,
-            'ivas[]': ivas,
-            'descuentos[]': descuentos,
-            'totales[]': totales,
-            'csrfmiddlewaretoken': token
+            'csrfmiddlewaretoken': token,
+            nombre: nombre,
+            direccion: direccion,
+            pais: pais,
+            estado: estado,
+            idioma: idioma,
+            'matrixAG[]': matrixAG,
+            'matrixPR[]': matrixPR,
+            'matrixMB[]': matrixMB
         },
         type: "POST",
         success: function (response) {
@@ -328,7 +351,7 @@ function enviar_ingreso_muestra(){
             //alert(data.status);
             //alert(data.responseJSON.error);
         }
-    }); */
+    });
 }
 
 function iterar_input(name, type){
