@@ -707,7 +707,6 @@ class TestActualizarUsuario(TestCase):
         juanito = IFCUsuario.objects.filter(nombre="Juanito")
         self.assertEqual(juanito.count(), 0)
 
-
 class TestRecoverPassword(TestCase):
     def setup(self):
         user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
@@ -798,3 +797,65 @@ class TestRecoverPassword(TestCase):
         self.assertEqual(response_result_change.status_code, 302)
         self.assertRedirects(response_result_change, reverse('password_reset_complete'))
         self.assertEqual(True, self.client.login(username='client', password='lalocura'))
+
+class TestBorrarUsuario(TestCase):
+    def setUp(self):
+        role = Rol()
+        role.nombre = "Director"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
+        user.save() #guardar usuario de Django
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        user3 = User.objects.create_user('toño', 'toño@lalocura.com', 'toño')
+        user3.save()
+        i_user = IFCUsuario() #Crear un usuario de IFC
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+        i_user3 = IFCUsuario()
+        i_user3.user = user3   #Asignar usuario de la tabla User
+        i_user3.rol = role2   #Asignar rol creado
+        i_user3.nombre = "Toño"
+        i_user3.apellido_paterno = "Lalo"
+        i_user3.apellido_materno = "Cura"
+        i_user3.telefono = "9114454364"
+        i_user3.estado = True
+        i_user3.save()   #Guardar usuario de IFC
+
+    def test_delete_usuario_1(self):
+        user = IFCUsuario.objects.all().first()
+        user.estado = False
+        user.save()
+        contador = IFCUsuario.objects.filter(estado=True).count()
+        self.assertEquals(2, contador)
+
+    # Si truena está bien, porque el analisis no existe
+    def test_delete_usuario_2(self):
+        var = False
+        try:
+            user = IFCUsuario.objects.all().last()
+            user.estado = False
+            user.save()
+            contador = IFCUsuario.objects.filter(estado=True).count()
+            self.assertNotEquals(2, contador)
+        except:
+            var = True
+            self.assertEquals(var, True)

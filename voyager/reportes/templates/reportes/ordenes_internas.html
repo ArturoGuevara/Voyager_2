@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for o,value in ordenes_clientes.items %}
-                {% if o.estatus != 'borrado' %}
+                {% if o.estatus != 'Borrado' %}
                 <tr id="oi-{{o.idOI}}">
                     <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
