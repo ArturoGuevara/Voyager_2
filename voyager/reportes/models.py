@@ -117,8 +117,8 @@ class Muestra(models.Model):
         ('No', 'No'),
     )
     enviado = models.CharField(max_length=2, choices=SN, default="No")#10-Enviado
-    link_resultados =  models.CharField(max_length=100, default="")
-
+    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
 
 class Cotizacion(models.Model):
