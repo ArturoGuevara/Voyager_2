@@ -94,30 +94,33 @@ class Muestra(models.Model):
     link_resultados =  models.CharField(max_length=100, default="")
     
     # FORMATO AG y MB
-    muestreador = models.CharField(max_length=50)
+    muestreador = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO AG y PR
-    fecha_muestreo = models.DateField()
+    fecha_muestreo = models.DateField(null=True, blank=True)
     # FORMATO PR y MB
-    tipo_muestra = models.CharField(max_length=50)
+    tipo_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO AG
-    producto = models.CharField(max_length=50, blank=True)
-    variedad = models.CharField(max_length=50)
-    pais_origen = models.CharField(max_length=50)
-    codigo_muestra = models.CharField(max_length=50)
-    proveedor = models.CharField(max_length=50, blank=True)
-    nombre_empresa = models.CharField(max_length=50, blank=True)
-    codigo_trazabilidad = models.CharField(max_length=50)
-    agricultor = models.CharField(max_length=50)
-    direccion = models.CharField(max_length=50)
-    parcela = models.CharField(max_length=50)
-    ubicacion_muestreo = models.CharField(max_length=50)
-    urgente = models.CharField(max_length=50)
-    idioma = models.CharField(max_length=20)
-    pais_destino = models.CharField(max_length=50)
+    producto = models.CharField(max_length=50, blank=True, null=True)
+    variedad = models.CharField(max_length=50, blank=True, null=True)
+    pais_origen = models.CharField(max_length=50, blank=True, null=True)
+    codigo_muestra = models.CharField(max_length=50, blank=True, null=True)
+    proveedor = models.CharField(max_length=50, blank=True, null=True)
+    nombre_empresa = models.CharField(max_length=50, blank=True, null=True)
+    codigo_trazabilidad = models.CharField(max_length=50, blank=True, null=True)
+    agricultor = models.CharField(max_length=50, blank=True, null=True)
+    direccion = models.CharField(max_length=50, blank=True, null=True)
+    parcela = models.CharField(max_length=50, blank=True, null=True)
+    ubicacion_muestreo = models.CharField(max_length=50, blank=True, null=True)
+    urgente = models.CharField(max_length=50, blank=True, null=True)
+    idioma = models.CharField(max_length=20, blank=True, null=True)
+    pais_destino = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO PR
-    descripcion_muestra = models.CharField(max_length=50)
+    descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
-    lote_codigo = models.CharField(max_length=50)
+    lote_codigo = models.CharField(max_length=50, blank=True, null=True)
+    
+    # Choices
+    SN = (('Sí', 'Sí'),('No', 'No'))
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -161,6 +164,6 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
-    metodo_referencia = models.CharField(max_length=50, blank=True) # FORMATO MB
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
     def __str__(self):
         return "%s" % (self.fecha)
