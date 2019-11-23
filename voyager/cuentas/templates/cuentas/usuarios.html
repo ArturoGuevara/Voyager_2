@@ -25,7 +25,7 @@
         <div class="row">
             <div class="text-center text-md-left ">
                 {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
-                    <button id="btn-todos" class="btn btn-info d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice a todos los usuarios del sistema.">Ver Todos</button>
+                    <button id="btn-todos" class="btn btn-primary d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice a todos los usuarios del sistema.">Ver Todos</button>
                     <button id="btn-activos" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice a los usuarios activos.">Ver Activos</button>
                     <button id="btn-inactivos" class="btn btn-danger d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice a los usuarios eliminados.">Ver Inactivos</button>
                 {% endif %}
