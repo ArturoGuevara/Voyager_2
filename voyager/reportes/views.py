@@ -69,11 +69,11 @@ def registrar_ingreso_muestra(request):
                 matrixMB = request.POST.getlist('matrixMB[]')
                 if len(matrixAG) != 0 or len(matrixPR) != 0 or len(matrixMB) != 0:
                     if len(matrixAG) != 0:
-                        guardar_muestras(matrixAG,"AG")
+                        guardar_muestras(matrixAG,"AG",user_logged)
                     if len(matrixPR) != 0:
-                        guardar_muestras(matrixPR,"PR")
+                        guardar_muestras(matrixPR,"PR",user_logged)
                     if len(matrixMB) != 0:
-                        guardar_muestras(matrixMB,"MB")
+                        guardar_muestras(matrixMB,"MB",user_logged)
                     response = JsonResponse({"Success": "OK"})
                     response.status_code = 200
                     # Regresamos la respuesta de error interno del servidor
@@ -97,24 +97,43 @@ def registrar_ingreso_muestra(request):
         raise Http404
 
         
-def guardar_muestras(arreglo, tipo):
+def guardar_muestras(arreglo, tipo, user):
     formato = arreglo
     # Variable para iterar en los varios arreglods
     index = 0
-    if tipo == "AG":
-        m = Muestra()
-        c.usuario_c = cliente
-        c.usuario_v = user_logged
-        c.envio = request.POST.get('envio')
-        c.subtotal = request.POST.get('subtotal')
-        c.total = request.POST.get('total')
-        c.status = True
-        c.save()
-        for id in checked: #Asignar codigo DHL
-            a = Analisis.objects.get(id_analisis = id)
-            ac = AnalisisCotizacion()
-            ac.analisis = a
-            ac.cotizacion = c
+    if tipo == "AG":        
+        for aux in formato:
+            m = Muestra()
+            m.usuario = user
+            m.muestreador
+            
+            # FORMATO AG y MB
+            m.muestreador =
+            # FORMATO AG y PR
+            m.fecha_muestreo =
+            # FORMATO PR y MB
+            m.tipo_muestra =
+            # FORMATO AG
+            m.producto =
+            m.variedad =
+            m.pais_origen =
+            m.codigo_muestra =
+            m.proveedor =
+            m.nombre_empresa =
+            m.codigo_trazabilidad =
+            m.agricultor =
+            m.direccion =
+            m.parcela =
+            m.ubicacion_muestreo =
+            m.urgente =
+            m.idioma =
+            m.pais_destino =
+            # FORMATO PR
+            m.descripcion_muestra =
+            # FORMATO MB
+            m.lote_codigo =
+            
+            
             ac.cantidad = cantidad[index]
             ac.fecha = datetime.datetime.now().date()
             ac.descuento = descuento[index]

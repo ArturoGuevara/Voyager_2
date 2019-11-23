@@ -83,14 +83,17 @@ class Nota(models.Model):
     def __str__(self):
         return "%s" % (self.descripcion)
 
+
 class Muestra(models.Model):
+    # CHOICES
+    SN = (('Sí', 'Sí'),('No', 'No'))
+    
     # TODOS
     id_muestra = models.AutoField(primary_key=True) #Número de muestra
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
     oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
-    orden_compra = models.CharField(max_length=50, null=True, blank=True)
-    enviado = models.CharField(max_length=2, choices=SN, default="No")
+    orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
     link_resultados =  models.CharField(max_length=100, default="")
     
     # FORMATO AG y MB
@@ -117,10 +120,7 @@ class Muestra(models.Model):
     # FORMATO PR
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
-    lote_codigo = models.CharField(max_length=50, blank=True, null=True)
-    
-    # Choices
-    SN = (('Sí', 'Sí'),('No', 'No'))
+    lote_codigo = models.CharField(max_length=50, blank=True, null=True)    
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
