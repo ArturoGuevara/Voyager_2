@@ -88,4 +88,13 @@
                 showNotification('top','right','Hubo un error en el registro')
             </script>
         {% endif %}
+        {% if success_sent == 1 %}
+            <script>
+                showNotification('top','right','Carga de datos exitosa')
+            </script>
+        {% elif success_sent == -1 %}
+             <script>
+                showNotification('top','right','Hubo un error en la carga de datos')
+            </script>
+        {% endif %}
 {% endblock %}

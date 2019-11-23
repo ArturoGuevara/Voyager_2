@@ -2,18 +2,28 @@ from django.shortcuts import render
 from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
 from cuentas.models import IFCUsuario, Empresa
 from django.contrib.auth.models import User
+import requests
 from django.http import JsonResponse
 from django.core import serializers
 from django.http import HttpResponse
+from django.template import RequestContext
 from django.http import Http404
 from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.core.exceptions import ValidationError
+import urllib.request as urllib
 import datetime
 import json
+import os
+import time
+import base64
+import locale
 from django.shortcuts import redirect
 from .forms import AnalisisForma
+from .forms import ImportarAnalisisForm
 from django.core.serializers.json import DjangoJSONEncoder
 import random
 import csv
@@ -622,50 +632,48 @@ def descargar_paquete(request):
         writer.writerow(row)
     return response
 
+############### USV19-53 ###################
 @login_required
-def cargar_csv(request): #envía un archivo de resultados por correo
+def importar_csv(request): #envía un archivo de resultados por correo
     if request.method != 'POST': #Si no se envía un post, el acceso es denegado
+        print("Falló POST")
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
-    if not (user_logged.rol.nombre == "Soporte"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre == "SuperUser"
-        ):
+    if not (user_logged.rol.nombre == "Director"):
+        print("Falló Rol")
         raise Http404
-    mail_code = 0
+    response_code = 0
     if request.method == 'POST':
-        form = EnviarResultadosForm(request.POST, request.FILES)
+        form = ImportarAnalisisForm(request.POST, request.FILES)
+        print(form["csv_analisis"])
         if form.is_valid():
-            mail_code = handle_upload_document(request.FILES['archivo_resultados'],
-                                        request.POST.get('email_destino'),
-                                        request.POST.get('subject'),
-                                        request.POST.get('body'),
-                                        request.POST.get('muestra'),
-                                   )
+            response_code = handle_upload_document(request.FILES['csv_analisis'],)
         else:
+            print("Falló FORM")
             raise Http404
-    if mail_code == 202: #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
+    if response_code == 202:
+        #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
         request.session['success_sent'] = 1
+        return JsonResponse({"code" : 1})
     else:
-        request.session['success_sent'] = -1
-    return redirect('/reportes/ordenes_internas')
+        return JsonResponse({"code": 0})
 
-def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
-    path = './archivos-reportes/resultados'
+
+def handle_upload_document(file): #Esta función guarda el archivo de resultados a enviar
+    #Se crea el path donde el archivo se va a almacenar concatnando el nombre del csv con la fecha en la que sube y un número aleatorio
+    print(":v")
+    path = './analisis/csv_analisis'
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
-    muestras = Muestra.objects.filter(id_muestra=muestra)
-    if muestras:
-        muestra_object = muestras.first()
-        muestra_object.link_resultados = path
-        muestra_object.save()
-    else:
-        return 404
     with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
         for chunk in file.chunks():
             destination.write(chunk)
-    return send_mail(path,dest,subject,body)
+    return carga_datos(path)
+
+def carga_datos(path):
+    print(path)
+    return 0
 
 # EXTRAS
 def is_not_empty(data):
