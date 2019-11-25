@@ -11,3 +11,6 @@ class AnalisisForma(forms.Form):
     duracion = forms.CharField(max_length=15) #numero de dias que toma el análisis
     pais = forms.DecimalField(max_digits=3)
     acreditacion = forms.BooleanField()
+
+class ImportarAnalisisForm(forms.Form):
+    csv_analisis = forms.FileField()

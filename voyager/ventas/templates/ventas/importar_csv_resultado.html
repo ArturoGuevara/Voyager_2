@@ -1,0 +1,31 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+<h1>Importar análisis</h1>
+{% if error_log != 'ERROR' %}
+    {% if error_count > 0%}
+        <p class="text-danger">Ocurrió un error al cargar los siguientes registros:</p>
+        {% for e in error_log %}
+            <p class="text-danger">{{ e }}</p>
+        {% endfor %}
+        <p class="text-danger">Revise el manual para la carga de datos y verifique que el formato se está siguiendo en el archivo.</p>
+    {% else %}
+        <p class="text-success">Se han cargado los datos de manera exitosa.</p>
+    {% endif %}
+{% else %}
+    <p class="text-danger">ERROR: Asegúrese de que el archivo subido está en formato .csv</p>
+{% endif %}
+<br><a href="/ventas/ver_catalogo"><button type="button" class="btn btn-outline-dark">Regresar al catálogo</button></a>
+
+
+
+
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
+{% endblock %}
