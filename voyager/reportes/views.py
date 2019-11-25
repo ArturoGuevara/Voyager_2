@@ -37,51 +37,162 @@ def ingreso_cliente(request):
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404    #Aquí despliega que el cliente debe dinero
-        cotizaciones = Cotizacion.objects.filter(usuario_c=user_logged).filter(status=True).filter(aceptado=True)
-        if cotizaciones.count() == 0:
-            return render(request, 'reportes/faltan_cotizaciones.html')
+        if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
+            return render(request, 'reportes/bloqueado.html')
         else:
-            return render(request, 'reportes/ingreso_cliente.html')   #Cargar la plantilla necesaria
-    else:
-        raise Http404
-
-@login_required   #Redireccionar a login si no ha iniciado sesión
-def ingresar_muestras(request):
-    if (request.session._session   #Revisión de sesión iniciada
-            and request.POST.get('nombre')   #Los post son enviados desde la página anterior
-            and request.POST.get('direccion')   #Checar todos los post necesarios para continuar con la forma
-            and request.POST.get('pais')
-            and request.POST.get('idioma')
-            and (request.POST.get('estado1') or (request.POST.get('estado2'))
-    )
-        ):
-        user_logged = IFCUsuario.objects.get(user = request.user)    #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404
-        if user_logged.estatus_pago=="Deudor":   #Si el rol del usuario no es cliente no puede entrar a la página
-            raise Http404      #Aquí despliega que el cliente debe dinero
-        if request.POST.get('pais')=="México":   #Condicional sobre seleccionar la variable indicada con del Post
-            estado = request.POST.get('estado1')
-        else:
-            estado = request.POST.get('estado2')
-        all_analysis = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,cotizacion__usuario_c=user_logged)   #Obtener todas las cotizaciones del usuario loggeado
-        return  render(request, 'reportes/ingresar_muestra.html',{'all_analysis': all_analysis,   #Cargar todas las variables POST dentro de la siguiente plantilla
-                                                                  'nombre': request.POST.get('nombre'),
-                                                                  'direccion': request.POST.get('direccion'),
-                                                                  'pais': request.POST.get('pais'),
-                                                                  'estado': estado,
-                                                                  'idioma': request.POST.get('idioma'),
-                                                                  })
+            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged)
+            analisis = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
+            for c in cotizaciones:
+                cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+                for a in cot:
+                    analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
+                    analisis = analisis | analisis_temp
+            context = {
+                'analisis': analisis
+            }
+            return render(request, 'reportes/ingreso_muestra.html', context)
     else:
         raise Http404
 
 @login_required
+def registrar_ingreso_muestra(request):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
+        if request.method == 'POST':
+            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma')):
+                nombre = request.POST.get('nombre')
+                direccion = request.POST.get('direccion')
+                pais = request.POST.get('pais')
+                estado = request.POST.get('estado')
+                idioma = request.POST.get('idioma')
+                matrixAG = request.POST.getlist('matrixAG[]')
+                matrixPR = request.POST.getlist('matrixPR[]')
+                matrixMB = request.POST.getlist('matrixMB[]')
+                oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
+                oi.usuario = user_logged
+                oi.estatus = "Creada"
+                oi.save()
+                if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
+                    if matrixAG[0] != '':
+                        guardar_muestras(matrixAG,"AG",user_logged) #Llamar a la función que guarda datos
+                    if matrixPR[0] != '':
+                        guardar_muestras(matrixPR,"PR",user_logged)
+                    if matrixMB[0] != '':
+                        guardar_muestras(matrixMB,"MB",user_logged)
+                    response = JsonResponse({"Success": "OK"})
+                    response.status_code = 200
+                    # Regresamos la respuesta de error interno del servidor
+                    return response
+                else:
+                    response = JsonResponse({"error": "Las matrices llegaron vacías"})
+                    response.status_code = 500
+                    # Regresamos la respuesta de error interno del servidor
+                    return response    
+            else:
+                response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+        
+def guardar_muestras(arreglo, tipo, user):
+    formato = arreglo
+    if tipo == "AG":        
+        li = list(formato[0].split(","))
+        for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
+            m = Muestra()
+            # GENERALES
+            m.usuario = user
+            m.oi = OrdenInterna.objects.latest('idOI')
+            li = list(formato[0].split(","))
+            m.producto = li[i]
+            li = list(formato[1].split(","))
+            m.variedad = li[i]
+            li = list(formato[2].split(","))
+            m.pais_origen = li[i]
+            li = list(formato[3].split(","))
+            m.codigo_muestra = li[i]
+            li = list(formato[4].split(","))
+            m.proveedor = li[i]
+            li = list(formato[5].split(","))
+            m.codigo_trazabilidad = li[i]
+            li = list(formato[6].split(","))
+            m.agricultor = li[i]
+            li = list(formato[7].split(","))
+            m.direccion = li[i]
+            li = list(formato[8].split(","))
+            m.parcela = li[i]
+            li = list(formato[9].split(","))
+            m.ubicacion_muestreo = li[i]
+            li = list(formato[10].split(","))
+            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            m.fecha_muestreo = fm
+            li = list(formato[11].split(","))
+            m.urgente = li[i]
+            li = list(formato[12].split(","))
+            m.muestreador = li[i]
+            li = list(formato[13].split(","))
+            m.pais_destino = li[i]
+            li = list(formato[14].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis1 = analisis
+            li = list(formato[15].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis2 = analisis
+            li = list(formato[16].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis3 = analisis
+            li = list(formato[17].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis4 = analisis
+            li = list(formato[18].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis5 = analisis
+            li = list(formato[19].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis6 = analisis
+            m.save()
+    elif tipo == "PR":
+        print("Función guardar muestras PR")
+    elif tipo == "MB":
+        print("Función guardar muestras MB")
+    #save muestra
+
+def restar_analisis(user, analisis):
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user)
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                if a.restante > 0: #Revisar que aún le queden análisis
+                    a.restante -= 1
+                    a.save()
+                    return True
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c)
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                a.restante -= 1
+                a.save()
+                return True
+        
+@login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     return redirect('/cuentas/home/')
-
 
 @login_required
 def ordenes_internas(request):
@@ -642,10 +753,3 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
-
-def print_archivo(request):
-    with open('./API_KEY.txt','rb') as file:
-        key = file.read()
-    print(key)
-    print(key.decode('ascii'))
-    return HttpResponse("<h1>OK</h1>")

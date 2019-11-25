@@ -19,7 +19,6 @@ class Empresa (models.Model):
     correo_resultados = models.EmailField(default="")
     correo_pagos = models.EmailField(default="")
 
-
     class Meta:
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'

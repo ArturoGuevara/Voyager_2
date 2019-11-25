@@ -3,8 +3,8 @@ from . import views
 
 
 urlpatterns = [
-    path('ingresar_muestras',views.ingresar_muestras,name='ingresar_muestras'),
     path('ingreso_cliente', views.ingreso_cliente, name='ingreso_cliente'),
+    path('registrar_ingreso_muestra', views.registrar_ingreso_muestra, name='registrar_ingreso_muestra'),
     path('', views.indexView, name='index'),
     path('ordenes_internas', views.ordenes_internas, name='ordenes_internas'),
     path('consultar_orden/', views.consultar_orden, name='consultar_orden'),
@@ -15,5 +15,4 @@ urlpatterns = [
     path('validacionDhl', views.validacion_codigo, name='validacion_codigo'),
     path('consultar_empresa_muestras/',views.consultar_empresa_muestras, name='consultar_empresa_muestras'),
     path('enviar_archivo/',views.enviar_archivo, name='enviar_archivo'),
-    path('printarchivo/',views.print_archivo, name='print_archivo')
 ]
