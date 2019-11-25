@@ -29,6 +29,7 @@ import random
 import csv
 from reportes.forms import codigoDHL
 from flags.state import flag_enabled
+from ventas.VoyagerImporter import Uploader
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -635,6 +636,7 @@ def descargar_paquete(request):
 ############### USV19-53 ###################
 @login_required
 def importar_csv(request): #envía un archivo de resultados por correo
+    context = {}
     if request.method != 'POST': #Si no se envía un post, el acceso es denegado
         print("Falló POST")
         raise Http404
@@ -648,21 +650,22 @@ def importar_csv(request): #envía un archivo de resultados por correo
         form = ImportarAnalisisForm(request.POST, request.FILES)
         print(form["csv_analisis"])
         if form.is_valid():
-            response_code = handle_upload_document(request.FILES['csv_analisis'],)
+            error_log = handle_upload_document(request.FILES['csv_analisis'],)
         else:
             print("Falló FORM")
             raise Http404
-    if response_code == 202:
-        #Si el código es 202, el mail fue enviado correctamente y se muestra el mensaje de éxito
-        request.session['success_sent'] = 1
-        return JsonResponse({"code" : 1})
-    else:
-        return JsonResponse({"code": 0})
+
+    error_count = len(error_log)
+
+    context = {
+        'error_count' : error_count,
+        'error_log' : error_log,
+    }
+    return render(request, 'ventas/importar_csv_resultado.html', context)
 
 
 def handle_upload_document(file): #Esta función guarda el archivo de resultados a enviar
     #Se crea el path donde el archivo se va a almacenar concatnando el nombre del csv con la fecha en la que sube y un número aleatorio
-    print(":v")
     path = './analisis/csv_analisis'
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
@@ -672,8 +675,10 @@ def handle_upload_document(file): #Esta función guarda el archivo de resultados
     return carga_datos(path)
 
 def carga_datos(path):
-    print(path)
-    return 0
+    error_log = Uploader.validate_content(path)
+    if len(error_log) == 0:
+        Uploader.upload_content(path)
+    return error_log
 
 # EXTRAS
 def is_not_empty(data):
