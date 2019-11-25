@@ -638,21 +638,18 @@ def descargar_paquete(request):
 def importar_csv(request): #envía un archivo de resultados por correo
     context = {}
     if request.method != 'POST': #Si no se envía un post, el acceso es denegado
-        print("Falló POST")
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
     if not (user_logged.rol.nombre == "Director"):
-        print("Falló Rol")
         raise Http404
     response_code = 0
     if request.method == 'POST':
         form = ImportarAnalisisForm(request.POST, request.FILES)
         print(form["csv_analisis"])
         if form.is_valid():
-            error_log = handle_upload_document(request.FILES['csv_analisis'],)
+            error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
         else:
-            print("Falló FORM")
             raise Http404
 
     error_count = len(error_log)
@@ -672,7 +669,7 @@ def handle_upload_document(file): #Esta función guarda el archivo de resultados
     with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
         for chunk in file.chunks():
             destination.write(chunk)
-    return carga_datos(path)
+    return carga_datos(path), os.remove(path)
 
 def carga_datos(path):
     try:
@@ -681,7 +678,6 @@ def carga_datos(path):
         error_log = 'ERROR'
     if len(error_log) == 0 and error_log != 'ERROR':
         Uploader.upload_content(path)
-    os.remove(path)
     return error_log
 
 # EXTRAS
