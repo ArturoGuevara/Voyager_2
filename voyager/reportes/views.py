@@ -81,7 +81,6 @@ def registrar_ingreso_muestra(request):
                         guardar_muestras(matrixMB,"MB",user_logged)
                     response = JsonResponse({"Success": "OK"})
                     response.status_code = 200
-                    # Regresamos la respuesta de error interno del servidor
                     return response
                 else:
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
@@ -204,8 +203,48 @@ def guardar_muestras(arreglo, tipo, user):
                 m.analisis6 = analisis
             m.save()
     elif tipo == "MB":
-        print("Función guardar muestras MB")
-    #save muestra
+        li = list(formato[0].split(","))
+        for i in range (len(li)): #Cuenta cuántas muestras de tipo MB fueron ingresadas
+            m = Muestra()
+            # GENERALES
+            m.usuario = user
+            m.oi = OrdenInterna.objects.latest('idOI')
+            li = list(formato[0].split(","))
+            m.tipo_muestra = li[i]
+            li = list(formato[1].split(","))
+            m.lote_codigo = li[i]
+            li = list(formato[2].split(","))
+            m.muestreador = li[i]
+            li = list(formato[3].split(","))
+            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            m.fecha_muestreo = fm
+            li = list(formato[4].split(","))
+            m.metodo_referencia = li[i]
+            li = list(formato[5].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis1 = analisis
+            li = list(formato[6].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis2 = analisis
+            li = list(formato[7].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis3 = analisis
+            li = list(formato[8].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis4 = analisis
+            li = list(formato[9].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis5 = analisis
+            li = list(formato[10].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis6 = analisis
+            m.save()
 
 def restar_analisis(user, analisis):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
@@ -233,18 +272,14 @@ def indexView(request):
 
 @login_required
 def ordenes_internas(request):
-
     ordenes = {}
     ordenes_activas = {}
     dict_clientes = {}
     form = None
     response = None
-
-
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
-
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
     estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
@@ -256,12 +291,7 @@ def ordenes_internas(request):
             if muestras_orden:
                 dict_clientes[orden] = muestras_orden.first().usuario
         form = codigoDHL()
-
-
-
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
-
-
     context = {
         'ordenes': ordenes,
         'ordenes_activas': ordenes_activas,

@@ -121,6 +121,7 @@ class Muestra(models.Model):
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
     lote_codigo = models.CharField(max_length=50, blank=True, null=True)
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
     #Análisis posibles para la muestra
     analisis1 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis1')
     analisis2 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis2')
