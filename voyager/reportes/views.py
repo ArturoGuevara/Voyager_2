@@ -642,10 +642,3 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
-
-def print_archivo(request):
-    with open('./API_KEY.txt','rb') as file:
-        key = file.read()
-    print(key)
-    print(key.decode('ascii'))
-    return HttpResponse("<h1>OK</h1>")
