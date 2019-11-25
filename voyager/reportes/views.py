@@ -67,9 +67,13 @@ def registrar_ingreso_muestra(request):
                 matrixAG = request.POST.getlist('matrixAG[]')
                 matrixPR = request.POST.getlist('matrixPR[]')
                 matrixMB = request.POST.getlist('matrixMB[]')
+                oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
+                oi.usuario = user_logged
+                oi.estatus = "Creada"
+                oi.save()
                 if len(matrixAG) != 0 or len(matrixPR) != 0 or len(matrixMB) != 0:
                     if len(matrixAG) != 0:
-                        guardar_muestras(matrixAG,"AG",user_logged)
+                        guardar_muestras(matrixAG,"AG",user_logged) #Llamar a la función que guarda datos
                     if len(matrixPR) != 0:
                         guardar_muestras(matrixPR,"PR",user_logged)
                     if len(matrixMB) != 0:
@@ -95,23 +99,71 @@ def registrar_ingreso_muestra(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-
         
 def guardar_muestras(arreglo, tipo, user):
     formato = arreglo
-    # Variable para iterar en los varios arreglods
-    index = 0
     if tipo == "AG":        
-        for aux in formato:
+        li = list(formato[0].split(","))
+        for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
             m = Muestra()
             # GENERALES
-            m.id_muestra =
             m.usuario = user
-            m.oi =
-            m.factura =
-            m.orden_compra =
-            m.link_resultados = 
-            # FORMATO AG y MB
+            m.oi = OrdenInterna.objects.latest('idOI')
+            li = list(formato[0].split(","))
+            m.producto = li[i]
+            li = list(formato[1].split(","))
+            m.variedad = li[i]
+            li = list(formato[2].split(","))
+            m.pais_origen = li[i]
+            li = list(formato[3].split(","))
+            m.codigo_muestra = li[i]
+            li = list(formato[4].split(","))
+            m.proveedor = li[i]
+            li = list(formato[5].split(","))
+            m.codigo_trazabilidad = li[i]
+            li = list(formato[6].split(","))
+            m.agricultor = li[i]
+            li = list(formato[7].split(","))
+            m.direccion = li[i]
+            li = list(formato[8].split(","))
+            m.parcela = li[i]
+            li = list(formato[9].split(","))
+            m.ubicacion_muestreo = li[i]
+            li = list(formato[10].split(","))
+            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            m.fecha_muestreo = fm
+            li = list(formato[11].split(","))
+            m.urgente = li[i]
+            li = list(formato[12].split(","))
+            m.muestreador = li[i]
+            li = list(formato[13].split(","))
+            m.pais_destino = li[i]
+            li = list(formato[14].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis1 = analisis
+            li = list(formato[15].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis2 = analisis
+            li = list(formato[16].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis3 = analisis
+            li = list(formato[17].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis4 = analisis
+            li = list(formato[18].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis5 = analisis
+            li = list(formato[19].split(","))
+            if restar_analisis(user, li[i]):
+                analisis = Analisis.objects.get(id_analisis = li[i])
+                m.analisis6 = analisis
+            m.save()
+            """# FORMATO AG y MB
             m.muestreador =
             # FORMATO AG y PR
             m.fecha_muestreo =
@@ -140,13 +192,31 @@ def guardar_muestras(arreglo, tipo, user):
             
             ac.cantidad = cantidad[index]
             # Guardamos la muestra e incrementamos el índice de los arreglos
-            m.save()
-            index = index + 1
+            m.save()"""
     elif tipo == "PR":
         print("Función guardar muestras PR")
     elif tipo == "MB":
         print("Función guardar muestras MB")
-    print(formato)
+    #save muestra
+
+def restar_analisis(user, analisis):
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user)
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                if a.restante > 0: #Revisar que aún le queden análisis
+                    a.restante -= 1
+                    a.save()
+                    return True
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c)
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                a.restante -= 1
+                a.save()
+                return True
         
 @login_required
 def indexView(request):

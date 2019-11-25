@@ -120,7 +120,14 @@ class Muestra(models.Model):
     # FORMATO PR
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
-    lote_codigo = models.CharField(max_length=50, blank=True, null=True)    
+    lote_codigo = models.CharField(max_length=50, blank=True, null=True)
+    #Análisis posibles para la muestra
+    analisis1 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis1')
+    analisis2 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis2')
+    analisis3 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis3')
+    analisis4 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis4')
+    analisis5 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis5')
+    analisis6 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis6')
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -145,6 +152,7 @@ class AnalisisCotizacion(models.Model):
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    restante = models.IntegerField()
     fecha = models.DateField()
     descuento = models.DecimalField(max_digits=100, decimal_places=4, default=0)
     iva = models.DecimalField(max_digits=100, decimal_places=2, default=16)
