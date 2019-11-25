@@ -142,6 +142,7 @@ class Cotizacion(models.Model):
     status = models.BooleanField(default=True)
     aceptado = models.BooleanField(default=False)
     fecha_creada = models.DateField(default=timezone.now)
+    bloqueado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Cotización'
