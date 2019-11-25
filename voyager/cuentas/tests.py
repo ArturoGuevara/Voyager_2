@@ -5,6 +5,8 @@ from cuentas.models import Rol,IFCUsuario,Empresa
 from reportes.models import OrdenInterna
 from django.urls import reverse, resolve
 from .views import lista_usuarios,lista_clientes
+from django.contrib.auth import views as auth_views
+from django.core import mail
 
 #Esta prueba revisa que un usuario pueda entrar al login
 class testLogin(TestCase):
@@ -637,3 +639,223 @@ class TestListaUsuarios(TestCase):
     def test_url_resuelta(self):
         url = reverse('clientes')
         self.assertEquals(resolve(url).func,lista_clientes)
+
+class TestActualizarUsuario(TestCase):
+    def setUp(self):
+        user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        rol_clientes = Rol.objects.create(nombre='Clientes')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes = IFCUsuario.objects.create(
+                                                        rol = rol_clientes,
+                                                        user = user_clientes,
+                                                        nombre = 'clientes',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa = empresa
+                                                      )
+        clientes.save()
+
+    def test_actualizar_usuario_acceso_denegado(self):
+        #Esta prueba simula a un usuario que quiere entrar a algún acceso de la página sin acceder con su cuenta
+        response = self.client.get('/cuentas/home/')
+        self.assertRedirects(response, '/cuentas/login?next=/cuentas/home/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_actualizar_usuario_exitoso(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345678',
+                                                                'pass2' : '12345678',
+                                                                'ver' : 'testpassword'
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 1)
+
+    def test_actualizar_usuario_no_exitoso(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345978',
+                                                                'pass2' : '12345678',
+                                                                'ver' : 'testpassword'
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 0)
+
+    def test_actualizar_usuario_no_verifica(self):
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post('/cuentas/guardar_perfil/', {
+                                                                'nombre' : 'Juanito',
+                                                                'a_p' : 'testpassword',
+                                                                'a_m' : 'testpassword',
+                                                                'correo' : 'juasjuas@test.com',
+                                                                'telefono': '1234567890',
+                                                                'pass1' : '12345978',
+                                                                'pass2' : '12345678',
+                                                                'ver' : ''
+                                                                })
+        juanito = IFCUsuario.objects.filter(nombre="Juanito")
+        self.assertEqual(juanito.count(), 0)
+
+class TestRecoverPassword(TestCase):
+    def setup(self):
+        user_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        rol_clientes = Rol.objects.create(nombre='Clientes')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes = IFCUsuario.objects.create(
+                                                        rol = rol_clientes,
+                                                        user = user_clientes,
+                                                        nombre = 'clientes',
+                                                        apellido_paterno = 'test',
+                                                        apellido_materno ='test',
+                                                        telefono = '5234567',
+                                                        estado = True,
+                                                        empresa = empresa
+                                                      )
+        clientes.save()
+
+    def test_correct_url_reset_password(self):
+        self.setup()
+        response = self.client.get(reverse('reset_password'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.template_name, ['cuentas/reset_password_mail.html'])
+
+    def test_reset_password_post_empty(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'),{})
+        self.assertEqual(response.status_code, 200)
+
+    def test_reset_password_post_mail_nonexistent(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'client@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertRedirects(response,reverse('password_reset_done'))
+
+    def test_reset_password_post_mail_correct(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        self.assertRedirects(response, reverse('password_reset_done'))
+
+    def test_reset_password_correct_url_password(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        self.assertEqual(response_change_password.status_code, 302)
+
+    def test_reset_password_change_password_incorrect(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        change_url = response_change_password.url
+        response_result_change = self.client.post(change_url,{'new_password1':'lalocura','new_password2':'laslocuras'})
+        self.assertEqual(response_result_change.status_code, 200)
+        self.assertEqual(response_result_change.template_name,['cuentas/reset_password_change.html'])
+        self.assertEqual(True,self.client.login(username = 'client', password = 'testpassword'))
+
+    def test_reset_password_change_password_correct(self):
+        self.setup()
+        response = self.client.post(reverse('reset_password'), {'email':'clienttest@testuser.com'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].subject, 'Recuperar contraseña')
+        token = response.context[0]['token']
+        uid = response.context[0]['uid']
+        response_change_password = self.client.get(
+            reverse('password_reset_confirm', kwargs={'uidb64': uid,'token': token})
+        )
+        self.assertEqual(response_change_password.status_code, 302)
+        change_url = response_change_password.url
+        response_result_change = self.client.post(change_url,{'new_password1':'lalocura','new_password2':'lalocura'})
+        self.assertEqual(response_result_change.status_code, 302)
+        self.assertRedirects(response_result_change, reverse('password_reset_complete'))
+        self.assertEqual(True, self.client.login(username='client', password='lalocura'))
+
+class TestBorrarUsuario(TestCase):
+    def setUp(self):
+        role = Rol()
+        role.nombre = "Director"
+        role.save()
+        role2 = Rol()
+        role2.nombre = "Cliente"
+        role2.save()
+        user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
+        user.save() #guardar usuario de Django
+        user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
+        user2.save()
+        user3 = User.objects.create_user('toño', 'toño@lalocura.com', 'toño')
+        user3.save()
+        i_user = IFCUsuario() #Crear un usuario de IFC
+        i_user.user = user   #Asignar usuario de la tabla User
+        i_user.rol = role   #Asignar rol creado
+        i_user.nombre = "Hockey"
+        i_user.apellido_paterno = "Lalo"
+        i_user.apellido_materno = "Cura"
+        i_user.telefono = "9114364"
+        i_user.estado = True
+        i_user.save()   #Guardar usuario de IFC
+        i_user2 = IFCUsuario()
+        i_user2.user = user2   #Asignar usuario de la tabla User
+        i_user2.rol = role2   #Asignar rol creado
+        i_user2.nombre = "Padrino"
+        i_user2.apellido_paterno = "Lalo"
+        i_user2.apellido_materno = "Cura"
+        i_user2.telefono = "9114454364"
+        i_user2.estado = True
+        i_user2.save()   #Guardar usuario de IFC
+        i_user3 = IFCUsuario()
+        i_user3.user = user3   #Asignar usuario de la tabla User
+        i_user3.rol = role2   #Asignar rol creado
+        i_user3.nombre = "Toño"
+        i_user3.apellido_paterno = "Lalo"
+        i_user3.apellido_materno = "Cura"
+        i_user3.telefono = "9114454364"
+        i_user3.estado = True
+        i_user3.save()   #Guardar usuario de IFC
+
+    def test_delete_usuario_1(self):
+        user = IFCUsuario.objects.all().first()
+        user.estado = False
+        user.save()
+        contador = IFCUsuario.objects.filter(estado=True).count()
+        self.assertEquals(2, contador)
+
+    # Si truena está bien, porque el analisis no existe
+    def test_delete_usuario_2(self):
+        var = False
+        try:
+            user = IFCUsuario.objects.all().last()
+            user.estado = False
+            user.save()
+            contador = IFCUsuario.objects.filter(estado=True).count()
+            self.assertNotEquals(2, contador)
+        except:
+            var = True
+            self.assertEquals(var, True)

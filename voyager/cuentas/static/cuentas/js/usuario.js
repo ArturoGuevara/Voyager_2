@@ -1,4 +1,5 @@
 var token = csrftoken;
+var id_usuario = 0;
 
 
 // Función que crea y muestra alerta
@@ -37,7 +38,7 @@ function cargar_info_usuario(id) {
             data = data.fields;
 
             if(rol == "Cliente"){
-                
+
                 $('#ordenes_pendientes').removeClass('d-none');
 
                 $('#tabla_cont').empty();

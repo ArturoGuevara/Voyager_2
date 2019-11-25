@@ -28,6 +28,7 @@ from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileT
 import urllib.request as urllib
 import base64
 import locale
+from flags.state import flag_enabled
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -191,12 +192,18 @@ def restar_analisis(user, analisis):
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
-        raise Http404
-    return render(request, 'cuentas/home.html')
+    return redirect('/cuentas/home/')
 
 @login_required
 def ordenes_internas(request):
+
+    ordenes = {}
+    ordenes_activas = {}
+    dict_clientes = {}
+    form = None
+    response = None
+
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
@@ -204,18 +211,18 @@ def ordenes_internas(request):
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
     estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
+    if flag_enabled('Modulo_Ordenes_Internas', request=request):
+        ordenes = OrdenInterna.objects.all()
+        ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
+        for orden in ordenes_activas:
+            muestras_orden = Muestra.objects.filter(oi=orden)
+            if muestras_orden:
+                dict_clientes[orden] = muestras_orden.first().usuario
+        form = codigoDHL()
 
-    ordenes = OrdenInterna.objects.all()
-    ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
-    dict_clientes = {}
-    for orden in ordenes_activas:
-        muestras_orden = Muestra.objects.filter(oi=orden)
-        if muestras_orden:
-            dict_clientes[orden] = muestras_orden.first().usuario
-    form = codigoDHL()
 
 
-    response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
+        response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
 
 
     context = {
@@ -535,30 +542,30 @@ def muestra_enviar(request): #guia para guardar muestras
                     raise Http404
                 all_analysis_cot = AnalisisCotizacion.objects.all().filter(cantidad__gte=1,
                                                                        cotizacion__usuario_c=user_logged) #obtener todos los análisis disponibles en las cotizaciones
-                phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")#obtener usuario fantasma (dummy) para crear las ordenes internas
-                muestras_hoy=Muestra.objects.filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
+                #phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom",apellido_materno="Phantom")#obtener usuario fantasma (dummy) para crear las ordenes internas
+                muestras_hoy=Muestra.objects.filter(usuario=user_logged).filter(fecha_forma=datetime.datetime.now().date()) #verificar si se ha registrado una muestra en el día
                 if muestras_hoy:
                     oi = muestras_hoy[0].oi #si se ha registrado una muestra en el mismo día, usar la misma orden interna
                     for m in muestras_hoy:
-                        if m.oi.estatus != 'borrado':
+                        if m.oi.estatus != 'Borrado':
                             if m.usuario == user_logged:
                                 oi = m.oi
-                    if oi.estatus == 'borrado':
+                    if oi.estatus == 'Borrado':
                         oi = OrdenInterna()
-                        oi.usuario = phantom_user
+                        oi.usuario = user_logged #phantom_user
                         if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
-                            oi.estatus = 'fantasma'
+                            oi.estatus = 'Fantasma'
                         else:
-                            oi.estatus = 'invisible'
+                            oi.estatus = 'Invisible'
                         oi.idioma_reporte = request.POST.get('idioma')
                         oi.save()
                 else: #crear orden interna si no se ha registrado una
                     oi = OrdenInterna()
-                    oi.usuario = phantom_user
+                    oi.usuario = user_logged #phantom_user
                     if request.POST.get('enviar') == "1": #verificar si se envió información para guardar o para enviar
-                        oi.estatus = 'fantasma'
+                        oi.estatus = 'Fantasma'
                     else:
-                        oi.estatus = 'invisible'
+                        oi.estatus = 'Invisible'
                     oi.idioma_reporte = request.POST.get('idioma')
                     oi.save()
                 muestra = Muestra() #crear muestra a guardar
@@ -628,7 +635,7 @@ def borrar_orden_interna(request):
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
-                oi.estatus = 'borrado'
+                oi.estatus = 'Borrado'
                 oi.save()
                 return HttpResponse('OK')
             else:
@@ -735,9 +742,10 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
     attachment.content_id = ContentId('Example Content ID')
     message.attachment = attachment
     try:
-        with open('./API_KEY.txt','r') as file: #Se obtiene la llave del API para autenticar
+        with open('./API_KEY.txt','rb') as file: #Se obtiene la llave del API para autenticar
             key = file.read()
-        sendgrid_client = SendGridAPIClient(key) #Se envía el correo
+        key_decoded = key.decode('ascii')
+        sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
         print(response.status_code)
         print(response.body)
@@ -745,3 +753,10 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
+
+def print_archivo(request):
+    with open('./API_KEY.txt','rb') as file:
+        key = file.read()
+    print(key)
+    print(key.decode('ascii'))
+    return HttpResponse("<h1>OK</h1>")

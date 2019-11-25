@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'flags',
 
 
 ]
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'flags.middleware.FlagConditionsMiddleware',
 ]
 
 ROOT_URLCONF = 'voyager.urls'
@@ -79,6 +81,32 @@ TEMPLATES = [
     },
 ]
 
+FLAGS = {
+
+    'Modulo_Cotizaciones': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Catalogo': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ingresar_Muestra': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Ordenes_Internas': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Usuarios': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Modulo_Exportar_Datos': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'Editar_Perfil': [
+        {'condition': 'boolean', 'value': True},
+    ],
+    'FLAG_WITH_REQUIRED_CONDITIONS': []
+}
+#
 WSGI_APPLICATION = 'voyager.wsgi.application'
 LOGIN_REDIRECT_URL = '/cuentas/home/'
 LOGOUT_REDIRECT_URL = '/cuentas/login/'
@@ -120,7 +148,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es-mx'
 
 TIME_ZONE = 'UTC'
 
@@ -138,3 +166,13 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+file_API_KEY=open("./API_KEY_recover_password.txt",'rb')
+SENDGRID_API_KEY = file_API_KEY.read().decode('ascii')
+
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'
+EMAIL_HOST_PASSWORD = SENDGRID_API_KEY
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'A01207945@itesm.mx'

@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -20,4 +21,27 @@ urlpatterns = [
     path('', views.indexView, name=''),
     path('clientes/',views.lista_clientes, name='clientes'),
     path('notificar_crear_cliente/', views.notificar_crear_cliente, name='notificar_crear_cliente'),
+    path('guardar_perfil/', views.guardar_perfil, name='guardar_perfil'),
+    path('notificar_guardar_perfil/', views.notificar_guardar_perfil, name='notificar_guardar_perfil'),
+    path('notificar_error_perfil/', views.notificar_error_perfil, name='notificar_error_perfil'),
+    path('reset_password/',
+            auth_views.PasswordResetView.as_view(template_name = 'cuentas/reset_password_mail.html'),
+            name='reset_password'
+    ),
+    path(
+            'reset_password_done/',
+            auth_views.PasswordResetDoneView.as_view(template_name = 'cuentas/reset_password_sent.html'),
+            name='password_reset_done'
+    ),
+    path(
+            'password_reset_confirm/<uidb64>/<token>/',
+            auth_views.PasswordResetConfirmView.as_view(template_name = 'cuentas/reset_password_change.html'),
+            name='password_reset_confirm'
+    ),
+    path(
+            'reset_password_complete/',
+            auth_views.PasswordResetCompleteView.as_view(template_name = 'cuentas/reset_password_success.html'),
+            name='password_reset_complete'
+    ),
+    path('borrar_usuario/<int:id>', views.borrar_usuario, name='borrar_usuario'),
 ]

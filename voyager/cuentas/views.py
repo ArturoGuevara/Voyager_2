@@ -12,6 +12,8 @@ from .forms import ClientForm
 from django.http import Http404
 from django.http import JsonResponse
 from django.http import HttpResponseRedirect
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 
@@ -20,8 +22,8 @@ from django.http import HttpResponseRedirect
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
-        return render(request,'cuentas/home.html')
-    return render(request, 'cuentas/home.html')
+        return render(request,'cuentas/home.html', {'ifc': user_logged})
+    return render(request,'cuentas/home.html', {'ifc': user_logged})
 
 #Vista de Login
 def loginView(request):
@@ -65,9 +67,8 @@ def verifyLogin(request):
 @login_required
 def homeView(request):
     #Aquí se genera la vista de la pagina home del usuario
-    return render(request,'cuentas/home.html', {
-            #'user': ifc_user
-    })
+    user_logged = IFCUsuario.objects.get(user = request.user)
+    return render(request,'cuentas/home.html', {'ifc': user_logged})
 
 @login_required
 def logoutControler(request):
@@ -127,11 +128,13 @@ def lista_usuarios(request):
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
-            usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
-            context = {'usuarios':usuarios_dir}
+            usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
+            usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
+            usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
+            context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
         elif not usuario_log.rol.nombre == "Cliente":
             rol = Rol.objects.get(nombre="Cliente")
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
@@ -322,3 +325,92 @@ def notificar_crear_cliente(request):         # Funcion que se llama con un ajax
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})
+
+@login_required
+def guardar_perfil(request):
+    if not request.session._session:
+        raise Http404
+    if request.method != 'POST':
+        raise Http404
+    if not (request.POST.get('nombre')
+            and request.POST.get('a_p')
+            and request.POST.get('a_m')
+            and request.POST.get('correo')
+            and request.POST.get('telefono')
+            and request.POST.get('ver')
+        ): #verificar que se envían todos los datos
+        request.session['guardar_perfil_status'] = False
+        return redirect('/cuentas/home/') #redirigir a home
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    num_mails = User.objects.filter(email=request.POST.get('correo'))
+    total = 0
+    for u in num_mails:
+        if (u.pk == user_logged.user.pk):
+            total = 1
+    if num_mails.count() > total: #verificar que no haya usuarios con el mismo correo
+        request.session['guardar_perfil_status'] = False
+        return redirect('/cuentas/home/') #redirigir a home
+    if not (check_password(request.POST.get('ver'), user_logged.user.password)):
+        request.session['error_perfil_status'] = True
+        return redirect('/cuentas/home/') #redirigir a home
+    user = user_logged.user
+    user.email = request.POST.get('correo')
+    if (request.POST.get('pass1') != "" and request.POST.get('pass2') != ""):
+        if (request.POST.get('pass1') == request.POST.get('pass2')): #verificar que las contraseñas sean iguales
+            user.set_password(request.POST.get('pass1'))
+        else:
+            request.session['guardar_perfil_status'] = False
+            return redirect('/cuentas/home/') #redirigir a home
+    user.save()
+    update_session_auth_hash(request, user)
+    user_logged.nombre = request.POST.get('nombre')
+    user_logged.apellido_paterno = request.POST.get('a_p')
+    user_logged.apellido_materno = request.POST.get('a_m')
+    user_logged.telefono = request.POST.get('telefono')
+    user_logged.save() #guardar nuevo cliente
+    request.session['guardar_perfil_status'] = True
+    return redirect('/cuentas/home/') #redirigir a home
+
+@login_required
+def notificar_guardar_perfil(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'guardar_perfil_status' in request.session:
+        result = request.session['guardar_perfil_status']
+        del request.session['guardar_perfil_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def notificar_error_perfil(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'error_perfil_status' in request.session:
+        result = request.session['error_perfil_status']
+        del request.session['error_perfil_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+############### USA03-39###################
+@login_required
+def borrar_usuario(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            usuario = IFCUsuario.objects.get(user__pk = id)
+            if usuario:
+                usuario.estado = not usuario.estado
+                usuario.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe ese usuario"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USA03-39###################
