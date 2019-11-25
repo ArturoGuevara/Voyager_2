@@ -18,4 +18,5 @@ urlpatterns = [
     path('exportar_datos/',views.exportar_datos, name='exportar_datos'),
     path('generar_csv_respaldo/',views.generar_csv_respaldo, name='generar_csv_respaldo'),
     path('descargar_paquete/',views.descargar_paquete, name='descargar_paquete'),
+    path('bloquear_cotizacion/<int:id>', views.bloquear_cotizacion, name='bloquear_cotizacion'),
 ]

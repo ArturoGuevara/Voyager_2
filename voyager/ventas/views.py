@@ -471,7 +471,7 @@ def visualizar_cotizacion(request, id):
 @login_required
 def borrar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -621,6 +621,32 @@ def descargar_paquete(request):
     for row in all_rows.values():
         writer.writerow(row)
     return response
+
+@login_required
+def bloquear_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+            if cotizacion:
+                cotizacion.bloqueado = True
+                cotizacion.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe esa cotización"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
 
 
 # EXTRAS

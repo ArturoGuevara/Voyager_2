@@ -39,16 +39,39 @@
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
                 {% if c.status == True %}
+                {% if request.session.userrole == "Cliente" %}
+                    {% if c.bloqueado == False %}
+                    <tr class="cot-row" data-id="{{c.id_cotizacion}}" id="cotizaciones-{{c.id_cotizacion}}">
+                        <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
+                        <td class="pt-3 cotizaciones_cliente">{{ c.usuario_c }}</td>
+                        <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
+                        <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
+                        <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
+                        {% if c.aceptado == True %}
+                          <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Aceptado</td>
+                        {% else %}
+                          <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Pendiente</td>
+                        {% endif %}
+                        <td class="pt-3 cotizaciones_acciones">
+                            <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% else %}
                 <tr class="cot-row" data-id="{{c.id_cotizacion}}" id="cotizaciones-{{c.id_cotizacion}}">
                     <td class="pt-3 cotizaciones_id_cotizacion">{{ c.id_cotizacion }}</td>
                     <td class="pt-3 cotizaciones_cliente">{{ c.usuario_c }}</td>
                     <td class="pt-3 cotizaciones_ventas">{{ c.usuario_v }}</td>
                     <td class="pt-3 cotizaciones_total">${{ c.total }}</td>
                     <td class="pt-3 cotizaciones_fecha_creada">{{ c.fecha_creada }}</td>
-                    {% if c.aceptado == True %}
-                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Aceptado</td>
+                    {% if c.bloqueado == True %}
+                        <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Bloqueado</td>
+                    {% elif c.aceptado == True %}
+                        <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Aceptado</td>
                     {% else %}
-                      <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Pendiente</td>
+                        <td class="pt-3 cotizaciones_estado" id="cotizacion_child_estado">Pendiente</td>
                     {% endif %}
                     <td class="pt-3 cotizaciones_acciones">
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
@@ -59,13 +82,19 @@
                             <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
                                 <i class='fa fa-check'></i>
                             </button>
+                            <button type="button" class="btn btn-warning" id="cotizacion_child_bloquear" onclick="bloquear_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#bloquear_cotizacion">
+                                <i class='fas fa-ban'></i>
+                            </button>
                           {% endif %}
+                         {% endif %}
+                        {% if request.session.userrole == "Director" or request.session.userrole == "SuperUser" %}
                             <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
                                 <i class='fa fa-trash'></i>
                             </button>
                         {% endif %}
                     </td>
                 </tr>
+                {% endif %}
                 {% endif %}
                 {% endfor %}
             </tbody>
@@ -109,6 +138,7 @@
     {% include './modals/cotizaciones/borrar-cot.html' %}
     {% include './modals/cotizaciones/aceptar-cot.html' %}
     {% include './modals/analisis/visualizar.html' %}
+    {% include './modals/cotizaciones/bloquear-cot.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -124,4 +154,5 @@
     <script src="{% static 'ventas/js/cotizaciones/aceptar_cotizacion.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/analisis/editar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/analisis/catalogo.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/cotizaciones/bloquear.js' %}" type="text/javascript"></script>
 {% endblock %}
