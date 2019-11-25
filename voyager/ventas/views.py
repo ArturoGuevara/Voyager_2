@@ -675,9 +675,13 @@ def handle_upload_document(file): #Esta función guarda el archivo de resultados
     return carga_datos(path)
 
 def carga_datos(path):
-    error_log = Uploader.validate_content(path)
-    if len(error_log) == 0:
+    try:
+        error_log = Uploader.validate_content(path)
+    except:
+        error_log = 'ERROR'
+    if len(error_log) == 0 and error_log != 'ERROR':
         Uploader.upload_content(path)
+    os.remove(path)
     return error_log
 
 # EXTRAS
