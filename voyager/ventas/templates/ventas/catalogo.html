@@ -81,11 +81,11 @@
     <script src="{% static 'ventas/js/analisis/cargar_csv.js' %}" type="text/javascript"></script>
         {% if success_code == 1 %}
             <script>
-                showNotification('top','right','Análisis registrado exitosamente')
+                showNotificationSuccess('top','right','Análisis registrado exitosamente')
             </script>
         {% elif success_code == -1 %}
              <script>
-                showNotification('top','right','Hubo un error en el registro')
+                showNotificationDanger('top','right','Hubo un error en el registro')
             </script>
         {% endif %}
 {% endblock %}
