@@ -17,7 +17,6 @@ function showNotification(from, align, msg){
 	});
 }
 
-
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_usuario(id) {
     $.ajax({
