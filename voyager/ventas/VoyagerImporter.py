@@ -6,7 +6,7 @@ from reportes.models import Analisis,Pais
 class Uploader():
 
 
-    def show_content(self, file_name, self):        # Despliega el codigo de todos los analisis
+    def show_content(file_name):        # Despliega el codigo de todos los analisis
         with open(file_name, mode='r', encoding="utf8") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
@@ -23,7 +23,7 @@ class Uploader():
             print(f'Registros: {line_count}')
 
 
-    def validate_content(self, file_name):  # Valida los campos del csv
+    def validate_content(file_name):  # Valida los campos del csv
         with open(file_name, mode='r', encoding="utf8") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
@@ -84,7 +84,7 @@ class Uploader():
             return error_log
 
 
-    def upload_content(self, file_name):  # Sube todo el contenido del csv a la base de datos
+    def upload_content(file_name):  # Sube todo el contenido del csv a la base de datos
         paises = {
             'M' : Pais.objects.get(nombre="México"),
             'H' : Pais.objects.get(nombre="Holanda"),
