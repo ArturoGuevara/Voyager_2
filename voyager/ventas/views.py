@@ -646,7 +646,6 @@ def importar_csv(request): #envía un archivo de resultados por correo
     response_code = 0
     if request.method == 'POST':
         form = ImportarAnalisisForm(request.POST, request.FILES)
-        print(form["csv_analisis"])
         if form.is_valid():
             error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
         else:
@@ -671,13 +670,13 @@ def handle_upload_document(file): #Esta función guarda el archivo de resultados
             destination.write(chunk)
     return carga_datos(path), os.remove(path)
 
-def carga_datos(path):
+def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
     try:
-        error_log = Uploader.validate_content(path)
+        error_log = Uploader.validate_content(path)  # Valida que los campos sean correctos (consultar VoyagerImporter.py)
     except:
         error_log = 'ERROR'
     if len(error_log) == 0 and error_log != 'ERROR':
-        Uploader.upload_content(path)
+        Uploader.upload_content(path)   # Carga los registros del archivo
     return error_log
 
 # EXTRAS
