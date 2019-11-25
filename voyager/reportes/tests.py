@@ -133,25 +133,25 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
 
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
-        response = self.client.get(reverse('ingresar_muestras'))
+        response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,302)
 
     def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('ingresar_muestras'))   #Cambia de página sin método post
+        response = self.client.get(reverse('ingreso_cliente'))   #Cambia de página sin método post
         self.assertEqual(response.status_code,404)   #Mostrar 404
 
     def test_post_empty(self):   #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{})   #El post va vacío
+        response = self.client.post(reverse('ingreso_cliente'),{})   #El post va vacío
         self.assertEqual(response.status_code,404)   #Mostrar 404
 
     def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{'nombre':"Impulse",   #Las variables de post no están completas
+        response = self.client.post(reverse('ingreso_cliente'),{'nombre':"Impulse",   #Las variables de post no están completas
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado1':"Zacatecas"
                                                                   })
@@ -160,7 +160,7 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
     def test_post_empty_field(self):   #Prueba si algún post manda algo vacío
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
+        response = self.client.post(reverse('ingreso_cliente'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
@@ -171,7 +171,7 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
     def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
+        response = self.client.post(reverse('ingreso_cliente'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
@@ -262,12 +262,14 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         ac1.analisis = a1
         ac1.cotizacion = c
         ac1.cantidad = 10000
+        ac1.restante = 10000
         ac1.fecha = datetime.datetime.now().date()
         ac1.save()   #Guardar conexión
         ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac2.analisis = a2
         ac2.cotizacion = c
         ac2.cantidad = 100
+        ac2.restante = 100
         ac2.fecha = datetime.datetime.now().date()
         ac2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis
@@ -808,12 +810,14 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         ana_coti1.analisis = analisis1
         ana_coti1.cotizacion = coti
         ana_coti1.cantidad = 10000
+        ana_coti1.restante = 10000
         ana_coti1.fecha = datetime.datetime.now().date()
         ana_coti1.save()   #Guardar conexión
         ana_coti2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ana_coti2.analisis = analisis2
         ana_coti2.cotizacion = coti
         ana_coti2.cantidad = 100
+        ana_coti2.restante = 100
         ana_coti2.fecha = datetime.datetime.now().date()
         ana_coti2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis

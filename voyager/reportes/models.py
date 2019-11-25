@@ -128,6 +128,8 @@ class Muestra(models.Model):
     analisis4 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis4')
     analisis5 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis5')
     analisis6 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis6')
+    # Datos de paquete
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
