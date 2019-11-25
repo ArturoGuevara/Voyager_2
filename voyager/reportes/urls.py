@@ -15,5 +15,4 @@ urlpatterns = [
     path('validacionDhl', views.validacion_codigo, name='validacion_codigo'),
     path('consultar_empresa_muestras/',views.consultar_empresa_muestras, name='consultar_empresa_muestras'),
     path('enviar_archivo/',views.enviar_archivo, name='enviar_archivo'),
-    path('printarchivo/',views.print_archivo, name='print_archivo')
 ]
