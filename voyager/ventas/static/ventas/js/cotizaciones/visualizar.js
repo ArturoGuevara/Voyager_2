@@ -86,7 +86,7 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
         });
     }
 
-    if (data_cotizacion[0].fields.aceptado or data_cotizacion[0].fields.bloqueado){
+    if (data_cotizacion[0].fields.aceptado || data_cotizacion[0].fields.bloqueado){
       $('#btn-editar-cot').remove();
     }
     else if ($('#btn-editar-cot').length == 0){

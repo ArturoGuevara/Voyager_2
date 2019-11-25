@@ -78,14 +78,16 @@
                             <i class="fa fa-eye"></i>
                         </button>
                         {% if request.session.userrole == "Ventas" or request.session.userrole == "SuperUser" %}
-                          {% if c.aceptado == False %}
-                            <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
-                                <i class='fa fa-check'></i>
-                            </button>
-                            <button type="button" class="btn btn-warning" id="cotizacion_child_bloquear" onclick="bloquear_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#bloquear_cotizacion">
-                                <i class='fas fa-ban'></i>
-                            </button>
-                          {% endif %}
+                            {% if c.bloqueado == False %}
+                              {% if c.aceptado == False %}
+                                <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
+                                    <i class='fa fa-check'></i>
+                                </button>
+                              {% endif %}
+                              <button type="button" class="btn btn-warning" id="cotizacion_child_bloquear" onclick="bloquear_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#bloquear_cotizacion">
+                                  <i class='fas fa-ban'></i>
+                              </button>
+                             {% endif %}
                          {% endif %}
                         {% if request.session.userrole == "Director" or request.session.userrole == "SuperUser" %}
                             <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
@@ -144,7 +146,7 @@
 {% block optionalJS %}
     <script src="{% static 'ventas/js/table.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/cotizaciones/agregar.js' %}" type="text/javascript"></script>
-    {% if request.session.userrole == "Cliente" or request.session.userrole == "Director" %}
+    {% if request.session.userrole == "Cliente" %}
     <script src="{% static 'ventas/js/cotizaciones/visualizar_para_cliente.js' %}" type="text/javascript"></script>
     {% else %}
     <script src="{% static 'ventas/js/cotizaciones/visualizar.js' %}" type="text/javascript"></script>

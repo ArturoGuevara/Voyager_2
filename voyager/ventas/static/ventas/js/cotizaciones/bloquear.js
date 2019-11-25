@@ -32,7 +32,7 @@ function confirmar_bloquear_cotizacion(){
                 bloquear_cotizacion_tabla('.cot-row',id);
                 id_cotizacion = 0;
                 $('#bloquear_cotizacion').modal('toggle');                                        // Cerrar el modal de bloquear cotizacion
-                showNotificationWarning('top','right','Se ha bloqueado la cotización exitosamente.');
+                showNotificationSuccess('top','right','Se ha bloqueado la cotización exitosamente.');
             },
         });
 
