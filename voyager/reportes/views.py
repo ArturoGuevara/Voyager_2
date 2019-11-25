@@ -71,12 +71,12 @@ def registrar_ingreso_muestra(request):
                 oi.usuario = user_logged
                 oi.estatus = "Creada"
                 oi.save()
-                if len(matrixAG) != 0 or len(matrixPR) != 0 or len(matrixMB) != 0:
-                    if len(matrixAG) != 0:
+                if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
+                    if matrixAG[0] != '':
                         guardar_muestras(matrixAG,"AG",user_logged) #Llamar a la función que guarda datos
-                    if len(matrixPR) != 0:
+                    if matrixPR[0] != '':
                         guardar_muestras(matrixPR,"PR",user_logged)
-                    if len(matrixMB) != 0:
+                    if matrixMB[0] != '':
                         guardar_muestras(matrixMB,"MB",user_logged)
                     response = JsonResponse({"Success": "OK"})
                     response.status_code = 200
@@ -163,36 +163,6 @@ def guardar_muestras(arreglo, tipo, user):
                 analisis = Analisis.objects.get(id_analisis = li[i])
                 m.analisis6 = analisis
             m.save()
-            """# FORMATO AG y MB
-            m.muestreador =
-            # FORMATO AG y PR
-            m.fecha_muestreo =
-            # FORMATO PR y MB
-            m.tipo_muestra =
-            # FORMATO AG
-            m.producto =
-            m.variedad =
-            m.pais_origen =
-            m.codigo_muestra =
-            m.proveedor =
-            m.nombre_empresa =
-            m.codigo_trazabilidad =
-            m.agricultor =
-            m.direccion =
-            m.parcela =
-            m.ubicacion_muestreo =
-            m.urgente =
-            m.idioma =
-            m.pais_destino =
-            # FORMATO PR
-            m.descripcion_muestra =
-            # FORMATO MB
-            m.lote_codigo =
-            
-            
-            ac.cantidad = cantidad[index]
-            # Guardamos la muestra e incrementamos el índice de los arreglos
-            m.save()"""
     elif tipo == "PR":
         print("Función guardar muestras PR")
     elif tipo == "MB":
