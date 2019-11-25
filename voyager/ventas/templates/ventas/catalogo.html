@@ -59,7 +59,7 @@
     </table>
     <div>
       {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
-      <button type="button" class="btn btn-success" id="btn-cargar-analisis" data-toggle="modal" data-target="#importar_csv" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Despliega modal e ingresa el csv con los análisis."><i class="nc-icon nc-simple-add"></i> Importar CSV</button>
+      <button type="button" class="btn btn-success" id="btn-cargar-analisis" data-toggle="modal" data-target="#importar_csv" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Ingrese el csv con los análisis."><i class="nc-icon nc-simple-add"></i> Importar CSV</button>
       {% endif %}
     </div>
 </div>
@@ -86,15 +86,6 @@
         {% elif success_code == -1 %}
              <script>
                 showNotification('top','right','Hubo un error en el registro')
-            </script>
-        {% endif %}
-        {% if success_sent == 1 %}
-            <script>
-                showNotification('top','right','Carga de datos exitosa')
-            </script>
-        {% elif success_sent == -1 %}
-             <script>
-                showNotification('top','right','Hubo un error en la carga de datos')
             </script>
         {% endif %}
 {% endblock %}
