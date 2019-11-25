@@ -1,4 +1,5 @@
 var token = csrftoken;
+var id_usuario = 0;
 
 
 // Función que crea y muestra alerta
@@ -37,7 +38,7 @@ function cargar_info_usuario(id) {
             data = data.fields;
 
             if(rol == "Cliente"){
-                
+
                 $('#ordenes_pendientes').removeClass('d-none');
 
                 $('#tabla_cont').empty();
@@ -65,16 +66,25 @@ function cargar_info_usuario(id) {
                 $('#inputEstatus').append('<option id="NA" name="NA" selected>NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
             }else if (data.estatus_pago == "Deudor"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor" selected>Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
             }else if (data.estatus_pago == "Pagado"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado" selected>Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
+            }else if (data.estatus_pago == "Bloqueado"){
+                $('#inputEstatus').empty();
+                $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
+                $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
+                $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado" selected>Bloqueado</option>');
             }
         }
     })

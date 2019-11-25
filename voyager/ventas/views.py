@@ -319,6 +319,7 @@ def crear_cotizacion(request):
                             ac.analisis = a
                             ac.cotizacion = c
                             ac.cantidad = cantidad[index]
+                            ac.restante = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
                             ac.descuento = descuento[index]
                             ac.iva = iva[index]

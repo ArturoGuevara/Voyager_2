@@ -108,7 +108,7 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
         response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,200)   #Todo debe de salir correctamente
 
-class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingresar_muestras
+'''class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingresar_muestras
     def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
@@ -133,25 +133,25 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
 
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
-        response = self.client.get(reverse('ingresar_muestras'))
+        response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,302)
 
     def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('ingresar_muestras'))   #Cambia de página sin método post
+        response = self.client.get(reverse('ingreso_cliente'))   #Cambia de página sin método post
         self.assertEqual(response.status_code,404)   #Mostrar 404
 
     def test_post_empty(self):   #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{})   #El post va vacío
+        response = self.client.post(reverse('ingreso_cliente'),{})   #El post va vacío
         self.assertEqual(response.status_code,404)   #Mostrar 404
 
     def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{'nombre':"Impulse",   #Las variables de post no están completas
+        response = self.client.post(reverse('ingreso_cliente'),{'nombre':"Impulse",   #Las variables de post no están completas
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado1':"Zacatecas"
                                                                   })
@@ -160,7 +160,7 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
     def test_post_empty_field(self):   #Prueba si algún post manda algo vacío
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
+        response = self.client.post(reverse('ingreso_cliente'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
@@ -171,15 +171,16 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
     def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
+        response = self.client.post(reverse('ingreso_cliente'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
                                                                    'idioma': "8992 EN",
                                                                    'estado1': "Saint John's"
                                                                    })
         self.assertEqual(response.status_code,200)   #Todo correcto
+'''
 
-class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_muestra
+'''class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_muestra
     def create_role_client(self):   #Crear rol en base de datos de tests
         role = Rol()
         role.nombre = "Cliente"
@@ -262,12 +263,14 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         ac1.analisis = a1
         ac1.cotizacion = c
         ac1.cantidad = 10000
+        ac1.restante = 10000
         ac1.fecha = datetime.datetime.now().date()
         ac1.save()   #Guardar conexión
         ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac2.analisis = a2
         ac2.cotizacion = c
         ac2.cantidad = 100
+        ac2.restante = 100
         ac2.fecha = datetime.datetime.now().date()
         ac2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis
@@ -282,25 +285,25 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
 
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
-        response = self.client.get(reverse('muestra_enviar'))
+        response = self.client.get(reverse('registrar_ingreso_muestra'))
         self.assertEqual(response.status_code,302)
 
     def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('muestra_enviar'))
+        response = self.client.get(reverse('registrar_ingreso_muestra'))
         self.assertEqual(response.status_code,404)
 
     def test_post_empty(self):    #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{})
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{})
         self.assertEqual(response.status_code,404)
 
     def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse",
                                                                   'idioma':"8992 EN",
                                                                   'producto':"papas",
                                                                   'parcela':"parcelin",
@@ -315,7 +318,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.client.login(username='hockey', password='lalocura')
         number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles
         analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -335,7 +338,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -346,7 +349,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -366,7 +369,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
@@ -379,7 +382,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
         analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
         analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -402,7 +405,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
             self.assertEqual(ansamp.estado,True) #verificar que los registros aparezcan como activos
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles para el primer análisis
         self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2 - 1) #verificar que se disminuyó la cantidad de análisis disponibles para el segundo análisis
@@ -419,7 +422,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
         analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
         self.assertEqual(True,True)
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -442,7 +445,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
             self.assertEqual(ansamp.estado,False) #verificar que los registros aparezcan como inactivos
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'invisible') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Invisible') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el primer análisis
         self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2) #verificar que no se disminuyó la cantidad de análisis disponibles para el segundo análisis
@@ -455,7 +458,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.setup()
         self.client.login(username='hockey', password='lalocura')
         number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -473,7 +476,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.count(),0) #verificar que hay 0 entradas en la tabla análisis muestra
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el análisis
         all_samples = Muestra.objects.all()
@@ -488,7 +491,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
         analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
         analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la primera muestra
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar para la primera muestra
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Antigua y Barbuda",
                                                                   'estado':"Saint John's",
@@ -508,13 +511,13 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
         self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Italia",
                                                                   'estado':"Roma",
@@ -534,7 +537,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.last().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un solo registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
         all_analysis_cot = AnalisisCotizacion.objects.all()
         self.assertEqual(all_analysis_cot.last().cantidad,number_analysis2-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -551,7 +554,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
         analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
         analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
                                                                   'direccion':"Impulsadin",
                                                                   'pais':"Italia",
                                                                   'estado':"Roma",
@@ -572,7 +575,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         url = 'borrar_orden'
         response = self.client.post(reverse(url), {'id':oi_id})
         self.assertEqual(response.status_code,200)
-
+'''
 
 #Casos de prueba para view una orden interna
 class OrdenesInternasViewTests(TestCase):
@@ -808,12 +811,14 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         ana_coti1.analisis = analisis1
         ana_coti1.cotizacion = coti
         ana_coti1.cantidad = 10000
+        ana_coti1.restante = 10000
         ana_coti1.fecha = datetime.datetime.now().date()
         ana_coti1.save()   #Guardar conexión
         ana_coti2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ana_coti2.analisis = analisis2
         ana_coti2.cotizacion = coti
         ana_coti2.cantidad = 100
+        ana_coti2.restante = 100
         ana_coti2.fecha = datetime.datetime.now().date()
         ana_coti2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis
@@ -832,45 +837,38 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         self.client.login(username='hockey',password='lalocura')
         factura = Factura()
         factura.save()
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
+        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
         #enviar la información para guardar para la primera muestra
         response = self.client.post(
-            reverse('muestra_enviar'),
+            reverse('registrar_ingreso_muestra'),
             {
                 'nombre': "Impulse",
                 'direccion': "Impulsadin",
                 'pais': "Antigua y Barbuda",
                 'estado': "Saint John's",
-                'idioma': "8992 EN",
-                'producto': "papas",
-                'variedad': "fritas",
-                'parcela': "parcelin",
-                'pais_destino': "Albania",
-                'clave_muestra': "CLAVE",
-                'enviar': "1",
-                'fecha_muestreo': datetime.datetime.now().date(),
-                'analisis'+str(analysis_id): "on",
+                'idioma': "Español",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
             }
         )
         #enviar la información para guardar para la segunda muestra
         response = self.client.post(
-            reverse('muestra_enviar'),
+            reverse('registrar_ingreso_muestra'),
             {
                 'nombre': "Impulse",
                 'direccion': "Impulsadin",
                 'pais': "Italia",
                 'estado': "Roma",
-                'idioma': "8992 EN",
-                'producto': "papas",
-                'variedad': "adobadas",
-                'parcela': "parcela",
-                'pais_destino': "Alemania",
-                'clave_muestra': "CLAVE2",
-                'enviar': "1",
-                'fecha_muestreo': datetime.datetime.now().date(),
-                'analisis'+str(analysis_id2): "on",
+                'idioma': "Inglés",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
             }
         )
-
         muestra = Muestra.objects.all().first()
         muestra.factura = factura
         muestra.save()
@@ -993,7 +991,7 @@ class TestEditaOrdenesInternas(TestCase):
 
         #Crear orden interna para cliente
         oi = OrdenInterna.objects.create(usuario = clientes1,
-                                            estatus = "fantasma",
+                                            estatus = "Fantasma",
                                             localidad = "mexico",
                                         )
         oi.save()
@@ -1027,7 +1025,7 @@ class TestEditaOrdenesInternas(TestCase):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
         self.client.login(username='soport',password='testpassword')
-        orden = OrdenInterna.objects.filter(estatus="fantasma").first()
+        orden = OrdenInterna.objects.filter(estatus="Fantasma").first()
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
         self.assertContains(response, "Fantasma")
@@ -1123,8 +1121,9 @@ class EnviarResultados(TestCase):
             to_emails='A0127373@itesm.mx',
             subject="Asunto",
             html_content="Contenido")
-        with open('./API_KEY.txt', 'r') as f:
+        with open('./API_KEY.txt', 'rb') as f:
             key = f.read()
-        sendgrid_client = SendGridAPIClient(key)
+        key_decoded = key.decode('ascii')
+        sendgrid_client = SendGridAPIClient(key_decoded)
         response = sendgrid_client.send(message)
         self.assertEqual(response.status_code,202)
