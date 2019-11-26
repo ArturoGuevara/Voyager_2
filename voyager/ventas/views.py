@@ -358,7 +358,7 @@ def crear_cotizacion(request):
 def actualizar_cotizacion(request,id):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
             if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
@@ -394,6 +394,7 @@ def actualizar_cotizacion(request,id):
                             ac.analisis = a
                             ac.cotizacion = edit_cotizacion
                             ac.cantidad = cantidad[index]
+                            ac.restante = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
                             ac.descuento = descuento[index]
                             ac.iva = iva[index]
@@ -679,7 +680,7 @@ def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
     if len(error_log) == 0 and error_log != 'ERROR':
         Uploader.upload_content(path)   # Carga los registros del archivo
     return error_log
-    
+
 @login_required
 def bloquear_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
