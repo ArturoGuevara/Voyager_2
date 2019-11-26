@@ -44,4 +44,8 @@ urlpatterns = [
             name='password_reset_complete'
     ),
     path('borrar_usuario/<int:id>', views.borrar_usuario, name='borrar_usuario'),
+    path('crear_empresa/', views.crear_empresa, name='crear_empresa'),
+    path('empresas/',views.lista_empresas,name='lista_empresas'),
+    path('consultar_empresa/',views.consultar_empresa,name='consultar_empresa'),
+    path('editar_empresa/',views.editar_empresa,name='editar_empresa'),
 ]

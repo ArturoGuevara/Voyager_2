@@ -414,3 +414,84 @@ def borrar_usuario(request, id):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 ############### USA03-39###################
+
+
+########### CRUD empresa ##################
+@login_required
+def crear_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('nombre_empresa')
+            and request.POST.get('telefono_empresa')
+            and request.POST.get('correo_resultados')
+            and request.POST.get('correo_pagos')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('nombre_empresa')
+    telefono_empresa = request.POST.get('telefono_empresa')
+    correo_resultados = request.POST.get('correo_resultados')
+    correo_pagos = request.POST.get('correo_pagos')
+    empresa = Empresa()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.correo_resultados = correo_resultados
+    empresa.correo_pagos = correo_pagos
+    empresa.save()
+    return JsonResponse({'value':empresa.id,'nombre':empresa.empresa})
+
+@login_required
+def lista_empresas(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    empresas = Empresa.objects.all()
+    context = {'empresas':empresas}
+    return render(request, 'cuentas/lista_empresas.html', context)
+
+@login_required
+def consultar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('id')):
+        raise Http404
+    id_empresa = request.POST.get('id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    return JsonResponse({'nombre':empresa.empresa,
+                            'telefono':empresa.telefono,
+                            'correo_resultados':empresa.correo_resultados,
+                            'correo_pagos':empresa.correo_pagos,
+                            'id':empresa.id,
+                         })
+
+@login_required
+def editar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('editar_nombre')
+            and request.POST.get('editar_telefono')
+            and request.POST.get('editar_correo_resultados')
+            and request.POST.get('editar_correo_pagos')
+            and request.POST.get('empresa_id')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('editar_nombre')
+    telefono_empresa = request.POST.get('editar_telefono')
+    correo_resultados = request.POST.get('editar_correo_resultados')
+    correo_pagos = request.POST.get('editar_correo_pagos')
+    id_empresa = request.POST.get('empresa_id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.correo_resultados = correo_resultados
+    empresa.correo_pagos = correo_pagos
+    empresa.save()
+    return HttpResponseRedirect(reverse('lista_empresas'))
