@@ -87,7 +87,7 @@ def registrar_ingreso_muestra(request):
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
                     response.status_code = 500
                     # Regresamos la respuesta de error interno del servidor
-                    return response    
+                    return response
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
                 response.status_code = 500
@@ -100,10 +100,10 @@ def registrar_ingreso_muestra(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 def guardar_muestras(arreglo, tipo, user):
     formato = arreglo
-    if tipo == "AG":        
+    if tipo == "AG":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
             m = Muestra()
@@ -131,7 +131,7 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[9].split(","))
             m.ubicacion_muestreo = li[i]
             li = list(formato[10].split(","))
-            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
             m.fecha_muestreo = fm
             li = list(formato[11].split(","))
             m.urgente = li[i]
@@ -188,7 +188,7 @@ def restar_analisis(user, analisis):
                 a.restante -= 1
                 a.save()
                 return True
-        
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -305,6 +305,10 @@ def consultar_orden(request):
                         for a in ana_mue:
                             analisis.append(a.analisis.codigo)
                         analisis_muestras[muestra.id_muestra] =  analisis
+                        print("MUESTRA")
+                        print(muestra)
+                        print("ANALISISES")
+                        print(analisis)
                     return JsonResponse(
                             {"data": data,
                             "muestras":vector_muestras,

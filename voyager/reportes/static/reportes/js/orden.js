@@ -187,69 +187,42 @@ function submit(){
 }
 
 function build_muestras(id_muestra, muestra, analisis, factura){
-    var html = `
-    <div class="card">
-        <div class="card-header">
-            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
-                Muestra ` + id_muestra + `
-            </a>
-        </div>
-        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#accordion">
-            <div class="card-body">
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="visualizar_muestra_numero_` + id_muestra + `">Número</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_codigo_` + id_muestra + `">Código</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="visualizar_muestra_` + id_muestra + `">Muestra</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno"  disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
-                        <input type="date" class="form-control" id="visualizar_muestra_fecha_recibo_` + id_muestra + `" value="` + muestra.fechah_recibo + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `" disabled>
-                    </div>
-                </div>
-                <p>Análisis</p>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <th>Nombre</th>
-                        </thead>
-                        <tbody>`;
 
+    var html = `
+    <div class=table-responsive table-full-width">
+    <br>
+    <b class="pt-3 mt-3" >Muestra ` + id_muestra + `</b>
+    <br>
+    <table class="table table-hover table-striped" id="tabla-muestra-`+id_muestra+`">
+        <thead>
+            <th>Número</th>
+            <th>Código</th>
+            <th>Muestra</th>
+            <th>Muestreador</th>
+            <th>Fecha de muestreo</th>
+            <th>Orden de compra</th>
+            <th>Factura</th>
+            <th>Análisis</th>
+        </thead>
+        <tbody>`;
 
     for(let a in analisis){
-        html = html+ `
-            <tr>
-                <td>`+ analisis[a] +`</td>
-            </tr>
-        `;
+        html = html + `
+                <tr>
+                    <td>` + id_muestra + `</td>
+                    <td>` + muestra.codigo_muestra + `</td>
+                    <td>` + muestra.producto + `</td>
+                    <td>` + muestra.muestreador + `</td>
+                    <td>` + muestra.fecha_muestreo + `</td>
+                    <td>` + muestra.orden_compra + `</td>
+                    <td>` + factura + `</td>
+                    <td>`+ analisis[a] +`</td>
+                </tr>
+                `;
     }
 
     html = html+ `</tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+        </table>
     </div>`;
     return html;
 }
