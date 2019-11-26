@@ -419,24 +419,35 @@ def borrar_usuario(request, id):
 ########### CRUD empresa ##################
 @login_required
 def crear_empresa(request):
+    print("OK1")
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    print("OK2")
     if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
+    print("OK3")
     if not (request.POST.get('nombre_empresa')
             and request.POST.get('telefono_empresa')
             and request.POST.get('correo_resultados')
             and request.POST.get('correo_pagos')
+            and request.POST.get('nombre_responsable_resultados')
+            and request.POST.get('nombre_responsable_pagos')
         ):
         raise Http404
+    print("OK4")
     nombre_empresa = request.POST.get('nombre_empresa')
     telefono_empresa = request.POST.get('telefono_empresa')
     correo_resultados = request.POST.get('correo_resultados')
     correo_pagos = request.POST.get('correo_pagos')
+    nombre_responsable_resultados = request.POST.get('nombre_responsable_resultados')
+    nombre_responsable_pagos = request.POST.get('nombre_responsable_pagos')
     empresa = Empresa()
     empresa.empresa = nombre_empresa
     empresa.telefono = telefono_empresa
     empresa.correo_resultados = correo_resultados
     empresa.correo_pagos = correo_pagos
+    empresa.responsable_resultados = nombre_responsable_resultados
+    empresa.responsable_pagos = nombre_responsable_pagos
+    print("OK5")
     empresa.save()
     return JsonResponse({'value':empresa.id,'nombre':empresa.empresa})
 
@@ -466,6 +477,8 @@ def consultar_empresa(request):
                             'correo_resultados':empresa.correo_resultados,
                             'correo_pagos':empresa.correo_pagos,
                             'id':empresa.id,
+                            'responsable_resultados':empresa.responsable_resultados,
+                            'responsable_pagos':empresa.responsable_pagos,
                          })
 
 @login_required
@@ -475,14 +488,18 @@ def editar_empresa(request):
         raise Http404
     if not (request.POST.get('editar_nombre')
             and request.POST.get('editar_telefono')
+            and request.POST.get('editar_responsable_resultados')
             and request.POST.get('editar_correo_resultados')
+            and request.POST.get('editar_responsable_pagos')
             and request.POST.get('editar_correo_pagos')
             and request.POST.get('empresa_id')
         ):
         raise Http404
     nombre_empresa = request.POST.get('editar_nombre')
     telefono_empresa = request.POST.get('editar_telefono')
+    responsable_resultados = request.POST.get('editar_responsable_resultados')
     correo_resultados = request.POST.get('editar_correo_resultados')
+    responsable_pagos = request.POST.get('editar_responsable_pagos')
     correo_pagos = request.POST.get('editar_correo_pagos')
     id_empresa = request.POST.get('empresa_id')
     empresas = Empresa.objects.filter(id=id_empresa)
@@ -491,7 +508,25 @@ def editar_empresa(request):
     empresa = empresas.first()
     empresa.empresa = nombre_empresa
     empresa.telefono = telefono_empresa
+    empresa.responsable_resultados = responsable_resultados
     empresa.correo_resultados = correo_resultados
+    empresa.responsable_pagos = responsable_pagos
     empresa.correo_pagos = correo_pagos
     empresa.save()
+    return HttpResponseRedirect(reverse('lista_empresas'))
+
+@login_required
+def eliminar_empresa(request):
+    print("OK ELIMINAR")
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('eliminar_empresa_id')):
+        raise Http404
+    id_empresa = request.POST.get('eliminar_empresa_id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    empresa.delete()
     return HttpResponseRedirect(reverse('lista_empresas'))
