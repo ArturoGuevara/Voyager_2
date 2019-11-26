@@ -14,6 +14,7 @@ from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analis
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
+from datetime import date
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -38,9 +39,19 @@ def ingreso_cliente(request):
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
+            context = {
+                'titulo': "Usted no puede realizar ingreso de muestras en este momento",
+                'mensaje': "Contacte al administrador para volver a despegar con nosotros",
+            }
             return render(request, 'reportes/bloqueado.html')
         else:
-            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged)
+            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
+            if not cotizaciones:
+                context = {
+                    'titulo': "Usted no tiene cotizaciones en este momento",
+                    'mensaje': "Contacte a IFC para volver a despegar con nosotros",
+                }
+                return render(request, 'reportes/bloqueado.html', context)
             analisis = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
             for c in cotizaciones:
                 cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -138,31 +149,19 @@ def guardar_muestras(arreglo, tipo, user):
             m.muestreador = li[i]
             li = list(formato[13].split(","))
             m.pais_destino = li[i]
-            li = list(formato[14].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis1 = analisis
-            li = list(formato[15].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis2 = analisis
-            li = list(formato[16].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis3 = analisis
-            li = list(formato[17].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis4 = analisis
-            li = list(formato[18].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis5 = analisis
-            li = list(formato[19].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis6 = analisis
             m.save()
+            li = list(formato[14].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[15].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[16].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[17].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[18].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[19].split(","))
+            restar_analisis(user, li[i], m)
     elif tipo == "PR":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo PR fueron ingresadas
@@ -177,31 +176,19 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[2].split(","))
             fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
             m.fecha_muestreo = fm
-            li = list(formato[3].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis1 = analisis
-            li = list(formato[4].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis2 = analisis
-            li = list(formato[5].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis3 = analisis
-            li = list(formato[6].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis4 = analisis
-            li = list(formato[7].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis5 = analisis
-            li = list(formato[8].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis6 = analisis
             m.save()
+            li = list(formato[3].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[4].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[5].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[6].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[7].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[8].split(","))
+            restar_analisis(user, li[i], m)
     elif tipo == "MB":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo MB fueron ingresadas
@@ -220,33 +207,21 @@ def guardar_muestras(arreglo, tipo, user):
             m.fecha_muestreo = fm
             li = list(formato[4].split(","))
             m.metodo_referencia = li[i]
-            li = list(formato[5].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis1 = analisis
-            li = list(formato[6].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis2 = analisis
-            li = list(formato[7].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis3 = analisis
-            li = list(formato[8].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis4 = analisis
-            li = list(formato[9].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis5 = analisis
-            li = list(formato[10].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis6 = analisis
             m.save()
+            li = list(formato[5].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[6].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[7].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[8].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[9].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[10].split(","))
+            restar_analisis(user, li[i], m)
 
-def restar_analisis(user, analisis):
+def restar_analisis(user, analisis, muestra):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
     for c in cotizaciones:
         ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -254,6 +229,12 @@ def restar_analisis(user, analisis):
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 if a.restante > 0: #Revisar que aún le queden análisis
                     a.restante -= 1
+                    am = AnalisisMuestra()
+                    am.analisis = Analisis.objects.get(id_analisis = analisis)
+                    am.muestra = muestra
+                    am.estado = True
+                    am.fecha = date.today()
+                    am.save()
                     a.save()
                     return True
     cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
@@ -262,6 +243,12 @@ def restar_analisis(user, analisis):
         for a in ac:
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 a.restante -= 1
+                am = AnalisisMuestra()
+                am.analisis = Analisis.objects.get(id_analisis = analisis)
+                am.muestra = muestra
+                am.estado = True
+                am.fecha = date.today()
+                am.save()
                 a.save()
                 return True
         
