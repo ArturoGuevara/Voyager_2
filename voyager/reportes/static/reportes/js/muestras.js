@@ -345,7 +345,6 @@ function enviar_ingreso_muestra(){
         },
         type: "POST",
         success: function (response) {
-            $("#ingreso-cliente-form").remove();
         },
         error: function (data) {
             //alert(data.status);
