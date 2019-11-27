@@ -79,7 +79,7 @@ function date_is_valid(dateString, id){
         monthLength[1] = 29;
     }
     // Revisa el rango del día
-    if(day <= 0 || day >= monthLength[month - 1]){
+    if(day <= 0 || day > monthLength[month - 1]){
         $(id).addClass('is-invalid');
         return false;
     }

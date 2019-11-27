@@ -386,6 +386,11 @@ function enviar_ingreso_muestra(){
         success: function (response) {
             $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
             showNotification('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
+            $('#ingreso-cliente-form').remove();
+            $('#opciones_guardado').remove();
+            window.setTimeout( function(){
+                window.location='ingreso_cliente'
+            }, 3000 ); //Tras unos segundos, recargar la página
         },
         error: function (data) {
             $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
