@@ -10,7 +10,6 @@ class Paquete(models.Model):
     def __str__(self):
         return "%s" % (self.codigo_dhl)
 
-
 # Create your models here.
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
@@ -56,15 +55,13 @@ class OrdenInterna(models.Model):
     def __str__(self):
         return "%s %s" % (self.idOI, self.estatus)
 
-######### MODEL USV04-04 ########
 class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=50)
 
     def __str__(self):
         return "%s" % (self.nombre)
-
-
+    
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, default='')
@@ -86,40 +83,53 @@ class Nota(models.Model):
     def __str__(self):
         return "%s" % (self.descripcion)
 
-######### MODEL USV04-04 ########
 
 class Muestra(models.Model):
-    id_muestra = models.AutoField(primary_key=True) #1-Número de muestra
-    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE) #No visible
-    oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE) #No visible
-    producto = models.CharField(max_length=50) #2-Producto
-    variedad = models.CharField(max_length=50) #2.5 Variedad
-    pais_origen = models.CharField(max_length=50) #--------------PENDIENTE DE VISIBILIDAD
-    codigo_muestra = models.CharField(max_length=50) #3-Código muestra
-    mrl = models.CharField(max_length=200, blank=True) #5-MRL
-    ubicacion = models.CharField(max_length=75)#--------------PENDIENTE DE VISIBILIDAD
-    estado = models.CharField(max_length=20)#--------------PENDIENTE DE VISIBILIDAD
-    parcela = models.CharField(max_length=50)#--------------PENDIENTE DE VISIBILIDAD
-    fecha_muestreo = models.DateField()#--------------PENDIENTE DE VISIBILIDAD
-    destino = models.CharField(max_length=50)#--------------PENDIENTE DE VISIBILIDAD
-    idioma = models.CharField(max_length=20)#--------------PENDIENTE DE VISIBILIDAD
-    estado_muestra = models.BooleanField()#--------------PENDIENTE DE VISIBILIDAD
-    num_interno_informe = models.CharField(max_length=50, null=True, blank=True)#6-Número interno de informe
-    fechah_recibo = models.DateTimeField(null=True, blank=True)#7-Fecha de recibo de informe
-    fecha_eri = models.DateTimeField(null=True, blank=True)#8-Fecha esperada de recibo de informes
-    muestreador = models.CharField(max_length=50) #9-Muestreador
-    fecha_forma = models.DateField()#--------------PENDIENTE DE VISIBILIDAD
-    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True) #factura
-    orden_compra = models.CharField(max_length=50, null=True, blank=True) #orden de compra
-    #Opciones de sí/no
-    SN = (
-        ('Sí', 'Sí'),
-        ('No', 'No'),
-    )
-    enviado = models.CharField(max_length=2, choices=SN, default="No")#10-Enviado
-    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+    # CHOICES
+    SN = (('Sí', 'Sí'),('No', 'No'))
+    
+    # TODOS
+    id_muestra = models.AutoField(primary_key=True) #Número de muestra
+    usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
+    oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
+    factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
+    orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
+    link_resultados =  models.CharField(max_length=100, default="")
+    
+    # FORMATO AG y MB
+    muestreador = models.CharField(max_length=50, blank=True, null=True)
+    # FORMATO AG y PR
+    fecha_muestreo = models.DateField(null=True, blank=True)
+    # FORMATO PR y MB
+    tipo_muestra = models.CharField(max_length=50, blank=True, null=True)
+    # FORMATO AG
+    producto = models.CharField(max_length=50, blank=True, null=True)
+    variedad = models.CharField(max_length=50, blank=True, null=True)
+    pais_origen = models.CharField(max_length=50, blank=True, null=True)
+    codigo_muestra = models.CharField(max_length=50, blank=True, null=True)
+    proveedor = models.CharField(max_length=50, blank=True, null=True)
+    nombre_empresa = models.CharField(max_length=50, blank=True, null=True)
+    codigo_trazabilidad = models.CharField(max_length=50, blank=True, null=True)
+    agricultor = models.CharField(max_length=50, blank=True, null=True)
+    direccion = models.CharField(max_length=50, blank=True, null=True)
+    parcela = models.CharField(max_length=50, blank=True, null=True)
+    ubicacion_muestreo = models.CharField(max_length=50, blank=True, null=True)
+    urgente = models.CharField(max_length=50, blank=True, null=True)
+    idioma = models.CharField(max_length=20, blank=True, null=True)
+    pais_destino = models.CharField(max_length=50, blank=True, null=True)
+    # FORMATO PR
+    descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
+    # FORMATO MB
+    lote_codigo = models.CharField(max_length=50, blank=True, null=True)
+    #Análisis posibles para la muestra
+    analisis1 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis1')
+    analisis2 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis2')
+    analisis3 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis3')
+    analisis4 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis4')
+    analisis5 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis5')
+    analisis6 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis6')
+    # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
-
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -131,6 +141,7 @@ class Cotizacion(models.Model):
     status = models.BooleanField(default=True)
     aceptado = models.BooleanField(default=False)
     fecha_creada = models.DateField(default=timezone.now)
+    bloqueado = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Cotización'
@@ -144,6 +155,7 @@ class AnalisisCotizacion(models.Model):
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     cotizacion = models.ForeignKey(Cotizacion,on_delete=models.CASCADE)
     cantidad = models.IntegerField()
+    restante = models.IntegerField()
     fecha = models.DateField()
     descuento = models.DecimalField(max_digits=100, decimal_places=4, default=0)
     iva = models.DecimalField(max_digits=100, decimal_places=2, default=16)
@@ -156,8 +168,6 @@ class AnalisisCotizacion(models.Model):
     def __str__(self):
         return "%s %s" % (self.fecha, self.id_analisis_cotizacion)
 
-######### MODEL USV04-04 ########
-
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
@@ -165,5 +175,6 @@ class AnalisisMuestra(models.Model):
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
     fecha = models.DateField()
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
     def __str__(self):
         return "%s" % (self.fecha)

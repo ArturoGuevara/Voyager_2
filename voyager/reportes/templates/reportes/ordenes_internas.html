@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for o,value in ordenes_clientes.items %}
-                {% if o.estatus != 'borrado' %}
+                {% if o.estatus != 'Borrado' %}
                 <tr id="oi-{{o.idOI}}">
                     <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
@@ -64,7 +64,7 @@
                         {% if o.usuario.estatus_pago != "Deudor" %}
                         {% if request.session.userrole != 'Director' and request.session.userrole != 'Ventas' %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
-                                Enviar
+                                Enviar resultados
                             </button>
                         {% endif %}
                         {% endif %}

@@ -7,6 +7,7 @@ from cuentas.models import Rol,IFCUsuario,Empresa
 from django.contrib.auth.models import User
 from datetime import datetime, date
 from .views import ver_cotizaciones
+from .views import carga_datos
 
 # Create your tests here.
 class TestAnalisis(TestCase):
@@ -1092,3 +1093,85 @@ class GenerarCSVPaquete(TestCase):
         response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
         file_content = response.content.decode('utf-8')
         self.assertIn("Aguacate", file_content)
+
+################################################# USV19-53 #################################################
+class TestImportCSV(TestCase):
+    def setup(self):
+        #Crear usuario director
+        rol_director = Rol.objects.create(nombre='Director')
+        usuario_director = User.objects.create_user('director', 'director@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        director = IFCUsuario.objects.create(
+                                                rol =rol_director,
+                                                user = usuario_director,
+                                                nombre = 'Eldi',
+                                                apellido_paterno = 'Rector',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        director.save()
+        Pais.objects.create(nombre="México").save()
+        Pais.objects.create(nombre="Holanda").save()
+        Pais.objects.create(nombre="Alemania").save()
+        Pais.objects.create(nombre="Estados Unidos").save()
+        Pais.objects.create(nombre="Canadá").save()
+        Pais.objects.create(nombre="IFC").save()
+
+
+    def test_csv_get(self): # Intenta acceder por un metodo que no sea un POST
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        response = self.client.get(reverse('importar_csv'))
+        self.assertEqual(response.status_code,404)
+
+    def test_csv_no_login(self):    # Intenta acceder sin iniciar sesion
+        self.setup()
+        response = self.client.get(reverse('importar_csv'))
+        self.assertRedirects(response, '/cuentas/login?next=/ventas/importar_csv/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_csv_success(self):     # Intenta ingresar un csv correcto
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_success.csv'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,True)
+
+    def test_csv_format_error(self):
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_format_error.csv'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,False)
+
+    def test_csv_no_csv(self):
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_nocsv.jpg'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,False)

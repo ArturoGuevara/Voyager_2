@@ -1,0 +1,46 @@
+{% extends 'root/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="text-md-left text-center">
+    <h2>Empresas</h2>
+    <div id="table" class="table-responsive table-full-width">
+        <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_usuarios">
+        <thead>
+            <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
+            <th class="text-center">Telefono <i class="fa fa-sort"></i></th>
+            <th class="text-center">Correo Resultados <i class="fa fa-sort"></i></th>
+            <th class="text-center">Correo Pagos <i class="fa fa-sort"></i></th>
+            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                data-content="Visualice, restaure o elimine a una empresa">
+                Acciones <i class="fa fa-question-circle fa-lg"></i>
+            </th>
+        </thead>
+        <tbody>
+            {% for e in empresas %}
+                <tr id="empresa-{{e.id}}">
+                    <td>{{e.empresa}}</td>
+                    <td>{{e.telefono}}</td>
+                    <td>{{e.correo_resultados}}</td>
+                    <td>{{e.correo_pagos}}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="cargar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal_info_empresa">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button id="btn-trash" type="button" class="btn btn-danger d-inline">
+                            <i class='fas fa-trash'></i>
+                        </button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+</div>
+
+{% include '.././modals/modal_info_empresa.html' %}
+{% endblock content %}
+
+{% block optionalJS %}
+    <script src="{% static 'cuentas/js/empresa.js' %}" type="text/javascript"></script>
+{% endblock %}
