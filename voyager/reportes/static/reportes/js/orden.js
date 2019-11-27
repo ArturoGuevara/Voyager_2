@@ -187,43 +187,28 @@ function submit(){
 }
 
 function build_muestras(id_muestra, muestra, analisis, factura){
-
-    var html = `
-    <div class=table-responsive table-full-width">
-    <br>
-    <b class="pt-3 mt-3" >Muestra ` + id_muestra + `</b>
-    <br>
-    <table class="table table-hover table-striped" id="tabla-muestra-`+id_muestra+`">
-        <thead>
-            <th>Número</th>
-            <th>Código</th>
-            <th>Muestra</th>
-            <th>Muestreador</th>
-            <th>Fecha de muestreo</th>
-            <th>Orden de compra</th>
-            <th>Factura</th>
-            <th>Análisis</th>
-        </thead>
-        <tbody>`;
-
+    var html = ``;
     for(let a in analisis){
+        var siono = "No";
+        if(muestra.enviado){
+            siono = "Sí";
+        }
         html = html + `
                 <tr>
                     <td>` + id_muestra + `</td>
-                    <td>` + muestra.codigo_muestra + `</td>
                     <td>` + muestra.producto + `</td>
-                    <td>` + muestra.muestreador + `</td>
-                    <td>` + muestra.fecha_muestreo + `</td>
-                    <td>` + muestra.orden_compra + `</td>
-                    <td>` + factura + `</td>
+                    <td>` + muestra.codigo_muestra + `</td>
                     <td>`+ analisis[a] +`</td>
+                    <td>` + muestra.mrl + `</td>
+                    <td>` + muestra.num_interno_informe + `</td>
+                    <td>` + muestra.fecha_esperada_recibo + `</td>
+                    <td>` + muestra.fecha_recibo_informe + `</td>
+                    <td>` + siono + `</td>
+                    <td>` + muestra.link_resultados + `</td>
+                    <td>` + muestra.muestreador + `</td>
                 </tr>
                 `;
     }
-
-    html = html+ `</tbody>
-        </table>
-    </div>`;
     return html;
 }
 
@@ -237,44 +222,48 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
         fecha_r = '';
     }
     var html = `
-    <div class="card">
-        <div class="card-header">
-            <a class="card-link" data-toggle="collapse" href="#editar_collapse` + id_muestra + `">
-                Muestra ` + id_muestra + `
-            </a>
-        </div>
-        <div id="editar_collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
-            <div class="card-body">
                 <div class="form-row">
                     <div class="form-group col-md-2">
                         <label for="editar_muestra_numero_` + id_muestra + `">Número</label>
-                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
+                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="editar_muestra_producto_` + id_muestra + `">Producto</label>
+                        <input type="text" class="form-control" id="editar_muestra_producto_` + id_muestra + `" placeholder="Producto" value="` + muestra.producto + `">
                     </div>
                     <div class="form-group col-md-3">
                         <label for="editar_muestra_codigo_` + id_muestra + `">Código</label>
                         <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="editar_muestra_` + id_muestra + `">Muestra</label>
-                        <input type="text" class="form-control" id="editar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
+                        <label for="editar_muestra_analisis_` + id_muestra + `">Análisis</label>
+                        <input type="text" class="form-control" id="editar_muestra_analisis_` + id_muestra + `" placeholder="Análisis" value="3" disabled>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-3">
-                        <label for="editar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
-                        <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno" value=" ` + muestra.num_interno_informe + `">
+                        <label for="editar_muestra_mrl_` + id_muestra + `">MRL</label>
+                        <input type="text" class="form-control" id="editar_muestra_mrl_` + id_muestra + `" placeholder="MRL" value=" ` + muestra.mrl + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="editar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
-                        <input type="text" class="form-control" id="editar_muestra_fecha_recibo_` + id_muestra + `" placeholder="2019-01-25 18:36:00" value="` + fecha_r + `">
+                        <label for="editar_muestra_numero_interno_` + id_muestra + `">No. interno de informe</label>
+                        <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="0"` + muestra.num_interno_informe + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="editar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
-                        <input type="text" class="form-control" id="editar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `">
+                        <label for="editar_muestra_fecha_esperada_informe_` + id_muestra + `">Fecha esperada de informe</label>
+                        <input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="31-02-2019" value="` + muestra.fecha_esperada_recibo + `">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="editar_muestra_factura_` + id_muestra + `">Factura</label>
-                        <input type="number" class="form-control" id="editar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `">
+                        <label for="editar_muestra_fecha_recibo_informe_` + id_muestra + `">Fecha recibo de informe</label>
+                        <input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="Factura" value="` + muestra.fecha_recibo_informe + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="editar_muestra_resultados_enviados_` + id_muestra + `">Resultados Enviados</label>
+                        <input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="Sí" value="` + muestra.envio + `">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="editar_muestra_muestreador_` + id_muestra + `">Muestreador</label>
+                        <input type="text" class="form-control" id="editar_muestra_muestreador_` + id_muestra + `" placeholder="John Cena" value="` + muestra.muestreador + `">
                     </div>
                     <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
                 </div>
@@ -360,7 +349,8 @@ function visualizar_info_oi(id) {
                     html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
                 }
             }
-            $('.accordion_muestras').html(html_muestras);
+            console.log(html_muestras);
+            $('.accordion_muestras').append(html_muestras);
             $('#v_observaciones').val(data.observaciones);
 
             //Construir tabla de facturas

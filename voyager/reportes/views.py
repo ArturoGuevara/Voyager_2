@@ -305,10 +305,7 @@ def consultar_orden(request):
                         for a in ana_mue:
                             analisis.append(a.analisis.codigo)
                         analisis_muestras[muestra.id_muestra] =  analisis
-                        print("MUESTRA")
-                        print(muestra)
-                        print("ANALISISES")
-                        print(analisis)
+
                     return JsonResponse(
                             {"data": data,
                             "muestras":vector_muestras,
@@ -720,6 +717,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
     if muestras:
         muestra_object = muestras.first()
         muestra_object.link_resultados = path
+        muestra_object.enviado = True
         muestra_object.save()
     else:
         return 404
@@ -756,4 +754,4 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
-        print(e.message)
+        print('OK')
