@@ -141,7 +141,7 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[9].split(","))
             m.ubicacion_muestreo = li[i]
             li = list(formato[10].split(","))
-            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
             m.fecha_muestreo = fm
             li = list(formato[11].split(","))
             m.urgente = li[i]
@@ -174,7 +174,7 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[1].split(","))
             m.descripcion_muestra = li[i]
             li = list(formato[2].split(","))
-            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
             m.fecha_muestreo = fm
             m.save()
             li = list(formato[3].split(","))
@@ -203,7 +203,7 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[2].split(","))
             m.muestreador = li[i]
             li = list(formato[3].split(","))
-            fm = datetime.datetime.strptime(li[i], "%d/%m/%Y").strftime("%Y-%m-%d")
+            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
             m.fecha_muestreo = fm
             li = list(formato[4].split(","))
             m.metodo_referencia = li[i]
