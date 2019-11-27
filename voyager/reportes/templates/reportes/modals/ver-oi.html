@@ -1,396 +1,366 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-visualizar-orden">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div id="ver-resumen-oi" class="d-block">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane container active" id="visualizar_info">
-                            <h3 id="titulov_idOI"></h3>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <input type="hidden" class="form-control" id="visualizar_idOI" name="visualizar_idOI">
-                                    <label for="visualizar_estatus">Estatus</label>
-                                    <input type="text" class="form-control" id="visualizar_estatus" placeholder="estatus" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_recepcion_m" name="visualizar_fecha_recepcion_m" placeholder="Fecha de recepción" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Pagado</label>
-                                    <input type="text" class="form-control" id="visualizar_pagado" placeholder="Pagado" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
-                                    <input type="date" class="form-control" id="visualizar_fecha_llegada_lab" placeholder="Fecha de llegada" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row" style="display: none;">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_link_resultados">Link de Resultados</label>
-                                    <input type="text" class="form-control" id="visualizar_link_resultados" placeholder="Link de resultados" disabled>
-                                </div>
-                            </div>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div id="ver-resumen-oi" class="d-block">
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane container active" id="visualizar_info">
+              <h3 id="titulov_idOI"></h3>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <input type="hidden" class="form-control" id="visualizar_idOI" name="visualizar_idOI">
+                  <label for="visualizar_estatus">Estatus</label>
+                  <input type="text" class="form-control" id="visualizar_estatus" placeholder="estatus" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
+                  <input type="date" class="form-control" id="visualizar_fecha_recepcion_m" name="visualizar_fecha_recepcion_m" placeholder="Fecha de recepción" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="visualizar_guia_envio">Pagado</label>
+                  <input type="text" class="form-control" id="visualizar_pagado" placeholder="Pagado" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
+                  <input type="date" class="form-control" id="visualizar_fecha_envio" placeholder="Fecha de envío" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
+                  <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
+                  <input type="date" class="form-control" id="visualizar_fecha_llegada_lab" placeholder="Fecha de llegada" disabled>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="visualizar_localidad">Localidad</label>
+                  <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
+                </div>
+              </div>
+              <div class="form-row" style="display: none;">
+                <div class="form-group col-md-6">
+                  <label for="visualizar_link_resultados">Link de Resultados</label>
+                  <input type="text" class="form-control" id="visualizar_link_resultados" placeholder="Link de resultados" disabled>
+                </div>
+              </div>
 
-                            <div id="info-cliente">
-                                <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
-                                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa">Empresa no disponible</p>
+              <div id="info-cliente">
+                <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
+                <p id="visualizar_usuario_empresa" name="visualizar_usuario_empresa">Empresa no disponible</p>
 
-                                <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
-                                <p id="visualizar_usuario_nombre" name="visualizar_usuario_nombre">Nombre no disponible</p>
+                <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
+                <p id="visualizar_usuario_nombre" name="visualizar_usuario_nombre">Nombre no disponible</p>
 
-                                <label for="visualizar_usuario_email"><b>Correo:</b></label>
-                                <p id="visualizar_usuario_email" name="visualizar_usuario_email">Correo no disponible</p>
+                <label for="visualizar_usuario_email"><b>Correo:</b></label>
+                <p id="visualizar_usuario_email" name="visualizar_usuario_email">Correo no disponible</p>
 
-                                <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
-                                <p id="visualizar_usuario_telefono" name="visualizar_usuario_telefono">Teléfono no disponible</p>
-                            </div>
+                <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
+                <p id="visualizar_usuario_telefono" name="visualizar_usuario_telefono">Teléfono no disponible</p>
+              </div>
 
-                        </div>
-                        <div class="tab-pane container fade" id="visualizar_muestras">
-                            <div id="accordion" class="accordion_muestras">
+            </div>
+            <div class="tab-pane container fade" id="visualizar_muestras">
+              <div id="accordion" class="accordion_muestras">
 
-                            </div>
-                        </div>
-
-
-                        <div class="tab-pane container fade" id="visualizar_observaciones">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_idioma_reporte">Idioma del reporte: </label>
-                                    <p id="visualizar_idioma_reporte">Idioma no disponible</p>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label for="visualizar_observaciones">Observaciones</label>
-                                <textarea rows="4" cols="50" id="v_observaciones" disabled></textarea>
-                            </div>
-                        </div>
-                        <div class="tab-pane container fade" id="visualizar_facturacion">
-                          <!--<div id="visualizar_tabla_facturas"></div>-->
-                            <!--------------------------------------------------------------------------------------->
-                            <!--<h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>-->
-                            <div class="container d-block" id="ver-resumen-cot">
-                                    <div class="row">
-                                      <div class="form-group col-md-6">
-                                          <!--span>Responsable de pago: </span><span class="text-secondary" id="f_responsable">No hay responsable de pagos</span-->
-                                          <label for="visualizar_facturacion">Responsable de pago</label>
-                                          <input type="text" class="form-control" id="responsable_pago_fact" placeholder="Nombre" disabled>
-                                      </div>
-                                      <div class="form-group col-md-6">
-                                            <!--span>Correo: </span><span class="text-secondary" id="f_correo">No hay correo</span-->
-                                            <label for="visualizar_facturacion">Correo</label>
-                                            <input type="text" class="form-control" id="correo_fact" placeholder="noreply@ifc.com" disabled>
-                                      </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Teléfono</label>
-                                            <input type="text" class="form-control" id="telefono_fact" placeholder="5551260643" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <span>Empresa: </span><span class="text-secondary" id="f_empresa">No hay empresa</span>
-                                            <label for="visualizar_facturacion">Empresa</label>
-                                            <input type="text" class="form-control" id="empresa_fact" placeholder="IFC" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Número de factura</label>
-                                            <input type="text" class="form-control" id="numero_fact" placeholder="123353454325565" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Fecha de facturación</label>
-                                            <input type="date" class="form-control" id="fecha_fact" placeholder="Fecha de Facturacion" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Complemento de pago</label>
-                                            <input type="text" class="form-control" id="complemento_pago" placeholder="123353454325565" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Cobrar envío</label>
-                                            <input type="text" class="form-control" id="cobro_envio" placeholder="S/N" disabled>
-                                        </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <span>Envío de Factura: </span><span class="text-secondary" id="f_envio_factura">Sí/No</span>
-                                            <label for="visualizar_facturacion">Envío factura</label>
-                                            <input type="text" class="form-control" id="envio_fact" placeholder="Si/No" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Fecha de envío de factura</label>
-                                            <input type="date" class="form-control" id="fecha_envio_fact" placeholder="Fecha de envío de Facturacion" disabled>
-                                        </div>
-                                    </div>
+              </div>
+            </div>
 
 
-                                    <div class="row">
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Pago de factura</label>
-                                            <input type="text" class="form-control" id="pago_fact" placeholder="Si/No" disabled>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="visualizar_facturacion">Envío informes</label>
-                                            <input type="text" class="form-control" id="envio_informes" placeholder="Si/No" disabled>
-                                    </div>
+            <div class="tab-pane container fade" id="visualizar_observaciones">
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="visualizar_idioma_reporte">Idioma del reporte: </label>
+                  <p id="visualizar_idioma_reporte">Idioma no disponible</p>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="visualizar_observaciones">Observaciones</label>
+                <textarea rows="4" cols="50" id="v_observaciones" disabled></textarea>
+              </div>
+            </div>
+            <div class="tab-pane container fade" id="visualizar_facturacion">
+              <!--<div id="visualizar_tabla_facturas"></div>-->
+              <!--------------------------------------------------------------------------------------->
+              <!--<h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>-->
+              <div class="container d-block" id="ver-resumen-cot">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <!--span>Responsable de pago: </span><span class="text-secondary" id="f_responsable">No hay responsable de pagos</span-->
+                    <label for="visualizar_facturacion">Responsable de pago</label>
+                    <input type="text" class="form-control" id="responsable_pago_fact" placeholder="Nombre" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <!--span>Correo: </span><span class="text-secondary" id="f_correo">No hay correo</span-->
+                    <label for="visualizar_facturacion">Correo</label>
+                    <input type="text" class="form-control" id="correo_fact" placeholder="noreply@ifc.com" disabled>
+                  </div>
+                </div>
 
-                                    <div class="row">
-                                        <!--div class="col-sm-12 col-md-8 p-0">
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Teléfono</label>
+                    <input type="text" class="form-control" id="telefono_fact" placeholder="5551260643" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <span>Empresa: </span><span class="text-secondary" id="f_empresa">No hay empresa</span>
+                    <label for="visualizar_facturacion">Empresa</label>
+                    <input type="text" class="form-control" id="empresa_fact" placeholder="IFC" disabled>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Número de factura</label>
+                    <input type="text" class="form-control" id="numero_fact" placeholder="123353454325565" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Fecha de facturación</label>
+                    <input type="date" class="form-control" id="fecha_fact" placeholder="Fecha de Facturacion" disabled>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Complemento de pago</label>
+                    <input type="text" class="form-control" id="complemento_pago" placeholder="123353454325565" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Cobrar envío</label>
+                    <input type="text" class="form-control" id="cobro_envio" placeholder="S/N" disabled>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <span>Envío de Factura: </span><span class="text-secondary" id="f_envio_factura">Sí/No</span>
+                    <label for="visualizar_facturacion">Envío factura</label>
+                    <input type="text" class="form-control" id="envio_fact" placeholder="Si/No" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Fecha de envío de factura</label>
+                    <input type="date" class="form-control" id="fecha_envio_fact" placeholder="Fecha de envío de Facturacion" disabled>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Pago de factura</label>
+                    <input type="text" class="form-control" id="pago_fact" placeholder="Si/No" disabled>
+                  </div>
+                  <div class="form-group col-md-6">
+                    <label for="visualizar_facturacion">Envío informes</label>
+                    <input type="text" class="form-control" id="envio_informes" placeholder="Si/No" disabled>
+                  </div>
+
+                  <div class="row">
+                    <!--div class="col-sm-12 col-md-8 p-0">
                                             <label for="visualizar_facturacion">Orden de compra</label>
                                             <input type="text" class="form-control" id="orden_compra" placeholder="No hay orden de compra" disabled>
                                         </div-->
-                                        <label for="visualizar_facturacion">Orden de compra</label>
-                                        <input type="text" class="form-control" id="orden_compra" placeholder="Si/No" disabled>
-                                    </div>
-                                    <!--div class="text-center">
-                                        <h3>Análisis</h3>
-                                    </div>
-                                    <div class="row table-responsive border border-dark">
-                                        <table class="table" id="analisis_tabla">
-                                            <thead>
-                                                <tr>
-                                                    <th scope="col">Código</th>
-                                                    <th scope="col">Nombre</th>
-                                                    <th scope="col">Cantidad</th>
-                                                    <th scope="col">Precio</th>
-                                                    <th scope="col">% Descuento</th>
-                                                    <th scope="col">% IVA</th>
-                                                    <th scope="col">Total Análisis</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="row">
-                                        <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
-                                    </div>
-                                    <div class="row">
-                                        <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
-                                    </div>
-                                    <div class="row border border-success bg-success">
-                                        <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
-                                    </div>
-                                </div-->
-                                <div class="text-center">
-                                    <h3>Análisis</h3>
-                                </div>
-                                <div class="row table-responsive border border-dark">
-                                    <table class="table" id="analisis_tabla">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Código</th>
-                                                <th scope="col">Nombre</th>
-                                                <th scope="col">Cantidad</th>
-                                                <th scope="col">Precio</th>
-                                                <th scope="col">% Descuento</th>
-                                                <th scope="col">% IVA</th>
-                                                <th scope="col">Total Análisis</th>
+                    <label for="visualizar_facturacion">Orden de compra</label>
+                    <input type="text" class="form-control" id="orden_compra" placeholder="Si/No" disabled>
+                  </div>
+                  <div class="text-center">
+                    <h3>Análisis</h3>
+                  </div>
+                  <div class="row table-responsive border border-dark">
+                    <table class="table" id="analisis_tabla">
+                      <thead>
+                        <tr>
+                          <th scope="col">Código</th>
+                          <th scope="col">Nombre</th>
+                          <th scope="col">Cantidad</th>
+                          <th scope="col">Precio</th>
+                          <th scope="col">% Descuento</th>
+                          <th scope="col">% IVA</th>
+                          <th scope="col">Total Análisis</th>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        </tr>
+                      </thead>
+                      <tbody>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div class="row">
-                                    <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
-                                </div>
-                                <div class="row">
-                                    <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
-                                </div>
-                                <div class="row border border-success bg-success">
-                                    <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
-                                </div>
-                                <br>
-                          <!--------------------------------------------------------------------------------------------------->
-                        </div>
-                    </div>
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="row">
+                    <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
+                  </div>
+                  <div class="row">
+                    <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
+                  </div>
+                  <div class="row border border-success bg-success">
+                    <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
+                  </div>
+                  <br>
+                  <!--------------------------------------------------------------------------------------------------->
                 </div>
-                <div id="editar-info-oi" class="d-none">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#editar_info">Orden Interna</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#editar_muestras">Muestras</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#editar_observaciones">Observaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#editar_facturacion">Facturación</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane container active" id="editar_info">
-                            <h3 id="tituloe_idOI"></h3>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <input type="hidden" class="form-control" id="editar_idOI" name="editar_idOI">
-                                    <label for="visualizar_estatus">Estatus</label>
-                                    <select name="editar_estatus" id="editar_estatus" class="form-control">
-                                        <option name="Fantasma" id="Fantasma" value="Fantasma">Fantasma</option>
-                                        <option name="Invisible" id="Invisible" value="Invisible">Invisible</option>
-                                        <option name="Creada" id="Creada" value="Creada">Creada</option>
-                                        <option name="Enviada" id="Enviada" value="Enviada">Enviada</option>
-                                        <option name="En laboratorio" id="En laboratorio" value="En laboratorio">En laboratorio</option>
-                                        <option name="Resultados" id="Resultados" value="Resultados">Resultados</option>
-                                        <!--<option name="Borrado" id="Borrado" value="Borrado">Borrado</option>-->
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
-                                    <input type="date" class="form-control" id="editar_fecha_recepcion_m" name="editar_fecha_recepcion_m" placeholder="Fecha de recepción">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_estatus">Pagado</label>
-                                    <select name="editar_pagado" id="editar_pagado" class="form-control">
-                                        <option name="Sí" id="Sí" value="Sí">Sí</option>
-                                        <option name="No" id="No" value="No">No</option>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
-                                    <input type="date" class="form-control" id="editar_fecha_envio" name="editar_fecha_envio" placeholder="Fecha de envío">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="editar_guia_envio" name="editar_guia_envio" placeholder="Guía de envío">
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
-                                    <input type="date" class="form-control" id="editar_fecha_llegada_lab" name="editar_fecha_llegada_lab" placeholder="Fecha de envío">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
-                                </div>
-                            </div>
-                            <div class="form-row" style="display: none;">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_link_resultados">Link de Resultados</label>
-                                    <input type="text" class="form-control" id="editar_link_resultados" name="editar_link_resultados" placeholder="Link de resultados">
-                                </div>
-                            </div>
-
-                            <div id="info-cliente">
-                                <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
-                                <p id="editar_usuario_empresa" name="editar_usuario_empresa"></p>
-
-                                <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
-                                <p id="editar_usuario_nombre" name="editar_usuario_nombre">Nombre no disponible</p>
-
-                                <label for="visualizar_usuario_email"><b>Correo:</b></label>
-                                <p id="editar_usuario_email" name="editar_usuario_email">Correo no disponible</p>
-
-                                <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
-                                <p id="editar_usuario_telefono" name="editar_usuario_telefono">Teléfono no disponible</p>
-                            </div>
-
-                        </div>
-                        <div class="tab-pane container fade" id="editar_muestras">
-                            <div id="edicion" class="edicion_muestras">
-
-                            </div>
-                        </div>
-
-                        <div class="tab-pane container fade" id="editar_observaciones">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="editar_idioma_reporte">Idioma del reporte: </label>
-                                    <p>
-                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="Español">Español
-                                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="Inglés">Inglés
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <label for="visualizar_observaciones">Observaciones</label>
-                                <textarea rows="4" cols="50" id="e_observaciones"></textarea>
-                            </div>
-                        </div>
-                        <div class="tab-pane container fade" id="editar_facturacion">
-                            <div id="visualizar_tabla_facturas">
-                              <div class="form-row">
-                                  <div class="form-group col-md-6">
-                                      <label for="visualizar_localidad">Hola</label>
-                                      <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
-                                  </div>
-                              </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="confirmar-cambios-oi" class="d-none">
-
-                </div>
-                <div class="text-right">
-                    {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' %}
-                    <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
-                        Editar
-                    </button>
-                    {% endif %}
-                    <button type="button" class="btn btn-danger d-none float-left" id="btn-cancelar-editar-oi">
-                        Cancelar
-                    </button>
-                    <button type="button" class="btn btn-primary d-none float-right" id="btn-continuar-oi">
-                        Continuar
-                    </button>
-                    <button type="button" class="btn btn-warning d-none float-left" id="btn-regresar-oi">
-                        Regresar
-                    </button>
-                    <button type="button" class="btn btn-success d-none float-right" id="btn-guardar-oi" onclick="submit()">
-                        Guardar
-                    </button>
-                </div>
+              </div>
             </div>
+            <div id="editar-info-oi" class="d-none">
+              <ul class="nav nav-tabs">
+                <li class="nav-item">
+                  <a class="nav-link active" data-toggle="tab" href="#editar_info">Orden Interna</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#editar_muestras">Muestras</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#editar_observaciones">Observaciones</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" data-toggle="tab" href="#editar_facturacion">Facturación</a>
+                </li>
+              </ul>
+              <div class="tab-content">
+                <div class="tab-pane container active" id="editar_info">
+                  <h3 id="tituloe_idOI"></h3>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <input type="hidden" class="form-control" id="editar_idOI" name="editar_idOI">
+                      <label for="visualizar_estatus">Estatus</label>
+                      <select name="editar_estatus" id="editar_estatus" class="form-control">
+                        <option name="Fantasma" id="Fantasma" value="Fantasma">Fantasma</option>
+                        <option name="Invisible" id="Invisible" value="Invisible">Invisible</option>
+                        <option name="Creada" id="Creada" value="Creada">Creada</option>
+                        <option name="Enviada" id="Enviada" value="Enviada">Enviada</option>
+                        <option name="En laboratorio" id="En laboratorio" value="En laboratorio">En laboratorio</option>
+                        <option name="Resultados" id="Resultados" value="Resultados">Resultados</option>
+                        <!--<option name="Borrado" id="Borrado" value="Borrado">Borrado</option>-->
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_fecha_recepcion_m">Fecha de recepción de muestra</label>
+                      <input type="date" class="form-control" id="editar_fecha_recepcion_m" name="editar_fecha_recepcion_m" placeholder="Fecha de recepción">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_estatus">Pagado</label>
+                      <select name="editar_pagado" id="editar_pagado" class="form-control">
+                        <option name="Sí" id="Sí" value="Sí">Sí</option>
+                        <option name="No" id="No" value="No">No</option>
+                      </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_fecha_envio">Fecha de envío al laboratorio</label>
+                      <input type="date" class="form-control" id="editar_fecha_envio" name="editar_fecha_envio" placeholder="Fecha de envío">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
+                      <input type="text" class="form-control" id="editar_guia_envio" name="editar_guia_envio" placeholder="Guía de envío">
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
+                      <input type="date" class="form-control" id="editar_fecha_llegada_lab" name="editar_fecha_llegada_lab" placeholder="Fecha de envío">
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_localidad">Localidad</label>
+                      <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
+                    </div>
+                  </div>
+                  <div class="form-row" style="display: none;">
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_link_resultados">Link de Resultados</label>
+                      <input type="text" class="form-control" id="editar_link_resultados" name="editar_link_resultados" placeholder="Link de resultados">
+                    </div>
+                  </div>
+
+                  <div id="info-cliente">
+                    <label for="visualizar_usuario_empresa"><b>Empresa:</b></label>
+                    <p id="editar_usuario_empresa" name="editar_usuario_empresa"></p>
+
+                    <label for="visualizar_usuario_nombre"><b>Solicitante:</b></label>
+                    <p id="editar_usuario_nombre" name="editar_usuario_nombre">Nombre no disponible</p>
+
+                    <label for="visualizar_usuario_email"><b>Correo:</b></label>
+                    <p id="editar_usuario_email" name="editar_usuario_email">Correo no disponible</p>
+
+                    <label for="visualizar_usuario_telefono"><b>Telefono:</b></label>
+                    <p id="editar_usuario_telefono" name="editar_usuario_telefono">Teléfono no disponible</p>
+                  </div>
+
+                </div>
+                <div class="tab-pane container fade" id="editar_muestras">
+                  <div id="edicion" class="edicion_muestras">
+
+                  </div>
+                </div>
+
+                <div class="tab-pane container fade" id="editar_observaciones">
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="editar_idioma_reporte">Idioma del reporte: </label>
+                      <p>
+                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteES" value="Español">Español
+                        <input type="radio" name="editar_idioma_reporte" id="editar_idioma_reporteEN" value="Inglés">Inglés
+                      </p>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <label for="visualizar_observaciones">Observaciones</label>
+                    <textarea rows="4" cols="50" id="e_observaciones"></textarea>
+                  </div>
+                </div>
+                <div class="tab-pane container fade" id="editar_facturacion">
+                  <div id="visualizar_tabla_facturas">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="visualizar_localidad">Hola</label>
+                        <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="confirmar-cambios-oi" class="d-none">
+
+            </div>
+            <div class="text-right">
+              {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' %}
+              <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
+                Editar
+              </button>
+              {% endif %}
+              <button type="button" class="btn btn-danger d-none float-left" id="btn-cancelar-editar-oi">
+                Cancelar
+              </button>
+              <button type="button" class="btn btn-primary d-none float-right" id="btn-continuar-oi">
+                Continuar
+              </button>
+              <button type="button" class="btn btn-warning d-none float-left" id="btn-regresar-oi">
+                Regresar
+              </button>
+              <button type="button" class="btn btn-success d-none float-right" id="btn-guardar-oi" onclick="submit()">
+                Guardar
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
-</div>
