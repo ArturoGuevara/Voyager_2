@@ -28,24 +28,6 @@ function validar_info_solicitante() {
         continuar_parte_muestras();
     }
 }
-function isValidDate(dateString){
-    // Parse the date parts to integers
-    var parts   = dateString.split("/");
-    var day     = parseInt(parts[1], 10);
-    var month   = parseInt(parts[0], 10);
-    var year    = parseInt(parts[2], 10);
-    // Check the ranges of month and year
-    if(year < 1000 || year > 3000 || month == 0 || month > 12){
-        return false;
-    }
-    var monthLength = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ];
-    // Adjust for leap years
-    if(year % 400 == 0 || (year % 100 != 0 && year % 4 == 0)){
-        monthLength[1] = 29;
-    }
-    // Check the range of the day
-    return day > 0 && day <= monthLength[month - 1];
-}
 function regresar_parte_solicitante(){
     // Alternar headers
     $('#title-2').removeClass('d-block').addClass('d-none');
@@ -224,7 +206,7 @@ function validar_producto_agricola(){// Validamos los arreglos de inputs
         var id = $(this).data('id');
         v = check_is_not_empty($(this).val(),'#fecha-muestreoAG-'+id);
         flag = flag && v;
-        v = isValidDate($(this).val(),'#fecha-muestreoAG-'+id);
+        v = date_is_valid($(this).val(),'#fecha-muestreoAG-'+id);
         flag = flag && v;
     });
     $("input[name='muestreadorAG[]']").each(function(){
@@ -256,7 +238,7 @@ function validar_producto_procesado(){// Validamos los arreglos de inputs
         var id = $(this).data('id');
         v = check_is_not_empty($(this).val(),'#fecha-muestreoPR-'+id);
         flag = flag && v;
-        v = isValidDate($(this).val(),'#fecha-muestreoPR-'+id);
+        v = date_is_valid($(this).val(),'#fecha-muestreoPR-'+id);
         flag = flag && v;
     });
     $("select[name='analisis1PR[]']").each(function(){
@@ -283,7 +265,7 @@ function validar_producto_microbiologia(){// Validamos los arreglos de inputs
         var id = $(this).data('id');
         v = check_is_not_empty($(this).val(),'#fecha-muestreoMB-'+id);
         flag = flag && v;
-        v = isValidDate($(this).val(),'#fecha-muestreoMB-'+id);
+        v = date_is_valid($(this).val(),'#fecha-muestreoMB-'+id);
         flag = flag && v;
     });
     $("input[name='muestreadorMB[]']").each(function(){
