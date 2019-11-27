@@ -730,7 +730,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
 
 def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid para enviar el correo
     message = Mail(
-        from_email = 'A0127373@itesm.mx',
+        from_email = 'A01207945@itesm.mx',
         to_emails = dest,
         subject = subject,
         html_content = body) #Se fijan los parametros del correo
@@ -746,7 +746,7 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
     attachment.content_id = ContentId('Example Content ID')
     message.attachment = attachment
     try:
-        with open('./API_KEY.txt','rb') as file: #Se obtiene la llave del API para autenticar
+        with open('./API_KEY_recover_password.txt','rb') as file: #Se obtiene la llave del API para autenticar
             key = file.read()
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo

@@ -1117,11 +1117,11 @@ class EnviarResultados(TestCase):
 
     def test_mail_correcto(self):
         message = Mail(
-            from_email='A0127373@itesm.mx',
+            from_email='A01207945@itesm.mx',
             to_emails='A0127373@itesm.mx',
             subject="Asunto",
             html_content="Contenido")
-        with open('./API_KEY.txt', 'rb') as f:
+        with open('./API_KEY_recover_password.txt', 'rb') as f:
             key = f.read()
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded)
