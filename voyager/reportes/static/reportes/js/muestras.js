@@ -141,7 +141,7 @@ function validar_ingreso_muestra(){
     }else if(v1 == false || v2 == false || v3 == false){//Si una sola es false, significa que un input está vacío o incorrecto
         showNotification('top','right','Por favor, revise sus datos');
     }else{
-        enviar_ingreso_muestra();
+        $('#envio_orden').modal('show');
     }
 }
 function validar_producto_agricola(){// Validamos los arreglos de inputs
@@ -384,10 +384,12 @@ function enviar_ingreso_muestra(){
         },
         type: "POST",
         success: function (response) {
+            $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
+            showNotification('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
         },
         error: function (data) {
-            //alert(data.status);
-            //alert(data.responseJSON.error);
+            $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
+            showNotification('top','right','Ha ocurrido un error. Inténtelo de nuevo más tarde.');//Mostrar notificación de envío exitoso
         }
     });
 }
