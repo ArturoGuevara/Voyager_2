@@ -222,7 +222,6 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
     //     fecha_r = '';
     // }
     var html = ``;
-    console.log(analisis);
     for(let a in analisis){
         var siono = "No";
         if(muestra.enviado){
