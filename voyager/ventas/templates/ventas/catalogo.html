@@ -9,6 +9,7 @@
 {% block content %}
 {% load feature_flags %}
 {% flag_enabled 'Modulo_Catalogo' as my_flag %}
+{% flag_enabled 'Importar_Analisis' as my_flag_importar %}
 <div class="text-md-left text-center">
     <h2>Catálogo de Análisis
         <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus análisis">
@@ -43,9 +44,9 @@
                 <td class="analisis-precio" data-id="{{ a.id_analisis }}">${{ a.precio }}</td>
                 <td class="analisis-tiempo" data-id="{{ a.id_analisis }}">{{ a.tiempo }}</td>
                 {% if a.acreditacion %}
-                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}">Q</td>
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><i class="fas fa-check text-success"></i></td>
                 {% else %}
-                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}">-</td>
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><i class="fas fa-minus text-secondary"></i></td>
                 {% endif %}
                 <td class="analisis-acciones" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
@@ -57,6 +58,13 @@
         {% endfor %}
         </tbody>
     </table>
+    <div>
+    {% if my_flag_importar %}
+      {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
+      <button type="button" class="btn btn-success" id="btn-cargar-analisis" data-toggle="modal" data-target="#importar_csv" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Ingrese el csv con los análisis."><i class="nc-icon nc-simple-add"></i> Importar CSV</button>
+      {% endif %}
+    {% endif %}
+    </div>
 </div>
 {% else %}
 {% include 'root/feature_not_ready.html' %}
@@ -64,6 +72,7 @@
 {% include './modals/analisis/agregar.html' %}
 {% include './modals/analisis/borrar.html' %}
 {% include './modals/analisis/visualizar.html' %}
+{% include './modals/analisis/importar_csv.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -72,13 +81,14 @@
     <script src="{% static 'ventas/js/analisis/agregar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/analisis/editar.js' %}" type="text/javascript"></script>
     <script src="{% static 'ventas/js/analisis/borrar.js' %}" type="text/javascript"></script>
+    <script src="{% static 'ventas/js/analisis/cargar_csv.js' %}" type="text/javascript"></script>
         {% if success_code == 1 %}
             <script>
-                showNotification('top','right','Análisis registrado exitosamente')
+                showNotificationSuccess('top','right','Análisis registrado exitosamente')
             </script>
         {% elif success_code == -1 %}
              <script>
-                showNotification('top','right','Hubo un error en el registro')
+                showNotificationDanger('top','right','Hubo un error en el registro')
             </script>
         {% endif %}
 {% endblock %}

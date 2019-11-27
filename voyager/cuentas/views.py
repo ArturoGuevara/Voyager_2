@@ -128,11 +128,13 @@ def lista_usuarios(request):
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
         if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
-            usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
-            context = {'usuarios':usuarios_dir}
+            usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
+            usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
+            usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
+            context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
         elif not usuario_log.rol.nombre == "Cliente":
             rol = Rol.objects.get(nombre="Cliente")
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
@@ -386,3 +388,110 @@ def notificar_error_perfil(request):         # Funcion que se llama con un ajax 
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})
+############### USA03-39###################
+@login_required
+def borrar_usuario(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            usuario = IFCUsuario.objects.get(user__pk = id)
+            if usuario:
+                usuario.estado = not usuario.estado
+                usuario.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe ese usuario"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USA03-39###################
+
+
+########### CRUD empresa ##################
+@login_required
+def crear_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('nombre_empresa')
+            and request.POST.get('telefono_empresa')
+            and request.POST.get('correo_resultados')
+            and request.POST.get('correo_pagos')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('nombre_empresa')
+    telefono_empresa = request.POST.get('telefono_empresa')
+    correo_resultados = request.POST.get('correo_resultados')
+    correo_pagos = request.POST.get('correo_pagos')
+    empresa = Empresa()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.correo_resultados = correo_resultados
+    empresa.correo_pagos = correo_pagos
+    empresa.save()
+    return JsonResponse({'value':empresa.id,'nombre':empresa.empresa})
+
+@login_required
+def lista_empresas(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    empresas = Empresa.objects.all()
+    context = {'empresas':empresas}
+    return render(request, 'cuentas/lista_empresas.html', context)
+
+@login_required
+def consultar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('id')):
+        raise Http404
+    id_empresa = request.POST.get('id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    return JsonResponse({'nombre':empresa.empresa,
+                            'telefono':empresa.telefono,
+                            'correo_resultados':empresa.correo_resultados,
+                            'correo_pagos':empresa.correo_pagos,
+                            'id':empresa.id,
+                         })
+
+@login_required
+def editar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+        raise Http404
+    if not (request.POST.get('editar_nombre')
+            and request.POST.get('editar_telefono')
+            and request.POST.get('editar_correo_resultados')
+            and request.POST.get('editar_correo_pagos')
+            and request.POST.get('empresa_id')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('editar_nombre')
+    telefono_empresa = request.POST.get('editar_telefono')
+    correo_resultados = request.POST.get('editar_correo_resultados')
+    correo_pagos = request.POST.get('editar_correo_pagos')
+    id_empresa = request.POST.get('empresa_id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.correo_resultados = correo_resultados
+    empresa.correo_pagos = correo_pagos
+    empresa.save()
+    return HttpResponseRedirect(reverse('lista_empresas'))

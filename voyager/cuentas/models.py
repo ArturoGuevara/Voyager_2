@@ -16,9 +16,8 @@ class Rol(models.Model):
 class Empresa (models.Model):
     empresa = models.CharField(max_length=50)
     telefono = models.CharField(max_length=15, default="")
-    correo_resultados = models.CharField(max_length=30, default="")
-    correo_pagos = models.CharField(max_length=30, default="")
-
+    correo_resultados = models.EmailField(default="")
+    correo_pagos = models.EmailField(default="")
 
     class Meta:
         verbose_name = 'Empresa'
