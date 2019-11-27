@@ -7,12 +7,14 @@
             <li class="nav-item">
               <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
             </li>
+            {% if request.session.userrole != 'Facturacion' %}
             <li class="nav-item">
               <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
             </li>
+            {% endif %}
             <li class="nav-item">
               <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
             </li>
@@ -99,18 +101,13 @@
               </div>
             </div>
             <div class="tab-pane container fade" id="visualizar_facturacion">
-              <!--<div id="visualizar_tabla_facturas"></div>-->
-              <!--------------------------------------------------------------------------------------->
-              <!--<h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>-->
               <div class="container d-block" id="ver-resumen-cot">
                 <div class="row">
                   <div class="form-group col-md-6">
-                    <!--span>Responsable de pago: </span><span class="text-secondary" id="f_responsable">No hay responsable de pagos</span-->
                     <label for="visualizar_facturacion">Responsable de pago</label>
                     <input type="text" class="form-control" id="responsable_pago_fact" placeholder="Nombre" disabled>
                   </div>
                   <div class="form-group col-md-6">
-                    <!--span>Correo: </span><span class="text-secondary" id="f_correo">No hay correo</span-->
                     <label for="visualizar_facturacion">Correo</label>
                     <input type="text" class="form-control" id="correo_fact" placeholder="noreply@ifc.com" disabled>
                   </div>
@@ -172,15 +169,15 @@
                     <label for="visualizar_facturacion">Envío informes</label>
                     <input type="text" class="form-control" id="envio_informes" placeholder="Si/No" disabled>
                   </div>
-
-                  <div class="row">
-                    <!--div class="col-sm-12 col-md-8 p-0">
-                                            <label for="visualizar_facturacion">Orden de compra</label>
-                                            <input type="text" class="form-control" id="orden_compra" placeholder="No hay orden de compra" disabled>
-                                        </div-->
-                    <label for="visualizar_facturacion">Orden de compra</label>
-                    <input type="text" class="form-control" id="orden_compra" placeholder="Si/No" disabled>
-                  </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                      <label for="visualizar_facturacion">Orden de compra</label>
+                      <input type="text" class="form-control" id="orden_compra" placeholder="Si/No" disabled>
+                    </div>
+                </div>
+              </div>
+              <div class="container">
                   <div class="text-center">
                     <h3>Análisis</h3>
                   </div>
@@ -204,19 +201,19 @@
                     </table>
                   </div>
                   <div class="row">
-                    <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
+                    <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">--</span>
                   </div>
                   <div class="row">
-                    <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
+                    <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">--</span>
                   </div>
                   <div class="row border border-success bg-success">
-                    <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
+                    <span>TOTAL: $</span><span class="text-white" id="n_total">--</span>
                   </div>
                   <br>
-                  <!--------------------------------------------------------------------------------------------------->
-                </div>
               </div>
             </div>
+
+
             <div id="editar-info-oi" class="d-none">
               <ul class="nav nav-tabs">
                 <li class="nav-item">
