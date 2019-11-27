@@ -1,5 +1,5 @@
 <div class="modal fade" tabindex="-1" role="dialog" id="modal-visualizar-orden">
-    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-dialog modal-xl" style="max-width: 1250px;" role="document">
         <div class="modal-content">
             <div class="modal-body">
                 <div id="ver-resumen-oi" class="d-block">
@@ -82,9 +82,9 @@
                         <div class="tab-pane container fade" id="visualizar_muestras">
                             <div id="accordion" class="accordion_muestras">
                                 <div class=table-responsive table-full-width">
-                                <table class="table table-hover table-striped" id="tabla-muestra">
+                                  <table class="table table-hover table-striped" id="tabla-muestra">
                                     <thead>
-                                        <th>Número</th>
+                                        <th>Número Muestra</th>
                                         <th>Producto</th>
                                         <th>Código</th>
                                         <th>Análisis</th>
@@ -96,9 +96,9 @@
                                         <th>Enlace a resultados</th>
                                         <th>Muestreador</th>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="muestras-body">
                                     </tbody>
-                                </table>
+                                  </table>
                                 </div>
                             </div>
                         </div>
@@ -208,9 +208,44 @@
 
                         </div>
                         <div class="tab-pane container fade" id="editar_muestras">
-                            <div id="edicion" class="edicion_muestras">
-
+                          <div class="form-row">
+                              <div class="form-group col-md-1">
+                                  <label>Número</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Producto</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Código</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Análisis</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>MRL</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>No. interno de informe</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Fecha esperada de informe</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Fecha recibo de informe</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Resultados Enviados</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Enlace de Resultados</label>
+                              </div>
+                              <div class="form-group col-md-1">
+                                  <label>Muestreador</label>
+                              </div>
                             </div>
+                          <div id="edicion" class="edicion_muestras">
+                          </div>
+                          <br>
                         </div>
 
                         <div class="tab-pane container fade" id="editar_observaciones">

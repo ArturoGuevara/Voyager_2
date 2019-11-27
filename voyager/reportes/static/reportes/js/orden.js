@@ -213,82 +213,74 @@ function build_muestras(id_muestra, muestra, analisis, factura){
 }
 
 function editar_muestras(id_muestra, muestra, analisis, factura){
-    //Eliminar el formato de fecha dado por Django para poder leerla
-    if (muestra.fechah_recibo != null){
-        fecha_r = muestra.fechah_recibo.replace('T', ' ');
-        fecha_r = fecha_r.replace('Z', '');
-    }
-    else{
-        fecha_r = '';
-    }
-    var html = `
+    // //Eliminar el formato de fecha dado por Django para poder leerla
+    // if (muestra.fechah_recibo != null){
+    //     fecha_r = muestra.fechah_recibo.replace('T', ' ');
+    //     fecha_r = fecha_r.replace('Z', '');
+    // }
+    // else{
+    //     fecha_r = '';
+    // }
+    var html = ``;
+    console.log(analisis);
+    for(let a in analisis){
+        var siono = "No";
+        if(muestra.enviado){
+            siono = "Sí";
+        }
+        html = html + `
                 <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="editar_muestra_numero_` + id_muestra + `">Número</label>
-                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `">
+                    <div class="form-group col-md-1">
+
+                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_producto_` + id_muestra + `">Producto</label>
+                    <div class="form-group col-md-1">
+
                         <input type="text" class="form-control" id="editar_muestra_producto_` + id_muestra + `" placeholder="Producto" value="` + muestra.producto + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_codigo_` + id_muestra + `">Código</label>
+                    <div class="form-group col-md-1">
+
                         <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="editar_muestra_analisis_` + id_muestra + `">Análisis</label>
-                        <input type="text" class="form-control" id="editar_muestra_analisis_` + id_muestra + `" placeholder="Análisis" value="3" disabled>
+                    <div class="form-group col-md-1">
+
+                        <input type="text" class="form-control" id="editar_muestra_analisis_` + id_muestra + `" placeholder="Análisis" value="` + id_muestra + `" disabled>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_mrl_` + id_muestra + `">MRL</label>
+                    <div class="form-group col-md-1">
+
                         <input type="text" class="form-control" id="editar_muestra_mrl_` + id_muestra + `" placeholder="MRL" value=" ` + muestra.mrl + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_numero_interno_` + id_muestra + `">No. interno de informe</label>
+                    <div class="form-group col-md-1">
+
                         <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="0"` + muestra.num_interno_informe + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_fecha_esperada_informe_` + id_muestra + `">Fecha esperada de informe</label>
+                    <div class="form-group col-md-1">
+
                         <input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="31-02-2019" value="` + muestra.fecha_esperada_recibo + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_fecha_recibo_informe_` + id_muestra + `">Fecha recibo de informe</label>
+                    <div class="form-group col-md-1">
+
                         <input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="Factura" value="` + muestra.fecha_recibo_informe + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_resultados_enviados_` + id_muestra + `">Resultados Enviados</label>
-                        <input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="Sí" value="` + muestra.envio + `">
+                    <div class="form-group col-md-1">
+
+                        <input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="Sí" value="` + siono + `">
                     </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_muestreador_` + id_muestra + `">Muestreador</label>
+                    <div class="form-group col-md-1">
+
+                        <input type="text" class="form-control" id="editar_muestra_link_` + id_muestra + `" value="` + muestra.link_resultados + `">
+                    </div>
+                    <div class="form-group col-md-1">
+
                         <input type="text" class="form-control" id="editar_muestra_muestreador_` + id_muestra + `" placeholder="John Cena" value="` + muestra.muestreador + `">
                     </div>
-                    <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
-                </div>
-                <p>Análisis</p>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <th>Nombre</th>
-                        </thead>
-                        <tbody>`;
+                    <div class="form-group col-md-1">
 
-    for(let a in analisis){
-        html = html+ `
-            <tr>
-                <td>`+ analisis[a] +`</td>
-            </tr>
-        `;
-    }
-    html = html+ `</tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>`;
-    return html;
+                        <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
+                    </div>
+                </div>`;
+          }
+      return html;
 }
 
 
@@ -349,8 +341,7 @@ function visualizar_info_oi(id) {
                     html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
                 }
             }
-            console.log(html_muestras);
-            $('.accordion_muestras').append(html_muestras);
+            $('#muestras-body').html(html_muestras);
             $('#v_observaciones').val(data.observaciones);
 
             //Construir tabla de facturas
