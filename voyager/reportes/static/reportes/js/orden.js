@@ -332,6 +332,7 @@ function editar_muestras(id_muestra, muestra, analisis, factura){
 
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
+    visualizar_facturacion(id);
     id_oi = id;
     $.ajax({
         url: "consultar_orden/",
@@ -509,4 +510,22 @@ function dropdown_muestras(muestras){
         ans+="<option value='"+muestras[muestra].pk+"'>Muestra "+muestras[muestra].pk+"</option>"
     }
     return ans;
+}
+
+function visualizar_facturacion(id){
+    $.ajax({
+        url: "/reportes/visualizar_facturacion/",
+        data: {
+            id: id,
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            var data = JSON.parse(response.data);
+            console.log(data);
+        },
+        error: function(data){
+            console.log("NEL!!!");
+        }
+    });
 }

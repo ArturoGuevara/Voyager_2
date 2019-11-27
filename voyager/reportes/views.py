@@ -29,6 +29,15 @@ import urllib.request as urllib
 import base64
 import locale
 from flags.state import flag_enabled
+from django.core.serializers.json import DjangoJSONEncoder
+
+
+#Esta clase sirve para serializar los objetos de los modelos.
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, Cotizacion):
+            return str(obj)
+        return super().default(obj)
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -87,7 +96,7 @@ def registrar_ingreso_muestra(request):
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
                     response.status_code = 500
                     # Regresamos la respuesta de error interno del servidor
-                    return response    
+                    return response
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
                 response.status_code = 500
@@ -100,10 +109,10 @@ def registrar_ingreso_muestra(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 def guardar_muestras(arreglo, tipo, user):
     formato = arreglo
-    if tipo == "AG":        
+    if tipo == "AG":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
             m = Muestra()
@@ -188,7 +197,7 @@ def restar_analisis(user, analisis):
                 a.restante -= 1
                 a.save()
                 return True
-        
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -753,3 +762,15 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
+
+def visualizar_facturacion(request):
+    if request.method == 'POST':
+
+        id_oi = request.POST.get('id')
+        oi = OrdenInterna.objects.filter(idOI=id_oi)
+
+        response = serializers.serialize("json", oi,  cls=LazyEncoder)
+
+        return JsonResponse({"OI": response})
+    else:
+        raise Http404
