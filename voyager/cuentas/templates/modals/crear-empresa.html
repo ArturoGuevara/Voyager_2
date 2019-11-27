@@ -20,7 +20,7 @@
                         <div class="col-md-12">
                             <label for="telefono_empresa">Teléfono</label>
                             <input type="text" class="form-control" id="telefono_empresa" name="telefono_empresa"
-                                   placeholder="Nombre de la empresa" maxlength="50">
+                                   placeholder="Telefono de la empresa" maxlength="50">
                             <div class="invalid-feedback">
                                 Por favor ingresa el teléfono
                             </div>
@@ -43,6 +43,9 @@
                                 Por favor ingresa el correo de resultados
                             </div>
                         </div>
+                        <div class="invalid-mail-resultados p-3" hidden>
+                            <p style="color:red">Ingresa un correo válido</p>
+                        </div>
                     </div>
                     <div class="form-row">
                         <div class="col-md-6">
@@ -60,6 +63,9 @@
                             <div class="invalid-feedback">
                                 Por favor ingresa el correo de pagos
                             </div>
+                        </div>
+                        <div class="invalid-mail-pagos p-3" hidden>
+                            <p style="color:red">Ingresa un correo válido</p>
                         </div>
                     </div>
                     <br>

@@ -1,3 +1,9 @@
+function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  console.log(email);
+  return regex.test(email);
+}
+
 function enviar_empresa(){
     var valid_form = true;
     if(!check_is_not_empty($("#nombre_empresa").val(),'#nombre_empresa')){
@@ -17,6 +23,20 @@ function enviar_empresa(){
     }
     if(!check_is_not_empty($("#nombre_responsable_pagos").val(),"#nombre_responsable_pagos")){
         valid_form=false;
+    }
+    if(!isEmail($("#correo_resultados").val())){
+        valid_form=false;
+        $(".invalid-mail-resultados").prop('hidden', false);
+    }
+    else{
+        $(".invalid-mail-resultados").prop('hidden', true);
+    }
+    if(!isEmail($("#correo_pagos").val())){
+        valid_form=false;
+        $(".invalid-mail-pagos").prop('hidden', false);
+    }
+    else{
+        $(".invalid-mail-pagos").prop('hidden', true);
     }
     if(valid_form){
         guardar_empresa($("#nombre_empresa").val(),
