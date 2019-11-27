@@ -46,16 +46,6 @@ var check_is_negative = function(value,id){
         $('#'+id).val(val);
     }
 }
-// Función para checar que no estén vacíos los campos y si sí, agregar clase para mostrar retroaliementación
-var check_is_valid = function(value, id){
-    if(value == '' || value == null){
-        $(id).addClass('is-invalid');
-        return false;
-    }else{
-        $(id).removeClass('is-invalid');
-        return true;
-    }
-}
 //Función que revisa que la fecha ingresada cumpla el formato mm/dd/yyyy
 function date_is_valid(dateString, id){
     // Revisa que el formato de fecha sea correcto
