@@ -86,3 +86,16 @@ function date_is_valid(dateString, id){
     $(id).removeClass('is-invalid');
     return true;
 }
+// Función que revisa que los campos no estén vacíos ni tengan comas, de lo contrario muestran retroalmientación
+var check_not_commas_empty = function(value, id){
+    if(value == '' || value == null){
+        $(id).addClass('is-invalid');
+        return false;
+    }else if(value.includes(",")){
+        $(id).addClass('is-invalid');
+        return false;
+    }else{
+        $(id).removeClass('is-invalid');
+        return true;
+    }
+}
