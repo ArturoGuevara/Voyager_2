@@ -859,20 +859,31 @@ def visualizar_facturacion(request):
         id_oi = request.POST.get('id')
         oi_requested = OrdenInterna.objects.filter(idOI=id_oi).first()
         data = []
-
         consulta_factura = FacturaOI.objects.filter(oi=oi_requested) # Validar si ya existe un registro de facturacion para la OI
 
         if not consulta_factura:
-            new_factura_oi = FacturaOI(oi=oi_requested).save()
+            new_factura_oi = FacturaOI(oi=oi_requested)
+            new_factura_oi.save()
         else:
             new_factura_oi = consulta_factura.first()
 
+        factura_oi_s = serializers.serialize("json", [new_factura_oi], ensure_ascii = False)
+        data.append(factura_oi_s)
+
         # Consultar todas las cotizaciones relacionadas a la OI
+        analisis_muestra = AnalisisMuestra.objects.filter(id_oi=oi_requested)
+        for am in analisis_muestra:
+            arr_analisis_s = serializers.serialize("json", [am.id_analisis_cotizacion.analisis], ensure_ascii = False)
+            data.append(arr_analisis_s)
+            arr_id_ac_s = serializers.serialize("json", [am.id_analisis_cotizacion], ensure_ascii = False)
+            data.append(arr_id_ac_s)
+            arr_muestra_s = serializers.serialize("json", [am.muestra], ensure_ascii = False)
+            data.append(arr_muestra_s)
 
 
-        data.append(new_factura_oi)
-        response = serializers.serialize("json", data,  cls=LazyEncoder)
 
-        return JsonResponse({"data": response})
+        #response = serializers.serialize("json", data,  cls=LazyEncoder)
+        print(data)
+        return JsonResponse({"data": data })
     else:
         raise Http404

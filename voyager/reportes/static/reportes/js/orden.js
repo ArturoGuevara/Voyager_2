@@ -521,11 +521,50 @@ function visualizar_facturacion(id){
         },
         type: "POST",
         success: function(response){
-            var data = JSON.parse(response.data);
-            console.log(data);
+            //console.log(response.data);
+            var data_facturacion = JSON.parse(response.data[0]);
+
+            var data_muestras = [];
+            var data_ac = [];
+            var data_analisis = [];
+            // Organizar la informacion en distintos arreglos
+            for (x in response.data){
+                if (x != 0){
+                    if (x % 3 == 1){
+                        data_analisis.push(JSON.parse(response.data[x]));
+                    }
+                    if (x % 3 == 2){
+                        data_ac.push(JSON.parse(response.data[x]));
+                    }
+                    if (x % 3 == 0){
+                        data_muestras.push(JSON.parse(response.data[x]));
+                    }
+                }
+            }
+            console.log(data_ac[0]);
+            llenar_tabla_analisis(data_muestras, data_ac, data_analisis);
+
         },
         error: function(data){
             console.log("NEL!!!");
         }
     });
+}
+
+function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
+    var total_muestras = []
+    for(x in data_muestras){
+        var precio_unit = parseFloat(data_analisis[x][0].fields.precio);
+        var descuento = parseFloat(data_ac[x][0].fields.descuento);
+        var iva = parseFloat(data_ac[x][0].fields.iva);
+        var total_muestra_ind = precio_unit - ( (precio_unit * descuento)/100 ) + ( (precio_unit * iva)/100 )
+        total_muestras.push(total_muestra_ind)
+        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
+    }
+    var subtotal_muestras = 0;
+    for (i in total_muestras){
+        subtotal_muestras = subtotal_muestras + total_muestras[i];
+    }
+
+    $('#n_subtotal-facturas').html(subtotal_muestras);
 }
