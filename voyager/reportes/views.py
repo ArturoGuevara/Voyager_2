@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 import json
 from ventas.models import Factura
-from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
+from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis, FacturaOI
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
@@ -767,10 +767,22 @@ def visualizar_facturacion(request):
     if request.method == 'POST':
 
         id_oi = request.POST.get('id')
-        oi = OrdenInterna.objects.filter(idOI=id_oi)
+        oi_requested = OrdenInterna.objects.filter(idOI=id_oi).first()
+        data = []
 
-        response = serializers.serialize("json", oi,  cls=LazyEncoder)
+        consulta_factura = FacturaOI.objects.filter(oi=oi_requested) # Validar si ya existe un registro de facturacion para la OI
 
-        return JsonResponse({"OI": response})
+        if not consulta_factura:
+            new_factura_oi = FacturaOI(oi=oi_requested).save()
+        else:
+            new_factura_oi = consulta_factura.first()
+
+        # Consultar todas las cotizaciones relacionadas a la OI
+        
+
+        data.append(new_factura_oi)
+        response = serializers.serialize("json", data,  cls=LazyEncoder)
+
+        return JsonResponse({"data": response})
     else:
         raise Http404
