@@ -339,6 +339,7 @@ def consultar_orden(request):
         email = {}
         empresa = {}
         analisis_muestras = {}
+        analisis_muestras_ids = {}
         facturas_muestras = {}
         if request.method == 'POST':
             if not (request.POST.get('id')):
@@ -347,6 +348,17 @@ def consultar_orden(request):
             #oi = orden interna
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
+                c = Muestra.objects.filter(oi = oi).first()
+                cliente = IFCUsuario.objects.get(pk = c.usuario.pk)
+                cotizaciones = Cotizacion.objects.filter(usuario_c = cliente, status=True, aceptado=True, bloqueado=False)
+                anal = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
+                for c in cotizaciones:
+                    cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+                    for a in cot:
+                        analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
+                        anal = anal | analisis_temp
+                anal = serializers.serialize("json", anal, ensure_ascii = False)
+
                 solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
                 solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
                 solicitante = solicitante[1:-1]
@@ -365,12 +377,14 @@ def consultar_orden(request):
                     empresa = usuario.empresa.empresa
                     telefono = usuario.empresa.telefono
                     analisis_muestras = {}
+                    analisis_muestras_ids = {}
                     facturas_muestras = {}
                     for muestra in muestras:
                         #recuperas todos los analisis de una muestra
                         #ana_mue es objeto de tabla AnalisisMuestra
                         ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
                         analisis = []
+                        analisis_ids = []
                         if muestra.factura:
                             facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                         else:
@@ -378,7 +392,9 @@ def consultar_orden(request):
 
                         for a in ana_mue:
                             analisis.append(a.analisis.codigo)
+                            analisis_ids.append(a.analisis.pk)
                         analisis_muestras[muestra.id_muestra] =  analisis
+                        analisis_muestras_ids[muestra.id_muestra] = analisis_ids
 
                     return JsonResponse(
                             {"data": data,
@@ -388,8 +404,11 @@ def consultar_orden(request):
                             "empresa":empresa,
                             "telefono":telefono,
                             "dict_am":analisis_muestras,
+                            "dict_ids":analisis_muestras_ids,
                             "facturas":facturas_muestras,
-                            "solicitante":solicitante}
+                            "solicitante":solicitante,
+                            "analisis":anal,
+                            }
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
@@ -417,7 +436,19 @@ def actualizar_muestra(request):
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
         if muestra:
             #Actualizar campos
+            ids = request.POST.getlist('ids[]')
             muestra.producto = request.POST['producto']
+            am = AnalisisMuestra.objects.filter(muestra = muestra)
+            am.delete()
+            for x in ids:
+                anal = Analisis.objects.filter(pk = x).first()
+                ma = AnalisisMuestra()
+                ma.analisis = anal
+                ma.muestra = muestra
+                ma.estado = True
+                ma.fecha = datetime.date.today()
+                ma.save()
+
             # if isinstance(request.POST['factura'], int):
             #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
             #     if factura:
