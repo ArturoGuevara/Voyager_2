@@ -53,7 +53,7 @@
                             <div class="form-group">
                                 <label>País de Origen de Muestra</label>
                                 <select name="pais" class="form-control" id="pais">
-                                    <option selected disabled>Selecciona el país...</option>
+                                    <option selected disabled>Seleccione el país...</option>
                                     <option value="Colombia">Colombia</option>
                                     <option value="México">México</option>
                                 </select>
@@ -88,12 +88,12 @@
                             <div class="form-group">
                                 <label>Idioma de los Resultados</label>
                                 <select class="form-control" id="idioma" name="idioma">
-                                    <option selected value="" disabled>Selecciona el idioma...</option>
+                                    <option selected value="" disabled>Seleccione el idioma...</option>
                                     <option value="8809">Español</option>
                                     <option value="8992">Inglés</option>
                                 </select>
                                 <div class="invalid-feedback">
-                                    Selecciona un idioma para los resultados
+                                    Seleccione un idioma para los resultados
                                 </div>
                             </div>
                         </div>
@@ -243,20 +243,18 @@
         </div>
     </div>
 </form>
-<div class="text-right">
+<div class="text-right" id="opciones_guardado">
     <button type="btn" class="btn btn-primary d-inline" id="btn-muestra-continuar" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Cambia a pestaña de información de muestras" onclick="validar_info_solicitante()">
         Continuar
     </button>
     <button class="btn btn-danger d-none" id="btn-muestra-regresar" onclick="regresar_parte_solicitante()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Regrese al ingreso de información del solicitante">
         Atrás
     </button>
-    <button class="btn btn-info d-none" id="btn-muestra-guardar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Guarda la información registrada para que edite después">
-        Guardar
-    </button>
     <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_ingreso_muestra()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
         Enviar
     </button>
 </div>
+{% include './modals/confirmar-enviar.html' %}
 {% endblock content %}
 {% block optionalJS %}
 <script>

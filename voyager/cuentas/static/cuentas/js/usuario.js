@@ -1,4 +1,5 @@
 var token = csrftoken;
+var id_usuario = 0;
 
 
 // Función que crea y muestra alerta
@@ -15,7 +16,6 @@ function showNotification(from, align, msg){
 		}
 	});
 }
-
 
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_usuario(id) {
@@ -37,7 +37,7 @@ function cargar_info_usuario(id) {
             data = data.fields;
 
             if(rol == "Cliente"){
-                
+
                 $('#ordenes_pendientes').removeClass('d-none');
 
                 $('#tabla_cont').empty();

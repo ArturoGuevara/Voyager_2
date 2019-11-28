@@ -2,11 +2,12 @@ from django.test import TestCase
 from ventas.forms import AnalisisForma
 from django.urls import reverse, resolve
 from .views import agregar_analisis
-from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion
+from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion, Paquete, Muestra, OrdenInterna
 from cuentas.models import Rol,IFCUsuario,Empresa
 from django.contrib.auth.models import User
 from datetime import datetime, date
 from .views import ver_cotizaciones
+from .views import carga_datos
 
 # Create your tests here.
 class TestAnalisis(TestCase):
@@ -865,3 +866,312 @@ class TestAceptarCotizaciones(TestCase):
         self.client.login(username='dir',password='testpassword')
         response = self.client.get('/ventas/cotizaciones')
         self.assertEqual(response.status_code,302)
+
+class TestExportarCSV(TestCase):
+    def setup(self):
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+
+        clientes1 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes1.save()
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+
+        ventas = IFCUsuario.objects.create(
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        ventas.save()
+
+    def test_no_login(self): #Test de acceso a url sin Log In
+        response = self.client.get(reverse('exportar_datos'))   #Ir al url de envío de exportar datos
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    def test_role_incorrect(self):
+        self.setup()
+        self.client.login(username='client', password='testpassword')
+        response = self.client.get(reverse('exportar_datos'))
+        self.assertEqual(response.status_code,404)
+
+    def test_role_correct(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.get(reverse('exportar_datos'))
+        self.assertEqual(response.status_code,200)
+
+class GenerarCSV(TestCase):
+    def setup(self):
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes1 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes1.save()
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+        ventas = IFCUsuario.objects.create(
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        ventas.save()
+
+    def test_no_login(self): #Test de acceso a url sin Log In
+        response = self.client.post(reverse('generar_csv_respaldo'),{})   #Ir al url de envío de creación del archivo
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    def test_role_incorrect(self):
+        self.setup()
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post(reverse('generar_csv_respaldo'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_no_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.get(reverse('generar_csv_respaldo'))
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('generar_csv_respaldo'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_table(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('generar_csv_respaldo'), {"table":"cotizaciones",})
+        file_content = response.content.decode('utf-8')
+        self.assertEqual(file_content,'\r\n')
+        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename="'+"cotizaciones"+'.csv"')
+
+    def test_csv_populated(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('generar_csv_respaldo'), {"table":"usuarios",})
+        file_content = response.content.decode('utf-8')
+        self.assertIn('ventas', file_content)
+
+class GenerarCSVPaquete(TestCase):
+    def setup(self):
+        #Crea usuarios Clientes
+        rol_clientes = Rol.objects.create(nombre='Cliente')
+        usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        clientes1 = IFCUsuario.objects.create(
+                                                rol =rol_clientes,
+                                                user = usuario_clientes,
+                                                nombre = 'clientes',
+                                                apellido_paterno = 'test',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        clientes1.save()
+        #Crea usuario Ventas
+        usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
+        rol_ventas = Rol.objects.create(nombre='Ventas')
+        ventas = IFCUsuario.objects.create(
+                                            rol = rol_ventas,
+                                            user = usuario_ventas,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'test',
+                                            apellido_materno = 'test',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        ventas.save()
+        #Crear paquete
+        paquete = Paquete()
+        paquete.codigo_dhl = "1234567890"
+        paquete.save()
+        #Crea usuario Ventas
+        usuario_soporte = User.objects.create_user('sop', 'soptest@testuser.com', 'testpassword')
+        rol_soporte = Rol.objects.create(nombre='Soporte')
+        soporte = IFCUsuario.objects.create(
+                                            rol = rol_soporte,
+                                            user = usuario_soporte,
+                                            nombre = 'ventas',
+                                            apellido_paterno = 'Phantom',
+                                            apellido_materno = 'Phantom',
+                                            telefono = '3234567',
+                                            estado = True,
+                                            empresa=empresa
+                                          )
+        soporte.save()
+
+    def create_samples(self):
+        # obtener usuario fantasma (dummy) para crear las ordenes internas
+        phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom", apellido_materno="Phantom")
+        cliente = IFCUsuario.objects.get(nombre = 'clientes')
+        paquete = Paquete.objects.all().first()
+        orden_interna = OrdenInterna()
+        orden_interna.usuario = phantom_user
+        orden_interna.estatus = 'fantasma'
+        orden_interna.idioma_reporte = 'Inglés'
+        orden_interna.save()
+        m = Muestra()
+        m.fecha_muestreo = datetime.now().date()
+        m.estado_muestra = True
+        m.fecha_forma = datetime.now().date()
+        m.oi = orden_interna
+        m.usuario = cliente
+        m.paquete = paquete
+        m.producto = "Aguacate"
+        m.save()
+
+    def test_no_login(self): #Test de acceso a url sin Log In
+        response = self.client.post(reverse('descargar_paquete'),{})   #Ir al url de envío de creación del archivo
+        self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
+
+    def test_role_incorrect(self):
+        self.setup()
+        self.client.login(username='client', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_no_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.get(reverse('descargar_paquete'))
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_post(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'),{})
+        self.assertEqual(response.status_code,404)
+
+    def test_empty_table(self):
+        self.setup()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
+        file_content = response.content.decode('utf-8')
+        self.assertEqual(file_content,'\r\n')
+        self.assertEqual(response.get('Content-Disposition'), 'attachment; filename="'+"1234567890"+'.csv"')
+
+    def test_csv_populated(self):
+        self.setup()
+        self.create_samples()
+        self.client.login(username='vent', password='testpassword')
+        response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
+        file_content = response.content.decode('utf-8')
+        self.assertIn("Aguacate", file_content)
+
+################################################# USV19-53 #################################################
+class TestImportCSV(TestCase):
+    def setup(self):
+        #Crear usuario director
+        rol_director = Rol.objects.create(nombre='Director')
+        usuario_director = User.objects.create_user('director', 'director@testuser.com', 'testpassword')
+        empresa =  Empresa.objects.create(empresa='TestInc')
+        director = IFCUsuario.objects.create(
+                                                rol =rol_director,
+                                                user = usuario_director,
+                                                nombre = 'Eldi',
+                                                apellido_paterno = 'Rector',
+                                                apellido_materno ='test',
+                                                telefono = '5234567',
+                                                estado = True,
+                                                empresa=empresa,
+                                              )
+        director.save()
+        Pais.objects.create(nombre="México").save()
+        Pais.objects.create(nombre="Holanda").save()
+        Pais.objects.create(nombre="Alemania").save()
+        Pais.objects.create(nombre="Estados Unidos").save()
+        Pais.objects.create(nombre="Canadá").save()
+        Pais.objects.create(nombre="IFC").save()
+
+
+    def test_csv_get(self): # Intenta acceder por un metodo que no sea un POST
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        response = self.client.get(reverse('importar_csv'))
+        self.assertEqual(response.status_code,404)
+
+    def test_csv_no_login(self):    # Intenta acceder sin iniciar sesion
+        self.setup()
+        response = self.client.get(reverse('importar_csv'))
+        self.assertRedirects(response, '/cuentas/login?next=/ventas/importar_csv/', status_code=302, target_status_code=301, msg_prefix='', fetch_redirect_response=True)
+
+    def test_csv_success(self):     # Intenta ingresar un csv correcto
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_success.csv'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,True)
+
+    def test_csv_format_error(self):
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_format_error.csv'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,False)
+
+    def test_csv_no_csv(self):
+        self.setup()
+        self.client.login(username='director', password='testpassword')
+        path = './analisis/test_import_nocsv.jpg'
+        flag = True
+        try:
+            carga_datos(path)
+            test = Analisis.objects.get(codigo='H-DPL001')
+            test = Analisis.objects.get(codigo='H-DPL002')
+            test = Analisis.objects.get(codigo='H-DPL003')
+            test = Analisis.objects.get(codigo='H-DPL022')
+        except:
+            flag = False
+        self.assertEqual(flag,False)
