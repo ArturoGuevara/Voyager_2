@@ -475,7 +475,7 @@ class TestCuentasUsuarios(TestCase):
         response = self.client.get('/cuentas/usuarios')
         self.assertEqual(response.status_code,200)
         #Revisa que no puede ver al usuario de facturacion, ya que solo debe ver clientes
-        self.assertNotContains(response, "facturacion")
+        self.assertNotContains(response, "ventas")
 
     def test_template(self):
         #Test de creacion de ordenes internas para cliente
