@@ -116,15 +116,9 @@ def registrar_ingreso_muestra(request):
                     return response
                 else:
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
-<<<<<<< HEAD
-                    response.status_code = 500
-                    # Regresamos la respuesta de error interno del servidor
-                    return response
-=======
                     response.status_code = 500 # Regresamos la respuesta de error interno del servidor
                     oi.delete()
                     return response
->>>>>>> develop
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
                 response.status_code = 500 # Regresamos la respuesta de error interno del servidor
