@@ -20,7 +20,7 @@
                         <div class="col-md-12">
                             <label for="telefono_empresa">Teléfono</label>
                             <input type="text" class="form-control" id="telefono_empresa" name="telefono_empresa"
-                                   placeholder="Nombre de la empresa" maxlength="50">
+                                   placeholder="Telefono de la empresa" maxlength="50">
                             <div class="invalid-feedback">
                                 Por favor ingresa el teléfono
                             </div>
@@ -28,11 +28,35 @@
                     </div>
                     <div class="form-row">
                         <div class="col-md-6">
+                            <label for="nombre_responsable_resultados">Responsable de resultados</label>
+                            <input type="text" class="form-control" id="nombre_responsable_resultados" name="nombre_responsable_resultados"
+                                   placeholder="Responsable de resultados" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el nombre del responsable de los resultados
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <label for="correo_resultados">Correo resultados</label>
                             <input type="email" class="form-control" id="correo_resultados" name="correo_resultados"
                                    placeholder="resultados@resultados.com" maxlength="100">
                             <div class="invalid-feedback">
                                 Por favor ingresa el correo de resultados
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6"></div>
+                        <div class="invalid-mail-resultados p-3" hidden>
+                            <p style="color:red">Ingresa un correo válido</p>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="nombre_responsable_pagos">Responsable de pagos</label>
+                            <input type="text" class="form-control" id="nombre_responsable_pagos" name="nombre_responsable_pagos"
+                                   placeholder="Responsable de pagos" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el nombre del responsable de los pagos
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -42,6 +66,12 @@
                             <div class="invalid-feedback">
                                 Por favor ingresa el correo de pagos
                             </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6"></div>
+                        <div class="invalid-mail-pagos p-3" hidden>
+                            <p style="color:red">Ingresa un correo válido</p>
                         </div>
                     </div>
                     <br>
