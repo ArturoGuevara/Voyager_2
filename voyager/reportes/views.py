@@ -251,7 +251,7 @@ def restar_analisis(user, analisis, muestra, oi):
                     a.restante -= 1
                     am = AnalisisMuestra()
                     am.id_oi = oi
-                    am.id_analisis_cotizacion = ac
+                    am.id_analisis_cotizacion = a
                     am.analisis = Analisis.objects.get(id_analisis = analisis)
                     am.muestra = muestra
                     am.estado = True
