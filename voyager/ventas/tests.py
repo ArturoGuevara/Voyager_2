@@ -102,6 +102,9 @@ class TestAnalisis(TestCase):
 class TestCotizaciones(TestCase):
     #Tests de cotizaciones
     def set_up_Users(self):
+        permiso = Permiso()
+        permiso.nombre = 'visualizar_cotizacion'
+        permiso.save()
 
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
@@ -220,6 +223,14 @@ class TestCotizaciones(TestCase):
         a2.pais = pais
         a2.save()   #Guardar el análisis
 
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_clientes
+        permiso_rol.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     #Tests
     def test_acceso_denegado(self):
         #Test de acceso a url sin Log In
@@ -229,21 +240,24 @@ class TestCotizaciones(TestCase):
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Director
         self.set_up_Users() #Set up de datos
-        self.client.login(username='direc',password='testpassword')
+        #self.client.login(username='direc',password='testpassword')
+        self.login_IFC('test@testuser.com','testpassword')
         response = self.client.get('/ventas/cotizaciones')
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido(self):
         #Test de acceso a url con Log In como Cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.get('/ventas/cotizaciones')
         self.assertEqual(response.status_code,200)
 
     def test_template(self):
         #Test de creacion de ordenes internas para usuario
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.get('/ventas/cotizaciones')
 
         self.assertContains(response, "123")
@@ -340,7 +354,12 @@ class TestCotizaciones(TestCase):
 class TestEditarCotizaciones(TestCase):
     #Tests de cotizaciones
     def set_up_Users(self):
-
+        permiso = Permiso()
+        permiso.nombre = 'actualizar_orden_interna'
+        permiso.save()
+        permiso2 = Permiso()
+        permiso2.nombre = 'visualizar_cotizacion'
+        permiso2.save()
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
@@ -457,6 +476,14 @@ class TestEditarCotizaciones(TestCase):
         a2.tiempo = "3 - 5 días"
         a2.pais = pais
         a2.save()   #Guardar el análisis
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_clientes
+        permiso_rol.save()
+        permiso_rol2 = PermisoRol()
+        permiso_rol2.permiso = permiso2
+        permiso_rol2.rol = rol_clientes
+        permiso_rol2.save()
 
     def login_IFC(self,mail,password):
         response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
@@ -470,21 +497,24 @@ class TestEditarCotizaciones(TestCase):
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Director
         self.set_up_Users() #Set up de datos
-        self.client.login(username='direc',password='testpassword')
+        #self.client.login(username='direc',password='testpassword')
+        self.login_IFC('test@testuser.com','testpassword')
         response = self.client.get('/ventas/cotizaciones')
-        self.assertEqual(response.status_code,200)
+        self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido(self):
         #Test de acceso a url con Log In como Cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.get('/ventas/cotizaciones')
         self.assertEqual(response.status_code,200)
 
     def test_template(self):
         #Test de creacion de ordenes internas para usuario
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.get('/ventas/cotizaciones')
 
         self.assertContains(response, "123")
@@ -719,6 +749,9 @@ class TestEliminarCotizaciones(TestCase):
 
 class TestAceptarCotizaciones(TestCase):
     def set_up_all_cot(self):
+        permiso = Permiso()
+        permiso.nombre = 'visualizar_cotizacion'
+        permiso.save()
 
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
@@ -836,10 +869,18 @@ class TestAceptarCotizaciones(TestCase):
         a2.tiempo = "3 - 5 días"
         a2.pais = pais
         a2.save()   #Guardar el análisis
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_ventas
+        permiso_rol.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     def test_accept_cotizacion_1(self):
         self.set_up_all_cot()
-        self.client.login(username='vent',password='testpassword')
+        #self.client.login(username='vent',password='testpassword')
+        self.login_IFC('venttest@testuser.com','testpassword')
         cotizacion = Cotizacion.objects.first()
         contador = Cotizacion.objects.filter(aceptado=False).count()
         self.assertEquals(3, contador)
@@ -849,7 +890,8 @@ class TestAceptarCotizaciones(TestCase):
         # Si truena está bien, porque el analisis no existe
     def test_accept_cotizacion_2(self):
         self.set_up_all_cot()
-        self.client.login(username='vent',password='testpassword')
+        #self.client.login(username='vent',password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         cotizacion = Cotizacion.objects.first()
         cotizacion.aceptado = True;
         cotizacion.save()

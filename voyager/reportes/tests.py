@@ -4,7 +4,7 @@ from .views import validacion_dhl, validacion_codigo
 from .models import Paquete
 from django.test import TestCase,TransactionTestCase
 from django.contrib.auth.models import User
-from cuentas.models import IFCUsuario,Rol
+from cuentas.models import IFCUsuario,Rol,Permiso,PermisoRol
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna,Pais
 from django.http import HttpResponse
 from cuentas.models import Empresa
@@ -97,6 +97,9 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
         i_user.estado = True
         i_user.save()   #Guardar usuario de IFC
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()   #Llamar función para crear rol
         response = self.client.get(reverse('ingreso_cliente'))   #Ir a página de ingreso de cliente
@@ -104,7 +107,8 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
 
     def test_login(self):   #Pruena si el usuario ya inició sesión
         self.create_IFCUsuario()   #Llamar la función para crear usuario de IFC
-        self.client.login(username='hockey',password='lalocura')   #Hacer inicio de sesión
+        #self.client.login(username='hockey',password='lalocura')   #Hacer inicio de sesión
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,200)   #Todo debe de salir correctamente
 
@@ -611,6 +615,9 @@ class OrdenesInternasViewTests(TestCase):
         i_user2.estado = True
         i_user2.save()   #Guardar usuario de IFC
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
     def test_no_login_form(self):
         self.setup()
@@ -621,7 +628,8 @@ class OrdenesInternasViewTests(TestCase):
     def test_no_login_different_role(self):
         self.setup()
         #ingresar como un usuario cliente
-        self.client.login(username='padrino', password='padrino')
+        #self.client.login(username='padrino', password='padrino')
+        self.login_IFC('padrino@lalocura.com', 'padrino')
         response = self.client.get(reverse('ordenes_internas'))
         self.assertEqual(response.status_code, 404)
 
@@ -629,7 +637,8 @@ class OrdenesInternasViewTests(TestCase):
     def test_login_correcto(self):
         self.setup()
         #ingresar como un usuario soporte
-        self.client.login(username='hockey', password='lalocura')
+        #self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ordenes_internas'))
         self.assertEqual(response.status_code, 200)
 
@@ -914,6 +923,13 @@ class ConsultarOrdenesInternasViewTests(TestCase):
 class TestEditaOrdenesInternas(TestCase):
     #Tests de cuentas de usuarios
     def set_up_Users(self):
+        permiso = Permiso()
+        permiso.nombre = 'actualizar_orden_interna'
+        permiso.save()
+
+        permiso2 = Permiso()
+        permiso2.nombre = 'visualizar_orden_interna'
+        permiso2.save()
 
         #Crea usuarios Clientes
         rol_soporte = Rol.objects.create(nombre='Soporte')
@@ -995,6 +1011,17 @@ class TestEditaOrdenesInternas(TestCase):
                                             localidad = "mexico",
                                         )
         oi.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_soporte
+        permiso_rol.save()
+        permiso_rol2 = PermisoRol()
+        permiso_rol2.permiso = permiso2
+        permiso_rol2.rol = rol_soporte
+        permiso_rol2.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     #Tests
     def test_acceso_denegado(self):
@@ -1010,21 +1037,24 @@ class TestEditaOrdenesInternas(TestCase):
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('client@testuser.com','testpassword')
         response = self.client.get('/reportes/ordenes_internas')
         self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido_total(self):
         #Test de acceso a url con Log In como Director para que vea a todos los usuarios
         self.set_up_Users() #Set up de datos
-        self.client.login(username='soport',password='testpassword')
+        #self.client.login(username='soport',password='testpassword')
+        self.login_IFC('soporttest@testuser.com', 'testpassword')
         response = self.client.get('/reportes/ordenes_internas')
         self.assertEqual(response.status_code,200)
 
     def test_template(self):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='soport',password='testpassword')
+        #self.client.login(username='soport',password='testpassword')
+        self.login_IFC('soporttest@testuser.com', 'testpassword')
         orden = OrdenInterna.objects.filter(estatus="Fantasma").first()
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
