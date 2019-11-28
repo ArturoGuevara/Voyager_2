@@ -124,6 +124,13 @@ class Muestra(models.Model):
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+    #Datos para OrdenInterna
+    mrl = models.CharField(max_length=50, blank=True, null=True)
+    num_interno_informe = models.CharField(max_length=50, blank=True, null=True)
+    fecha_recibo_informe = models.CharField(max_length=50, blank=True, null=True)
+    fecha_esperada_recibo = models.CharField(max_length=50, blank=True, null=True)
+    enviado = models.BooleanField(default=False)
+
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)

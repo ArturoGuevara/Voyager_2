@@ -85,32 +85,42 @@ def registrar_ingreso_muestra(request):
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
-                        guardar_muestras(matrixAG,"AG",user_logged) #Llamar a la función que guarda datos
+                        if not guardar_muestras(matrixAG,"AG",user_logged): #Llamar a la función que guarda datos, regresa false si hubo un error
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete() #Tanto la orden interna como los objetos derivados de ella se borran
+                            return response
                     if matrixPR[0] != '':
-                        guardar_muestras(matrixPR,"PR",user_logged)
+                        if not guardar_muestras(matrixPR,"PR",user_logged):
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete()
+                            return response
                     if matrixMB[0] != '':
-                        guardar_muestras(matrixMB,"MB",user_logged)
+                        if not guardar_muestras(matrixMB,"MB",user_logged):
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete()
+                            return response
                     response = JsonResponse({"Success": "OK"})
                     response.status_code = 200
                     return response
                 else:
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
-                    response.status_code = 500
-                    # Regresamos la respuesta de error interno del servidor
+                    response.status_code = 500 # Regresamos la respuesta de error interno del servidor
+                    oi.delete()
                     return response    
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
-                response.status_code = 500
-                # Regresamos la respuesta de error interno del servidor
+                response.status_code = 500 # Regresamos la respuesta de error interno del servidor
                 return response
         else:
             response = JsonResponse({"error": "No se mandó por el método correcto"})
-            response.status_code = 500
-            # Regresamos la respuesta de error interno del servidor
+            response.status_code = 404 # Regresamos la respuesta de error interno del servidor
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
-        
+
 def guardar_muestras(arreglo, tipo, user):
     formato = arreglo
     if tipo == "AG":        
@@ -141,7 +151,10 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[9].split(","))
             m.ubicacion_muestreo = li[i]
             li = list(formato[10].split(","))
-            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
             m.fecha_muestreo = fm
             li = list(formato[11].split(","))
             m.urgente = li[i]
@@ -174,7 +187,10 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[1].split(","))
             m.descripcion_muestra = li[i]
             li = list(formato[2].split(","))
-            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
             m.fecha_muestreo = fm
             m.save()
             li = list(formato[3].split(","))
@@ -203,7 +219,10 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[2].split(","))
             m.muestreador = li[i]
             li = list(formato[3].split(","))
-            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
             m.fecha_muestreo = fm
             li = list(formato[4].split(","))
             m.metodo_referencia = li[i]
@@ -220,6 +239,7 @@ def guardar_muestras(arreglo, tipo, user):
             restar_analisis(user, li[i], m)
             li = list(formato[10].split(","))
             restar_analisis(user, li[i], m)
+    return True #De llegar hasta aquí, significa que todas las muestras se guardaron correctamente
 
 def restar_analisis(user, analisis, muestra):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
