@@ -282,8 +282,10 @@ def ordenes_internas(request):
     ordenes = {}
     ordenes_activas = {}
     dict_clientes = {}
+    dict_muestras = {}
     form = None
     response = None
+    
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
@@ -294,11 +296,20 @@ def ordenes_internas(request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
         for orden in ordenes_activas:
+            arr_muestras = []
             muestras_orden = Muestra.objects.filter(oi=orden)
+            for muestra in muestras_orden:
+                arr_muestras.append(muestra)
+                
             if muestras_orden:
+                print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
+                dict_muestras[orden] = arr_muestras.copy()
+            arr_muestras.clear()
         form = codigoDHL()
+        
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
+
     context = {
         'ordenes': ordenes,
         'ordenes_activas': ordenes_activas,
@@ -306,6 +317,7 @@ def ordenes_internas(request):
         'successcode': response,
         'success_sent': request.session['success_sent'],
         'ordenes_clientes': dict_clientes,
+        'muestras': dict_muestras,
     }
     request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
@@ -543,7 +555,7 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
     for id in ids_OrdI: #Asignar codigo DHL
         try:
-            referencia = OrdenInterna.objects.get(idOI = id) #Obtener objeto de O.I
+            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de O.I
         except:
             referencia = None
 
@@ -568,15 +580,15 @@ def validacion_codigo(request):
         if form.is_valid():
 
             codigo = form.cleaned_data['codigo_dhl']    #Obtiene datos de la form
-            oi_seleccionadas = request.POST.getlist('oiselected')    #Obtiene datos de la form
+            m_seleccionadas = request.POST.getlist('mselected')    #Obtiene datos de la form
 
             resp = validacion_dhl(codigo)   #Valida codigo ingresado en Form
 
 
             if(resp == 200):    #Guardar codigo si es valido
-                if not guardar_paquete(codigo,oi_seleccionadas):
+                if not guardar_paquete(codigo,m_seleccionadas):
                     resp = 404
-                elif guardar_paquete(codigo,oi_seleccionadas) == 204:
+                elif guardar_paquete(codigo,m_seleccionadas) == 204:
                     resp = 204
             else:
                 resp = 404

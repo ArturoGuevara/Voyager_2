@@ -1,4 +1,10 @@
 #checkboxes_container{
     overflow: auto;
     height: 150px;
+    width: 10px;
+}
+
+#oi_container{
+    overflow: scroll;
+    height: 100px;
 }
