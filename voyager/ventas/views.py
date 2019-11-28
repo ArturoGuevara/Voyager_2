@@ -2,23 +2,34 @@ from django.shortcuts import render
 from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
 from cuentas.models import IFCUsuario, Empresa
 from django.contrib.auth.models import User
+import requests
 from django.http import JsonResponse
 from django.core import serializers
 from django.http import HttpResponse
+from django.template import RequestContext
 from django.http import Http404
 from django.urls import reverse_lazy
+from django.urls import reverse
 from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
+from django.core.exceptions import ValidationError
+import urllib.request as urllib
 import datetime
 import json
+import os
+import time
+import base64
+import locale
 from django.shortcuts import redirect
 from .forms import AnalisisForma
+from .forms import ImportarAnalisisForm
 from django.core.serializers.json import DjangoJSONEncoder
 import random
 import csv
 from reportes.forms import codigoDHL
 from flags.state import flag_enabled
+from ventas.VoyagerImporter import Uploader
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -302,18 +313,20 @@ def crear_cotizacion(request):
                         c.save()
                         # Iteramos en los análisis seleccionados
                         index = 0
-                        for id in checked: #Asignar codigo DHL
+                        for id in checked:
                             a = Analisis.objects.get(id_analisis = id)
                             ac = AnalisisCotizacion()
                             ac.analisis = a
                             ac.cotizacion = c
                             ac.cantidad = cantidad[index]
+                            ac.restante = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
                             ac.descuento = descuento[index]
                             ac.iva = iva[index]
                             ac.total = totales[index]
                             ac.save()
                             index = index + 1
+                        adjuntar_otro(c)
                         response = JsonResponse({"Success": "OK"})
                         response.status_code = 200
                         # Regresamos la respuesta de error interno del servidor
@@ -341,12 +354,36 @@ def crear_cotizacion(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
+def adjuntar_otro(cotizacion):
+    analisis = Analisis.objects.filter(nombre="Otro") #Busca si existe al menos un Analisis llamado "Otro"
+    if len(analisis) == 0:
+        a = Analisis()
+        a.nombre = "Otro"
+        a.codigo = "Otro"
+        a.descripcion = "Otro"
+        a.precio = 0
+        a.unidad_min = "Indefinida"
+        a.tiempo = "Indefinido"
+        a.pais = "México"
+        a.save()
+    analisis = Analisis.objects.filter(nombre="Otro").first()#Tras el if anterior se garantiza que existe este Analisis
+    ac = AnalisisCotizacion()
+    ac.analisis = analisis
+    ac.cotizacion = cotizacion
+    ac.cantidad = 0
+    ac.restante = 0
+    ac.fecha = datetime.datetime.now().date()
+    ac.descuento = 0
+    ac.iva = 0
+    ac.total = 0
+    ac.save()
+
 
 @login_required
 def actualizar_cotizacion(request,id):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
             if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
@@ -382,6 +419,7 @@ def actualizar_cotizacion(request,id):
                             ac.analisis = a
                             ac.cotizacion = edit_cotizacion
                             ac.cantidad = cantidad[index]
+                            ac.restante = cantidad[index]
                             ac.fecha = datetime.datetime.now().date()
                             ac.descuento = descuento[index]
                             ac.iva = iva[index]
@@ -471,7 +509,7 @@ def visualizar_cotizacion(request, id):
 @login_required
 def borrar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -621,6 +659,80 @@ def descargar_paquete(request):
     for row in all_rows.values():
         writer.writerow(row)
     return response
+
+############### USV19-53 ###################
+@login_required
+def importar_csv(request): #Importa datos de análisis
+    context = {}
+    error_log = {}
+    if request.method != 'POST': #Si no se envía un post, el acceso es denegado
+        raise Http404
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
+    #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
+    if not (user_logged.rol.nombre == "Director"):
+        raise Http404
+    response_code = 0
+    if request.method == 'POST':
+        if flag_enabled('Importar_Analisis', request=request):
+            form = ImportarAnalisisForm(request.POST, request.FILES)
+            if form.is_valid():
+                error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
+            else:
+                raise Http404
+
+    error_count = len(error_log)
+
+    context = {
+        'error_count' : error_count,
+        'error_log' : error_log,
+    }
+    return render(request, 'ventas/importar_csv_resultado.html', context)
+
+
+def handle_upload_document(file): #Esta función guarda el archivo de resultados a enviar
+    #Se crea el path donde el archivo se va a almacenar concatnando el nombre del csv con la fecha en la que sube y un número aleatorio
+    path = './analisis/csv_analisis'
+    path += str(datetime.date.today())
+    path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
+        for chunk in file.chunks():
+            destination.write(chunk)
+    return carga_datos(path), os.remove(path)
+
+def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
+    try:
+        error_log = Uploader.validate_content(path)  # Valida que los campos sean correctos (consultar VoyagerImporter.py)
+    except:
+        error_log = 'ERROR'
+    if len(error_log) == 0 and error_log != 'ERROR':
+        Uploader.upload_content(path)   # Carga los registros del archivo
+    return error_log
+
+@login_required
+def bloquear_cotizacion(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            cotizacion = Cotizacion.objects.get(id_cotizacion = id)
+            if cotizacion:
+                cotizacion.bloqueado = True
+                cotizacion.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe esa cotización"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+
 
 
 # EXTRAS

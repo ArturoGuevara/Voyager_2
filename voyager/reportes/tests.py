@@ -14,6 +14,7 @@ from .views import ordenes_internas
 import datetime
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import (Mail, Attachment, FileContent, FileName,FileType, Disposition, ContentId)
+import time
 
 # Create your tests here.
 class DHLTests(TestCase):
@@ -130,51 +131,25 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         i_user.telefono = "9114364"
         i_user.estado = True
         i_user.save() #Guardar usuario de IFC
-
+    
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
-        response = self.client.get(reverse('ingresar_muestras'))
+        response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,302)
 
-    def test_no_post(self):   #Prueba si no existe metodo post
+    def test_login(self):   #Prueba cuando el usuario ha iniciado sesión
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('ingresar_muestras'))   #Cambia de página sin método post
-        self.assertEqual(response.status_code,404)   #Mostrar 404
-
-    def test_post_empty(self):   #Prueba si no se manda nada en el post
-        self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{})   #El post va vacío
-        self.assertEqual(response.status_code,404)   #Mostrar 404
-
-    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
-        self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'),{'nombre':"Impulse",   #Las variables de post no están completas
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado1':"Zacatecas"
-                                                                  })
-        self.assertEqual(response.status_code,404)   #Mostrar 404
-
-    def test_post_empty_field(self):   #Prueba si algún post manda algo vacío
-        self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': '',   #Una de las variables del post obligatorio va vacía
-                                                                   'direccion': "impulsadin",
-                                                                   'pais': "Antigua y Barbuda",
-                                                                   'idioma': "8992 EN",
-                                                                   'estado1': "Saint John's"
-                                                                   })
-        self.assertEqual(response.status_code,404)   #Mostrar 404
+        response = self.client.get(reverse('ingreso_cliente'))
+        self.assertEqual(response.status_code,200)
 
     def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('ingresar_muestras'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
+        response = self.client.post(reverse('ingreso_cliente'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
-                                                                   'idioma': "8992 EN",
+                                                                   'idioma': "Inglés",
                                                                    'estado1': "Saint John's"
                                                                    })
         self.assertEqual(response.status_code,200)   #Todo correcto
@@ -262,12 +237,14 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         ac1.analisis = a1
         ac1.cotizacion = c
         ac1.cantidad = 10000
+        ac1.restante = 10000
         ac1.fecha = datetime.datetime.now().date()
         ac1.save()   #Guardar conexión
         ac2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ac2.analisis = a2
         ac2.cotizacion = c
         ac2.cantidad = 100
+        ac2.restante = 100
         ac2.fecha = datetime.datetime.now().date()
         ac2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis
@@ -282,297 +259,171 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
 
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
-        response = self.client.get(reverse('muestra_enviar'))
+        response = self.client.get(reverse('registrar_ingreso_muestra'))
         self.assertEqual(response.status_code,302)
 
     def test_no_post(self):   #Prueba si no existe metodo post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.get(reverse('muestra_enviar'))
+        response = self.client.get(reverse('registrar_ingreso_muestra'))
         self.assertEqual(response.status_code,404)
 
     def test_post_empty(self):    #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{})
-        self.assertEqual(response.status_code,404)
+        response = self.client.post(reverse('registrar_ingreso_muestra'),{})
+        self.assertEqual(response.status_code,500)
 
-    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
+    def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita en info generak
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'parcela':"parcelin",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  })
-        self.assertEqual(response.status_code,404)
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
+        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code,500)
+    
+    def test_post_incorrect(self):   #Prueba si el post no lleva todo lo que necesita en info generak
+        self.create_IFCUsuario()
+        self.client.login(username='hockey',password='lalocura')
+        #la matriz agricola no tiene fecha
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
+        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code,500)
+        #un dato en la matriz agrícola es obligatorio, pero se manda en blanco
+        matrixAG = ['p', 'v', '', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code,500)
 
     def test_select_single_analysis_correct(self): #probar que se ha enviado la información correcta para registrar una muestra para un solo análisis
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
         number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles
-        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'analisis'+str(analysis_id):"on",
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
+        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id de un análisis
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', 'pd', analysis_id, '-1', '-1', '-1', '-1', '-1']
+        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'idioma': "Inglés",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code, 200) #El ingreso se ha hecho correctamente
         all_analysis_samples = AnalisisMuestra.objects.all()
         self.assertEqual(all_analysis_samples.count(),1) #verificar que hay un registro en la tabla análisis muestra
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
+        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
+        self.assertEqual(ac.restante,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
 
-    def test_select_other_correct(self): #probar que la funcionalidad sea correcta si se registra la opción de "otros" para análisis
+    def test_three_samples(self): #tres muestras ingresadas correctamente
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'otro':"on"
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
+        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id de un análisis
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', 'pd', analysis_id, analysis_id, analysis_id, '-1', '-1', '-1'] #Muestra correcta
+        matrixPR = ['tm,tm', 'dm,dm', '11/30/2019,11/30/2019', str(analysis_id)+','+str(analysis_id), '-1,-1', '-1,-1', '-1,-1', '-1,-1', '-1,-1'] #Dos muestras del tipo PR
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'idioma': "Inglés",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code, 200) #El ingreso se ha hecho correctamente
         all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),1) #verificar que hay un registro en la tabla análisis muestra
+        self.assertEqual(all_analysis_samples.count(),5) #verificar que hay cinco registros en la tabla análisis muestra
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
+        number_analysis = AnalisisCotizacion.objects.first().cantidad #Buscar la cantidad de análisis que se cotizaron originalmente
+        self.assertEqual(ac.restante,number_analysis-5) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
-
-    def test_select_all_analysis_correct(self): #probar que la funcionalidad sea correcta si se registran todos los análisis y se envían
+        self.assertEqual(all_samples.count(),3) #verificar que hay tres registro en la tabla muestras
+    
+    def test_incorrect_data(self): #si hubo datos inválidos que pasaron la validación en front, el controlador debe impedir que se guarde cualquier cosa
         self.create_IFCUsuario()
         self.setup()
         self.client.login(username='hockey', password='lalocura')
-        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles para el primer análisis
-        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
-        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
-        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'analisis'+str(analysis_id):"on",
-                                                                  'analisis'+str(analysis_id2):"on",
-                                                                  'otro':"on",
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
+        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id de un análisis
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', 'pd', analysis_id, '-1', '-1', '-1', '-1', '-1'] #Muestra correcta
+        matrixPR = ['tm', 'dm', 'fecha_incorrecta', analysis_id, '-1', '-1', '-1', '-1', '-1'] #Muestra con datos incorrectos
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
+        response = self.client.post(
+            reverse('registrar_ingreso_muestra'),
+            {
+                'nombre': "Impulse",
+                'direccion': "Impulsadin",
+                'pais': "Antigua y Barbuda",
+                'estado': "Saint John's",
+                'idioma': "Inglés",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
+            })
+        self.assertEqual(response.status_code, 500) #El ingreso detectó un error
         all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),3) #verificar que hay 3 entradas en la tabla análisis muestra
-        for ansamp in all_analysis_samples: #iterar sobre todos los registros de análisis muestra
-            self.assertEqual(ansamp.estado,True) #verificar que los registros aparezcan como activos
+        self.assertEqual(all_analysis_samples.count(),0) #La orden interna se borró, los objetos derivados de ella se borraron
         all_internal_orders = OrdenInterna.objects.all()
-        self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles para el primer análisis
-        self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2 - 1) #verificar que se disminuyó la cantidad de análisis disponibles para el segundo análisis
+        self.assertEqual(all_internal_orders.count(),0) #La orden interna se borró, los objetos derivados de ella se borraron
         all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
-
-    def test_select_all_analysis_correct_save(self): #probar que la funcionalidad sea correcta si se registran todos los análisis y se guardan sin enviar
-        self.create_IFCUsuario()
-        self.setup()
-        self.client.login(username='hockey', password='lalocura')
-        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles para el primer análisis
-        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
-        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
-        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
-        self.assertEqual(True,True)
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "0", #configurar para guardar y no enviar
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'analisis'+str(analysis_id):"on",
-                                                                  'analisis'+str(analysis_id2):"on",
-                                                                  'otro':"on",
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
-        all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),3) #verificar que hay 3 entradas en la tabla análisis muestra
-        for ansamp in all_analysis_samples: #iterar sobre todos los registros de análisis muestra
-            self.assertEqual(ansamp.estado,False) #verificar que los registros aparezcan como inactivos
-        all_internal_orders = OrdenInterna.objects.all()
-        self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Invisible') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el primer análisis
-        self.assertEqual(all_analysis_cot.last().cantidad, number_analysis2) #verificar que no se disminuyó la cantidad de análisis disponibles para el segundo análisis
-        all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,False) #verificar que la muestra está inactiva
-
-    def test_no_analysis_correct(self): #probar que la funcionalidad sea correcta si no se eligen análisis para la muestra
-        self.create_IFCUsuario()
-        self.setup()
-        self.client.login(username='hockey', password='lalocura')
-        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
-        all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),0) #verificar que hay 0 entradas en la tabla análisis muestra
-        all_internal_orders = OrdenInterna.objects.all()
-        self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis) #verificar que no se disminuyó la cantidad de análisis disponibles para el análisis
-        all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
-
-    def test_analysis_two_same_day(self): #probar que la funcionalidad sea correcta si se registran 2 análisis el mismo día
-        self.create_IFCUsuario()
-        self.setup()
-        self.client.login(username='hockey', password='lalocura')
-        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles para el primer análisis
-        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
-        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
-        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la primera muestra
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Antigua y Barbuda",
-                                                                  'estado':"Saint John's",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"fritas",
-                                                                  'parcela':"parcelin",
-                                                                  'pais_destino':"Albania",
-                                                                  'clave_muestra':"CLAVE",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'analisis'+str(analysis_id):"on",
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
-        all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),1) #verificar que hay un registro en la tabla análisis muestra
-        self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
-        all_internal_orders = OrdenInterna.objects.all()
-        self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.first().cantidad,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
-        all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),1) #verificar que hay un registro en la tabla muestras
-        self.assertEqual(all_samples.first().estado_muestra,True) #verificar que la muestra está activa
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Italia",
-                                                                  'estado':"Roma",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"adobadas",
-                                                                  'parcela':"parcela",
-                                                                  'pais_destino':"Alemania",
-                                                                  'clave_muestra':"CLAVE2",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  'analisis'+str(analysis_id2):"on",
-                                                                  })
-        self.assertEqual(response.status_code, 302) #verificar que el usuario ha sido redireccionado
-        all_analysis_samples = AnalisisMuestra.objects.all()
-        self.assertEqual(all_analysis_samples.count(),2) #verificar que hay dos registros en la tabla análisis muestra
-        self.assertEqual(all_analysis_samples.last().estado,True) #verificar que la muestra está activa
-        all_internal_orders = OrdenInterna.objects.all()
-        self.assertEqual(all_internal_orders.count(),1) #verificar que hay un solo registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Fantasma') #verificar que el estado de la orden interna sea el correcto
-        all_analysis_cot = AnalisisCotizacion.objects.all()
-        self.assertEqual(all_analysis_cot.last().cantidad,number_analysis2-1) #verificar que se disminuyó la cantidad de análisis disponibles
-        all_samples = Muestra.objects.all()
-        self.assertEqual(all_samples.count(),2) #verificar que hay dos registros en la tabla muestras
-        self.assertEqual(all_samples.last().estado_muestra,True) #verificar que la muestra está activa
-
-################ Test USV09-24 ##################
-    def test_borrar_oi(self):
-        self.create_user_support()
-        self.create_IFCUsuario()
-        self.setup()
-        self.client.login(username='hockey', password='lalocura')
-        number_analysis = AnalisisCotizacion.objects.all().first().cantidad #obtener la cantidad de análisis disponibles para el primer análisis
-        number_analysis2 = AnalisisCotizacion.objects.all().last().cantidad #obtener la cantidad de análisis disponibles para el segundo análisis
-        analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis #obtener el id del primer análisis
-        analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis #obtener el id del segundo análisis        analysis_id = Analisis.objects.all().first().id_analisis #obtener el id del análisis
-        response = self.client.post(reverse('muestra_enviar'),{'nombre':"Impulse", #enviar la información para guardar para la segunda muestra
-                                                                  'direccion':"Impulsadin",
-                                                                  'pais':"Italia",
-                                                                  'estado':"Roma",
-                                                                  'idioma':"8992 EN",
-                                                                  'producto':"papas",
-                                                                  'variedad':"adobadas",
-                                                                  'parcela':"parcela",
-                                                                  'pais_destino':"Alemania",
-                                                                  'clave_muestra':"CLAVE2",
-                                                                  'enviar': "1",
-                                                                  'fecha_muestreo':datetime.datetime.now().date(),
-                                                                  #'analisis'+str(analysis_id2):"on",
-                                                                  })
-        self.client.logout()
-        self.client.login(username='soporte', password='lalocura')
-        oi_id = OrdenInterna.objects.all().first().idOI
-
-        url = 'borrar_orden'
-        response = self.client.post(reverse(url), {'id':oi_id})
-        self.assertEqual(response.status_code,200)
-
+        self.assertEqual(all_samples.count(),0) #La orden interna se borró, los objetos derivados de ella se borraron
 
 #Casos de prueba para view una orden interna
 class OrdenesInternasViewTests(TestCase):
@@ -808,12 +659,14 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         ana_coti1.analisis = analisis1
         ana_coti1.cotizacion = coti
         ana_coti1.cantidad = 10000
+        ana_coti1.restante = 10000
         ana_coti1.fecha = datetime.datetime.now().date()
         ana_coti1.save()   #Guardar conexión
         ana_coti2 = AnalisisCotizacion()   #Conectar el análisis con la cotización
         ana_coti2.analisis = analisis2
         ana_coti2.cotizacion = coti
         ana_coti2.cantidad = 100
+        ana_coti2.restante = 100
         ana_coti2.fecha = datetime.datetime.now().date()
         ana_coti2.save()   #Guardar conexión
         otro = Analisis()   #Crear un objeto de Analisis
@@ -832,45 +685,38 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         self.client.login(username='hockey',password='lalocura')
         factura = Factura()
         factura.save()
+        #insertar matrices de muestras, sólo la agrícola tiene una
+        matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
+        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
         #enviar la información para guardar para la primera muestra
         response = self.client.post(
-            reverse('muestra_enviar'),
+            reverse('registrar_ingreso_muestra'),
             {
                 'nombre': "Impulse",
                 'direccion': "Impulsadin",
                 'pais': "Antigua y Barbuda",
                 'estado': "Saint John's",
-                'idioma': "8992 EN",
-                'producto': "papas",
-                'variedad': "fritas",
-                'parcela': "parcelin",
-                'pais_destino': "Albania",
-                'clave_muestra': "CLAVE",
-                'enviar': "1",
-                'fecha_muestreo': datetime.datetime.now().date(),
-                'analisis'+str(analysis_id): "on",
+                'idioma': "Español",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
             }
         )
         #enviar la información para guardar para la segunda muestra
         response = self.client.post(
-            reverse('muestra_enviar'),
+            reverse('registrar_ingreso_muestra'),
             {
                 'nombre': "Impulse",
                 'direccion': "Impulsadin",
                 'pais': "Italia",
                 'estado': "Roma",
-                'idioma': "8992 EN",
-                'producto': "papas",
-                'variedad': "adobadas",
-                'parcela': "parcela",
-                'pais_destino': "Alemania",
-                'clave_muestra': "CLAVE2",
-                'enviar': "1",
-                'fecha_muestreo': datetime.datetime.now().date(),
-                'analisis'+str(analysis_id2): "on",
+                'idioma': "Inglés",
+                'matrixAG[]': matrixAG,
+                'matrixPR[]': matrixPR,
+                'matrixMB[]': matrixMB,
             }
         )
-
         muestra = Muestra.objects.all().first()
         muestra.factura = factura
         muestra.save()

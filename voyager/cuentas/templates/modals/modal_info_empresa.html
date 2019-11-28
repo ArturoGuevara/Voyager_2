@@ -1,0 +1,118 @@
+<div class="modal fade" role="dialog" id="modal_info_empresa">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 align="center">Crear empresa</h3>
+                <br>
+                <div class="d-block m-4" id="visualizar-info-empresa">
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="visualizar_nombre">Nombre de la empresa</label>
+                            <input type="text" class="form-control" id="visualizar_nombre"
+                                   placeholder="Nombre de la empresa" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="visualizar_telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="visualizar_telefono"
+                                   placeholder="Telefono de la empresa" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="visualizar_responsable_resultados">Responsable de resultados</label>
+                            <input type="text" class="form-control" id="visualizar_responsable_resultados"
+                                   placeholder="Responsable de resultados" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="visualizar_correo_resultados">Correo resultados</label>
+                            <input type="email" class="form-control" id="visualizar_correo_resultados"
+                                   placeholder="resultados@resultados.com" readonly>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="visualizar_responsable_pagos">Responsable de pagos</label>
+                            <input type="text" class="form-control" id="visualizar_responsable_pagos"
+                                   placeholder="Responsable de pagos" readonly>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="visualizar_correo_pagos">Correo pagos</label>
+                            <input type="email" class="form-control" id="visualizar_correo_pagos"
+                                   placeholder="pagos@pagos.com" readonly>
+                        </div>
+                    </div>
+                    <br>
+                </div>
+            </div>
+            <div class="d-none m-4" id="editar-info-empresa">
+                <form action="{% url 'editar_empresa' %}" method="POST" id="editar_empresa_form">
+                    {% csrf_token %}
+                    <input type="number" id="empresa_id" name="empresa_id" class="d-none">
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="editar_nombre">Nombre de la empresa</label>
+                            <input type="text" class="form-control" id="editar_nombre" name="editar_nombre" placeholder="Nombre de la empresa" maxlength="50">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el nombre de la empresa
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-12">
+                            <label for="editar_telefono">Teléfono</label>
+                            <input type="text" class="form-control" id="editar_telefono" name="editar_telefono" placeholder="Telefono de la empresa" maxlength="50">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el teléfono
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="editar_responsable_resultados">Responsable de resultados</label>
+                            <input type="text" class="form-control" id="editar_responsable_resultados"
+                                   name="editar_responsable_resultados" placeholder="Responsable de resultados"
+                                   maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el responsable de resultados
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_correo_resultados">Correo resultados</label>
+                            <input type="email" class="form-control" id="editar_correo_resultados" name="editar_correo_resultados" placeholder="resultados@resultados.com" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el correo de resultados
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="editar_responsable_pagos">Responsable de pagos</label>
+                            <input type="text" class="form-control" id="editar_responsable_pagos" name="editar_responsable_pagos"
+                                   placeholder="Responsable de pagos" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el responsable de pagos
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="editar_correo_pagos">Correo pagos</label>
+                            <input type="email" class="form-control" id="editar_correo_pagos" name="editar_correo_pagos" placeholder="pagos@pagos.com" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el correo de pagos
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                </form>
+            </div>
+            <div class="modal-footer">
+                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' %}
+                    <button type="submit" id="btn-editar-empresa" class="btn btn-info d-block" onclick="visualizar_editar()">Editar</button>
+                {% endif %}
+                <button type="submit" id="btn-cancelar-cambios" class="btn btn-danger d-none" onclick="cancelar_editar()">Cancelar</button>
+                <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_empresa()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>

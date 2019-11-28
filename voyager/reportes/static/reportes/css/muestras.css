@@ -1,0 +1,13 @@
+.btn-plantilla{
+    width: 33% !important;
+}
+#tabla-procesado > tr > th{
+    font-size: 10px !important;
+}
+.custom-select{
+    max-width: 70px !important;
+}
+
+.datepicker{
+    max-width: 80px !important;
+}
