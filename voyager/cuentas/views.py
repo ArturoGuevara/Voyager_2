@@ -129,7 +129,6 @@ def lista_usuarios(request):
     #View de lista de usuarios
     rol_busqueda = "Cliente"
     context = {}
-    print(request.session['permissions'])
 
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión

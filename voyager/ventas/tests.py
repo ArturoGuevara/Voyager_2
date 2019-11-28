@@ -3,7 +3,7 @@ from ventas.forms import AnalisisForma
 from django.urls import reverse, resolve
 from .views import agregar_analisis
 from reportes.models import Analisis,Cotizacion, Pais, Nota, AnalisisCotizacion, Paquete, Muestra, OrdenInterna
-from cuentas.models import Rol,IFCUsuario,Empresa
+from cuentas.models import Rol,IFCUsuario,Empresa,Permiso,PermisoRol
 from django.contrib.auth.models import User
 from datetime import datetime, date
 from .views import ver_cotizaciones
@@ -458,6 +458,9 @@ class TestEditarCotizaciones(TestCase):
         a2.pais = pais
         a2.save()   #Guardar el análisis
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     #Tests
     def test_acceso_denegado(self):
         #Test de acceso a url sin Log In
@@ -869,6 +872,9 @@ class TestAceptarCotizaciones(TestCase):
 
 class TestExportarCSV(TestCase):
     def setup(self):
+        permiso = Permiso()
+        permiso.nombre = 'descargar_csv'
+        permiso.save()
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
@@ -900,6 +906,13 @@ class TestExportarCSV(TestCase):
                                             empresa=empresa
                                           )
         ventas.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_ventas
+        permiso_rol.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     def test_no_login(self): #Test de acceso a url sin Log In
         response = self.client.get(reverse('exportar_datos'))   #Ir al url de envío de exportar datos
@@ -907,13 +920,15 @@ class TestExportarCSV(TestCase):
 
     def test_role_incorrect(self):
         self.setup()
-        self.client.login(username='client', password='testpassword')
+        #self.client.login(username='client', password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.get(reverse('exportar_datos'))
         self.assertEqual(response.status_code,404)
 
     def test_role_correct(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        #self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com','testpassword')
         response = self.client.get(reverse('exportar_datos'))
         self.assertEqual(response.status_code,200)
 

@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User, Group
 from cuentas.models import*
-from cuentas.models import Rol,IFCUsuario,Empresa
+from cuentas.models import Rol,IFCUsuario,Empresa,Permiso,PermisoRol
 from reportes.models import OrdenInterna
 from django.urls import reverse, resolve
 from .views import lista_usuarios,lista_clientes
@@ -143,9 +143,16 @@ class testLogin(TestCase):
 
 class testCrearCliente(TestCase): #tests para la view crear_cliente
     def setup(self): #registrar la información necesaria para ejecutar los test
+        permiso = Permiso()
+        permiso.nombre = 'crear_cliente'
+        permiso.save()
         role = Rol()
         role.nombre = "Ventas"
         role.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         role2 = Rol()
         role2.nombre = "Cliente"
         role2.save()
@@ -172,6 +179,9 @@ class testCrearCliente(TestCase): #tests para la view crear_cliente
         i_user2.estado = True
         i_user2.save()   #Guardar usuario de IFC
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login_form(self): #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
         self.setup()
         response = self.client.get(reverse('crear_cliente'))
@@ -179,13 +189,13 @@ class testCrearCliente(TestCase): #tests para la view crear_cliente
 
     def test_no_login_different_role(self): #probar que el usario no pueda ingresar a la página si no tiene el rol adecuado
         self.setup()
-        self.client.login(username='padrino', password='padrino') #ingresar como un usuario cliente
+        self.login_IFC('padrino@lalocura.com','padrino') #ingresar como un usuario cliente
         response = self.client.get(reverse('crear_cliente'))
         self.assertEqual(response.status_code, 404)
 
     def test_login(self): #probar que el usuario puede ingresar a la página si inició sesión
         self.setup()
-        self.client.login(username='hockey',password='lalocura') #iniciar sesión
+        self.login_IFC('hockey@lalocura.com', 'lalocura') #iniciar sesión
         response = self.client.get(reverse('crear_cliente'))
         self.assertEqual(response.status_code,200)
 
@@ -328,6 +338,14 @@ class TestCuentasUsuarios(TestCase):
     #Tests de cuentas de usuarios
     def set_up_Users(self):
 
+        permiso1 = Permiso()
+        permiso1.nombre = 'visualizar_usuarios'
+        permiso1.save()
+
+        permiso2 = Permiso()
+        permiso2.nombre = 'visualizar_clientes'
+        permiso2.save()
+
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
@@ -414,6 +432,19 @@ class TestCuentasUsuarios(TestCase):
                                                 )
         oi.save()
 
+        permiso_rol1 = PermisoRol()
+        permiso_rol1.permiso = permiso1
+        permiso_rol1.rol = rol_dir
+        permiso_rol1.save()
+
+        permiso_rol2 = PermisoRol()
+        permiso_rol2.permiso = permiso2
+        permiso_rol2.rol = rol_facturacion
+        permiso_rol2.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     #Tests
     def test_acceso_denegado(self):
         #Test de acceso a url sin Log In
@@ -423,14 +454,15 @@ class TestCuentasUsuarios(TestCase):
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('clienttest@testuser.com','testpassword')
         response = self.client.get('/cuentas/usuarios')
         self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido_total(self):
         #Test de acceso a url con Log In como Director para que vea a todos los usuarios
         self.set_up_Users() #Set up de datos
-        self.client.login(username='direc',password='testpassword')
+        self.login_IFC('test@testuser.com', 'testpassword')
         response = self.client.get('/cuentas/usuarios')
         self.assertEqual(response.status_code,200)
         #Revisa que director pueda ver al usuario de facturacion
@@ -439,7 +471,7 @@ class TestCuentasUsuarios(TestCase):
     def test_acceso_permitido(self):
         #Test de acceso a url con Log In como Facturacion
         self.set_up_Users() #Set up de datos
-        self.client.login(username='fact',password='testpassword')
+        self.login_IFC('facttest@testuser.com','testpassword')
         response = self.client.get('/cuentas/usuarios')
         self.assertEqual(response.status_code,200)
         #Revisa que no puede ver al usuario de facturacion, ya que solo debe ver clientes
