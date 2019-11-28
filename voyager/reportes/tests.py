@@ -76,9 +76,16 @@ class DHLTests(TestCase):
 # Create your tests here.
 class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso_cliente
     def create_role_client(self):   #Crear rol en base de datos de tests
+        permiso = Permiso()
+        permiso.nombre = 'ingresar_muestra'
+        permiso.save()
         role = Rol()
         role.nombre = "Cliente"
         role.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         return role
 
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
@@ -584,6 +591,9 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
 #Casos de prueba para view una orden interna
 class OrdenesInternasViewTests(TestCase):
     def setup(self): #registrar la información necesaria para ejecutar los test
+        permiso = Permiso()
+        permiso.nombre = 'visualizar_orden_interna'
+        permiso.save()
         role = Rol()
         role.nombre = "Soporte"
         role.save()
@@ -614,6 +624,10 @@ class OrdenesInternasViewTests(TestCase):
         i_user2.telefono = "9114454364"
         i_user2.estado = True
         i_user2.save()   #Guardar usuario de IFC
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
 
     def login_IFC(self,mail,password):
         response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
