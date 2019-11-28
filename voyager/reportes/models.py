@@ -121,6 +121,7 @@ class Muestra(models.Model):
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
     lote_codigo = models.CharField(max_length=50, blank=True, null=True)
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
     #Datos para OrdenInterna

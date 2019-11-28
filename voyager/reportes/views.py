@@ -14,6 +14,7 @@ from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analis
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
+from datetime import date
 from django.http import HttpResponseRedirect
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
@@ -38,9 +39,19 @@ def ingreso_cliente(request):
         if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
             raise Http404
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
+            context = {
+                'titulo': "Usted no puede realizar ingreso de muestras en este momento",
+                'mensaje': "Contacte al administrador para volver a despegar con nosotros",
+            }
             return render(request, 'reportes/bloqueado.html')
         else:
-            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged)
+            cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
+            if not cotizaciones:
+                context = {
+                    'titulo': "Usted no tiene cotizaciones en este momento",
+                    'mensaje': "Contacte a IFC para volver a despegar con nosotros",
+                }
+                return render(request, 'reportes/bloqueado.html', context)
             analisis = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
             for c in cotizaciones:
                 cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -74,29 +85,38 @@ def registrar_ingreso_muestra(request):
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
-                        guardar_muestras(matrixAG,"AG",user_logged) #Llamar a la función que guarda datos
+                        if not guardar_muestras(matrixAG,"AG",user_logged): #Llamar a la función que guarda datos, regresa false si hubo un error
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete() #Tanto la orden interna como los objetos derivados de ella se borran
+                            return response
                     if matrixPR[0] != '':
-                        guardar_muestras(matrixPR,"PR",user_logged)
+                        if not guardar_muestras(matrixPR,"PR",user_logged):
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete()
+                            return response
                     if matrixMB[0] != '':
-                        guardar_muestras(matrixMB,"MB",user_logged)
+                        if not guardar_muestras(matrixMB,"MB",user_logged):
+                            response = JsonResponse({"error": "No llegaron los datos correctamente"})
+                            response.status_code = 500
+                            oi.delete()
+                            return response
                     response = JsonResponse({"Success": "OK"})
                     response.status_code = 200
-                    # Regresamos la respuesta de error interno del servidor
                     return response
                 else:
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
-                    response.status_code = 500
-                    # Regresamos la respuesta de error interno del servidor
+                    response.status_code = 500 # Regresamos la respuesta de error interno del servidor
+                    oi.delete()
                     return response
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
-                response.status_code = 500
-                # Regresamos la respuesta de error interno del servidor
+                response.status_code = 500 # Regresamos la respuesta de error interno del servidor
                 return response
         else:
             response = JsonResponse({"error": "No se mandó por el método correcto"})
-            response.status_code = 500
-            # Regresamos la respuesta de error interno del servidor
+            response.status_code = 404 # Regresamos la respuesta de error interno del servidor
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
@@ -131,7 +151,10 @@ def guardar_muestras(arreglo, tipo, user):
             li = list(formato[9].split(","))
             m.ubicacion_muestreo = li[i]
             li = list(formato[10].split(","))
-            fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
             m.fecha_muestreo = fm
             li = list(formato[11].split(","))
             m.urgente = li[i]
@@ -139,38 +162,86 @@ def guardar_muestras(arreglo, tipo, user):
             m.muestreador = li[i]
             li = list(formato[13].split(","))
             m.pais_destino = li[i]
-            li = list(formato[14].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis1 = analisis
-            li = list(formato[15].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis2 = analisis
-            li = list(formato[16].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis3 = analisis
-            li = list(formato[17].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis4 = analisis
-            li = list(formato[18].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis5 = analisis
-            li = list(formato[19].split(","))
-            if restar_analisis(user, li[i]):
-                analisis = Analisis.objects.get(id_analisis = li[i])
-                m.analisis6 = analisis
             m.save()
+            li = list(formato[14].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[15].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[16].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[17].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[18].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[19].split(","))
+            restar_analisis(user, li[i], m)
     elif tipo == "PR":
-        print("Función guardar muestras PR")
+        li = list(formato[0].split(","))
+        for i in range (len(li)): #Cuenta cuántas muestras de tipo PR fueron ingresadas
+            m = Muestra()
+            # GENERALES
+            m.usuario = user
+            m.oi = OrdenInterna.objects.latest('idOI')
+            li = list(formato[0].split(","))
+            m.tipo_muestra = li[i]
+            li = list(formato[1].split(","))
+            m.descripcion_muestra = li[i]
+            li = list(formato[2].split(","))
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
+            m.fecha_muestreo = fm
+            m.save()
+            li = list(formato[3].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[4].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[5].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[6].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[7].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[8].split(","))
+            restar_analisis(user, li[i], m)
     elif tipo == "MB":
-        print("Función guardar muestras MB")
-    #save muestra
+        li = list(formato[0].split(","))
+        for i in range (len(li)): #Cuenta cuántas muestras de tipo MB fueron ingresadas
+            m = Muestra()
+            # GENERALES
+            m.usuario = user
+            m.oi = OrdenInterna.objects.latest('idOI')
+            li = list(formato[0].split(","))
+            m.tipo_muestra = li[i]
+            li = list(formato[1].split(","))
+            m.lote_codigo = li[i]
+            li = list(formato[2].split(","))
+            m.muestreador = li[i]
+            li = list(formato[3].split(","))
+            try:
+                fm = datetime.datetime.strptime(li[i], "%m/%d/%Y").strftime("%Y-%m-%d")
+            except ValueError:
+                return False
+            m.fecha_muestreo = fm
+            li = list(formato[4].split(","))
+            m.metodo_referencia = li[i]
+            m.save()
+            li = list(formato[5].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[6].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[7].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[8].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[9].split(","))
+            restar_analisis(user, li[i], m)
+            li = list(formato[10].split(","))
+            restar_analisis(user, li[i], m)
+    return True #De llegar hasta aquí, significa que todas las muestras se guardaron correctamente
 
-def restar_analisis(user, analisis):
+def restar_analisis(user, analisis, muestra):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
     for c in cotizaciones:
         ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -178,6 +249,12 @@ def restar_analisis(user, analisis):
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 if a.restante > 0: #Revisar que aún le queden análisis
                     a.restante -= 1
+                    am = AnalisisMuestra()
+                    am.analisis = Analisis.objects.get(id_analisis = analisis)
+                    am.muestra = muestra
+                    am.estado = True
+                    am.fecha = date.today()
+                    am.save()
                     a.save()
                     return True
     cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
@@ -186,6 +263,12 @@ def restar_analisis(user, analisis):
         for a in ac:
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 a.restante -= 1
+                am = AnalisisMuestra()
+                am.analisis = Analisis.objects.get(id_analisis = analisis)
+                am.muestra = muestra
+                am.estado = True
+                am.fecha = date.today()
+                am.save()
                 a.save()
                 return True
 
@@ -196,18 +279,14 @@ def indexView(request):
 
 @login_required
 def ordenes_internas(request):
-
     ordenes = {}
     ordenes_activas = {}
     dict_clientes = {}
     form = None
     response = None
-
-
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
-
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
     estatus_OI_paquetes = "Resultados"  #Estatus a buscar de OI para crear paquete
@@ -219,12 +298,7 @@ def ordenes_internas(request):
             if muestras_orden:
                 dict_clientes[orden] = muestras_orden.first().usuario
         form = codigoDHL()
-
-
-
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
-
-
     context = {
         'ordenes': ordenes,
         'ordenes_activas': ordenes_activas,
