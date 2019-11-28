@@ -1,0 +1,20 @@
+<div class="modal fade" role="dialog" id="modal-eliminar-empresa">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h3 align="center">Eliminar empresa</h3>
+                <br>
+                <p>¿Estás seguro de eliminar la empresa?</p>
+                <form action="{% url 'eliminar_empresa' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="number" id="eliminar_empresa_id" name="eliminar_empresa_id" class="d-none">
+                    <div class="text-right">
+                        <button type="submit" class="btn btn-danger float-right">
+                            Eliminar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

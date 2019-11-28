@@ -104,6 +104,9 @@ FLAGS = {
     'Editar_Perfil': [
         {'condition': 'boolean', 'value': True},
     ],
+    'Importar_Analisis': [
+        {'condition': 'boolean', 'value': True},
+    ],
     'FLAG_WITH_REQUIRED_CONDITIONS': []
 }
 #
