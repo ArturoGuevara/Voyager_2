@@ -317,7 +317,7 @@ def crear_cotizacion(request):
                         c.save()
                         # Iteramos en los análisis seleccionados
                         index = 0
-                        for id in checked: #Asignar codigo DHL
+                        for id in checked:
                             a = Analisis.objects.get(id_analisis = id)
                             ac = AnalisisCotizacion()
                             ac.analisis = a
@@ -330,6 +330,7 @@ def crear_cotizacion(request):
                             ac.total = totales[index]
                             ac.save()
                             index = index + 1
+                        adjuntar_otro(c)
                         response = JsonResponse({"Success": "OK"})
                         response.status_code = 200
                         # Regresamos la respuesta de error interno del servidor
@@ -356,6 +357,30 @@ def crear_cotizacion(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+def adjuntar_otro(cotizacion):
+    analisis = Analisis.objects.filter(nombre="Otro") #Busca si existe al menos un Analisis llamado "Otro"
+    if len(analisis) == 0:
+        a = Analisis()
+        a.nombre = "Otro"
+        a.codigo = "Otro"
+        a.descripcion = "Otro"
+        a.precio = 0
+        a.unidad_min = "Indefinida"
+        a.tiempo = "Indefinido"
+        a.pais = "México"
+        a.save()
+    analisis = Analisis.objects.filter(nombre="Otro").first()#Tras el if anterior se garantiza que existe este Analisis
+    ac = AnalisisCotizacion()
+    ac.analisis = analisis
+    ac.cotizacion = cotizacion
+    ac.cantidad = 0
+    ac.restante = 0
+    ac.fecha = datetime.datetime.now().date()
+    ac.descuento = 0
+    ac.iva = 0
+    ac.total = 0
+    ac.save()
 
 
 @login_required

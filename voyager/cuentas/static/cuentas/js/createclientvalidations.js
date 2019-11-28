@@ -32,13 +32,16 @@ function val_mail(e){   //Solo permite numeros en textbox
       }
   });
 }
+
 function val_passwords(e){
   if($("#contraseña").val()!=$("#contraseña2").val()){
       $("#submit").prop('disabled', true);
       $(".invalid_password").prop('hidden', false);
   }
   else{
-      $("#submit").prop('disabled', false);
+      if(correo_verificar){
+          $("#submit").prop('disabled', false);
+      }
       $(".invalid_password").prop('hidden', true);
   }
 }

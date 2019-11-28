@@ -44,9 +44,9 @@
                 <td class="analisis-precio" data-id="{{ a.id_analisis }}">${{ a.precio }}</td>
                 <td class="analisis-tiempo" data-id="{{ a.id_analisis }}">{{ a.tiempo }}</td>
                 {% if a.acreditacion %}
-                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><i class="fas fa-check text-success"></i></td>
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><span class="text-success">SI</span></td>
                 {% else %}
-                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><i class="fas fa-minus text-secondary"></i></td>
+                    <td class="analisis-acreditado" data-id="{{ a.id_analisis }}"><span class="text-danger">NO</span></td>
                 {% endif %}
                 <td class="analisis-acciones" data-id="{{ a.id_analisis }}">
                     <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>

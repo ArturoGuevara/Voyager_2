@@ -121,15 +121,16 @@ class Muestra(models.Model):
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
     lote_codigo = models.CharField(max_length=50, blank=True, null=True)
-    #Análisis posibles para la muestra
-    analisis1 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis1')
-    analisis2 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis2')
-    analisis3 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis3')
-    analisis4 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis4')
-    analisis5 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis5')
-    analisis6 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis6')
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+    #Datos para OrdenInterna
+    mrl = models.CharField(max_length=50, blank=True, null=True)
+    num_interno_informe = models.CharField(max_length=50, blank=True, null=True)
+    fecha_recibo_informe = models.CharField(max_length=50, blank=True, null=True)
+    fecha_esperada_recibo = models.CharField(max_length=50, blank=True, null=True)
+    enviado = models.BooleanField(default=False)
+
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -171,6 +172,8 @@ class AnalisisCotizacion(models.Model):
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
+    id_oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
+    id_analisis_cotizacion = models.ForeignKey(AnalisisCotizacion,on_delete=models.CASCADE)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()

@@ -9,7 +9,9 @@
         <thead>
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
             <th class="text-center">Telefono <i class="fa fa-sort"></i></th>
+            <th class="text-center">Responsable Resultados <i class="fa fa-sort"></i></th>
             <th class="text-center">Correo Resultados <i class="fa fa-sort"></i></th>
+            <th class="text-center">Responsable Pagos <i class="fa fa-sort"></i></th>
             <th class="text-center">Correo Pagos <i class="fa fa-sort"></i></th>
             <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
                 data-content="Visualice, restaure o elimine a una empresa">
@@ -21,13 +23,15 @@
                 <tr id="empresa-{{e.id}}">
                     <td>{{e.empresa}}</td>
                     <td>{{e.telefono}}</td>
+                    <td>{{e.responsable_resultados}}</td>
                     <td>{{e.correo_resultados}}</td>
+                    <td>{{e.responsable_pagos}}</td>
                     <td>{{e.correo_pagos}}</td>
                     <td>
                         <button type="button" class="btn btn-primary" onclick="cargar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal_info_empresa">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button id="btn-trash" type="button" class="btn btn-danger d-inline">
+                        <button id="btn-trash" type="button" class="btn btn-danger d-inline" onclick="eliminar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal-eliminar-empresa">
                             <i class='fas fa-trash'></i>
                         </button>
                     </td>
@@ -39,6 +43,7 @@
 </div>
 
 {% include '.././modals/modal_info_empresa.html' %}
+{% include '.././modals/eliminar_empresa.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
