@@ -1,6 +1,5 @@
 function isEmail(email) {
   var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-  console.log(email);
   return regex.test(email);
 }
 
