@@ -313,7 +313,7 @@ def crear_cotizacion(request):
                         c.save()
                         # Iteramos en los análisis seleccionados
                         index = 0
-                        for id in checked: #Asignar codigo DHL
+                        for id in checked:
                             a = Analisis.objects.get(id_analisis = id)
                             ac = AnalisisCotizacion()
                             ac.analisis = a
@@ -326,6 +326,7 @@ def crear_cotizacion(request):
                             ac.total = totales[index]
                             ac.save()
                             index = index + 1
+                        adjuntar_otro(c)
                         response = JsonResponse({"Success": "OK"})
                         response.status_code = 200
                         # Regresamos la respuesta de error interno del servidor
@@ -352,6 +353,30 @@ def crear_cotizacion(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+def adjuntar_otro(cotizacion):
+    analisis = Analisis.objects.filter(nombre="Otro") #Busca si existe al menos un Analisis llamado "Otro"
+    if len(analisis) == 0:
+        a = Analisis()
+        a.nombre = "Otro"
+        a.codigo = "Otro"
+        a.descripcion = "Otro"
+        a.precio = 0
+        a.unidad_min = "Indefinida"
+        a.tiempo = "Indefinido"
+        a.pais = "México"
+        a.save()
+    analisis = Analisis.objects.filter(nombre="Otro").first()#Tras el if anterior se garantiza que existe este Analisis
+    ac = AnalisisCotizacion()
+    ac.analisis = analisis
+    ac.cotizacion = cotizacion
+    ac.cantidad = 0
+    ac.restante = 0
+    ac.fecha = datetime.datetime.now().date()
+    ac.descuento = 0
+    ac.iva = 0
+    ac.total = 0
+    ac.save()
 
 
 @login_required
@@ -637,8 +662,9 @@ def descargar_paquete(request):
 
 ############### USV19-53 ###################
 @login_required
-def importar_csv(request): #envía un archivo de resultados por correo
+def importar_csv(request): #Importa datos de análisis
     context = {}
+    error_log = {}
     if request.method != 'POST': #Si no se envía un post, el acceso es denegado
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
@@ -647,11 +673,12 @@ def importar_csv(request): #envía un archivo de resultados por correo
         raise Http404
     response_code = 0
     if request.method == 'POST':
-        form = ImportarAnalisisForm(request.POST, request.FILES)
-        if form.is_valid():
-            error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
-        else:
-            raise Http404
+        if flag_enabled('Importar_Analisis', request=request):
+            form = ImportarAnalisisForm(request.POST, request.FILES)
+            if form.is_valid():
+                error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
+            else:
+                raise Http404
 
     error_count = len(error_log)
 
