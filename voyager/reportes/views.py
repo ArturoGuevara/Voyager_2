@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 import json
 from ventas.models import Factura
-from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
+from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
@@ -109,7 +109,7 @@ def registrar_ingreso_muestra(request):
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
                     response.status_code = 500 # Regresamos la respuesta de error interno del servidor
                     oi.delete()
-                    return response    
+                    return response
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
                 response.status_code = 500 # Regresamos la respuesta de error interno del servidor
@@ -123,7 +123,7 @@ def registrar_ingreso_muestra(request):
 
 def guardar_muestras(arreglo, tipo, user, oi):
     formato = arreglo
-    if tipo == "AG":        
+    if tipo == "AG":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
             m = Muestra()
@@ -275,7 +275,7 @@ def restar_analisis(user, analisis, muestra, oi):
                 am.save()
                 a.save()
                 return True
-        
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -289,7 +289,7 @@ def ordenes_internas(request):
     dict_muestras = {}
     form = None
     response = None
-    
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
@@ -304,14 +304,14 @@ def ordenes_internas(request):
             muestras_orden = Muestra.objects.filter(oi=orden)
             for muestra in muestras_orden:
                 arr_muestras.append(muestra)
-                
+
             if muestras_orden:
                 print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
         form = codigoDHL()
-        
+
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
 
     context = {
@@ -843,3 +843,38 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e.message)
+
+def visualizar_facturacion(request):
+    if request.method == 'POST':
+
+        id_oi = request.POST.get('id')
+        oi_requested = OrdenInterna.objects.filter(idOI=id_oi).first()
+        data = []
+        consulta_factura = FacturaOI.objects.filter(oi=oi_requested) # Validar si ya existe un registro de facturacion para la OI
+
+        if not consulta_factura:
+            new_factura_oi = FacturaOI(oi=oi_requested)
+            new_factura_oi.save()
+        else:
+            new_factura_oi = consulta_factura.first()
+
+        factura_oi_s = serializers.serialize("json", [new_factura_oi], ensure_ascii = False)
+        data.append(factura_oi_s)
+
+        # Consultar todas las cotizaciones relacionadas a la OI
+        analisis_muestra = AnalisisMuestra.objects.filter(id_oi=oi_requested)
+        for am in analisis_muestra:
+            arr_analisis_s = serializers.serialize("json", [am.id_analisis_cotizacion.analisis], ensure_ascii = False)
+            data.append(arr_analisis_s)
+            arr_id_ac_s = serializers.serialize("json", [am.id_analisis_cotizacion], ensure_ascii = False)
+            data.append(arr_id_ac_s)
+            arr_muestra_s = serializers.serialize("json", [am.muestra], ensure_ascii = False)
+            data.append(arr_muestra_s)
+
+
+
+        #response = serializers.serialize("json", data,  cls=LazyEncoder)
+        print(data)
+        return JsonResponse({"data": data })
+    else:
+        raise Http404
