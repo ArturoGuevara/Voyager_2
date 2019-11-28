@@ -60,7 +60,7 @@
     </table>
     <div>
     {% if my_flag_importar %}
-      {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
+      {% if 'importar_csv' in request.session.permissions %}
       <button type="button" class="btn btn-success" id="btn-cargar-analisis" data-toggle="modal" data-target="#importar_csv" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Ingrese el csv con los análisis."><i class="nc-icon nc-simple-add"></i> Importar CSV</button>
       {% endif %}
     {% endif %}

@@ -542,11 +542,13 @@ def aceptar_cotizacion(request, id):
 @login_required
 def exportar_datos(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
+    """if not (user_logged.rol.nombre == "Ventas"
                 or user_logged.rol.nombre == "SuperUser"
                 or user_logged.rol.nombre == "Director"
                 or user_logged.rol.nombre=="Facturacion"
             ):
+        raise Http404"""
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.session.get('success_code',None) == None:
         request.session['success_code'] = 0
