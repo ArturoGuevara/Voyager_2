@@ -662,8 +662,9 @@ def descargar_paquete(request):
 
 ############### USV19-53 ###################
 @login_required
-def importar_csv(request): #envía un archivo de resultados por correo
+def importar_csv(request): #Importa datos de análisis
     context = {}
+    error_log = {}
     if request.method != 'POST': #Si no se envía un post, el acceso es denegado
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
@@ -672,11 +673,12 @@ def importar_csv(request): #envía un archivo de resultados por correo
         raise Http404
     response_code = 0
     if request.method == 'POST':
-        form = ImportarAnalisisForm(request.POST, request.FILES)
-        if form.is_valid():
-            error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
-        else:
-            raise Http404
+        if flag_enabled('Importar_Analisis', request=request):
+            form = ImportarAnalisisForm(request.POST, request.FILES)
+            if form.is_valid():
+                error_log, aux = handle_upload_document(request.FILES['csv_analisis'],)
+            else:
+                raise Http404
 
     error_count = len(error_log)
 

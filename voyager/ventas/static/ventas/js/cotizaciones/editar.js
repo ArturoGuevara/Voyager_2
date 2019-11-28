@@ -25,9 +25,12 @@ function restaurar_modal_ver_cot(){
     $('#nav-analisis-tab').removeClass().addClass('nav-item nav-link');
     $('#nav-info').removeClass().addClass('tab-pane fade show active');
     $('#nav-analisis').removeClass().addClass('tab-pane fade');
+
+    $('#imprimir-pdf').show(); 
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
+    $('#imprimir-pdf').hide();
     $("input[name='editar-cot-an[]']:checked").each(function () {
         che.push(parseInt($(this).val()));
     });
