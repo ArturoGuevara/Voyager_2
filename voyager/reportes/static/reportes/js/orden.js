@@ -190,7 +190,7 @@ function guardar_muestra(id_muestra){
                 });
                 i = 0;
                 $('tr[name="ver_muestra_'+ id_muestra +'[]"]').each(function (){
-                    $(this).find('#analisis').html(pancho[i]);
+                    $(this).find('#analisis_' + id_muestra).html(pancho[i]);
                     i++;
                 });
             },
@@ -259,7 +259,7 @@ function submit(){
             track = '#oi-' + idOI + " .oi_fecha_envio";
             $(track).text(fecha_formato);
             $('#modal-visualizar-orden').modal('hide');
-            showNotification('top','right','Se han guardado tus cambios');
+            showNotificationSuccess('top','right','Se han guardado tus cambios');
         }
     });
 }
@@ -476,11 +476,11 @@ function confirmar_borrar_oi(){
             success: function(){
                 $('#oi-'+id).remove();
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Se ha borrado la Orden Interna exitosamente.');    // Mostrar alerta de cotizacion borrada
+                showNotificationSuccess('top','right','Se ha borrado la Orden Interna exitosamente.');    // Mostrar alerta de cotizacion borrada
             },
             error: function(data){
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+                showNotificationDanger('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
             }
         });
     }

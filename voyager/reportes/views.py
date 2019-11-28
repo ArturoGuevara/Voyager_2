@@ -272,6 +272,25 @@ def restar_analisis(user, analisis, muestra):
                 a.save()
                 return True
 
+def sumar_analisis(user, analisis, muestra):
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user)
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                if a.restante <= 0: #Revisar que aún le queden análisis
+                    a.restante += 1
+                    a.save()
+                    return True
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c)
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                a.restante += 1
+                a.save()
+                return True
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -439,15 +458,11 @@ def actualizar_muestra(request):
             ids = request.POST.getlist('ids[]')
             muestra.producto = request.POST['producto']
             am = AnalisisMuestra.objects.filter(muestra = muestra)
+            for a in am:
+                sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
             am.delete()
             for x in ids:
-                anal = Analisis.objects.filter(pk = x).first()
-                ma = AnalisisMuestra()
-                ma.analisis = anal
-                ma.muestra = muestra
-                ma.estado = True
-                ma.fecha = datetime.date.today()
-                ma.save()
+                restar_analisis(muestra.usuario, x, muestra)
 
             # if isinstance(request.POST['factura'], int):
             #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
