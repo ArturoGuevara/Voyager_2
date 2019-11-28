@@ -52,7 +52,8 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
+    if 'consultar_catalogo_analisis' in request.session['permissions']:
         if flag_enabled('Modulo_Catalogo', request=request):
             analisis = Analisis.objects.all()
             paises = Pais.objects.all()
@@ -223,7 +224,10 @@ def ver_cotizaciones(request):
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
+        #if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
+        if ('consultar_cotizacion' in request.session['permissions']
+                or 'visualizar_cotizacion' in request.session['permissions']
+        ):
             if flag_enabled('Modulo_Cotizaciones', request=request):
                 if usuario_log.rol.nombre == "Ventas":
                     cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas

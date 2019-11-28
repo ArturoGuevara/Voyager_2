@@ -32,10 +32,10 @@
             </div>
             <div class="col-7"></div>
             <div class="text-center text-md-right">
-                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
+                {% if 'crear_usuario' in request.session.permissions %}
                     <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
                 {% endif %}
-                {% if request.session.userrole == 'Director' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+                {% if 'crear_cliente' in request.session.permissions %}
                     <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
                 {% endif %}
             </div>

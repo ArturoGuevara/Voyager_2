@@ -35,7 +35,9 @@ from flags.state import flag_enabled
 def ingreso_cliente(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+            #raise Http404
+        if not ('ingresar_muestra' in request.session['permissions']):
             raise Http404
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
             return render(request, 'reportes/bloqueado.html')
@@ -205,7 +207,9 @@ def ordenes_internas(request):
 
 
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #raise Http404
+    if not ('visualizar_orden_interna' in request.session['permissions']):
         raise Http404
 
     if request.session.get('success_sent',None) == None:
@@ -485,7 +489,9 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
 def validacion_codigo(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre=="Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre=="Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #raise Http404
+    if not ('ingresar_codigo_dhl' in request.session['permissions']):
         raise Http404
     #Obtención de codigo y verificación de Form
 

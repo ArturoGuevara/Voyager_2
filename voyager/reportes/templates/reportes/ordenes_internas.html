@@ -18,7 +18,7 @@
         </h2>
     </div>
     {% if my_flag %}
-    {% if request.session.userrole != 'Director' %}
+    {% if 'ingresar_codigo_dhl' in request.session.permissions %}
     <div class="text-center text-md-right">
         <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Despliega modal, seleccione órdenes e ingrese código de rastreo de DHL"><i class="nc-icon nc-email-83"></i> Paquete</button>
     </div>
@@ -56,13 +56,13 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>
                         </button>
-                        {% if request.session.userrole == "Soporte" or request.session.userrole == "SuperUser" %}
+                        {% if 'eliminar_orden_interna' in request.session.permissions %}
                         <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
                         {% endif %}
                         {% if o.usuario.estatus_pago != "Deudor" %}
-                        {% if request.session.userrole != 'Director' and request.session.userrole != 'Ventas' %}
+                        {% if 'notificar_resultados_correo' in request.session.permissions %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
                                 Enviar resultados
                             </button>

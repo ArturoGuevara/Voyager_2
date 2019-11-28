@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core import serializers
-from .models import IFCUsuario,Rol,Empresa
+from .models import IFCUsuario,Rol,Empresa,PermisoRol
 from reportes.models import OrdenInterna
 from django.urls import reverse
 from .forms import ClientForm
@@ -44,6 +44,11 @@ def verifyLogin(request):
                 ifc_user = IFCUsuario.objects.get(user = request.user)
                 request.session['username'] = ifc_user.nombre
                 request.session['userrole'] = ifc_user.rol.nombre
+                permissions = PermisoRol.objects.all().filter(rol=ifc_user.rol)
+                list_permissions = []
+                for permission in permissions:
+                    list_permissions.append(permission.permiso.nombre)
+                request.session['permissions'] = list_permissions
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -124,15 +129,16 @@ def lista_usuarios(request):
     #View de lista de usuarios
     rol_busqueda = "Cliente"
     context = {}
+    print(request.session['permissions'])
 
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
+        if 'visualizar_usuarios' in request.session['permissions']: #Verificar que el rol sea válido
             usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
             usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
             usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
             context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
-        elif not usuario_log.rol.nombre == "Cliente":
+        elif 'visualizar_clientes' in request.session['permissions']:
             rol = Rol.objects.get(nombre="Cliente")
             usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
@@ -180,7 +186,8 @@ def actualizar_usuario(request):
 def crear_cliente(request):
     form = ClientForm()
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_cliente' in request.session['permissions']):
         raise Http404
     return render(request, 'cuentas/crear_cliente.html', {'form' : form})
 

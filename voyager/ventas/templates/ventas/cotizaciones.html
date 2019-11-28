@@ -19,7 +19,7 @@
     </div>
     {% if my_flag %}
     <div class="text-center text-md-right">
-        {% if request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+        {% if 'crear_cotizacion' in request.session.permissions %}
             <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione los análisis para crear una nueva cotización"><i class="nc-icon nc-simple-add"></i> Cotización</button>
             <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Genera resumen para que llene últimos campos">Continuar</button>
             <button id="btn-cancelar-cot" class="btn btn-danger d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Regresa a la tabla de cotizaciones">Cancelar</button>
@@ -77,7 +77,7 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#ver_cotizacion">
                             <i class="fa fa-eye"></i>
                         </button>
-                        {% if request.session.userrole == "Ventas" or request.session.userrole == "SuperUser" %}
+                        {% if 'aceptar_cotizacion' in request.session.permissions %}
                             {% if c.bloqueado == False %}
                               {% if c.aceptado == False %}
                                 <button type="button" id="cotizacion_child_aceptar" class="btn btn-success" onclick="aceptar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#aceptar_cot">
@@ -89,7 +89,7 @@
                               </button>
                              {% endif %}
                          {% endif %}
-                        {% if request.session.userrole == "Director" or request.session.userrole == "SuperUser" %}
+                        {% if 'borrar_cotizacion' in request.session.permissions %}
                             <button type="button" class="btn btn-danger" onclick="borrar_cotizacion({{ c.id_cotizacion }})" data-toggle="modal" data-target="#borrar_cotizacion">
                                 <i class='fa fa-trash'></i>
                             </button>
