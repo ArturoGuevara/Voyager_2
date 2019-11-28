@@ -284,7 +284,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         if(muestra.fecha_recibo_informe == null){
             fri = "-";
         }
-        if(muestra.num_interno_informe == null){
+        if(muestra.num_interno_informe == null || muestra.num_interno_informe == "null"){
             informe = "";
         }
         html = html + `
@@ -322,6 +322,10 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
         if(muestra.enviado){
             siono = "Sí";
         }
+        var informe = muestra.num_interno_informe;
+        if(muestra.num_interno_informe == null || muestra.num_interno_informe == "null"){
+            informe = "";
+        }
         html = html + `
 
                 <tr name="editar_muestra_`+ id_muestra +`[]" id=editar_`+ i +`>
@@ -346,7 +350,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
                 </select>
                 </td>
                 <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_mrl_` + id_muestra + `" placeholder="NA" value="` + muestra.mrl + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese un MRL válido o NA</div></td>
-                <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + muestra.num_interno_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
+                <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_esperada_recibo + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese la fecha estimada</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_recibo_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
                 <td><input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="No" value="` + siono + `" disabled></td>
