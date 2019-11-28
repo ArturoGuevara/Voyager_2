@@ -39,6 +39,17 @@ var check_is_date = function(value,id){
     }
 }
 
+// Función para validar que el campo tiene el formato de fecha
+var check_is_date_js = function(value,id){
+    if(/^\d{4}[./-]\d{2}[./-]\d{2}$/.test(value)){
+        $(id).removeClass('is-invalid');
+        return true;
+    }else{
+        $(id).addClass('is-invalid');
+        return false;
+    }
+}
+
 var check_is_negative = function(value,id){
     var val = value;
     if(val < 1){

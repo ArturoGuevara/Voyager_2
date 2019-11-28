@@ -81,7 +81,7 @@
                         </div>
                         <div class="tab-pane container fade" id="visualizar_muestras">
                             <div id="accordion" class="accordion_muestras">
-                                <div class=table-responsive table-full-width">
+                                <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                   <table class="table table-hover table-striped" id="tabla-muestra">
                                     <thead>
                                         <th>Número Muestra</th>
@@ -100,6 +100,7 @@
                                     </tbody>
                                   </table>
                                 </div>
+                              <br>
                             </div>
                         </div>
                         <div class="tab-pane container fade" id="visualizar_observaciones">
@@ -208,42 +209,25 @@
 
                         </div>
                         <div class="tab-pane container fade" id="editar_muestras">
-                          <div class="form-row">
-                              <div class="form-group col-md-1">
-                                  <label>Número</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Producto</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Código</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Análisis</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>MRL</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>No. interno de informe</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Fecha esperada de informe</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Fecha recibo de informe</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Resultados Enviados</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Enlace de Resultados</label>
-                              </div>
-                              <div class="form-group col-md-1">
-                                  <label>Muestreador</label>
-                              </div>
-                            </div>
-                          <div id="edicion" class="edicion_muestras">
+                          <div class="table-responsive table-full-width" style="overflow-y: auto;">
+                            <table class="table table-hover table-striped" id="tabla-muestra">
+                              <thead>
+                                  <th>Número Muestra</th>
+                                  <th>Producto</th>
+                                  <th>Código</th>
+                                  <th>Análisis</th>
+                                  <th>MRL</th>
+                                  <th>No. interno de informe</th>
+                                  <th>Fecha esperada de informe</th>
+                                  <th>Fecha recibo de informe</th>
+                                  <th>Resultados enviados</th>
+                                  <th>Enlace a resultados</th>
+                                  <th>Muestreador</th>
+                                  <th>Acción</th>
+                              </thead>
+                              <tbody id="editar-body">
+                              </tbody>
+                            </table>
                           </div>
                           <br>
                         </div>

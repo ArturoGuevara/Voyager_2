@@ -343,15 +343,20 @@ def actualizar_muestra(request):
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
         if muestra:
             #Actualizar campos
-            muestra.num_interno_informe = request.POST['num_interno_informe']
-            if isinstance(request.POST['factura'], int):
-                factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
-                if factura:
-                    muestra.factura = factura
-                else:
-                    muestra.factura = None
-            muestra.orden_compra = request.POST['orden_compra']
-            muestra.fechah_recibo = request.POST['fechah_recibo']
+            muestra.producto = request.POST['producto']
+            # if isinstance(request.POST['factura'], int):
+            #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
+            #     if factura:
+            #         muestra.factura = factura
+            #     else:
+            #         muestra.factura = None
+            muestra.mrl = request.POST['mrl']
+            muestra.num_interno_informe = request.POST['num_interno']
+            muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
+            if (request.POST['fecha_recibo'] != ""):
+                muestra.fecha_recibo_informe = request.POST['fecha_recibo']
+            muestra.link_resultados = request.POST['link']
+            muestra.muestreador = request.POST['muestreador']
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
