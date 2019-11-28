@@ -104,19 +104,19 @@
               <div class="container d-block" id="ver-resumen-cot">
                 <div class="row">
                   <div class="form-group col-md-6">
-                    <label for="visualizar_facturacion">Responsable de pago</label>
-                    <input type="text" class="form-control" id="responsable_pago_fact" placeholder="Nombre" disabled>
+                    <label for="visualizar_facturacion">Responsables de pago</label>
+                    <textarea disabled name="responsable_pago_fact" class="form-control" id="responsable_pago_fact" placeholder="Guillermo del Toro, Quentin Tarantino, Stanley Kubrick ..." rows="8" cols="80"></textarea>
                   </div>
                   <div class="form-group col-md-6">
-                    <label for="visualizar_facturacion">Correo</label>
-                    <input type="text" class="form-control" id="correo_fact" placeholder="noreply@ifc.com" disabled>
+                    <label for="visualizar_facturacion">Correos</label>
+                    <textarea disabled name="correo_fact" class="form-control" id="correo_fact" placeholder="sample@sample.com, sample2@sample.com, ..." rows="8" cols="80"></textarea>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Número de factura</label>
-                    <input type="text" class="form-control" id="numero_fact" placeholder="123353454325565" disabled>
+                    <textarea disabled name="numero_fact" id="numero_fact" class="form-control" placeholder="" rows="8" cols="80"></textarea>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Fecha de facturación</label>
@@ -127,19 +127,24 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Complemento de pago</label>
-                    <input type="text" class="form-control" id="complemento_pago" placeholder="123353454325565" disabled>
+                    <textarea disabled name="complemento_pago" id="complemento_pago" class="form-control" rows="8" cols="80"></textarea>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Cobrar envío</label>
-                    <input type="text" class="form-control" id="cobro_envio" placeholder="S/N" disabled>
+                    <select disabled class="form-control" id="cobro_envio" name="cobro_envio">
+                        <option value="True">SI</option>
+                        <option value="False">NO</option>
+                    </select>
                   </div>
                 </div>
 
                 <div class="row">
                   <div class="form-group col-md-6">
-                    <span>Envío de Factura: </span><span class="text-secondary" id="f_envio_factura">Sí/No</span>
                     <label for="visualizar_facturacion">Envío factura</label>
-                    <input type="text" class="form-control" id="envio_fact" placeholder="Si/No" disabled>
+                    <select disabled class="form-control" name="envio_fact" id="envio_fact">
+                        <option value="True">SI</option>
+                        <option value="False">NO</option>
+                    </select>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Fecha de envío de factura</label>
@@ -151,17 +156,23 @@
                 <div class="row">
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Pago de factura</label>
-                    <input type="text" class="form-control" id="pago_fact" placeholder="Si/No" disabled>
+                    <textarea disabled name="pago_fact" id="pago_fact" class="form-control" rows="8" cols="80"></textarea>
                   </div>
                   <div class="form-group col-md-6">
                     <label for="visualizar_facturacion">Envío informes</label>
-                    <input type="text" class="form-control" id="envio_informes" placeholder="Si/No" disabled>
+                    <select disabled class="form-control" name="envio_informes" id="envio_informes">
+                        <option value="True">SI</option>
+                        <option value="False">NO</option>
+                    </select>
                   </div>
                 </div>
                 <div class="row">
                     <div class="form-group col-md-6">
                       <label for="visualizar_facturacion">Orden de compra</label>
-                      <input type="text" class="form-control" id="orden_compra" placeholder="Si/No" disabled>
+                      <select disabled class="form-control" name="orden_compra" id="orden_compra">
+                          <option value="True">SI</option>
+                          <option value="False">NO</option>
+                      </select>
                     </div>
                 </div>
               </div>
