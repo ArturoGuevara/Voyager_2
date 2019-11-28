@@ -137,9 +137,9 @@ function validar_ingreso_muestra(){
     var v2 = validar_producto_microbiologia();
     var v3 = validar_producto_agricola();
     if (v1 == "vacío" && v2 == "vacío" && v3 == "vacío"){ //Si las tres funciones regresaron "vacío" significa que no se agregó ninguna muestra
-        showNotification('top','right','Por favor, ingrese una muestra');
+        showNotificationWarning('top','right','Por favor, ingrese una muestra');
     }else if(v1 == false || v2 == false || v3 == false){//Si una sola es false, significa que un input está vacío o incorrecto
-        showNotification('top','right','Por favor, revise sus datos');
+        showNotificationWarning('top','right','Por favor, revise sus datos');
     }else{
         $('#envio_orden').modal('show');
     }
@@ -385,7 +385,7 @@ function enviar_ingreso_muestra(){
         type: "POST",
         success: function (response) {
             $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
-            showNotification('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
+            showNotificationSuccess('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
             $('#ingreso-cliente-form').remove();
             $('#opciones_guardado').remove();
             window.setTimeout( function(){
@@ -394,7 +394,7 @@ function enviar_ingreso_muestra(){
         },
         error: function (data) {
             $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
-            showNotification('top','right','Ha ocurrido un error. Inténtelo de nuevo más tarde.');//Mostrar notificación de envío exitoso
+            showNotificationDanger('top','right','Ha ocurrido un error. Inténtelo de nuevo más tarde.');//Mostrar notificación de envío exitoso
         }
     });
 }
