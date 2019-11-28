@@ -103,41 +103,7 @@ def guardar_muestras(arreglo, tipo, user):
     index = 0
     if tipo == "AG":        
         for aux in formato:
-            m = Muestra()
-            # GENERALES
-            m.id_muestra =
-            m.usuario = user
-            m.oi =
-            m.factura =
-            m.orden_compra =
-            m.link_resultados = 
-            # FORMATO AG y MB
-            m.muestreador =
-            # FORMATO AG y PR
-            m.fecha_muestreo =
-            # FORMATO PR y MB
-            m.tipo_muestra =
-            # FORMATO AG
-            m.producto =
-            m.variedad =
-            m.pais_origen =
-            m.codigo_muestra =
-            m.proveedor =
-            m.nombre_empresa =
-            m.codigo_trazabilidad =
-            m.agricultor =
-            m.direccion =
-            m.parcela =
-            m.ubicacion_muestreo =
-            m.urgente =
-            m.idioma =
-            m.pais_destino =
-            # FORMATO PR
-            m.descripcion_muestra =
-            # FORMATO MB
-            m.lote_codigo =
-            
-            
+
             ac.cantidad = cantidad[index]
             # Guardamos la muestra e incrementamos el índice de los arreglos
             m.save()
