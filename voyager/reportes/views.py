@@ -85,19 +85,19 @@ def registrar_ingreso_muestra(request):
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
-                        if not guardar_muestras(matrixAG,"AG",user_logged): #Llamar a la función que guarda datos, regresa false si hubo un error
+                        if not guardar_muestras(matrixAG,"AG",user_logged, oi): #Llamar a la función que guarda datos, regresa false si hubo un error
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete() #Tanto la orden interna como los objetos derivados de ella se borran
                             return response
                     if matrixPR[0] != '':
-                        if not guardar_muestras(matrixPR,"PR",user_logged):
+                        if not guardar_muestras(matrixPR,"PR",user_logged, oi):
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete()
                             return response
                     if matrixMB[0] != '':
-                        if not guardar_muestras(matrixMB,"MB",user_logged):
+                        if not guardar_muestras(matrixMB,"MB",user_logged, oi):
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete()
@@ -121,7 +121,7 @@ def registrar_ingreso_muestra(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-def guardar_muestras(arreglo, tipo, user):
+def guardar_muestras(arreglo, tipo, user, oi):
     formato = arreglo
     if tipo == "AG":        
         li = list(formato[0].split(","))
@@ -164,17 +164,17 @@ def guardar_muestras(arreglo, tipo, user):
             m.pais_destino = li[i]
             m.save()
             li = list(formato[14].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[15].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[16].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[17].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[18].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[19].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     elif tipo == "PR":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo PR fueron ingresadas
@@ -194,17 +194,17 @@ def guardar_muestras(arreglo, tipo, user):
             m.fecha_muestreo = fm
             m.save()
             li = list(formato[3].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[4].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[5].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[6].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[7].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[8].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     elif tipo == "MB":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo MB fueron ingresadas
@@ -228,20 +228,20 @@ def guardar_muestras(arreglo, tipo, user):
             m.metodo_referencia = li[i]
             m.save()
             li = list(formato[5].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[6].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[7].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[8].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[9].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[10].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     return True #De llegar hasta aquí, significa que todas las muestras se guardaron correctamente
 
-def restar_analisis(user, analisis, muestra):
+def restar_analisis(user, analisis, muestra, oi):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
     for c in cotizaciones:
         ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -250,6 +250,8 @@ def restar_analisis(user, analisis, muestra):
                 if a.restante > 0: #Revisar que aún le queden análisis
                     a.restante -= 1
                     am = AnalisisMuestra()
+                    am.id_oi = oi
+                    am.id_analisis_cotizacion = a
                     am.analisis = Analisis.objects.get(id_analisis = analisis)
                     am.muestra = muestra
                     am.estado = True
@@ -264,6 +266,8 @@ def restar_analisis(user, analisis, muestra):
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 a.restante -= 1
                 am = AnalisisMuestra()
+                am.id_oi = oi
+                am.id_analisis_cotizacion = ac
                 am.analisis = Analisis.objects.get(id_analisis = analisis)
                 am.muestra = muestra
                 am.estado = True

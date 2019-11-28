@@ -172,6 +172,8 @@ class AnalisisCotizacion(models.Model):
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
+    id_oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
+    id_analisis_cotizacion = models.ForeignKey(AnalisisCotizacion,on_delete=models.CASCADE)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
