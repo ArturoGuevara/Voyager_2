@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
-from .forms import codigoDHL
+from .forms import codigoDHL, EditarFactura
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 import requests
 import json
 from ventas.models import Factura
-from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis
+from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
 from cuentas.models import IFCUsuario
 from django.http import Http404
 import datetime
@@ -85,19 +85,19 @@ def registrar_ingreso_muestra(request):
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
-                        if not guardar_muestras(matrixAG,"AG",user_logged): #Llamar a la función que guarda datos, regresa false si hubo un error
+                        if not guardar_muestras(matrixAG,"AG",user_logged, oi): #Llamar a la función que guarda datos, regresa false si hubo un error
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete() #Tanto la orden interna como los objetos derivados de ella se borran
                             return response
                     if matrixPR[0] != '':
-                        if not guardar_muestras(matrixPR,"PR",user_logged):
+                        if not guardar_muestras(matrixPR,"PR",user_logged, oi):
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete()
                             return response
                     if matrixMB[0] != '':
-                        if not guardar_muestras(matrixMB,"MB",user_logged):
+                        if not guardar_muestras(matrixMB,"MB",user_logged, oi):
                             response = JsonResponse({"error": "No llegaron los datos correctamente"})
                             response.status_code = 500
                             oi.delete()
@@ -109,7 +109,7 @@ def registrar_ingreso_muestra(request):
                     response = JsonResponse({"error": "Las matrices llegaron vacías"})
                     response.status_code = 500 # Regresamos la respuesta de error interno del servidor
                     oi.delete()
-                    return response    
+                    return response
             else:
                 response = JsonResponse({"error": "No llegaron los datos correctamente"})
                 response.status_code = 500 # Regresamos la respuesta de error interno del servidor
@@ -121,9 +121,9 @@ def registrar_ingreso_muestra(request):
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
 
-def guardar_muestras(arreglo, tipo, user):
+def guardar_muestras(arreglo, tipo, user, oi):
     formato = arreglo
-    if tipo == "AG":        
+    if tipo == "AG":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo AG fueron ingresadas
             m = Muestra()
@@ -164,17 +164,17 @@ def guardar_muestras(arreglo, tipo, user):
             m.pais_destino = li[i]
             m.save()
             li = list(formato[14].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[15].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[16].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[17].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[18].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[19].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     elif tipo == "PR":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo PR fueron ingresadas
@@ -194,17 +194,17 @@ def guardar_muestras(arreglo, tipo, user):
             m.fecha_muestreo = fm
             m.save()
             li = list(formato[3].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[4].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[5].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[6].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[7].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[8].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     elif tipo == "MB":
         li = list(formato[0].split(","))
         for i in range (len(li)): #Cuenta cuántas muestras de tipo MB fueron ingresadas
@@ -228,20 +228,20 @@ def guardar_muestras(arreglo, tipo, user):
             m.metodo_referencia = li[i]
             m.save()
             li = list(formato[5].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[6].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[7].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[8].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[9].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
             li = list(formato[10].split(","))
-            restar_analisis(user, li[i], m)
+            restar_analisis(user, li[i], m, oi)
     return True #De llegar hasta aquí, significa que todas las muestras se guardaron correctamente
 
-def restar_analisis(user, analisis, muestra):
+def restar_analisis(user, analisis, muestra, oi):
     cotizaciones = Cotizacion.objects.filter(usuario_c = user)
     for c in cotizaciones:
         ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
@@ -250,6 +250,8 @@ def restar_analisis(user, analisis, muestra):
                 if a.restante > 0: #Revisar que aún le queden análisis
                     a.restante -= 1
                     am = AnalisisMuestra()
+                    am.id_oi = oi
+                    am.id_analisis_cotizacion = a
                     am.analisis = Analisis.objects.get(id_analisis = analisis)
                     am.muestra = muestra
                     am.estado = True
@@ -264,6 +266,8 @@ def restar_analisis(user, analisis, muestra):
             if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
                 a.restante -= 1
                 am = AnalisisMuestra()
+                am.id_oi = oi
+                am.id_analisis_cotizacion = ac
                 am.analisis = Analisis.objects.get(id_analisis = analisis)
                 am.muestra = muestra
                 am.estado = True
@@ -271,7 +275,7 @@ def restar_analisis(user, analisis, muestra):
                 am.save()
                 a.save()
                 return True
-        
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -285,7 +289,7 @@ def ordenes_internas(request):
     dict_muestras = {}
     form = None
     response = None
-    
+
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
@@ -300,14 +304,14 @@ def ordenes_internas(request):
             muestras_orden = Muestra.objects.filter(oi=orden)
             for muestra in muestras_orden:
                 arr_muestras.append(muestra)
-                
+
             if muestras_orden:
                 print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
         form = codigoDHL()
-        
+
         response = request.GET.get('successcode') #Recibe codigo de validacion_codigo view
 
     context = {
@@ -846,3 +850,111 @@ def ver_pdf(request,id_mue):
         response = HttpResponse(pdf.read(), content_type='application/pdf')
         response['Content-Disposition'] = 'inline;filename=some_file.pdf'
         return response
+
+def visualizar_facturacion(request):
+    if request.method == 'POST':
+
+        id_oi = request.POST.get('id')
+        oi_requested = OrdenInterna.objects.filter(idOI=id_oi).first()
+        data = []
+        consulta_factura = FacturaOI.objects.filter(oi=oi_requested) # Validar si ya existe un registro de facturacion para la OI
+
+        if not consulta_factura:
+            new_factura_oi = FacturaOI(oi=oi_requested)
+            new_factura_oi.save()
+        else:
+            new_factura_oi = consulta_factura.first()
+
+        factura_oi_s = serializers.serialize("json", [new_factura_oi], ensure_ascii = False)
+        data.append(factura_oi_s)
+
+        # Consultar todas las cotizaciones relacionadas a la OI
+        analisis_muestra = AnalisisMuestra.objects.filter(id_oi=oi_requested)
+        for am in analisis_muestra:
+            arr_analisis_s = serializers.serialize("json", [am.id_analisis_cotizacion.analisis], ensure_ascii = False)
+            data.append(arr_analisis_s)
+            arr_id_ac_s = serializers.serialize("json", [am.id_analisis_cotizacion], ensure_ascii = False)
+            data.append(arr_id_ac_s)
+            arr_muestra_s = serializers.serialize("json", [am.muestra], ensure_ascii = False)
+            data.append(arr_muestra_s)
+
+
+        return JsonResponse({"data": data })
+    else:
+        raise Http404
+
+
+@login_required
+def editar_facturacion(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+        if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+            form = EditarFactura(request.POST)
+            if form.is_valid():
+                n_resp_pago = form.cleaned_data['responsable_pago_fact']
+                n_correos = form.cleaned_data['correo_fact']
+                n_numero_factura = form.cleaned_data['numero_fact']
+                n_complemento_pago = form.cleaned_data['complemento_pago']
+                n_pago_factura = form.cleaned_data['pago_fact']
+                n_orden_compra = form.cleaned_data['orden_compra']
+                n_fecha_factura = form.cleaned_data['fecha_fact']
+                n_fecha_envio_factura = form.cleaned_data['fecha_envio_factura']
+                n_idOI = form.cleaned_data['oi_id_fact']
+                n_envio_factura = request.POST['envio_fact']
+                n_cobrar_envio = request.POST['cobro_envio']
+                n_envio_informes = request.POST['envio_informes']
+                n_cantidad_pagada = form.cleaned_data['cantidad_pagada']
+                n_oi = OrdenInterna.objects.get(idOI=n_idOI)
+
+                dict ={
+                    'envio_factura' : n_envio_factura,
+                    'cobrar_envio' : n_cobrar_envio,
+                    'envio_informes' : n_envio_informes
+                }
+
+                for campo in dict:
+                    if campo == "True":
+                        campo = True
+                    else:
+                        campo = False
+
+                n_envio_factura = dict['envio_factura']
+                n_cobrar_envio = dict['cobrar_envio']
+                n_envio_informes = dict['envio_informes']
+
+                newFacturaOI = FacturaOI.objects.get(oi=n_oi)
+                # Realizar cambios
+                newFacturaOI.resp_pago = n_resp_pago
+                newFacturaOI.correos = n_correos
+                newFacturaOI.numero_factura = n_numero_factura
+                newFacturaOI.complemento_pago = n_complemento_pago
+                newFacturaOI.pago_factura = n_pago_factura
+                newFacturaOI.orden_compra = n_orden_compra
+                newFacturaOI.fecha_factura = n_fecha_factura
+                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
+                newFacturaOI.envio_factura = n_envio_factura
+                newFacturaOI.cobrar_envio = n_cobrar_envio
+                newFacturaOI.envio_informes = n_envio_informes
+                newFacturaOI.cantidad_pagada = n_cantidad_pagada
+
+                newFacturaOI.save()      # Guardar objeto
+                request.session['success_code_fact'] = 1
+                return redirect('ordenes_internas')
+            else:
+                request.session['success_code_fact'] = -1
+                return redirect('ordenes_internas')
+        else:
+            request.session['success_code_fact'] = -1
+            return redirect('ordenes_internas')
+    else:
+        raise Http404
+
+# Extras
+@login_required
+def notificar_editar_facturacion(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'success_code_fact' in request.session:
+        result = request.session['success_code_fact']
+        del request.session['success_code_fact']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
