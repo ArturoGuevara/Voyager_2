@@ -4,3 +4,12 @@ function importar_csv(){
     document.getElementById("submit_csv_form").submit();
   }
 }
+
+function validar_csv(){
+
+  if( document.getElementById("csv_analisis").files.length == 0 ){
+      
+  }else{
+    importar_csv()
+  }
+}

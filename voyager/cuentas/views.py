@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
-
+from flags.state import flag_enabled
 # Create your views here.
 
 #Vista del Index
@@ -457,11 +457,15 @@ def crear_empresa(request):
 
 @login_required
 def lista_empresas(request):
+    empresas = {}
+    context = {}
+
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
-    empresas = Empresa.objects.all()
-    context = {'empresas':empresas}
+    if flag_enabled('Modulo_Empresas', request=request):
+        empresas = Empresa.objects.all()
+        context = {'empresas':empresas}
     return render(request, 'cuentas/lista_empresas.html', context)
 
 @login_required
@@ -517,6 +521,7 @@ def editar_empresa(request):
     empresa.responsable_pagos = responsable_pagos
     empresa.correo_pagos = correo_pagos
     empresa.save()
+    request.session['editar_empresa'] = True
     return HttpResponseRedirect(reverse('lista_empresas'))
 
 @login_required
@@ -532,4 +537,23 @@ def eliminar_empresa(request):
         raise Http404
     empresa = empresas.first()
     empresa.delete()
+    request.session['borrar_empresa'] = True
     return HttpResponseRedirect(reverse('lista_empresas'))
+
+@login_required
+def notificar_editar_empresa(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'editar_empresa' in request.session:
+        result = request.session['editar_empresa']
+        del request.session['editar_empresa']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def notificar_borrar_empresa(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'borrar_empresa' in request.session:
+        result = request.session['borrar_empresa']
+        del request.session['borrar_empresa']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})

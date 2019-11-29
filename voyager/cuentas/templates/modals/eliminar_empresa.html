@@ -1,19 +1,29 @@
-<div class="modal fade" role="dialog" id="modal-eliminar-empresa">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <h3 align="center">Eliminar empresa</h3>
-                <br>
-                <p>¿Estás seguro de eliminar la empresa?</p>
+<!-- Modal que forma parte de borrar cotizacion -->
+<div class="modal fade" id="modal-eliminar-empresa" tabindex="-1" role="dialog" aria-labelledby="borrar_empresa_modal" aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+        <div class="modal-content bg-danger">
+            <div class="align-text-right pr-4 mt-3">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-white">
+                <div class="py-3 text-center">
+                    <i class="nc-icon nc-bell-55" id="delete-icon-modal"></i>
+                    <h4 class="text-uppercase mt-4">¡Está a punto de borrar una empresa!</h4>
+                    <p class="">
+                        ¿Estás seguro de eliminar la empresa?
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary border-0 text-white" data-dismiss="modal">Cancelar</button>
                 <form action="{% url 'eliminar_empresa' %}" method="POST">
                     {% csrf_token %}
                     <input type="number" id="eliminar_empresa_id" name="eliminar_empresa_id" class="d-none">
-                    <div class="text-right">
-                        <button type="submit" class="btn btn-danger float-right">
-                            Eliminar
-                        </button>
-                    </div>
+                    <button type="submit" class="btn btn-danger bg-white border-white text-dark">Borrar</button>
                 </form>
+              </div>
             </div>
         </div>
     </div>

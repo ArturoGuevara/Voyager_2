@@ -17,14 +17,14 @@
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
                         {% if 'visualizar_usuarios' in request.session.permissions or 'visualizar_clientes' in request.session.permissions %}
-                            <li class="nav-item ">
-                                <a class="nav-link" href="/cuentas/usuarios">
-                                    <span>Lista de Usuarios</span>
-                                </a>
-                            </li>
                             <li>
                                 <a class="nav-link" href="/cuentas/empresas">
                                     <span>Lista de Empresas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/cuentas/usuarios">
+                                    <span>Lista de Usuarios</span>
                                 </a>
                             </li>
                         {% endif %}
@@ -61,19 +61,19 @@
                   </a>
                   <div class="collapse" id="procesamientoDropdown">
                       <ul class="nav">
-                          {% if 'visualizar_orden_interna' in request.session.permissions %}
-                          <li class="nav-item">
-                              <a class="nav-link" href="/reportes/ordenes_internas">
-                                  <span>Órdenes internas</span>
-                              </a>
-                          </li>
-                          {% endif %}
                           {% if 'ingresar_muestra' in request.session.permissions %}
                               <li class="nav-item">
                                   <a class="nav-link" href="/reportes/ingreso_cliente">
                                       <span>Ingresar muestra</span>
                                   </a>
                               </li>
+                          {% endif %}
+                          {%  if 'visualizar_orden_interna' in request.session.permissions  %}
+                          <li class="nav-item">
+                              <a class="nav-link" href="/reportes/ordenes_internas">
+                                  <span>Órdenes internas</span>
+                              </a>
+                          </li>
                           {% endif %}
                       </ul>
                   </div>
@@ -94,6 +94,11 @@
                                 </a>
                             </li>
                         {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ventas/cotizaciones">
+                                <span>Cotizaciones</span>
+                            </a>
+                        </li>
                         {% if 'descargar_csv' in request.session.permissions %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/exportar_datos">
@@ -101,11 +106,6 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ventas/cotizaciones">
-                                <span>Cotizaciones</span>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </li>

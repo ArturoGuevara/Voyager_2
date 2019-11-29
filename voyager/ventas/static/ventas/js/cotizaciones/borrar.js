@@ -32,7 +32,7 @@ function confirmar_borrar_cotizacion(){
                 borrar_cotizacion_tabla('.cot-row',id);
                 id_cotizacion = 0;
                 $('#borrar_cotizacion').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Se ha borrado la cotización exitosamente.');
+                showNotificationSuccess('top','right','Se ha borrado la cotización exitosamente.');
             },
         });
 
