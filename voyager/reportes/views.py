@@ -878,3 +878,49 @@ def visualizar_facturacion(request):
         return JsonResponse({"data": data })
     else:
         raise Http404
+
+
+@login_required
+def editar_facturacion(request):
+    user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
+    if user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+        if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+            form = AnalisisForma(request.POST)
+            if form.is_valid():         # Verificar si los datos de la forma son validos
+               # Tomar los datos por su nombre en el HTML
+                n_nombre = form.cleaned_data['nombre']
+                n_codigo = form.cleaned_data['codigo']
+                n_precio = form.cleaned_data['precio']
+                n_descripcion = form.cleaned_data['descripcion']
+                n_duracion = form.cleaned_data['duracion']
+                n_pais = form.cleaned_data['pais']
+                n_unidad_min = form.cleaned_data['unidad_min']
+                n_acreditacion = request.POST['acreditacion']
+
+                n_pais = Pais.objects.get(id_pais=n_pais)
+                print(n_acreditacion)
+                if n_acreditacion == "0":
+                    n_acreditacion = False
+                else:
+                    n_acreditacion = True
+
+                newAnalisis = Analisis.objects.create(
+                    nombre = n_nombre,
+                    codigo = n_codigo,
+                    descripcion = n_descripcion,
+                    precio = n_precio,
+                    tiempo = n_duracion,
+                    pais = n_pais,
+                    unidad_min = n_unidad_min,
+                    acreditacion = n_acreditacion
+                )
+                newAnalisis.save()      # Guardar objeto
+                request.session['success_code'] = 1
+                return redirect('/ventas/ver_catalogo')
+            else:
+                request.session['success_code'] = -1
+                return redirect('/ventas/ver_catalogo')
+        else:
+            return redirect('/ventas/ver_catalogo')
+    else:
+        raise Http404
