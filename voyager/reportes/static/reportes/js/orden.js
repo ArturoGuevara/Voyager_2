@@ -521,14 +521,43 @@ function visualizar_facturacion(id){
                     }
                 }
             }
-            console.log(data_ac[0]);
             llenar_tabla_analisis(data_muestras, data_ac, data_analisis);
-
+            llenar_datos_facturacion(data_facturacion);
         },
         error: function(data){
             console.log("NEL!!!");
         }
     });
+}
+
+function llenar_datos_facturacion(data_facturacion){
+    data = data_facturacion[0]
+    console.log(data);
+    $('#responsable_pago_fact').val(data.fields.resp_pago);
+    $('#correo_fact').val(data.fields.correos);
+    $('#numero_fact').val(data.fields.numero_factura);
+    $('#fecha_fact').val(data.fields.fecha_factura);
+    $('#complemento_pago').val(data.fields.complemento_pago);
+    if (data.fields.cobrar_envio == true){
+        $('#cobro_envio').val("True");
+    }else{
+        $('#cobro_envio').val("False");
+    }
+    $('#oi_id_fact').val(data.fields.oi);
+    if (data.fields.envio_factura == true){
+        $('#envio_fact').val("True");
+    }else{
+        $('#envio_fact').val("False");
+    }
+    $('#fecha_envio_fact').val(data.fields.fecha_envio_factura);
+    $('#pago_fact').val(data.fields.pago_factura);
+    if (data.fields.envio_informes == true){
+        $('#envio_informes').val("True");
+    }else{
+        $('#envio_informes').val("False");
+    }
+    $('#orden_compra').val(data.fields.orden_compra);
+    $('#cantidad_pagada').val(data.fields.cantidad_pagada);
 }
 
 function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
@@ -539,7 +568,7 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
         var iva = parseFloat(data_ac[x][0].fields.iva);
         var total_muestra_ind = precio_unit - ( (precio_unit * descuento)/100 ) + ( (precio_unit * iva)/100 )
         total_muestras.push(total_muestra_ind)
-        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
+        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>'+data_muestras[x][0].fields.descripcion_muestra+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
     }
     var subtotal_muestras = 0;
     for (i in total_muestras){

@@ -34,7 +34,7 @@ function restaurar_modal_oi() {
 
 $('#modal-visualizar-orden').on('hidden.bs.modal', function () {
     restaurar_modal_oi();
-    $('.registro-tabla-factura-oi').remove();
+    $('.registro-tabla-factura-oi').remove();  
 });
 
 $('#btn-editar-oi').click(function () {

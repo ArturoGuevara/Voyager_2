@@ -196,4 +196,5 @@ class FacturaOI(models.Model):
     envio_factura = models.BooleanField(default=False)
     cobrar_envio = models.BooleanField(default=False)
     envio_informes = models.BooleanField(default=False)
+    cantidad_pagada = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     oi = models.ForeignKey(OrdenInterna, on_delete=models.CASCADE)
