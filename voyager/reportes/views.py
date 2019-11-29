@@ -489,7 +489,8 @@ def actualizar_muestra(request):
             #         muestra.factura = None
             muestra.mrl = request.POST['mrl']
             muestra.num_interno_informe = request.POST['num_interno']
-            muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
+            if (request.POST['fecha_esperada'] != ""):
+                muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
             if (request.POST['fecha_recibo'] != ""):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
