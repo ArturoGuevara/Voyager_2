@@ -882,7 +882,6 @@ def editar_facturacion(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
-            print(request.POST)
             form = EditarFactura(request.POST)
             if form.is_valid():
                 n_resp_pago = form.cleaned_data['responsable_pago_fact']
@@ -918,7 +917,6 @@ def editar_facturacion(request):
 
                 newFacturaOI = FacturaOI.objects.get(oi=n_oi)
                 # Realizar cambios
-                print(n_resp_pago)
                 newFacturaOI.resp_pago = n_resp_pago
                 newFacturaOI.correos = n_correos
                 newFacturaOI.numero_factura = n_numero_factura

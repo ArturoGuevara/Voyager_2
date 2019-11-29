@@ -503,7 +503,6 @@ function visualizar_facturacion(id){
         },
         type: "POST",
         success: function(response){
-            //console.log(response.data);
             var data_facturacion = JSON.parse(response.data[0]);
 
             var data_muestras = [];
@@ -527,14 +526,12 @@ function visualizar_facturacion(id){
             llenar_datos_facturacion(data_facturacion);
         },
         error: function(data){
-            console.log("NEL!!!");
         }
     });
 }
 
 function llenar_datos_facturacion(data_facturacion){
     data = data_facturacion[0]
-    console.log(data);
     $('#responsable_pago_fact').val(data.fields.resp_pago);
     $('#correo_fact').val(data.fields.correos);
     $('#numero_fact').val(data.fields.numero_factura);
@@ -653,7 +650,6 @@ function validar_factura(){
         break;
     }
   }
-  console.log(dict);
     if(flag == true){
         document.getElementById("submit-facturacion-form").submit();
     }
