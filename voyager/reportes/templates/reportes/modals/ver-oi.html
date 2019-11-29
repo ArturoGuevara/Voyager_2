@@ -5,18 +5,18 @@
                 <div id="ver-resumen-oi" class="d-block">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
+                            <a class="nav-link active" data-toggle="tab" href="#visualizar_info" onclick="restaurar_editar()">Orden Interna</a>
                         </li>
                         {% if request.session.userrole != 'Facturacion' %}
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
+                            <a class="nav-link" data-toggle="tab" href="#visualizar_muestras" onclick="restaurar_editar()">Muestras</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
+                            <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones" onclick="restaurar_editar()">Observaciones</a>
                         </li>
                         {% endif %}
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
+                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
                         </li>
                     </ul>
                     <div class="tab-content">
@@ -271,7 +271,8 @@
                                   </button>
                               </div>
                           </div>
-
+                      </div>
+                  </div>
                 </div>
                 <div id="editar-info-oi" class="d-none">
                     <ul class="nav nav-tabs">
@@ -283,9 +284,6 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#editar_observaciones">Observaciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#editar_facturacion">Facturación</a>
                         </li>
                     </ul>
                     <div class="tab-content">
