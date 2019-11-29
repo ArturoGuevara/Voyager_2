@@ -139,6 +139,7 @@
                                       <option value="True">SI</option>
                                       <option value="False">NO</option>
                                   </select>
+                                  <input type="hidden" name="oi_id_fact" id="oi_id_fact">
                                 </div>
                               </div>
 
@@ -202,9 +203,6 @@
                                         <th scope="col">Total Análisis</th>
                                     </tr>
                                   </thead>
-                                  <tbody>
-
-                                  </tbody>
                                 </table>
                               </div>
                               <br>
@@ -212,7 +210,17 @@
                                 <span>SUBTOTAL: $</span><span class="text-white" id="n_subtotal-facturas">--</span>
                               </div>
                         <!-- Fin de facturas -->
-                    </div>
+                          </div>
+                          <div class="text-left">
+                              <button type="button" class="btn btn-success float-left" id="button_send_mail" onclick="editar_factura()">
+                                Editar
+                              </button>
+                          </div>
+                          <div class="text-right">
+                              <button type="button" class="btn btn-success float-right" id="button_send_mail" onclick="validar_factura()">
+                                Guardar
+                              </button>
+                          </div>
                 </div>
                 <div id="editar-info-oi" class="d-none">
                     <ul class="nav nav-tabs">

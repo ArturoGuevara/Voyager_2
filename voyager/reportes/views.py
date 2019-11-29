@@ -885,20 +885,22 @@ def editar_facturacion(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
-            form = AnalisisForma(request.POST)
+            form = EditarFactura(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
                # Tomar los datos por su nombre en el HTML
-                n_nombre = form.cleaned_data['nombre']
-                n_codigo = form.cleaned_data['codigo']
-                n_precio = form.cleaned_data['precio']
-                n_descripcion = form.cleaned_data['descripcion']
-                n_duracion = form.cleaned_data['duracion']
-                n_pais = form.cleaned_data['pais']
-                n_unidad_min = form.cleaned_data['unidad_min']
-                n_acreditacion = request.POST['acreditacion']
+                n_resp_pago = form.cleaned_data['resp_pago']
+                n_correos = form.cleaned_data['correos']
+                n_numero_factura = form.cleaned_data['numero_factura']
+                n_complemento_pago = form.cleaned_data['complemento_pago']
+                n_pago_factura = form.cleaned_data['pago_factura']
+                n_orden_compra = form.cleaned_data['orden_compra']
+                n_fecha_factura = form.cleaned_data['fecha_factura']
+                n_fecha_envio_factura = form.cleaned_data['fecha_factura']
+                n_envio_factura = request.POST['envio_factura']
+                n_cobrar_envio = request.POST['cobrar_envio']
+                n_envio_informes = request.POST['envio_informes']
 
-                n_pais = Pais.objects.get(id_pais=n_pais)
-                print(n_acreditacion)
+                n_oi = OrdenInterna.objects.get(idOI=n_pais)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:

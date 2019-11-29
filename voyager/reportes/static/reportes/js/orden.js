@@ -553,7 +553,7 @@ function editar_factura(){
     var responsable_pago = $('#responsable_pago_fact');
     var correo = $('#correo_fact');
     var num_fact = $('#numero_fact');
-    var fecha_fact = $('fecha_fact');
+    var fecha_fact = $('#fecha_fact');
     var complemento_pago = $('#complemento_pago');
     var cobro_envio = $('#cobro_envio');
     var envio_fact = $('#envio_fact');
@@ -562,6 +562,8 @@ function editar_factura(){
     var envio_informes = $('#envio_informes');
     var orden_compra = $('#orden_compra');
     var cantidad_pagada = $('#cantidad_pagada');
+
+    $("#oi_id_fact").val()
     var dict = {
         1 : responsable_pago,
         2 : correo,
