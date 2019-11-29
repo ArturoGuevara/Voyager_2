@@ -122,9 +122,7 @@ function guardar_muestra(id_muestra){
     var dict = {
         1 : check_is_not_empty(producto, '#editar_muestra_producto_' + id_muestra),
         2 : check_is_not_empty(mrl, '#editar_muestra_mrl_' + id_muestra),
-        3 : check_is_not_empty(num_interno, '#editar_muestra_numero_interno_' + id_muestra),
-        4 : check_is_date_js(fecha_esperada, '#editar_muestra_fecha_esperada_informe_' + id_muestra),
-        5 : check_is_not_empty(muestreador, '#editar_muestra_muestreador_' + id_muestra)
+        3 : check_is_not_empty(muestreador, '#editar_muestra_muestreador_' + id_muestra)
     }
 
     var flag = true;
