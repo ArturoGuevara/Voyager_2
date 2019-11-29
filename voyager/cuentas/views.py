@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
-
+from flags.state import flag_enabled
 # Create your views here.
 
 #Vista del Index
@@ -451,11 +451,15 @@ def crear_empresa(request):
 
 @login_required
 def lista_empresas(request):
+    empresas = {}
+    context = {}
+
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
-    empresas = Empresa.objects.all()
-    context = {'empresas':empresas}
+    if flag_enabled('Modulo_Empresas', request=request):
+        empresas = Empresa.objects.all()
+        context = {'empresas':empresas}
     return render(request, 'cuentas/lista_empresas.html', context)
 
 @login_required

@@ -2,9 +2,16 @@
 {% load static %}
 
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Empresas' as my_flag %}
 <div class="text-md-left text-center">
-    <h2>Empresas</h2>
-    <div id="table" class="table-responsive table-full-width">
+    <h2>Empresas
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre a las empresas registradas.">
+                <i class="fa fa-question-circle fa-lg"></i>
+        </button>
+    </h2>
+    {% if my_flag %} 
+    <div id="table" class="table-responsive table-full-width ">
         <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_usuarios">
         <thead>
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
@@ -40,6 +47,9 @@
         </tbody>
         </table>
     </div>
+    {% else %}
+    {% include 'root/feature_not_ready.html' %}
+    {% endif %}
 </div>
 
 {% include '.././modals/modal_info_empresa.html' %}
