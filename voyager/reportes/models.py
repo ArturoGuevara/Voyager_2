@@ -61,7 +61,7 @@ class Pais(models.Model):
 
     def __str__(self):
         return "%s" % (self.nombre)
-    
+
 class Analisis(models.Model):
     id_analisis = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100, default='')
@@ -87,15 +87,15 @@ class Nota(models.Model):
 class Muestra(models.Model):
     # CHOICES
     SN = (('Sí', 'Sí'),('No', 'No'))
-    
+
     # TODOS
     id_muestra = models.AutoField(primary_key=True) #Número de muestra
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE)
     oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
     orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
-    link_resultados =  models.CharField(max_length=100, default="")
-    
+    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+
     # FORMATO AG y MB
     muestreador = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO AG y PR
@@ -121,15 +121,15 @@ class Muestra(models.Model):
     descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO MB
     lote_codigo = models.CharField(max_length=50, blank=True, null=True)
-    #Análisis posibles para la muestra
-    analisis1 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis1')
-    analisis2 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis2')
-    analisis3 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis3')
-    analisis4 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis4')
-    analisis5 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis5')
-    analisis6 = models.ForeignKey(Analisis, on_delete=models.CASCADE, blank=True, null=True, related_name='analisis6')
+    metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+    #Datos para OrdenInterna
+    mrl = models.CharField(max_length=50, blank=True, null=True, default="NA")
+    num_interno_informe = models.CharField(max_length=50, blank=True, null=True)
+    fecha_recibo_informe = models.DateField(blank=True, null=True)
+    fecha_esperada_recibo = models.DateField(blank=True, null=True)
+    enviado = models.BooleanField(default=False)
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
@@ -171,6 +171,8 @@ class AnalisisCotizacion(models.Model):
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
+    id_oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
+    id_analisis_cotizacion = models.ForeignKey(AnalisisCotizacion,on_delete=models.CASCADE)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
@@ -178,3 +180,20 @@ class AnalisisMuestra(models.Model):
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
     def __str__(self):
         return "%s" % (self.fecha)
+
+
+class FacturaOI(models.Model):
+    idFactura = models.AutoField(primary_key=True)
+    resp_pago = models.CharField(max_length=10000, blank=True, default='')
+    correos = models.CharField(max_length=10000, blank=True, default='')
+    numero_factura = models.CharField(max_length=10000, blank=True, default='')
+    complemento_pago = models.CharField(max_length=10000, blank=True, default='')
+    pago_factura = models.CharField(max_length=10000, blank=True, default='')
+    orden_compra = models.CharField(max_length=10000, blank=True, default='')
+    fecha_factura = models.DateField(default=timezone.now)
+    fecha_envio_factura = models.DateField(default=timezone.now)
+    envio_factura = models.BooleanField(default=False)
+    cobrar_envio = models.BooleanField(default=False)
+    envio_informes = models.BooleanField(default=False)
+    cantidad_pagada = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    oi = models.ForeignKey(OrdenInterna, on_delete=models.CASCADE)

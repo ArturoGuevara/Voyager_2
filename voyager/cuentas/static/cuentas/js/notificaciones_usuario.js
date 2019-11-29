@@ -9,9 +9,9 @@ function verificar_notificaciones(){
         dataType: 'json',
         success : function(response){
             if (response.result == true){
-                showNotification('top','right','Se ha guardado el usuario exitosamente');
+                showNotificationSuccess('top','right','Se ha guardado el usuario exitosamente');
             }else if (response.result == false){
-                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde');
+                showNotificationDanger('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde');
             }else{
 
             }
@@ -25,9 +25,9 @@ function verificar_notificaciones_2(){
         dataType: 'json',
         success : function(response){
             if (response.result == true){
-                showNotification('top','right','Se ha guardado al cliente exitosamente');
+                showNotificationSuccess('top','right','Se ha guardado al cliente exitosamente');
             }else if (response.result == false){
-                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde');
+                showNotificationDanger('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde');
             }else{
 
             }

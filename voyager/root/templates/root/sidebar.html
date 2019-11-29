@@ -16,6 +16,11 @@
                 </a>
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
+                        <li>
+                            <a class="nav-link" href="/cuentas/empresas">
+                                <span>Lista de Empresas</span>
+                            </a>
+                        </li>
                         <li class="nav-item ">
                             <a class="nav-link" href="/cuentas/usuarios">
                                 <span>Lista de Usuarios</span>
@@ -25,7 +30,7 @@
                 </div>
             </li>
             {% endif %}
-            {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Facturacion' %}
               {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
                 <!-- <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">
@@ -46,7 +51,7 @@
               <li class="nav-item">
                   <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                       <i class="nc-icon nc-notes"></i>
-                      {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+                      {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Facturacion' %}
                         <p>Procesamiento y <br>Reportes<b class="caret"></b></p>
                       {% elif request.session.userrole == 'Cliente' %}
                         <p>Ingreso de <br>Muestra<b class="caret"></b></p>
@@ -54,19 +59,19 @@
                   </a>
                   <div class="collapse" id="procesamientoDropdown">
                       <ul class="nav">
-                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
-                          <li class="nav-item">
-                              <a class="nav-link" href="/reportes/ordenes_internas">
-                                  <span>Órdenes internas</span>
-                              </a>
-                          </li>
-                          {% endif %}
                           {% if request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
                               <li class="nav-item">
                                   <a class="nav-link" href="/reportes/ingreso_cliente">
                                       <span>Ingresar muestra</span>
                                   </a>
                               </li>
+                          {% endif %}
+                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
+                          <li class="nav-item">
+                              <a class="nav-link" href="/reportes/ordenes_internas">
+                                  <span>Órdenes internas</span>
+                              </a>
+                          </li>
                           {% endif %}
                       </ul>
                   </div>
@@ -87,6 +92,11 @@
                                 </a>
                             </li>
                         {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ventas/cotizaciones">
+                                <span>Cotizaciones</span>
+                            </a>
+                        </li>
                         {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Soporte' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/exportar_datos">
@@ -94,11 +104,6 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ventas/cotizaciones">
-                                <span>Cotizaciones</span>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </li>

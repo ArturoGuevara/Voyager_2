@@ -101,6 +101,9 @@ FLAGS = {
     'Modulo_Exportar_Datos': [
         {'condition': 'boolean', 'value': True},
     ],
+    'Modulo_Empresas': [
+        {'condition': 'boolean', 'value': True},
+    ],
     'Editar_Perfil': [
         {'condition': 'boolean', 'value': True},
     ],
