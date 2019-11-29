@@ -4,7 +4,6 @@
 
 {% block optionalCSS %}
 <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
-
 {% endblock %}
 
 {% block content %}
@@ -78,10 +77,10 @@
     {% else %}
     {% include 'root/feature_not_ready.html' %}
     {% endif %}
-    {% include './modals/paquete.html' %}
-    {% include './modals/borrar-orden.html' %}
-    {% include './modals/ver-oi.html' %}
     {% include './modals/enviar-resultados.html' %}
+    {% include './modals/borrar-orden.html' %}
+    {% include './modals/paquete.html' %}
+    {% include './modals/ver-oi.html' %}
 {% endblock content %}
 
 {% block optionalJS %}

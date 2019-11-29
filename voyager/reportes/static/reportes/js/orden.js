@@ -490,11 +490,10 @@ function cargar_enviar(id){
             $('#email_destino').val(data[0].fields.correo_resultados);
             var html_drop = dropdown_muestras(muestras);
             $('#muestra').html(html_drop);
+            console.log("AQUI");
         },
-        error: function(data){
-            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
-        }
     });
+    console.log("OKK");
 }
 
 function enviar_resultados(){
