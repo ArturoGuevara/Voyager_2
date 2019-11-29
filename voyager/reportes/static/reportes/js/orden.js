@@ -403,6 +403,8 @@ $(document).ready(function(){
     $('#btn-paquete-dhl').on('click', function () {
         $('#modal_paquete').modal('show');
     });
+
+    success_code_fact_check();
 })
 
 // Cargar id de OI a variable global
@@ -592,6 +594,8 @@ function editar_factura(){
     var orden_compra = $('#orden_compra');
     var cantidad_pagada = $('#cantidad_pagada');
 
+    $('#button_edit_factura').hide();
+    $('#button_cancelar_edit').attr("hidden",false);
     $('#button_guardar_factura').attr("hidden",false);
     var dict = {
         1 : responsable_pago,
@@ -618,7 +622,7 @@ function validar_factura(){
   var responsable_pago = $('#responsable_pago_fact').val();
   var correo = $('#correo_fact').val();
   var num_fact = $('#numero_fact').val();
-  var fecha_fact = $('fecha_fact').val();
+  var fecha_fact = $('#fecha_fact').val();
   var complemento_pago = $('#complemento_pago').val();
   var cobro_envio = $('#cobro_envio').val();
   var envio_fact = $('#envio_fact').val();
@@ -637,9 +641,9 @@ function validar_factura(){
           8 : check_is_not_empty(envio_fact, '#envio_fact'),
           9 : check_is_not_empty(fecha_envio_fact,'#fecha_envio_fact'),
           10 : check_is_not_empty(pago_fact,'#pago_fact'),
-          11 : check_is_not_empty(envio_informes,'envio_informes'),
-          12 : check_is_not_empty(orden_compra,'orden_compra'),
-          13 : check_is_not_empty(cantidad_pagada,'cantidad_pagada')
+          11 : check_is_not_empty(envio_informes,'#envio_informes'),
+          12 : check_is_not_empty(orden_compra,'#orden_compra'),
+          13 : check_is_not_empty(cantidad_pagada,'#cantidad_pagada')
       }
   for(var key in dict) {
     var value = dict[key];
@@ -652,5 +656,61 @@ function validar_factura(){
   console.log(dict);
     if(flag == true){
         document.getElementById("submit-facturacion-form").submit();
+    }
+}
+
+function success_code_fact_check(){
+    $.ajax({
+        url: "/reportes/notificar_editar_facturacion",
+        data: {
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            if (response.result == 1){
+                showNotificationSuccess('top','right','Factura guardada exitosamente');
+            }
+            if (response.result == -1){
+                showNotificationDanger('top','right','Ocurrió un error, inténtelo de nuevo más tarde');
+            }
+
+        }
+    });
+}
+
+function cancelar_editar_facturacion(){
+    var responsable_pago = $('#responsable_pago_fact');
+    var correo = $('#correo_fact');
+    var num_fact = $('#numero_fact');
+    var fecha_fact = $('#fecha_fact');
+    var complemento_pago = $('#complemento_pago');
+    var cobro_envio = $('#cobro_envio');
+    var envio_fact = $('#envio_fact');
+    var fecha_envio_fact = $('#fecha_envio_fact');
+    var pago_fact = $('#pago_fact');
+    var envio_informes = $('#envio_informes');
+    var orden_compra = $('#orden_compra');
+    var cantidad_pagada = $('#cantidad_pagada');
+    $('#button_edit_factura').show();
+    $('#button_cancelar_edit').attr("hidden",true);
+    $('#button_guardar_factura').attr("hidden",true);
+    var dict = {
+        1 : responsable_pago,
+        2 : correo,
+        3 : num_fact,
+        4 : fecha_fact,
+        5 : complemento_pago,
+        6 : cobro_envio,
+        7 : envio_fact,
+        8 : fecha_envio_fact,
+        9 : pago_fact,
+        10 : envio_informes,
+        11 : orden_compra,
+        12 : cantidad_pagada
+    }
+
+    for(var campo in dict){
+        var value = dict[campo];
+        value.prop('disabled',true);
     }
 }

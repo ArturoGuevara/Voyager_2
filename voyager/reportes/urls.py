@@ -16,4 +16,6 @@ urlpatterns = [
     path('consultar_empresa_muestras/',views.consultar_empresa_muestras, name='consultar_empresa_muestras'),
     path('enviar_archivo/',views.enviar_archivo, name='enviar_archivo'),
     path('visualizar_facturacion/', views.visualizar_facturacion, name='visualizar_facturacion'),
+    path('editar_facturacion', views.editar_facturacion, name='editar_facturacion'),
+    path('notificar_editar_facturacion', views.notificar_editar_facturacion, name='notificar_editar_facturacion'),
 ]

@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
-from .forms import codigoDHL
+from .forms import codigoDHL, EditarFactura
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -872,9 +872,6 @@ def visualizar_facturacion(request):
             data.append(arr_muestra_s)
 
 
-
-        #response = serializers.serialize("json", data,  cls=LazyEncoder)
-        print(data)
         return JsonResponse({"data": data })
     else:
         raise Http404
@@ -885,21 +882,22 @@ def editar_facturacion(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
+            print(request.POST)
             form = EditarFactura(request.POST)
-            if form.is_valid():         # Verificar si los datos de la forma son validos
-               # Tomar los datos por su nombre en el HTML
-                n_resp_pago = form.cleaned_data['resp_pago']
-                n_correos = form.cleaned_data['correos']
-                n_numero_factura = form.cleaned_data['numero_factura']
+            if form.is_valid():
+                n_resp_pago = form.cleaned_data['responsable_pago_fact']
+                n_correos = form.cleaned_data['correo_fact']
+                n_numero_factura = form.cleaned_data['numero_fact']
                 n_complemento_pago = form.cleaned_data['complemento_pago']
-                n_pago_factura = form.cleaned_data['pago_factura']
+                n_pago_factura = form.cleaned_data['pago_fact']
                 n_orden_compra = form.cleaned_data['orden_compra']
-                n_fecha_factura = form.cleaned_data['fecha_factura']
-                n_fecha_envio_factura = form.cleaned_data['fecha_factura']
+                n_fecha_factura = form.cleaned_data['fecha_fact']
+                n_fecha_envio_factura = form.cleaned_data['fecha_envio_factura']
                 n_idOI = form.cleaned_data['oi_id_fact']
-                n_envio_factura = request.POST['envio_factura']
-                n_cobrar_envio = request.POST['cobrar_envio']
+                n_envio_factura = request.POST['envio_fact']
+                n_cobrar_envio = request.POST['cobro_envio']
                 n_envio_informes = request.POST['envio_informes']
+                n_cantidad_pagada = form.cleaned_data['cantidad_pagada']
                 n_oi = OrdenInterna.objects.get(idOI=n_idOI)
 
                 dict ={
@@ -918,26 +916,40 @@ def editar_facturacion(request):
                 n_cobrar_envio = dict['cobrar_envio']
                 n_envio_informes = dict['envio_informes']
 
-                newFacturaOI = FacturaOI.objects.create(
-                    resp_pago = n_resp_pago,
-                    correos = n_correos,
-                    numero_factura = n_numero_factura,
-                    pago_factura = n_pago_factura,
-                    orden_compra = n_orden_compra,
-                    fecha_factura = n_fecha_factura,
-                    fecha_envio_factura = n_fecha_envio_factura,
-                    envio_factura = n_envio_factura,
-                    cobrar_envio = n_cobrar_envio,
-                    envio_informes = n_envio_informes,
-                    oi = n_oi
-                )
+                newFacturaOI = FacturaOI.objects.get(oi=n_oi)
+                # Realizar cambios
+                print(n_resp_pago)
+                newFacturaOI.resp_pago = n_resp_pago
+                newFacturaOI.correos = n_correos
+                newFacturaOI.numero_factura = n_numero_factura
+                newFacturaOI.complemento_pago = n_complemento_pago
+                newFacturaOI.pago_factura = n_pago_factura
+                newFacturaOI.orden_compra = n_orden_compra
+                newFacturaOI.fecha_factura = n_fecha_factura
+                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
+                newFacturaOI.envio_factura = n_envio_factura
+                newFacturaOI.cobrar_envio = n_cobrar_envio
+                newFacturaOI.envio_informes = n_envio_informes
+                newFacturaOI.cantidad_pagada = n_cantidad_pagada
+
                 newFacturaOI.save()      # Guardar objeto
                 request.session['success_code_fact'] = 1
-                return redirect('ordenes_internas/')
+                return redirect('ordenes_internas')
             else:
                 request.session['success_code_fact'] = -1
-                return redirect('ordenes_internas/')
+                return redirect('ordenes_internas')
         else:
-            return redirect('ordenes_internas/')
+            request.session['success_code_fact'] = -1
+            return redirect('ordenes_internas')
     else:
         raise Http404
+
+# Extras
+@login_required
+def notificar_editar_facturacion(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'success_code_fact' in request.session:
+        result = request.session['success_code_fact']
+        del request.session['success_code_fact']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
