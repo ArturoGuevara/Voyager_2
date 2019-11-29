@@ -32,13 +32,13 @@ function regresar_parte_solicitante(){
     // Alternar headers
     $('#title-2').removeClass('d-block').addClass('d-none');
     $('#title-1').removeClass('d-none').addClass('d-block');
-    
+
     // Alternar botones
     $('#btn-muestra-continuar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-regresar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-guardar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-enviar').removeClass('d-inline').addClass('d-none');
-    
+
     // Alternar contenedores
     $('#info-solicitante').addClass('d-block').removeClass('d-none');
     $('#info-muestras').removeClass('d-block').addClass('d-none');
@@ -47,13 +47,13 @@ function continuar_parte_muestras(){
     // Alternar headers
     $('#title-1').removeClass('d-block').addClass('d-none');
     $('#title-2').removeClass('d-none').addClass('d-block');
-    
+
     // Alternar botones
     $('#btn-muestra-continuar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-regresar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-guardar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-enviar').addClass('d-inline').removeClass('d-none');
-    
+
     // Alternar contenedores
     $('#info-solicitante').removeClass('d-block').addClass('d-none');
     $('#info-muestras').addClass('d-block').removeClass('d-none');
@@ -103,7 +103,7 @@ function quitar_fila_agricola(id){
 
 function agregar_fila_procesado(){
     $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestraPR-'+cnt_ingreso_procesado+'" name="tipoMuestraPR[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestraPR-'+cnt_ingreso_procesado+'" name="descripcionMuestraPR[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreoPR-'+cnt_ingreso_procesado+'" name="fechaMuestreoPR[]"><div class="invalid-feedback">Ingrese fecha con el formato mm/dd/yyyy</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="primer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis1PR[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisisPR-'+cnt_ingreso_procesado+'" name="analisis2PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis3PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis4PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis5PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis6PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
-    
+
     cnt_ingreso_procesado+=1;
     // El datepicker que se agrega activarlo
     $(".datepicker" ).datepicker();
@@ -116,9 +116,9 @@ function quitar_fila_procesado(id){
     });
 }
 
-function agregar_fila_micro(){    
+function agregar_fila_micro(){
     $('#tabla-microbiologia-body').append('<tr class="fila-tabla-micro" data-id="'+cnt_ingreso_microbiologia+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="tipo-muestraMB-'+cnt_ingreso_microbiologia+'" name="tipoMuestraMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="lote-codigoMB-'+cnt_ingreso_microbiologia+'" name="loteCodigoMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="muestreadorMB-'+cnt_ingreso_microbiologia+'" name="muestreadorMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_microbiologia+'" id="fecha-muestreoMB-'+cnt_ingreso_microbiologia+'" name="fechaMuestreoMB[]"><div class="invalid-feedback">Ingrese fecha con el formato mm/dd/yyyy</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="metodo-referenciaMB-'+cnt_ingreso_microbiologia+'" name="metodoReferenciaMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="primer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis1MB[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="segundo-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis2MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="tercer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis3MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="cuarto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis4MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="quinto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis5MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="sexto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis6MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_micro('+cnt_ingreso_microbiologia+')"><i class="fa fa-trash"></i></button></td></tr>');
-    
+
     cnt_ingreso_microbiologia+=1;
     // El datepicker que se agrega activarlo
     $(".datepicker" ).datepicker();
@@ -293,7 +293,7 @@ function enviar_ingreso_muestra(){
     var pais = $('#pais').val();
     var estado = $('#estado').val();
     var idioma = $('#idioma').val();
-    
+
     // Información de formato agrícola (19 arreglos)
     var matrixAG = []
     var productoAG = iterar_input("productoAG","input");
@@ -326,7 +326,7 @@ function enviar_ingreso_muestra(){
     matrixAG.push(muestreadorAG);matrixAG.push(paisDestinoAG);
     matrixAG.push(analisis1AG);matrixAG.push(analisis2AG);matrixAG.push(analisis3AG);
     matrixAG.push(analisis4AG);matrixAG.push(analisis5AG);matrixAG.push(analisis6AG);
-    
+
     // Información de formato de producto procesado (8 arreglos)
     var matrixPR = [];
     var tipoMuestraPR = iterar_input("tipoMuestraPR","input");
@@ -344,7 +344,7 @@ function enviar_ingreso_muestra(){
     matrixPR.push(fechaMuestreoPR);
     matrixPR.push(analisis1PR);matrixPR.push(analisis2PR);matrixPR.push(analisis3PR);
     matrixPR.push(analisis4PR);matrixPR.push(analisis5PR);matrixPR.push(analisis6PR);
-        
+
     // Información de formato de microbiología (10 arreglos)
     var matrixMB = [];
     var tipoMuestraMB = iterar_input("tipoMuestraMB","input");
@@ -363,10 +363,10 @@ function enviar_ingreso_muestra(){
     matrixMB.push(fechaMuestreoMB);matrixMB.push(metodoReferenciaMB);
     matrixMB.push(analisis1MB);matrixMB.push(analisis2MB);matrixMB.push(analisis3MB);
     matrixMB.push(analisis4MB);matrixMB.push(analisis5MB);matrixMB.push(analisis6MB);
-    
+
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
-    
+
     $.ajax({
         url: "registrar_ingreso_muestra",
         dataType: 'json',
@@ -386,6 +386,7 @@ function enviar_ingreso_muestra(){
         success: function (response) {
             $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
             showNotificationSuccess('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
+            showNotificationWarning('top', 'right', 'La página se refrescará en un momento');
             $('#ingreso-cliente-form').remove();
             $('#opciones_guardado').remove();
             window.setTimeout( function(){

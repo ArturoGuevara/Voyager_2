@@ -276,6 +276,25 @@ def restar_analisis(user, analisis, muestra, oi):
                 a.save()
                 return True
 
+def sumar_analisis(user, analisis, muestra):
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user)
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                if a.restante <= 0: #Revisar que aún le queden análisis
+                    a.restante += 1
+                    a.save()
+                    return True
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c)
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                a.restante += 1
+                a.save()
+                return True
+
 @login_required
 def indexView(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
@@ -355,6 +374,7 @@ def consultar_orden(request):
         email = {}
         empresa = {}
         analisis_muestras = {}
+        analisis_muestras_ids = {}
         facturas_muestras = {}
         if request.method == 'POST':
             if not (request.POST.get('id')):
@@ -363,6 +383,17 @@ def consultar_orden(request):
             #oi = orden interna
             oi = OrdenInterna.objects.get(idOI = id)
             if oi:
+                c = Muestra.objects.filter(oi = oi).first()
+                cliente = IFCUsuario.objects.get(pk = c.usuario.pk)
+                cotizaciones = Cotizacion.objects.filter(usuario_c = cliente, status=True, aceptado=True, bloqueado=False)
+                anal = Analisis.objects.filter(id_analisis="-1") #Query que no da ningún análisis
+                for c in cotizaciones:
+                    cot = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+                    for a in cot:
+                        analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
+                        anal = anal | analisis_temp
+                anal = serializers.serialize("json", anal, ensure_ascii = False)
+
                 solicitante = IFCUsuario.objects.get(user = oi.usuario.user)
                 solicitante = serializers.serialize("json", [solicitante], ensure_ascii = False)
                 solicitante = solicitante[1:-1]
@@ -381,12 +412,14 @@ def consultar_orden(request):
                     empresa = usuario.empresa.empresa
                     telefono = usuario.empresa.telefono
                     analisis_muestras = {}
+                    analisis_muestras_ids = {}
                     facturas_muestras = {}
                     for muestra in muestras:
                         #recuperas todos los analisis de una muestra
                         #ana_mue es objeto de tabla AnalisisMuestra
                         ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
                         analisis = []
+                        analisis_ids = []
                         if muestra.factura:
                             facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                         else:
@@ -394,7 +427,10 @@ def consultar_orden(request):
 
                         for a in ana_mue:
                             analisis.append(a.analisis.codigo)
+                            analisis_ids.append(a.analisis.pk)
                         analisis_muestras[muestra.id_muestra] =  analisis
+                        analisis_muestras_ids[muestra.id_muestra] = analisis_ids
+
                     return JsonResponse(
                             {"data": data,
                             "muestras":vector_muestras,
@@ -403,8 +439,11 @@ def consultar_orden(request):
                             "empresa":empresa,
                             "telefono":telefono,
                             "dict_am":analisis_muestras,
+                            "dict_ids":analisis_muestras_ids,
                             "facturas":facturas_muestras,
-                            "solicitante":solicitante}
+                            "solicitante":solicitante,
+                            "analisis":anal,
+                            }
                         )
                 else:
                     response = JsonResponse({"error": "Hubo un error con las muestras"})
@@ -432,15 +471,28 @@ def actualizar_muestra(request):
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
         if muestra:
             #Actualizar campos
-            muestra.num_interno_informe = request.POST['num_interno_informe']
-            if isinstance(request.POST['factura'], int):
-                factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
-                if factura:
-                    muestra.factura = factura
-                else:
-                    muestra.factura = None
-            muestra.orden_compra = request.POST['orden_compra']
-            muestra.fechah_recibo = request.POST['fechah_recibo']
+            ids = request.POST.getlist('ids[]')
+            muestra.producto = request.POST['producto']
+            am = AnalisisMuestra.objects.filter(muestra = muestra)
+            for a in am:
+                sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
+            am.delete()
+            for x in ids:
+                restar_analisis(muestra.usuario, x, muestra)
+
+            # if isinstance(request.POST['factura'], int):
+            #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
+            #     if factura:
+            #         muestra.factura = factura
+            #     else:
+            #         muestra.factura = None
+            muestra.mrl = request.POST['mrl']
+            muestra.num_interno_informe = request.POST['num_interno']
+            muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
+            if (request.POST['fecha_recibo'] != ""):
+                muestra.fecha_recibo_informe = request.POST['fecha_recibo']
+            muestra.link_resultados = request.POST['link']
+            muestra.muestreador = request.POST['muestreador']
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
@@ -806,6 +858,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
     if muestras:
         muestra_object = muestras.first()
         muestra_object.link_resultados = path
+        muestra_object.enviado = True
         muestra_object.save()
     else:
         return 404
@@ -832,7 +885,7 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
     attachment.content_id = ContentId('Example Content ID')
     message.attachment = attachment
     try:
-        with open('./API_KEY.txt','rb') as file: #Se obtiene la llave del API para autenticar
+        with open('./API_KEY_recover_password.txt','rb') as file: #Se obtiene la llave del API para autenticar
             key = file.read()
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo

@@ -115,7 +115,7 @@ function submit(){
             data = data.fields;
             var tr = '#usuario-'+id + " .u_estatus";
             $(tr).text(data.estatus_pago);
-            showNotification('top','right','Se han guardado tus cambios');
+            showNotificationSuccess('top','right','Se han guardado tus cambios');
             $('#actualizar_usuario').modal('toggle');
             $('#modal_info_usuario').modal('toggle');
         }

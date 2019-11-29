@@ -116,7 +116,7 @@ function editar_analisis(){
                 $('#editar_info').removeClass('d-block').addClass('d-none');
 
                 // Damos retroalimentación de que se guardó correctamente
-                showNotification('top','right','Cambios guardados correctamente');
+                showNotificationSuccess('top','right','Cambios guardados correctamente');
 
                 id_analisis = 0;
             },
@@ -150,7 +150,7 @@ function confirmar_borrar(){
             type: "POST",
             success: function(){
                 borrar_analisis_tabla('.analisis-row',id);
-                showNotification('top','right','Tu análisis ha sido borrado exitosamente');
+                showNotificationSuccess('top','right','Tu análisis ha sido borrado exitosamente');
                 id_analisis = 0;
                 $('#borrar_analisis').modal('toggle');
             },

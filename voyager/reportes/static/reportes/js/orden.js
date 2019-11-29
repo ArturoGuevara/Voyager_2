@@ -46,7 +46,10 @@ function cargar_info_oi(){
                 solicitante = solicitante.fields;
             }
             var analisis_muestras = response.dict_am;
+            var analisis_ids = response.dict_ids;
             var facturas = response.facturas;
+            var analisis = JSON.parse(response.analisis);
+
             $('#editar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
             $('#editar_usuario_nombre').text(n);
@@ -82,42 +85,117 @@ function cargar_info_oi(){
                     var id_muestra = muestras[mue].pk;
                     var objm = muestras[mue].fields;
 
-                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
+                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], analisis_ids[id_muestra], facturas[id_muestra], analisis);
                 }
             }
-            $('.edicion_muestras').html(html_muestras);
+            $('#editar-body').html(html_muestras);
         }
     })
 }
 
 function guardar_muestra(id_muestra){
+    var mp = "#editar_muestra_producto_" + id_muestra;
+    var producto = $(mp).val();
+    var muestra_mrl = "#editar_muestra_mrl_" + id_muestra;
+    var mrl = $(muestra_mrl).val();
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
-    num_interno = $(ni).val();
-    var fr = "#editar_muestra_fecha_recibo_" + id_muestra;
-    fechah_recibo = $(fr).val();
-    var oc = "#editar_muestra_orden_compra_" + id_muestra;
-    orden_compra = $(oc).val();
-    var f = "#editar_muestra_factura_" + id_muestra;
-    factura = $(f).val();
-    if (validarFecha(fechah_recibo, id_muestra)){
+    var num_interno = $(ni).val();
+    var fei = "#editar_muestra_fecha_esperada_informe_" + id_muestra;
+    var fecha_esperada = $(fei).val();
+    var fri = "#editar_muestra_fecha_recibo_informe_" + id_muestra;
+    var fecha_recibo = $(fri).val();
+    var ml = "#editar_muestra_link_" + id_muestra;
+    var link = $(ml).val();
+    var mm = "#editar_muestra_muestreador_" + id_muestra;
+    var muestreador = $(mm).val();
+    var chocomilk = [];
+    $('tr[name="editar_muestra_'+ id_muestra +'[]"]').each(function (){
+        chocomilk.push($(this).find('#editar_analisis_' + id_muestra).val());
+    });
+    var pancho = [];
+    var i = 0;
+    $('tr[name="editar_muestra_'+ id_muestra +'[]"]').each(function (){
+        pancho.push($(this).find('#' + chocomilk[i]).html());
+        i++;
+    });
+
+    var dict = {
+        1 : check_is_not_empty(producto, '#editar_muestra_producto_' + id_muestra),
+        2 : check_is_not_empty(mrl, '#editar_muestra_mrl_' + id_muestra),
+        3 : check_is_not_empty(num_interno, '#editar_muestra_numero_interno_' + id_muestra),
+        4 : check_is_date_js(fecha_esperada, '#editar_muestra_fecha_esperada_informe_' + id_muestra),
+        5 : check_is_not_empty(muestreador, '#editar_muestra_muestreador_' + id_muestra)
+    }
+
+    var flag = true;
+    for(var key in dict) {
+      var value = dict[key];
+      if(value == false){
+          flag = false
+          break;
+      }
+    }
+
+    if (flag){
         //Código ajax que guarda una muestra en particular
         $.ajax({
             url: 'actualizar_muestra/',
             type: "POST",
             data: {
                 'id_muestra': id_muestra,
-                'fechah_recibo': fechah_recibo,
-                'orden_compra': orden_compra,
-                'num_interno_informe': num_interno,
-                'factura': factura,
+                'producto': producto,
+                'mrl': mrl,
+                'num_interno': num_interno,
+                'fecha_esperada': fecha_esperada,
+                'fecha_recibo': fecha_recibo,
+                'link': link,
+                'muestreador': muestreador,
+                'ids[]': chocomilk,
                 'csrfmiddlewaretoken': token,
             },
             dataType: 'json',
             success: function (response) {
-                showNotification('top','right','La muestra se ha guardado correctamente');
+                showNotificationModal('top','right','La muestra se ha guardado correctamente','success');
+                $('tr[name="editar_muestra_'+ id_muestra +'[]"]').each(function (){
+                    $(this).find('#editar_muestra_producto_' + id_muestra).val(producto);
+                    $(this).find('#editar_muestra_mrl_' + id_muestra).val(mrl);
+                    $(this).find('#editar_muestra_numero_interno_' + id_muestra).val(num_interno);
+                    $(this).find('#editar_muestra_fecha_esperada_informe_' + id_muestra).val(fecha_esperada);
+                    if(fecha_recibo != ""){
+                      $(this).find('#editar_muestra_fecha_recibo_informe_' + id_muestra).val(fecha_recibo);
+                    }
+                    if(link != ""){
+                      $(this).find('#editar_muestra_link_' + id_muestra).val(link);
+                    }
+                    $(this).find('#editar_muestra_muestreador_' + id_muestra).val(muestreador);
+                });
+                $('tr[name="ver_muestra_'+ id_muestra +'[]"]').each(function (){
+                    $(this).find('#producto_' + id_muestra).html(producto);
+                    $(this).find('#mrl_' + id_muestra).html(mrl);
+                    $(this).find('#num_interno_' + id_muestra).html(num_interno);
+                    $(this).find('#fei_' + id_muestra).html(fecha_esperada);
+                    if(fecha_recibo != ""){
+                      $(this).find('#fri_' + id_muestra).html(fecha_recibo);
+                    }
+                    else{
+                      $(this).find('#fri_' + id_muestra).html("-");
+                    }
+                    if(link != ""){
+                      $(this).find('#link_' + id_muestra).html('<a href="'+ link +'" target=_blank>Ir a PDF</a>');
+                    }
+                    else{
+                      $(this).find('#link_' + id_muestra).html("");
+                    }
+                    $(this).find('#muestreador_' + id_muestra).html(muestreador);
+                });
+                i = 0;
+                $('tr[name="ver_muestra_'+ id_muestra +'[]"]').each(function (){
+                    $(this).find('#analisis_' + id_muestra).html(pancho[i]);
+                    i++;
+                });
             },
             error: function () {
-                showNotification('top','right','Ha ocurrido un error, por favor revisa tus datos');
+                showNotificationDanger('top','right','Ha ocurrido un error, por favor inténtelo de nuevo');
             },
         });
     }
@@ -181,152 +259,108 @@ function submit(){
             track = '#oi-' + idOI + " .oi_fecha_envio";
             $(track).text(fecha_formato);
             $('#modal-visualizar-orden').modal('hide');
-            showNotification('top','right','Se han guardado tus cambios');
+            showNotificationSuccess('top','right','Se han guardado tus cambios');
         }
     });
 }
 
 function build_muestras(id_muestra, muestra, analisis, factura){
-    var html = `
-    <div class="card">
-        <div class="card-header">
-            <a class="card-link" data-toggle="collapse" href="#collapse` + id_muestra + `">
-                Muestra ` + id_muestra + `
-            </a>
-        </div>
-        <div id="collapse` + id_muestra + `" class="collapse" data-parent="#accordion">
-            <div class="card-body">
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="visualizar_muestra_numero_` + id_muestra + `">Número</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_codigo_` + id_muestra + `">Código</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="visualizar_muestra_` + id_muestra + `">Muestra</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno"  disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
-                        <input type="date" class="form-control" id="visualizar_muestra_fecha_recibo_` + id_muestra + `" value="` + muestra.fechah_recibo + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="visualizar_muestra_factura_` + id_muestra + `">Factura</label>
-                        <input type="text" class="form-control" id="visualizar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `" disabled>
-                    </div>
-                </div>
-                <p>Análisis</p>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <th>Nombre</th>
-                        </thead>
-                        <tbody>`;
-
-
+    var html = ``;
     for(let a in analisis){
-        html = html+ `
-            <tr>
-                <td>`+ analisis[a] +`</td>
-            </tr>
-        `;
+        var siono = "No";
+        var pdf = "";
+        var fei = muestra.fecha_esperada_recibo;
+        var fri = muestra.fecha_recibo_informe;
+        var informe = muestra.num_interno_informe;
+        if(muestra.enviado){
+            siono = "Sí";
+        }
+        if(muestra.link_resultados != ""){
+            pdf = "Ir a PDF";
+        }
+        if(muestra.fecha_esperada_recibo == null){
+            fei = "-";
+        }
+        if(muestra.fecha_recibo_informe == null){
+            fri = "-";
+        }
+        if(muestra.num_interno_informe == null || muestra.num_interno_informe == "null"){
+            informe = "";
+        }
+        html = html + `
+                <tr name="ver_muestra_`+ id_muestra +`[]">
+                    <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
+                    <td id="producto_`+ id_muestra +`">` + muestra.producto + `</td>
+                    <td id="codigo_`+ id_muestra +`">` + muestra.codigo_muestra + `</td>
+                    <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
+                    <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
+                    <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
+                    <td id="fei_`+ id_muestra +`">` + fei + `</td>
+                    <td id="fri_`+ id_muestra +`">` + fri + `</td>
+                    <td id="siono_`+ id_muestra +`">` + siono + `</td>
+                    <td id="link_`+ id_muestra +`"><a href="` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
+                    <td id="muestreador_`+ id_muestra +`">` + muestra.muestreador + `</td>
+                </tr>
+                `;
     }
-
-    html = html+ `</tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>`;
     return html;
 }
 
-function editar_muestras(id_muestra, muestra, analisis, factura){
-    //Eliminar el formato de fecha dado por Django para poder leerla
-    if (muestra.fechah_recibo != null){
-        fecha_r = muestra.fechah_recibo.replace('T', ' ');
-        fecha_r = fecha_r.replace('Z', '');
-    }
-    else{
-        fecha_r = '';
-    }
-    var html = `
-    <div class="card">
-        <div class="card-header">
-            <a class="card-link" data-toggle="collapse" href="#editar_collapse` + id_muestra + `">
-                Muestra ` + id_muestra + `
-            </a>
-        </div>
-        <div id="editar_collapse` + id_muestra + `" class="collapse" data-parent="#edicion">
-            <div class="card-body">
-                <div class="form-row">
-                    <div class="form-group col-md-2">
-                        <label for="editar_muestra_numero_` + id_muestra + `">Número</label>
-                        <input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_codigo_` + id_muestra + `">Código</label>
-                        <input type="text" class="form-control" id="editar_muestra_codigo_` + id_muestra + `" placeholder="Código" value="` + muestra.codigo_muestra + `" disabled>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="editar_muestra_` + id_muestra + `">Muestra</label>
-                        <input type="text" class="form-control" id="editar_muestra_` + id_muestra + `" placeholder="Muestra" value="` + muestra.producto + `" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_numero_interno_` + id_muestra + `">Número interno</label>
-                        <input type="text" class="form-control" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="Número interno" value=" ` + muestra.num_interno_informe + `">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_fecha_recibo_` + id_muestra + `">Fecha de recibo</label>
-                        <input type="text" class="form-control" id="editar_muestra_fecha_recibo_` + id_muestra + `" placeholder="2019-01-25 18:36:00" value="` + fecha_r + `">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_orden_compra_` + id_muestra + `">Orden de compra</label>
-                        <input type="text" class="form-control" id="editar_muestra_orden_compra_` + id_muestra + `" placeholder="Orden de compra" value="` + muestra.orden_compra + `">
-                    </div>
-                    <div class="form-group col-md-3">
-                        <label for="editar_muestra_factura_` + id_muestra + `">Factura</label>
-                        <input type="number" class="form-control" id="editar_muestra_factura_` + id_muestra + `" placeholder="Factura" value="` + factura + `">
-                    </div>
-                    <input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" />
-                </div>
-                <p>Análisis</p>
-                <div class="table-responsive">
-                    <table class="table table-hover table-striped">
-                        <thead>
-                            <th>Nombre</th>
-                        </thead>
-                        <tbody>`;
-
+function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
+    // //Eliminar el formato de fecha dado por Django para poder leerla
+    // if (muestra.fechah_recibo != null){
+    //     fecha_r = muestra.fechah_recibo.replace('T', ' ');
+    //     fecha_r = fecha_r.replace('Z', '');
+    // }
+    // else{
+    //     fecha_r = '';
+    // }
+    var html = ``;
+    var i = 0;
     for(let a in analisis){
-        html = html+ `
-            <tr>
-                <td>`+ analisis[a] +`</td>
-            </tr>
-        `;
-    }
-    html = html+ `</tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>`;
-    return html;
+        var siono = "No";
+        if(muestra.enviado){
+            siono = "Sí";
+        }
+        var informe = muestra.num_interno_informe;
+        if(muestra.num_interno_informe == null || muestra.num_interno_informe == "null"){
+            informe = "";
+        }
+        html = html + `
+
+                <tr name="editar_muestra_`+ id_muestra +`[]" id=editar_`+ i +`>
+                    <td><input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled></td>
+                    <td><input type="text" class="form-control" style="width: 200px;" id="editar_muestra_producto_` + id_muestra + `" placeholder="Aguacate" value="` + muestra.producto + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el producto</div></td>
+                    <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_codigo_` + id_muestra + `" placeholder="A12345" value="` + muestra.codigo_muestra + `" disabled></td>
+                    <td><select class="form-control" style="width: 150px;" id="editar_analisis_` + id_muestra + `">
+                `;
+        for(let x in anal){
+            if(anal[x].pk == ids[a]){
+                html = html + `
+                        <option id="`+ anal[x].pk +`" value="`+ anal[x].pk +`" selected>` + anal[x].fields.nombre + `</option>
+                `;
+            }else{
+                html = html + `
+                        <option id="`+ anal[x].pk +`" value="`+ anal[x].pk +`">` + anal[x].fields.nombre + `</option>
+                `;
+            }
+
+        }
+        html = html + `
+                </select>
+                </td>
+                <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_mrl_` + id_muestra + `" placeholder="NA" value="` + muestra.mrl + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese un MRL válido o NA</div></td>
+                <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
+                <td><input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_esperada_recibo + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese la fecha estimada</div></td>
+                <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_recibo_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
+                <td><input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="No" value="` + siono + `" disabled></td>
+                <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_link_` + id_muestra + `" value="` + muestra.link_resultados + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
+                <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_muestreador_` + id_muestra + `" placeholder="John Cena" value="` + muestra.muestreador + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese al muestreador</div></td>
+                <td><input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" /></td>
+            </tr>`;
+          i++;
+          }
+      return html;
 }
 
 
@@ -388,7 +422,7 @@ function visualizar_info_oi(id) {
                     html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra]);
                 }
             }
-            $('.accordion_muestras').html(html_muestras);
+            $('#muestras-body').html(html_muestras);
             $('#v_observaciones').val(data.observaciones);
 
         }
@@ -429,11 +463,11 @@ function confirmar_borrar_oi(){
             success: function(){
                 $('#oi-'+id).remove();
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Se ha borrado la Orden Interna exitosamente.');    // Mostrar alerta de cotizacion borrada
+                showNotificationSuccess('top','right','Se ha borrado la Orden Interna exitosamente.');    // Mostrar alerta de cotizacion borrada
             },
             error: function(data){
                 $('#borrar_orden').modal('toggle');                                        // Cerrar el modal de borrar cotizacion
-                showNotification('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
+                showNotificationDanger('top','right','Ha ocurrido un error, inténtelo de nuevo más tarde.');    // Mostrar alerta de cotizacion borrada
             }
         });
     }
@@ -709,4 +743,10 @@ function cancelar_editar_facturacion(){
         var value = dict[campo];
         value.prop('disabled',true);
     }
+}
+
+function sincronizar(id_muestra, value, id){
+    $('tr[name="editar_muestra_'+ id_muestra +'[]"]').each(function (){
+        $(this).find('#'+ id).val(value);
+    });
 }

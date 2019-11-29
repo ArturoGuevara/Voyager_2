@@ -16,14 +16,14 @@
                 </a>
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
-                        <li class="nav-item ">
-                            <a class="nav-link" href="/cuentas/usuarios">
-                                <span>Lista de Usuarios</span>
-                            </a>
-                        </li>
                         <li>
                             <a class="nav-link" href="/cuentas/empresas">
                                 <span>Lista de Empresas</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" href="/cuentas/usuarios">
+                                <span>Lista de Usuarios</span>
                             </a>
                         </li>
                     </ul>
@@ -59,19 +59,19 @@
                   </a>
                   <div class="collapse" id="procesamientoDropdown">
                       <ul class="nav">
-                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
-                          <li class="nav-item">
-                              <a class="nav-link" href="/reportes/ordenes_internas">
-                                  <span>Órdenes internas</span>
-                              </a>
-                          </li>
-                          {% endif %}
                           {% if request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
                               <li class="nav-item">
                                   <a class="nav-link" href="/reportes/ingreso_cliente">
                                       <span>Ingresar muestra</span>
                                   </a>
                               </li>
+                          {% endif %}
+                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
+                          <li class="nav-item">
+                              <a class="nav-link" href="/reportes/ordenes_internas">
+                                  <span>Órdenes internas</span>
+                              </a>
+                          </li>
                           {% endif %}
                       </ul>
                   </div>
@@ -92,6 +92,11 @@
                                 </a>
                             </li>
                         {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/ventas/cotizaciones">
+                                <span>Cotizaciones</span>
+                            </a>
+                        </li>
                         {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Soporte' %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/exportar_datos">
@@ -99,11 +104,6 @@
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ventas/cotizaciones">
-                                <span>Cotizaciones</span>
-                            </a>
-                        </li>
                     </ul>
                 </div>
             </li>

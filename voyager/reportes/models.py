@@ -94,7 +94,7 @@ class Muestra(models.Model):
     oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
     orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
-    link_resultados =  models.CharField(max_length=100, default="")
+    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
 
     # FORMATO AG y MB
     muestreador = models.CharField(max_length=50, blank=True, null=True)
@@ -125,12 +125,11 @@ class Muestra(models.Model):
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
     #Datos para OrdenInterna
-    mrl = models.CharField(max_length=50, blank=True, null=True)
+    mrl = models.CharField(max_length=50, blank=True, null=True, default="NA")
     num_interno_informe = models.CharField(max_length=50, blank=True, null=True)
-    fecha_recibo_informe = models.CharField(max_length=50, blank=True, null=True)
-    fecha_esperada_recibo = models.CharField(max_length=50, blank=True, null=True)
+    fecha_recibo_informe = models.DateField(blank=True, null=True)
+    fecha_esperada_recibo = models.DateField(blank=True, null=True)
     enviado = models.BooleanField(default=False)
-
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)
