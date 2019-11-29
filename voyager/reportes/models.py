@@ -171,6 +171,8 @@ class AnalisisCotizacion(models.Model):
 
 class AnalisisMuestra(models.Model):
     id_analisis_muestra = models.AutoField(primary_key=True)
+    id_oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
+    id_analisis_cotizacion = models.ForeignKey(AnalisisCotizacion,on_delete=models.CASCADE)
     analisis = models.ForeignKey(Analisis,on_delete=models.CASCADE)
     muestra = models.ForeignKey(Muestra,on_delete=models.CASCADE)
     estado = models.BooleanField()
@@ -178,3 +180,20 @@ class AnalisisMuestra(models.Model):
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
     def __str__(self):
         return "%s" % (self.fecha)
+
+
+class FacturaOI(models.Model):
+    idFactura = models.AutoField(primary_key=True)
+    resp_pago = models.CharField(max_length=10000, blank=True, default='')
+    correos = models.CharField(max_length=10000, blank=True, default='')
+    numero_factura = models.CharField(max_length=10000, blank=True, default='')
+    complemento_pago = models.CharField(max_length=10000, blank=True, default='')
+    pago_factura = models.CharField(max_length=10000, blank=True, default='')
+    orden_compra = models.CharField(max_length=10000, blank=True, default='')
+    fecha_factura = models.DateField(default=timezone.now)
+    fecha_envio_factura = models.DateField(default=timezone.now)
+    envio_factura = models.BooleanField(default=False)
+    cobrar_envio = models.BooleanField(default=False)
+    envio_informes = models.BooleanField(default=False)
+    cantidad_pagada = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    oi = models.ForeignKey(OrdenInterna, on_delete=models.CASCADE)

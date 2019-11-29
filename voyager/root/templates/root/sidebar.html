@@ -30,7 +30,7 @@
                 </div>
             </li>
             {% endif %}
-            {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Cliente' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Facturacion' %}
               {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser' %}
                 <!-- <li class="nav-item">
                     <a class="nav-link" data-toggle="collapse" href="#trackingDropdown">
@@ -51,7 +51,7 @@
               <li class="nav-item">
                   <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                       <i class="nc-icon nc-notes"></i>
-                      {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
+                      {% if request.session.userrole == 'Director' or request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Facturacion' %}
                         <p>Procesamiento y <br>Reportes<b class="caret"></b></p>
                       {% elif request.session.userrole == 'Cliente' %}
                         <p>Ingreso de <br>Muestra<b class="caret"></b></p>
@@ -66,7 +66,7 @@
                                   </a>
                               </li>
                           {% endif %}
-                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
+                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
                           <li class="nav-item">
                               <a class="nav-link" href="/reportes/ordenes_internas">
                                   <span>Órdenes internas</span>

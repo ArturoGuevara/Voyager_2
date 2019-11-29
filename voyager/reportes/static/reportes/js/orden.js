@@ -366,6 +366,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
 
 // boton para abrir modal de visualizar oi y carga los campos
 function visualizar_info_oi(id) {
+    visualizar_facturacion(id);
     id_oi = id;
     $.ajax({
         url: "consultar_orden/",
@@ -424,26 +425,6 @@ function visualizar_info_oi(id) {
             $('#muestras-body').html(html_muestras);
             $('#v_observaciones').val(data.observaciones);
 
-            //Construir tabla de facturas
-            var html_facturas =`
-            <table class="table table-hover table-striped">
-                <thead>
-                    <th>Nombre</th>
-                </thead>
-                <tbody>`;
-            for(let fact in facturas){
-                html_facturas = html_facturas+ `
-                    <tr>
-                        <td>`+ facturas[fact] +`</td>
-                    </tr>
-                `;
-            }
-            html_facturas = html_facturas+ `
-                    </tbody>
-                </table>
-            `;
-            $('#visualizar_tabla_facturas').html(html_facturas);
-
         }
     })
 }
@@ -456,6 +437,8 @@ $(document).ready(function(){
     $('#btn-paquete-dhl').on('click', function () {
         $('#modal_paquete').modal('show');
     });
+
+    success_code_fact_check();
 })
 
 // Cargar id de OI a variable global
@@ -543,6 +526,223 @@ function dropdown_muestras(muestras){
         ans+="<option value='"+muestras[muestra].pk+"'>Muestra "+muestras[muestra].pk+"</option>"
     }
     return ans;
+}
+
+function visualizar_facturacion(id){
+    $.ajax({
+        url: "/reportes/visualizar_facturacion/",
+        data: {
+            id: id,
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            var data_facturacion = JSON.parse(response.data[0]);
+
+            var data_muestras = [];
+            var data_ac = [];
+            var data_analisis = [];
+            // Organizar la informacion en distintos arreglos
+            for (x in response.data){
+                if (x != 0){
+                    if (x % 3 == 1){
+                        data_analisis.push(JSON.parse(response.data[x]));
+                    }
+                    if (x % 3 == 2){
+                        data_ac.push(JSON.parse(response.data[x]));
+                    }
+                    if (x % 3 == 0){
+                        data_muestras.push(JSON.parse(response.data[x]));
+                    }
+                }
+            }
+            llenar_tabla_analisis(data_muestras, data_ac, data_analisis);
+            llenar_datos_facturacion(data_facturacion);
+        },
+        error: function(data){
+        }
+    });
+}
+
+function llenar_datos_facturacion(data_facturacion){
+    data = data_facturacion[0]
+    $('#responsable_pago_fact').val(data.fields.resp_pago);
+    $('#correo_fact').val(data.fields.correos);
+    $('#numero_fact').val(data.fields.numero_factura);
+    $('#fecha_fact').val(data.fields.fecha_factura);
+    $('#complemento_pago').val(data.fields.complemento_pago);
+    if (data.fields.cobrar_envio == true){
+        $('#cobro_envio').val("True");
+    }else{
+        $('#cobro_envio').val("False");
+    }
+    $('#oi_id_fact').val(data.fields.oi);
+    if (data.fields.envio_factura == true){
+        $('#envio_fact').val("True");
+    }else{
+        $('#envio_fact').val("False");
+    }
+    $('#fecha_envio_fact').val(data.fields.fecha_envio_factura);
+    $('#pago_fact').val(data.fields.pago_factura);
+    if (data.fields.envio_informes == true){
+        $('#envio_informes').val("True");
+    }else{
+        $('#envio_informes').val("False");
+    }
+    $('#orden_compra').val(data.fields.orden_compra);
+    $('#cantidad_pagada').val(data.fields.cantidad_pagada);
+}
+
+function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
+    var total_muestras = []
+    for(x in data_muestras){
+        var precio_unit = parseFloat(data_analisis[x][0].fields.precio);
+        var descuento = parseFloat(data_ac[x][0].fields.descuento);
+        var iva = parseFloat(data_ac[x][0].fields.iva);
+        var total_muestra_ind = precio_unit - ( (precio_unit * descuento)/100 ) + ( (precio_unit * iva)/100 )
+        total_muestras.push(total_muestra_ind)
+        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>'+data_muestras[x][0].fields.descripcion_muestra+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
+    }
+    var subtotal_muestras = 0;
+    for (i in total_muestras){
+        subtotal_muestras = subtotal_muestras + total_muestras[i];
+    }
+
+    $('#n_subtotal-facturas').html(subtotal_muestras);
+}
+
+function editar_factura(){
+    var responsable_pago = $('#responsable_pago_fact');
+    var correo = $('#correo_fact');
+    var num_fact = $('#numero_fact');
+    var fecha_fact = $('#fecha_fact');
+    var complemento_pago = $('#complemento_pago');
+    var cobro_envio = $('#cobro_envio');
+    var envio_fact = $('#envio_fact');
+    var fecha_envio_fact = $('#fecha_envio_fact');
+    var pago_fact = $('#pago_fact');
+    var envio_informes = $('#envio_informes');
+    var orden_compra = $('#orden_compra');
+    var cantidad_pagada = $('#cantidad_pagada');
+
+    $('#button_edit_factura').hide();
+    $('#button_cancelar_edit').attr("hidden",false);
+    $('#button_guardar_factura').attr("hidden",false);
+    var dict = {
+        1 : responsable_pago,
+        2 : correo,
+        3 : num_fact,
+        4 : fecha_fact,
+        5 : complemento_pago,
+        6 : cobro_envio,
+        7 : envio_fact,
+        8 : fecha_envio_fact,
+        9 : pago_fact,
+        10 : envio_informes,
+        11 : orden_compra,
+        12 : cantidad_pagada
+    }
+
+    for(var campo in dict){
+        var value = dict[campo];
+        value.prop('disabled',false);
+    }
+}
+
+function validar_factura(){
+  var responsable_pago = $('#responsable_pago_fact').val();
+  var correo = $('#correo_fact').val();
+  var num_fact = $('#numero_fact').val();
+  var fecha_fact = $('#fecha_fact').val();
+  var complemento_pago = $('#complemento_pago').val();
+  var cobro_envio = $('#cobro_envio').val();
+  var envio_fact = $('#envio_fact').val();
+  var fecha_envio_fact = $('#fecha_envio_fact').val();
+  var pago_fact = $('#pago_fact').val();
+  var envio_informes = $('#envio_informes').val();
+  var orden_compra = $('#orden_compra').val();
+  var cantidad_pagada = $('#cantidad_pagada').val();
+  var dict = {
+          1 : check_is_not_empty(responsable_pago, '#responsable_pago_fact'),
+          3 : check_is_not_empty(correo, '#correo_fact'),
+          4 : check_is_not_empty(num_fact, '#numero_fact'),
+          5 : check_is_not_empty(fecha_fact, '#fecha_fact'),
+          6 : check_is_not_empty(complemento_pago, '#complemento_pago'),
+          7 : check_is_not_empty(cobro_envio, '#cobro_envio'),
+          8 : check_is_not_empty(envio_fact, '#envio_fact'),
+          9 : check_is_not_empty(fecha_envio_fact,'#fecha_envio_fact'),
+          10 : check_is_not_empty(pago_fact,'#pago_fact'),
+          11 : check_is_not_empty(envio_informes,'#envio_informes'),
+          12 : check_is_not_empty(orden_compra,'#orden_compra'),
+          13 : check_is_not_empty(cantidad_pagada,'#cantidad_pagada')
+      }
+  for(var key in dict) {
+    var value = dict[key];
+    var flag = true;
+    if(value == false){
+        flag = false
+        break;
+    }
+  }
+    if(flag == true){
+        document.getElementById("submit-facturacion-form").submit();
+    }
+}
+
+function success_code_fact_check(){
+    $.ajax({
+        url: "/reportes/notificar_editar_facturacion",
+        data: {
+            'csrfmiddlewaretoken': token,
+        },
+        type: "POST",
+        success: function(response){
+            if (response.result == 1){
+                showNotificationSuccess('top','right','Factura guardada exitosamente');
+            }
+            if (response.result == -1){
+                showNotificationDanger('top','right','Ocurrió un error, inténtelo de nuevo más tarde');
+            }
+
+        }
+    });
+}
+
+function cancelar_editar_facturacion(){
+    var responsable_pago = $('#responsable_pago_fact');
+    var correo = $('#correo_fact');
+    var num_fact = $('#numero_fact');
+    var fecha_fact = $('#fecha_fact');
+    var complemento_pago = $('#complemento_pago');
+    var cobro_envio = $('#cobro_envio');
+    var envio_fact = $('#envio_fact');
+    var fecha_envio_fact = $('#fecha_envio_fact');
+    var pago_fact = $('#pago_fact');
+    var envio_informes = $('#envio_informes');
+    var orden_compra = $('#orden_compra');
+    var cantidad_pagada = $('#cantidad_pagada');
+    $('#button_edit_factura').show();
+    $('#button_cancelar_edit').attr("hidden",true);
+    $('#button_guardar_factura').attr("hidden",true);
+    var dict = {
+        1 : responsable_pago,
+        2 : correo,
+        3 : num_fact,
+        4 : fecha_fact,
+        5 : complemento_pago,
+        6 : cobro_envio,
+        7 : envio_fact,
+        8 : fecha_envio_fact,
+        9 : pago_fact,
+        10 : envio_informes,
+        11 : orden_compra,
+        12 : cantidad_pagada
+    }
+
+    for(var campo in dict){
+        var value = dict[campo];
+        value.prop('disabled',true);
+    }
 }
 
 function sincronizar(id_muestra, value, id){
