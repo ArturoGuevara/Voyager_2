@@ -1,14 +1,22 @@
 {% extends 'root/base.html' %}
 {% load static %}
 
+{% block optionalCSS %}
+    <link href="{% static 'ventas/css/styles.css' %}" rel="stylesheet"/>
+    <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
+{% endblock %}
+
 {% block content %}
+{% load feature_flags %}
+{% flag_enabled 'Modulo_Empresas' as my_flag %}
 <div class="text-md-left text-center">
     <h2>Empresas
-    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre las empresas del sistema.">
-        <i class="fa fa-question-circle fa-lg"></i>
-    </button>
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre a las empresas registradas.">
+                <i class="fa fa-question-circle fa-lg"></i>
+        </button>
     </h2>
-    <div id="table" class="table-responsive table-full-width">
+    {% if my_flag %}
+    <div id="table" class="table-responsive table-full-width ">
         <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_empresas">
         <thead>
             <th class="text-center">Nombre <i class="fa fa-sort"></i></th>
@@ -44,6 +52,9 @@
         </tbody>
         </table>
     </div>
+    {% else %}
+    {% include 'root/feature_not_ready.html' %}
+    {% endif %}
 </div>
 
 {% include '.././modals/modal_info_empresa.html' %}
