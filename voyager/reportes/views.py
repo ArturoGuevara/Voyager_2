@@ -896,33 +896,48 @@ def editar_facturacion(request):
                 n_orden_compra = form.cleaned_data['orden_compra']
                 n_fecha_factura = form.cleaned_data['fecha_factura']
                 n_fecha_envio_factura = form.cleaned_data['fecha_factura']
+                n_idOI = form.cleaned_data['oi_id_fact']
                 n_envio_factura = request.POST['envio_factura']
                 n_cobrar_envio = request.POST['cobrar_envio']
                 n_envio_informes = request.POST['envio_informes']
+                n_oi = OrdenInterna.objects.get(idOI=n_idOI)
 
-                n_oi = OrdenInterna.objects.get(idOI=n_pais)
-                if n_acreditacion == "0":
-                    n_acreditacion = False
-                else:
-                    n_acreditacion = True
+                dict ={
+                    'envio_factura' : n_envio_factura,
+                    'cobrar_envio' : n_cobrar_envio,
+                    'envio_informes' : n_envio_informes
+                }
 
-                newAnalisis = Analisis.objects.create(
-                    nombre = n_nombre,
-                    codigo = n_codigo,
-                    descripcion = n_descripcion,
-                    precio = n_precio,
-                    tiempo = n_duracion,
-                    pais = n_pais,
-                    unidad_min = n_unidad_min,
-                    acreditacion = n_acreditacion
+                for campo in dict:
+                    if campo == "True":
+                        campo = True
+                    else:
+                        campo = False
+
+                n_envio_factura = dict['envio_factura']
+                n_cobrar_envio = dict['cobrar_envio']
+                n_envio_informes = dict['envio_informes']
+
+                newFacturaOI = FacturaOI.objects.create(
+                    resp_pago = n_resp_pago,
+                    correos = n_correos,
+                    numero_factura = n_numero_factura,
+                    pago_factura = n_pago_factura,
+                    orden_compra = n_orden_compra,
+                    fecha_factura = n_fecha_factura,
+                    fecha_envio_factura = n_fecha_envio_factura,
+                    envio_factura = n_envio_factura,
+                    cobrar_envio = n_cobrar_envio,
+                    envio_informes = n_envio_informes,
+                    oi = n_oi
                 )
-                newAnalisis.save()      # Guardar objeto
-                request.session['success_code'] = 1
-                return redirect('/ventas/ver_catalogo')
+                newFacturaOI.save()      # Guardar objeto
+                request.session['success_code_fact'] = 1
+                return redirect('ordenes_internas/')
             else:
-                request.session['success_code'] = -1
-                return redirect('/ventas/ver_catalogo')
+                request.session['success_code_fact'] = -1
+                return redirect('ordenes_internas/')
         else:
-            return redirect('/ventas/ver_catalogo')
+            return redirect('ordenes_internas/')
     else:
         raise Http404

@@ -114,4 +114,13 @@
             showNotification('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
+    {% if success_code_fact == 1 %}
+        <script>
+            showNotification('top','right','Factura guardada exitosamente')
+        </script>
+    {% elif success_code_fact == -1 %}
+         <script>
+            showNotification('top','right','Hubo un error al guardar cotización')
+        </script>
+    {% endif %}
 {% endblock %}
