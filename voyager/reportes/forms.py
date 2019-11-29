@@ -37,3 +37,4 @@ class EditarFactura(forms.Form):
         envio_factura = forms.BooleanField()
         cobrar_envio = forms.BooleanField()
         envio_informes = forms.BooleanField()
+        cantidad_pagada = forms.DecimalField(max_digits=10,decimal_places=2)

@@ -563,7 +563,7 @@ function editar_factura(){
     var orden_compra = $('#orden_compra');
     var cantidad_pagada = $('#cantidad_pagada');
 
-    $("#oi_id_fact").val()
+    $('#button_guardar_factura').attr("hidden",false);
     var dict = {
         1 : responsable_pago,
         2 : correo,
