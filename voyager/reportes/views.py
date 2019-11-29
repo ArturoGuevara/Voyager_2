@@ -474,11 +474,12 @@ def actualizar_muestra(request):
             ids = request.POST.getlist('ids[]')
             muestra.producto = request.POST['producto']
             am = AnalisisMuestra.objects.filter(muestra = muestra)
+            am_unico = AnalisisMuestra.objects.filter(muestra = muestra).first()
             for a in am:
                 sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
             am.delete()
             for x in ids:
-                restar_analisis(muestra.usuario, x, muestra)
+                restar_analisis(muestra.usuario, x, muestra, am_unico.id_oi)
 
             # if isinstance(request.POST['factura'], int):
             #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()

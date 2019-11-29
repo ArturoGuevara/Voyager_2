@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block optionalCSS %}
-<link href="{% static 'cuentas/css/usuarios.css' %}" rel="stylesheet"/>
+  <link href="{% static 'cuentas/css/usuarios.css' %}" rel="stylesheet"/>
 {% endblock %}
 
 {% block content %}
@@ -21,10 +21,10 @@
             <i class="fa fa-question-circle fa-lg"></i>
         </button>
     {% endif %}
-        
+
     </h2>
 
-    {% if my_flag %}      
+    {% if my_flag %}
     <div class="text-center text-md-right">
         {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
             <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
