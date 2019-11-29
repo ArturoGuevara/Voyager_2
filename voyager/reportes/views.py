@@ -816,7 +816,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
 
 def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid para enviar el correo
     message = Mail(
-        from_email = 'A0127373@itesm.mx',
+        from_email = 'not-reply@internationalfoodscontrol.com',
         to_emails = dest,
         subject = subject,
         html_content = body) #Se fijan los parametros del correo
@@ -842,7 +842,14 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
-        print(e.message)
+        print(e)
+
+def ver_pdf(request,id_mue):
+    path_server = Muestra.objects.get(id_muestra=id_mue)
+    with open(path_server, 'r') as pdf:
+        response = HttpResponse(pdf.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
+        return response
 
 def visualizar_facturacion(request):
     if request.method == 'POST':
