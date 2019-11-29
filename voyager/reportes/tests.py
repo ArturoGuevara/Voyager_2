@@ -125,6 +125,13 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         role = Rol()
         role.nombre = "Cliente"
         role.save()
+        permiso = Permiso()
+        permiso.nombre = 'ingresar_muestra'
+        permiso.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         return role
 
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
@@ -142,6 +149,9 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         i_user.telefono = "9114364"
         i_user.estado = True
         i_user.save() #Guardar usuario de IFC
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
     
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
@@ -150,13 +160,15 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
 
     def test_login(self):   #Prueba cuando el usuario ha iniciado sesión
         self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
+        #self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,200)
 
     def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
+        #self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         response = self.client.post(reverse('ingreso_cliente'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",

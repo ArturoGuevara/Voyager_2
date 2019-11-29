@@ -1,0 +1,160 @@
+[
+{
+  "model": "reportes.paquete",
+  "pk": 1,
+  "fields": {
+    "codigo_dhl": "PAQUETE1"
+  }
+},
+{
+  "model": "reportes.paquete",
+  "pk": 2,
+  "fields": {
+    "codigo_dhl": "PAQUETE2"
+  }
+},
+{
+  "model": "reportes.paquete",
+  "pk": 3,
+  "fields": {
+    "codigo_dhl": "PAQUETE3"
+  }
+},
+{
+  "model": "reportes.ordeninterna",
+  "pk": 1,
+  "fields": {
+    "usuario": 7,
+    "localidad": "",
+    "fecha_recepcion_m": null,
+    "fecha_envio": null,
+    "fecha_llegada_lab": null,
+    "link_resultados": "",
+    "guia_envio": "",
+    "paquete": null,
+    "pagado": "No",
+    "formato_ingreso_muestra": "",
+    "estatus": "Creada",
+    "idioma_reporte": "8809 ES",
+    "observaciones": ""
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 1,
+  "fields": {
+    "nombre": "M\u00e9xico"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 2,
+  "fields": {
+    "nombre": "Wakanda"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 3,
+  "fields": {
+    "nombre": "Atlantis"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 4,
+  "fields": {
+    "nombre": "Uganda"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 5,
+  "fields": {
+    "nombre": "China"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 6,
+  "fields": {
+    "nombre": "Holanda"
+  }
+},
+{
+  "model": "reportes.pais",
+  "pk": 7,
+  "fields": {
+    "nombre": "Estados Unidos"
+  }
+},
+{
+  "model": "reportes.analisis",
+  "pk": 1,
+  "fields": {
+    "nombre": "Otro",
+    "codigo": "Otro",
+    "descripcion": "Otro",
+    "precio": "0.00",
+    "unidad_min": "3g",
+    "tiempo": "2 d\u00edas",
+    "pais": 1,
+    "acreditacion": true
+  }
+},
+{
+  "model": "reportes.analisis",
+  "pk": 2,
+  "fields": {
+    "nombre": "A1",
+    "codigo": "A1",
+    "descripcion": "Pesticidas",
+    "precio": "500.00",
+    "unidad_min": "3g",
+    "tiempo": "3 d\u00edas",
+    "pais": 2,
+    "acreditacion": true
+  }
+},
+{
+  "model": "reportes.analisis",
+  "pk": 3,
+  "fields": {
+    "nombre": "A2",
+    "codigo": "A2",
+    "descripcion": "Plaga",
+    "precio": "10000.00",
+    "unidad_min": "3g",
+    "tiempo": "1 d\u00eda",
+    "pais": 6,
+    "acreditacion": false
+  }
+},
+{
+  "model": "reportes.analisis",
+  "pk": 4,
+  "fields": {
+    "nombre": "B1",
+    "codigo": "B1",
+    "descripcion": "Bacterias",
+    "precio": "12345.00",
+    "unidad_min": "3",
+    "tiempo": "2 semanas",
+    "pais": 3,
+    "acreditacion": true
+  }
+},
+{
+  "model": "reportes.analisis",
+  "pk": 5,
+  "fields": {
+    "nombre": "B2",
+    "codigo": "B2",
+    "descripcion": "Agropecuario",
+    "precio": "12345.00",
+    "unidad_min": "3",
+    "tiempo": "2 semanas",
+    "pais": 3,
+    "acreditacion": true
+  }
+}
