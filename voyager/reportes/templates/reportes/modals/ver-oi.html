@@ -7,12 +7,14 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
                         </li>
+                        {% if request.session.userrole != 'Facturacion' %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
                         </li>
@@ -98,10 +100,161 @@
                                 <textarea rows="4" cols="50" id="v_observaciones" disabled></textarea>
                             </div>
                         </div>
+                        <!-- Facturas -->
                         <div class="tab-pane container fade" id="visualizar_facturacion">
-                            <div id="visualizar_tabla_facturas"></div>
-                        </div>
-                    </div>
+                          <div class="container d-block" id="ver-resumen-cot">
+                            <form action="{% url 'editar_facturacion' %}" method="POST" id="submit-facturacion-form" enctype="multipart/form-data">
+                              {% csrf_token %}
+
+                              <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Responsables de pago</label>
+                                  <textarea disabled name="responsable_pago_fact" class="form-control" id="responsable_pago_fact" placeholder="Guillermo del Toro, Quentin Tarantino, Stanley Kubrick ..." rows="8" cols="80"></textarea>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce un responsable de pago.
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Correos</label>
+                                  <textarea disabled name="correo_fact" class="form-control" id="correo_fact" placeholder="sample@sample.com, sample2@sample.com, ..." rows="8" cols="80"></textarea>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce un correo.
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Número de factura</label>
+                                  <textarea disabled name="numero_fact" id="numero_fact" class="form-control" placeholder="" rows="8" cols="80"></textarea>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce un número de facturación.
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Fecha de facturación</label>
+                                  <input type="date" class="form-control" id="fecha_fact" placeholder="Fecha de Facturacion" name="fecha_fact" disabled>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce una fecah de facturación.
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Complemento de pago</label>
+                                  <textarea disabled name="complemento_pago" id="complemento_pago" class="form-control" rows="8" cols="80"></textarea>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce un complemento de pago.
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Cobrar envío</label>
+                                  <select disabled class="form-control" id="cobro_envio" name="cobro_envio">
+                                      <option value="True">SI</option>
+                                      <option value="False">NO</option>
+                                  </select>
+                                  <input type="hidden" name="oi_id_fact" id="oi_id_fact">
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Envío factura</label>
+                                  <select disabled class="form-control" name="envio_fact" id="envio_fact">
+                                      <option value="True">SI</option>
+                                      <option value="False">NO</option>
+                                  </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Fecha de envío de factura</label>
+                                  <input type="date" class="form-control" id="fecha_envio_fact" placeholder="Fecha de envío de Facturacion" name="fecha_envio_factura" disabled>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce una fecha de envío.
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Pago de factura</label>
+                                  <textarea disabled name="pago_fact" id="pago_fact" class="form-control" rows="8" cols="80"></textarea>
+                                  <div class="invalid-feedback">
+                                      Por favor introduce un pago de factura.
+                                  </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                  <label for="visualizar_facturacion">Envío informes</label>
+                                  <select disabled class="form-control" name="envio_informes" id="envio_informes">
+                                      <option value="True">SI</option>
+                                      <option value="False">NO</option>
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="row">
+                                  <div class="form-group col-md-6">
+                                    <label for="visualizar_facturacion">Orden de compra</label>
+                                    <textarea disabled name="orden_compra" id="orden_compra" class="form-control" rows="8" cols="80"></textarea>
+                                    <div class="invalid-feedback">
+                                        Por favor introduce una orden de compra.
+                                    </div>
+                                  </div>
+                                  <div class="form-group col-md-6">
+                                    <label for="visualizar_facturacion">Cantidad pagada</label>
+                                    <input disabled class="form-control" type="number" name="cantidad_pagada" id="cantidad_pagada">
+                                    <div class="invalid-feedback">
+                                        Por favor introduce una cantidad pagada.
+                                    </div>
+                                  </div>
+                              </div>
+                            </form>
+                          </div>
+                          <div class="container">
+                              <div class="text-center">
+                                <h3>Muestras</h3>
+                              </div>
+                              <div class="row table-responsive border border-dark">
+                                <table class="table" id="oi-muestra_tabla">
+                                  <thead>
+                                    <tr>
+                                        <th scope="col">Código</th>
+                                        <th scope="col">Nombre</th>
+                                        <th scope="col">Descripción</th>
+                                        <th scope="col">Muestra</th>
+                                        <th scope="col">Precio Unitario</th>
+                                        <th scope="col">% dto.</th>
+                                        <th scope="col">% IVA</th>
+                                        <th scope="col">Total Análisis</th>
+                                    </tr>
+                                  </thead>
+                                </table>
+                              </div>
+                              <br>
+                              <div class="row border border-success bg-success">
+                                <span>SUBTOTAL: $</span><span class="text-white" id="n_subtotal-facturas">--</span>
+                              </div>
+                        <!-- Fin de facturas -->
+                          </div>
+                          <div class="container">
+                              <br>
+                              <div class="text-left">
+                                  <button type="button" class="btn btn-primary float-left" id="button_edit_factura" onclick="editar_factura()">
+                                    Editar
+                                  </button>
+                              </div>
+                              <div class="text-left">
+                                  <button type="button" hidden class="btn btn-danger float-left" id="button_cancelar_edit" onclick="cancelar_editar_facturacion()">
+                                    Cancelar
+                                  </button>
+                              </div>
+                              <div class="text-right">
+                                  <button type="button" hidden class="btn btn-success float-right" id="button_guardar_factura" onclick="validar_factura()">
+                                    Guardar
+                                  </button>
+                              </div>
+                          </div>
+
                 </div>
                 <div id="editar-info-oi" class="d-none">
                     <ul class="nav nav-tabs">
@@ -212,16 +365,13 @@
                                 <textarea rows="4" cols="50" id="e_observaciones"></textarea>
                             </div>
                         </div>
-                        <div class="tab-pane container fade" id="editar_facturacion">
-                            <div id="visualizar_tabla_facturas"></div>
-                        </div>
                     </div>
                 </div>
                 <div id="confirmar-cambios-oi" class="d-none">
 
                 </div>
                 <div class="text-right">
-                    {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' %}
+                    {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' and request.session.userrole != 'Facturacion' %}
                     <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
                         Editar
                     </button>
