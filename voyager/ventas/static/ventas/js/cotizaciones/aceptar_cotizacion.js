@@ -32,7 +32,7 @@ function confirmar_aceptar_cotizacion(){
                 aceptar_cotizacion_tabla('.cot-row',id);
                 id_aceptar = 0;
                 $('#aceptar_cot').modal('toggle');                                        // Cerrar el modal de aceptar cotizacion
-                showNotification('top','right','Se ha validado la cotización exitosamente.');
+                showNotificationSuccess('top','right','Se ha validado la cotización exitosamente.');
             },
         });
 

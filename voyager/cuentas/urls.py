@@ -48,4 +48,7 @@ urlpatterns = [
     path('empresas/',views.lista_empresas,name='lista_empresas'),
     path('consultar_empresa/',views.consultar_empresa,name='consultar_empresa'),
     path('editar_empresa/',views.editar_empresa,name='editar_empresa'),
+    path('eliminar_empresa/',views.eliminar_empresa,name='eliminar_empresa'),
+    path('notificar_editar_empresa/', views.notificar_editar_empresa, name='notificar_editar_empresa'),
+    path('notificar_borrar_empresa/', views.notificar_borrar_empresa, name='notificar_borrar_empresa'),
 ]

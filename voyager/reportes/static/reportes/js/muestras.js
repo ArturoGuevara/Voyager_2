@@ -32,13 +32,13 @@ function regresar_parte_solicitante(){
     // Alternar headers
     $('#title-2').removeClass('d-block').addClass('d-none');
     $('#title-1').removeClass('d-none').addClass('d-block');
-    
+
     // Alternar botones
     $('#btn-muestra-continuar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-regresar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-guardar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-enviar').removeClass('d-inline').addClass('d-none');
-    
+
     // Alternar contenedores
     $('#info-solicitante').addClass('d-block').removeClass('d-none');
     $('#info-muestras').removeClass('d-block').addClass('d-none');
@@ -47,13 +47,13 @@ function continuar_parte_muestras(){
     // Alternar headers
     $('#title-1').removeClass('d-block').addClass('d-none');
     $('#title-2').removeClass('d-none').addClass('d-block');
-    
+
     // Alternar botones
     $('#btn-muestra-continuar').removeClass('d-inline').addClass('d-none');
     $('#btn-muestra-regresar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-guardar').addClass('d-inline').removeClass('d-none');
     $('#btn-muestra-enviar').addClass('d-inline').removeClass('d-none');
-    
+
     // Alternar contenedores
     $('#info-solicitante').removeClass('d-block').addClass('d-none');
     $('#info-muestras').addClass('d-block').removeClass('d-none');
@@ -87,7 +87,7 @@ $('.btn-plantilla').click(function(){
 
 /* FUNCIONES PARA AGREGAR Y QUITAR FILAS A CADA FORMATO */
 function agregar_fila_agricola(){
-    $('#tabla-agricola-body').append('<tr class="fila-tabla-agricola" data-id="'+cnt_ingreso_agricola+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="productoAG-'+cnt_ingreso_agricola+'" name="productoAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="variedadAG-'+cnt_ingreso_agricola+'" name="variedadAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="pais-origenAG-'+cnt_ingreso_agricola+'" name="paisOrigenAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="codigo-muestraAG-'+cnt_ingreso_agricola+'" name="codigoMuestraAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="proveedorAG-'+cnt_ingreso_agricola+'" name="proveedorAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="codigo-trazabilidadAG-'+cnt_ingreso_agricola+'" name="codigoTrazabilidadAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="agricultorAG-'+cnt_ingreso_agricola+'" name="agricultorAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="direccionAG-'+cnt_ingreso_agricola+'" name="direccionAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="parcelaAG-'+cnt_ingreso_agricola+'" name="parcelaAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="ubicacion-muestreoAG-'+cnt_ingreso_agricola+'" name="ubicacionMuestreoAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_agricola+'" id="fecha-muestreoAG-'+cnt_ingreso_agricola+'" name="fechaMuestreoAG[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="urgenteAG-'+cnt_ingreso_agricola+'" name="urgenteAG[]"><option value="Sí">Sí</option><option value="No">No</option></select>'+retro+'</td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="muestreadorAG-'+cnt_ingreso_agricola+'" name="muestreadorAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="pais-destinoAG-'+cnt_ingreso_agricola+'" name="paisDestinoAG[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="primer-analisisAG-'+cnt_ingreso_agricola+'" name="analisis1AG[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="segundo-analisisAG-'+cnt_ingreso_agricola+'" name="analisis2AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="tercer-analisisAG-'+cnt_ingreso_agricola+'" name="analisis3AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="cuarto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis4AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="quinto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis5AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="sexto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis6AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_agricola('+cnt_ingreso_agricola+')"><i class="fa fa-trash"></i></button></td></tr>');
+    $('#tabla-agricola-body').append('<tr class="fila-tabla-agricola" data-id="'+cnt_ingreso_agricola+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="productoAG-'+cnt_ingreso_agricola+'" name="productoAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="variedadAG-'+cnt_ingreso_agricola+'" name="variedadAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="pais-origenAG-'+cnt_ingreso_agricola+'" name="paisOrigenAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="codigo-muestraAG-'+cnt_ingreso_agricola+'" name="codigoMuestraAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="proveedorAG-'+cnt_ingreso_agricola+'" name="proveedorAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="codigo-trazabilidadAG-'+cnt_ingreso_agricola+'" name="codigoTrazabilidadAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="agricultorAG-'+cnt_ingreso_agricola+'" name="agricultorAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="direccionAG-'+cnt_ingreso_agricola+'" name="direccionAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="parcelaAG-'+cnt_ingreso_agricola+'" name="parcelaAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="ubicacion-muestreoAG-'+cnt_ingreso_agricola+'" name="ubicacionMuestreoAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_agricola+'" id="fecha-muestreoAG-'+cnt_ingreso_agricola+'" name="fechaMuestreoAG[]"><div class="invalid-feedback">Ingrese fecha con el formato mm/dd/yyyy</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="urgenteAG-'+cnt_ingreso_agricola+'" name="urgenteAG[]"><option value="Sí">Sí</option><option value="No">No</option></select>'+retro+'</td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="muestreadorAG-'+cnt_ingreso_agricola+'" name="muestreadorAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_agricola+'" id="pais-destinoAG-'+cnt_ingreso_agricola+'" name="paisDestinoAG[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="primer-analisisAG-'+cnt_ingreso_agricola+'" name="analisis1AG[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="segundo-analisisAG-'+cnt_ingreso_agricola+'" name="analisis2AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="tercer-analisisAG-'+cnt_ingreso_agricola+'" name="analisis3AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="cuarto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis4AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="quinto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis5AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_agricola+'" id="sexto-analisisAG-'+cnt_ingreso_agricola+'" name="analisis6AG[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_agricola('+cnt_ingreso_agricola+')"><i class="fa fa-trash"></i></button></td></tr>');
 
     cnt_ingreso_agricola+=1;
     // El datepicker que se agrega activarlo
@@ -102,8 +102,8 @@ function quitar_fila_agricola(id){
 }
 
 function agregar_fila_procesado(){
-    $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestraPR-'+cnt_ingreso_procesado+'" name="tipoMuestraPR[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestraPR-'+cnt_ingreso_procesado+'" name="descripcionMuestraPR[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreoPR-'+cnt_ingreso_procesado+'" name="fechaMuestreoPR[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="primer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis1PR[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisisPR-'+cnt_ingreso_procesado+'" name="analisis2PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis3PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis4PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis5PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis6PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
-    
+    $('#tabla-procesado-body').append('<tr class="fila-tabla-procesado" data-id="'+cnt_ingreso_procesado+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="tipo-muestraPR-'+cnt_ingreso_procesado+'" name="tipoMuestraPR[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_procesado+'" id="descripcion-muestraPR-'+cnt_ingreso_procesado+'" name="descripcionMuestraPR[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_procesado+'" id="fecha-muestreoPR-'+cnt_ingreso_procesado+'" name="fechaMuestreoPR[]"><div class="invalid-feedback">Ingrese fecha con el formato mm/dd/yyyy</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="primer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis1PR[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="segundo-analisisPR-'+cnt_ingreso_procesado+'" name="analisis2PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="tercer-analisisPR-'+cnt_ingreso_procesado+'" name="analisis3PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="cuarto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis4PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="quinto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis5PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_procesado+'" id="sexto-analisisPR-'+cnt_ingreso_procesado+'" name="analisis6PR[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_procesado('+cnt_ingreso_procesado+')"><i class="fa fa-trash"></i></button></td></tr>');
+
     cnt_ingreso_procesado+=1;
     // El datepicker que se agrega activarlo
     $(".datepicker" ).datepicker();
@@ -116,9 +116,9 @@ function quitar_fila_procesado(id){
     });
 }
 
-function agregar_fila_micro(){    
-    $('#tabla-microbiologia-body').append('<tr class="fila-tabla-micro" data-id="'+cnt_ingreso_microbiologia+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="tipo-muestraMB-'+cnt_ingreso_microbiologia+'" name="tipoMuestraMB[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="lote-codigoMB-'+cnt_ingreso_microbiologia+'" name="loteCodigoMB[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="muestreadorMB-'+cnt_ingreso_microbiologia+'" name="muestreadorMB[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_microbiologia+'" id="fecha-muestreoMB-'+cnt_ingreso_microbiologia+'" name="fechaMuestreoMB[]"><div class="invalid-feedback">Ingrese fecha con el formato DD/MM/YYYY</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="metodo-referenciaMB-'+cnt_ingreso_microbiologia+'" name="metodoReferenciaMB[]"><div class="invalid-feedback">Este campo no puede estar vacío</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="primer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis1MB[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="segundo-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis2MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="tercer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis3MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="cuarto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis4MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="quinto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis5MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="sexto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis6MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_micro('+cnt_ingreso_microbiologia+')"><i class="fa fa-trash"></i></button></td></tr>');
-    
+function agregar_fila_micro(){
+    $('#tabla-microbiologia-body').append('<tr class="fila-tabla-micro" data-id="'+cnt_ingreso_microbiologia+'"><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="tipo-muestraMB-'+cnt_ingreso_microbiologia+'" name="tipoMuestraMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="lote-codigoMB-'+cnt_ingreso_microbiologia+'" name="loteCodigoMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="muestreadorMB-'+cnt_ingreso_microbiologia+'" name="muestreadorMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><input type="text" class="form-control datepicker" data-id="'+cnt_ingreso_microbiologia+'" id="fecha-muestreoMB-'+cnt_ingreso_microbiologia+'" name="fechaMuestreoMB[]"><div class="invalid-feedback">Ingrese fecha con el formato mm/dd/yyyy</div></td><td><input type="text" class="form-control" data-id="'+cnt_ingreso_microbiologia+'" id="metodo-referenciaMB-'+cnt_ingreso_microbiologia+'" name="metodoReferenciaMB[]"><div class="invalid-feedback">Ingrese texto sin comas</div></td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="primer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis1MB[]">'+opcionesAnalisis+'</select>'+retro+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="segundo-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis2MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="tercer-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis3MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="cuarto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis4MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="quinto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis5MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><select class="custom-select" data-id="'+cnt_ingreso_microbiologia+'" id="sexto-analisisMB-'+cnt_ingreso_microbiologia+'" name="analisis6MB[]"><option value="-1" selected>Ninguno</option>'+opcionesAnalisis+'</select>'+retro2+'</td><td><button type="button" class="btn btn-danger" onclick="quitar_fila_micro('+cnt_ingreso_microbiologia+')"><i class="fa fa-trash"></i></button></td></tr>');
+
     cnt_ingreso_microbiologia+=1;
     // El datepicker que se agrega activarlo
     $(".datepicker" ).datepicker();
@@ -133,118 +133,157 @@ function quitar_fila_micro(id){
 
 /* FUNCIONES PARA VALIDAR LOS CAMPOS DE CADA FORMATO */
 function validar_ingreso_muestra(){
-    validar_producto_procesado();
-    validar_producto_microbiologia();
-    validar_producto_agricola();
-    enviar_ingreso_muestra();
+    var v1 = validar_producto_procesado();
+    var v2 = validar_producto_microbiologia();
+    var v3 = validar_producto_agricola();
+    if (v1 == "vacío" && v2 == "vacío" && v3 == "vacío"){ //Si las tres funciones regresaron "vacío" significa que no se agregó ninguna muestra
+        showNotificationWarning('top','right','Por favor, ingrese una muestra');
+    }else if(v1 == false || v2 == false || v3 == false){//Si una sola es false, significa que un input está vacío o incorrecto
+        showNotificationWarning('top','right','Por favor, revise sus datos');
+    }else{
+        $('#envio_orden').modal('show');
+    }
 }
-function validar_producto_agricola(){
-    // Validamos los arreglos de inputs
+function validar_producto_agricola(){// Validamos los arreglos de inputs
+    var flag = "vacío"; //Esta bandera se hará false con un solo campo que no cumpla el formato, si no encuentra ningún campo, permanecerá como "vacío"
+    var v;
     $("input[name='productoAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#productoAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#productoAG-'+id);
+        flag = v;
     });
     $("input[name='variedadAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#variedadAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#variedadAG-'+id);
+        flag = flag && v;
     });
     $("input[name='paisOrigenAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#pais-origenAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#pais-origenAG-'+id);
+        flag = flag && v;
     });
     $("input[name='codigoMuestraAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#codigo-muestraAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#codigo-muestraAG-'+id);
+        flag = flag && v;
     });
     $("input[name='proveedorAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#proveedorAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#proveedorAG-'+id);
+        flag = flag && v;
     });
     $("input[name='codigoTrazabilidadAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#codigo-trazabilidadAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#codigo-trazabilidadAG-'+id);
+        flag = flag && v;
     });
     $("input[name='agricultorAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#agricultorAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#agricultorAG-'+id);
+        flag = flag && v;
     });
     $("input[name='direccionAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#direccionAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#direccionAG-'+id);
+        flag = flag && v;
     });
     $("input[name='parcelaAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#parcelaAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#parcelaAG-'+id);
+        flag = flag && v;
     });
     $("input[name='ubicacionMuestreoAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#ubicacion-muestreoAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#ubicacion-muestreoAG-'+id);
+        flag = flag && v;
     });
     $("input[name='urgenteAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#urgenteAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#urgenteAG-'+id);
+        flag = flag && v;
     });
     $("input[name='fechaMuestreoAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#fecha-muestreoAG-'+id);
-        //check_is_date($(this).val(),'#fecha-muestreoPR-'+id);
+        v = check_not_commas_empty($(this).val(),'#fecha-muestreoAG-'+id);
+        flag = flag && v;
+        v = date_is_valid($(this).val(),'#fecha-muestreoAG-'+id);
+        flag = flag && v;
     });
     $("input[name='muestreadorAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#muestreadorAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#muestreadorAG-'+id);
+        flag = flag && v;
     });
     $("input[name='paisDestinoAG[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#pais-destinoAG-'+id);
+        v = check_not_commas_empty($(this).val(),'#pais-destinoAG-'+id);
+        flag = flag && v;
     });
+    return flag;
 }
-function validar_producto_procesado(){
-    // Validamos los arreglos de inputs
+function validar_producto_procesado(){// Validamos los arreglos de inputs
+    var flag = "vacío"; //Esta bandera se hará false con un solo campo que no cumpla el formato, si no encuentra ningún campo, permanecerá como "vacío"
+    var v;
     $("input[name='tipoMuestraPR[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#tipo-muestraPR-'+id);
+        v = check_not_commas_empty($(this).val(),'#tipo-muestraPR-'+id);
+        flag = v;
     });
     $("input[name='descripcionMuestraPR[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#descripcion-muestraPR-'+id);
+        v =check_not_commas_empty($(this).val(),'#descripcion-muestraPR-'+id);
+        flag = flag && v;
     });
     $("input[name='fechaMuestreoPR[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#fecha-muestreoPR-'+id);
-        //check_is_date($(this).val(),'#fecha-muestreoPR-'+id);
+        v = check_not_commas_empty($(this).val(),'#fecha-muestreoPR-'+id);
+        flag = flag && v;
+        v = date_is_valid($(this).val(),'#fecha-muestreoPR-'+id);
+        flag = flag && v;
     });
     $("select[name='analisis1PR[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#primer-analisisPR-'+id);
+        v = check_not_commas_empty($(this).val(),'#primer-analisisPR-'+id);
+        flag = flag && v;
     });
+    return flag;
 }
-function validar_producto_microbiologia(){
-    // Validamos los arreglos de inputs
+function validar_producto_microbiologia(){// Validamos los arreglos de inputs
+    var flag = "vacío"; //Esta bandera se hará false con un solo campo que no cumpla el formato, si no encuentra ningún campo, permanecerá como "vacio"
+    var v;
     $("input[name='tipoMuestraMB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#tipo-muestraMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#tipo-muestraMB-'+id);
+        flag = v;
     });
     $("input[name='loteCodigoMB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#lote-codigoMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#lote-codigoMB-'+id);
+        flag = flag && v;
     });
     $("input[name='fechaMuestreoMB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#fecha-muestreoMB-'+id);
-        //check_is_date($(this).val(),'#fecha-muestreoMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#fecha-muestreoMB-'+id);
+        flag = flag && v;
+        v = date_is_valid($(this).val(),'#fecha-muestreoMB-'+id);
+        flag = flag && v;
     });
     $("input[name='muestreadorMB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#muestreadorMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#muestreadorMB-'+id);
+        flag = flag && v;
     });
     $("select[name='analisis1MB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#primer-analisisMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#primer-analisisMB-'+id);
+        flag = flag && v;
     });
     $("input[name='metodoReferenciaMB[]']").each(function(){
         var id = $(this).data('id');
-        check_is_not_empty($(this).val(),'#metodo-referenciaMB-'+id);
+        v = check_not_commas_empty($(this).val(),'#metodo-referenciaMB-'+id);
+        flag = flag && v;
     });
+    return flag;
 }
 
 function enviar_ingreso_muestra(){
@@ -254,7 +293,7 @@ function enviar_ingreso_muestra(){
     var pais = $('#pais').val();
     var estado = $('#estado').val();
     var idioma = $('#idioma').val();
-    
+
     // Información de formato agrícola (19 arreglos)
     var matrixAG = []
     var productoAG = iterar_input("productoAG","input");
@@ -287,7 +326,7 @@ function enviar_ingreso_muestra(){
     matrixAG.push(muestreadorAG);matrixAG.push(paisDestinoAG);
     matrixAG.push(analisis1AG);matrixAG.push(analisis2AG);matrixAG.push(analisis3AG);
     matrixAG.push(analisis4AG);matrixAG.push(analisis5AG);matrixAG.push(analisis6AG);
-    
+
     // Información de formato de producto procesado (8 arreglos)
     var matrixPR = [];
     var tipoMuestraPR = iterar_input("tipoMuestraPR","input");
@@ -305,7 +344,7 @@ function enviar_ingreso_muestra(){
     matrixPR.push(fechaMuestreoPR);
     matrixPR.push(analisis1PR);matrixPR.push(analisis2PR);matrixPR.push(analisis3PR);
     matrixPR.push(analisis4PR);matrixPR.push(analisis5PR);matrixPR.push(analisis6PR);
-        
+
     // Información de formato de microbiología (10 arreglos)
     var matrixMB = [];
     var tipoMuestraMB = iterar_input("tipoMuestraMB","input");
@@ -324,10 +363,10 @@ function enviar_ingreso_muestra(){
     matrixMB.push(fechaMuestreoMB);matrixMB.push(metodoReferenciaMB);
     matrixMB.push(analisis1MB);matrixMB.push(analisis2MB);matrixMB.push(analisis3MB);
     matrixMB.push(analisis4MB);matrixMB.push(analisis5MB);matrixMB.push(analisis6MB);
-    
+
     // Obtenemos el token de django para el ajax
     var token = csrftoken;
-    
+
     $.ajax({
         url: "registrar_ingreso_muestra",
         dataType: 'json',
@@ -345,11 +384,18 @@ function enviar_ingreso_muestra(){
         },
         type: "POST",
         success: function (response) {
-            
+            $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
+            showNotificationSuccess('top','right','Se han registrado sus muestras exitosamente.');//Mostrar notificación de envío exitoso
+            showNotificationWarning('top', 'right', 'La página se refrescará en un momento');
+            $('#ingreso-cliente-form').remove();
+            $('#opciones_guardado').remove();
+            window.setTimeout( function(){
+                window.location='ingreso_cliente'
+            }, 3000 ); //Tras unos segundos, recargar la página
         },
         error: function (data) {
-            //alert(data.status);
-            //alert(data.responseJSON.error);
+            $('#envio_orden').modal('hide'); //Cierra el modal que pide confirmación
+            showNotificationDanger('top','right','Ha ocurrido un error. Inténtelo de nuevo más tarde.');//Mostrar notificación de envío exitoso
         }
     });
 }

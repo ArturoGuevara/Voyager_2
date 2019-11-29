@@ -76,3 +76,20 @@ function showNotificationDanger(from, align, msg){
 		}
 	});
 }
+
+// Función que crea y muestra alerta
+function showNotificationModal(from, align, msg, type){
+	color = Math.floor((Math.random() * 4) + 1);
+	$.notify({
+		icon: "fas fa-check-circle",
+		message: msg
+	},{
+		z_index: 3000,
+		type: type,
+		timer: 4000,
+		placement: {
+			from: from,
+			align: align
+		}
+	});
+}

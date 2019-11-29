@@ -2,6 +2,7 @@
 {% load static %}
 {% block optionalCSS %}
     <link href="{% static 'reportes/css/muestras.css' %}" rel="stylesheet"/>
+    <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
 {% endblock %}
 {% block content %}
 <h2 class="mb-3 mt-3 d-block" id="title-1">Información del solicitante
@@ -108,22 +109,22 @@
                 <div class="card-body">
                     <div class="text-center">
                         <button class="btn btn-warning btn-plantilla" type="button" data-target="agricola"
-                        data-container="body" 
-                        data-toggle="popover" 
-                        data-trigger="hover" 
-                        data-placement="top" 
+                        data-container="body"
+                        data-toggle="popover"
+                        data-trigger="hover"
+                        data-placement="top"
                         data-img="http://placehold.it/400x200">Producto Agrícola</button>
                         <button class="btn btn-success btn-plantilla" type="button" data-target="procesado"
-                        data-container="body" 
-                        data-toggle="popover" 
-                        data-trigger="hover" 
-                        data-placement="top" 
+                        data-container="body"
+                        data-toggle="popover"
+                        data-trigger="hover"
+                        data-placement="top"
                         data-img="http://placehold.it/400x200">Producto Procesado</button>
                         <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia"
-                        data-container="body" 
-                        data-toggle="popover" 
-                        data-trigger="hover" 
-                        data-placement="top" 
+                        data-container="body"
+                        data-toggle="popover"
+                        data-trigger="hover"
+                        data-placement="top"
                         data-img="http://placehold.it/400x200">Producto Microbiología</button>
                     </div>
                     <div class="row mt-2">
@@ -131,7 +132,7 @@
                         <div class="col-12">
                             <div class="collapse" id="containerProductoAgricola">
                                 <div class="card card-body">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-agricola">
                                             <thead>
                                                 <tr>
@@ -159,7 +160,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="tabla-agricola-body">
-                                            
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -174,7 +175,7 @@
                         <div class="col-12">
                             <div class="collapse" id="containerProductoProcesado">
                                 <div class="card card-body">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-procesado">
                                             <thead>
                                             <tr>
@@ -191,7 +192,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tabla-procesado-body">
-                                            
+
                                         </tbody>
                                         </table>
                                     </div>
@@ -206,7 +207,7 @@
                         <div class="col-12">
                             <div class="collapse" id="containerProductoMicrobiologia">
                                 <div class="card card-body">
-                                    <div class="table-responsive">
+                                    <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-micro">
                                             <thead>
                                                 <tr>
@@ -225,7 +226,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody id="tabla-microbiologia-body">
-                                            
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -243,20 +244,18 @@
         </div>
     </div>
 </form>
-<div class="text-right">
+<div class="text-right" id="opciones_guardado">
     <button type="btn" class="btn btn-primary d-inline" id="btn-muestra-continuar" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Cambia a pestaña de información de muestras" onclick="validar_info_solicitante()">
         Continuar
     </button>
     <button class="btn btn-danger d-none" id="btn-muestra-regresar" onclick="regresar_parte_solicitante()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Regrese al ingreso de información del solicitante">
         Atrás
     </button>
-    <button class="btn btn-info d-none" id="btn-muestra-guardar" onclick="" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Guarda la información registrada para que edite después">
-        Guardar
-    </button>
     <button class="btn btn-success d-none" id="btn-muestra-enviar" onclick="validar_ingreso_muestra()" type="submit" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envía solicitud de ingreso de muestra">
         Enviar
     </button>
 </div>
+{% include './modals/confirmar-enviar.html' %}
 {% endblock content %}
 {% block optionalJS %}
 <script>

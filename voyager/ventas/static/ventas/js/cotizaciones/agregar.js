@@ -60,7 +60,7 @@ function cargar_cot() {
             }
         });
     } else {
-        showNotification('top', 'right', 'Selecciona al menos un análisis para la cotización');
+        showNotificationWarning('top', 'right', 'Selecciona al menos un análisis para la cotización');
     }
 }
 // Función para guardar la nueva cotización
@@ -125,7 +125,8 @@ function crear_cotizacion() {
             $('#agregar-cot').modal('hide');
 
             // Damos retroalimentación de que se guardó correctamente
-            showNotification('top', 'right', 'Cotización guardada correctamente');
+            showNotificationSuccess('top', 'right', 'Cotización guardada correctamente');
+            showNotificationWarning('top', 'right', 'La página se refrescará en un momento');
 
             setTimeout(function () {
                 location.reload();
