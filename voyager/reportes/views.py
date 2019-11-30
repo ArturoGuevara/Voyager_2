@@ -43,7 +43,7 @@ def ingreso_cliente(request):
                 'titulo': "Usted no puede realizar ingreso de muestras en este momento",
                 'mensaje': "Contacte al administrador para volver a despegar con nosotros",
             }
-            return render(request, 'reportes/bloqueado.html')
+            return render(request, 'reportes/bloqueado.html', context)
         else:
             cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
             if not cotizaciones:
