@@ -33,7 +33,7 @@
                         <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="nombre">Nombre del Solicitante</label>
-                                <input type="text" class="form-control" placeholder="Pedro Perez Lopez" id="nombre" name="nombre" minlength="1">
+                                <input type="text" class="form-control" value="{{ user.nombre }}" placeholder="Pedro Perez Lopez" id="nombre" name="nombre" minlength="1">
                                 <div class="invalid-feedback">
                                     El nombre del solicitante no puede estar vacío
                                 </div>
@@ -54,9 +54,8 @@
                             <div class="form-group">
                                 <label>País de Origen de Muestra</label>
                                 <select name="pais" class="form-control" id="pais">
-                                    <option selected disabled>Seleccione el país...</option>
+                                    <option value="México" selected>México</option>
                                     <option value="Colombia">Colombia</option>
-                                    <option value="México">México</option>
                                 </select>
                                 <div class="invalid-feedback">
                                     El país no puede estar vacío
@@ -66,7 +65,7 @@
                         <div id="label-estado" class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label>Estado de Origen de Muestra</label>
-                                <input type="text" class="form-control" id="estado" name="estado">
+                                <input type="text" placeholder="Toluca" class="form-control" id="estado" name="estado">
                             </div>
                         </div>
                     </div>
@@ -89,8 +88,7 @@
                             <div class="form-group">
                                 <label>Idioma de los Resultados</label>
                                 <select class="form-control" id="idioma" name="idioma">
-                                    <option selected value="" disabled>Seleccione el idioma...</option>
-                                    <option value="8809">Español</option>
+                                    <option value="8809" selected>Español</option>
                                     <option value="8992">Inglés</option>
                                 </select>
                                 <div class="invalid-feedback">

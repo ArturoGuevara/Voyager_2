@@ -59,7 +59,8 @@ def ingreso_cliente(request):
                     analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
                     analisis = analisis | analisis_temp
             context = {
-                'analisis': analisis
+                'analisis': analisis,
+                'user': user_logged
             }
             return render(request, 'reportes/ingreso_muestra.html', context)
     else:
