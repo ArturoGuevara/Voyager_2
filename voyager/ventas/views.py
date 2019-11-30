@@ -259,7 +259,7 @@ def ver_cotizaciones(request):
 @login_required
 def cargar_cot(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if 'crear_cotizacion' in request.session['permissions']:
         if request.method == 'POST':
             # Obtenemos el arreglo de análisis seleccionados para crear cotización
             checked = request.POST.getlist('checked[]')
@@ -295,7 +295,7 @@ def cargar_cot(request):
 def crear_cotizacion(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+        if not ('crear_cotizacion' in request.session['permissions']):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
             if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
