@@ -43,7 +43,7 @@ def ingreso_cliente(request):
                 'titulo': "Usted no puede realizar ingreso de muestras en este momento",
                 'mensaje': "Contacte al administrador para volver a despegar con nosotros",
             }
-            return render(request, 'reportes/bloqueado.html')
+            return render(request, 'reportes/bloqueado.html', context)
         else:
             cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
             if not cotizaciones:
@@ -534,8 +534,6 @@ def actualizar_orden(request):
                 oi.fecha_llegada_lab = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
-
-            oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
             oi.observaciones = request.POST['observaciones']

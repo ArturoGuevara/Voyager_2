@@ -227,7 +227,7 @@ def ver_cotizaciones(request):
             if flag_enabled('Modulo_Cotizaciones', request=request):
                 if usuario_log.rol.nombre == "Ventas":
                     cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
-                    analisis = Analisis.objects.all()
+                    analisis = Analisis.objects.all().exclude(nombre="Otro")
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                     context = {
                         'analisis': analisis,
@@ -463,7 +463,8 @@ def visualizar_cotizacion(request, id):
             empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)
             usuario = User.objects.get(pk = cotizacion.usuario_c.user.pk)
             if cotizacion:  # Verificar si la cotizacion existe
-                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                analisis_otro = Analisis.objects.filter(nombre = "Otro").first() #Obtiene el análisis Otro para excluirlo en la visualización de cotizaciones
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion).exclude(analisis=analisis_otro)# Cargar registros de tabla analisis_cotizacion
                 if analisis_cotizacion:
                     data_analisis = []
                     data_cotizacion_analisis = []

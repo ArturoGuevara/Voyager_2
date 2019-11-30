@@ -79,8 +79,11 @@ $('#submitForm').on('click', function () {
 
 function submit(){
     var estatus = "";
-    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado"){
+    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado" || $('#inputEstatus').val() == "Bloqueado"){
         estatus = $('#inputEstatus').val();
+    }else{
+        showNotificationDanger('top','right','Por favor, seleccione un estatus válido');
+        return false; //Detiene la función por si el estatus ingresado es inválido
     }
     var id = $('#id_usuario').val();
     //Código ajax que guarda los datos
