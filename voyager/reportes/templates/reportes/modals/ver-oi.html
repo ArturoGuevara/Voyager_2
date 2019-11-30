@@ -15,9 +15,11 @@
                             <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones" onclick="restaurar_editar()">Observaciones</a>
                         </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
-                        </li>
+                        {% if 'consultar_informacion_factura' in request.session.permissions %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
+                            </li>
+                        {% endif %}
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="visualizar_info">
@@ -122,14 +124,14 @@
                                   <label for="visualizar_facturacion">Responsables de pago</label>
                                   <textarea disabled name="responsable_pago_fact" class="form-control" id="responsable_pago_fact" placeholder="Guillermo del Toro, Quentin Tarantino, Stanley Kubrick ..." rows="8" cols="80"></textarea>
                                   <div class="invalid-feedback">
-                                      Por favor introduce un responsable de pago.
+                                      Introduzca un responsable de pago
                                   </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Correos</label>
                                   <textarea disabled name="correo_fact" class="form-control" id="correo_fact" placeholder="sample@sample.com, sample2@sample.com, ..." rows="8" cols="80"></textarea>
                                   <div class="invalid-feedback">
-                                      Por favor introduce un correo.
+                                      Introduzca al menos un correo
                                   </div>
                                 </div>
                               </div>
@@ -138,16 +140,10 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Número de factura</label>
                                   <textarea disabled name="numero_fact" id="numero_fact" class="form-control" placeholder="" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un número de facturación.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Fecha de facturación</label>
                                   <input type="date" class="form-control" id="fecha_fact" placeholder="Fecha de Facturacion" name="fecha_fact" disabled>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce una fecah de facturación.
-                                  </div>
                                 </div>
                               </div>
 
@@ -155,9 +151,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Complemento de pago</label>
                                   <textarea disabled name="complemento_pago" id="complemento_pago" class="form-control" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un complemento de pago.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Cobrar envío</label>
@@ -180,9 +173,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Fecha de envío de factura</label>
                                   <input type="date" class="form-control" id="fecha_envio_fact" placeholder="Fecha de envío de Facturacion" name="fecha_envio_factura" disabled>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce una fecha de envío.
-                                  </div>
                                 </div>
                               </div>
 
@@ -190,9 +180,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Pago de factura</label>
                                   <textarea disabled name="pago_fact" id="pago_fact" class="form-control" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un pago de factura.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Envío informes</label>
@@ -207,16 +194,10 @@
                                   <div class="form-group col-md-6">
                                     <label for="visualizar_facturacion">Orden de compra</label>
                                     <textarea disabled name="orden_compra" id="orden_compra" class="form-control" rows="8" cols="80"></textarea>
-                                    <div class="invalid-feedback">
-                                        Por favor introduce una orden de compra.
-                                    </div>
                                   </div>
                                   <div class="form-group col-md-6">
                                     <label for="visualizar_facturacion">Cantidad pagada</label>
                                     <input disabled class="form-control" type="number" name="cantidad_pagada" id="cantidad_pagada">
-                                    <div class="invalid-feedback">
-                                        Por favor introduce una cantidad pagada.
-                                    </div>
                                   </div>
                               </div>
                             </form>

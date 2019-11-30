@@ -55,7 +55,7 @@ def ver_catalogo(request):
     #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
     if 'consultar_catalogo_analisis' in request.session['permissions']:
         if flag_enabled('Modulo_Catalogo', request=request):
-            analisis = Analisis.objects.all()
+            analisis = Analisis.objects.all().exclude(nombre="Otro")
             paises = Pais.objects.all()
             context = {
                 'analisis': analisis,
@@ -175,7 +175,8 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if 'registrar_analisis_catalogo' in request.session['permissions']: # Validar roles de usuario logeado
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if 'registrar_analisis_catalogo' in request.session['permissions']:
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
@@ -190,7 +191,6 @@ def agregar_analisis(request):
                 n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
-                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
@@ -243,7 +243,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
