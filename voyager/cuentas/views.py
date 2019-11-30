@@ -86,8 +86,6 @@ def loggedOut(request):
 def consultar_usuario(request, id):
     #View de consulta de información de usuario
     if request.method == 'POST':
-        datos_ordenes_int = []
-        datos_ordenes = []
         datos = {}
         rol = ""
 
@@ -105,19 +103,11 @@ def consultar_usuario(request, id):
                     nombre_empresa = ""
                     if empresa:
                         nombre_empresa = empresa.first().empresa
-
-                    if rol == "Cliente":
-                        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')   #Obtener 0.I de cliente a consultar
-                        for o in ordenes_int:
-                            if o:
-                                datos_ordenes_int.append(o)
-                            else:
-                                print("Not exists")
-                        datos_ordenes = serializers.serialize("json", datos_ordenes_int, ensure_ascii=False)     #Serializar objetos de O.I
+                    
             else:
                 raise Http404
 
-        return JsonResponse({"datos": datos, "datos_ordenes":datos_ordenes,"rol":rol,"mail":mail,"nombre_empresa": nombre_empresa})
+        return JsonResponse({"datos": datos,"rol":rol,"mail":mail,"nombre_empresa": nombre_empresa})
 
 @login_required
 def lista_usuarios(request):
