@@ -541,7 +541,7 @@ def borrar_cotizacion(request, id):
 @login_required
 def aceptar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if 'aceptar_cotizacion' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
