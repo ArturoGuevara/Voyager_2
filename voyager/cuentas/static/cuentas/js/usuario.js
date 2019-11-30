@@ -30,27 +30,10 @@ function cargar_info_usuario(id) {
         success: function (response) {
             var data = JSON.parse(response.datos);
 
-            if(response.datos_ordenes != ""){
-                var ordenes = JSON.parse(response.datos_ordenes);
-            }
+          
             var rol = response.rol;
             data = data.fields;
 
-            if(rol == "Cliente"){
-
-                $('#ordenes_pendientes').removeClass('d-none');
-
-                $('#tabla_cont').empty();
-                for(var i = 0; i < ordenes.length; i++){
-                    var id = ordenes[i].pk;
-                    var estatus = ordenes[i].fields.estatus;
-
-                    $('#tabla_usuario').append('<tr><th scope="row">'+ id +'</th><td>'+ estatus +'</td></tr>');
-                }
-            }else{
-                $('#ordenes_pendientes').addClass('d-none');
-                $('#tabla_cont').empty();
-            }
             //pestaña de información
             $('#nombre').text(data.nombre);
             $('#apellido_paterno').text(data.apellido_paterno);
