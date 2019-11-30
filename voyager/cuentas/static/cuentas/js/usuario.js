@@ -30,27 +30,10 @@ function cargar_info_usuario(id) {
         success: function (response) {
             var data = JSON.parse(response.datos);
 
-            if(response.datos_ordenes != ""){
-                var ordenes = JSON.parse(response.datos_ordenes);
-            }
+          
             var rol = response.rol;
             data = data.fields;
 
-            if(rol == "Cliente"){
-
-                $('#ordenes_pendientes').removeClass('d-none');
-
-                $('#tabla_cont').empty();
-                for(var i = 0; i < ordenes.length; i++){
-                    var id = ordenes[i].pk;
-                    var estatus = ordenes[i].fields.estatus;
-
-                    $('#tabla_usuario').append('<tr><th scope="row">'+ id +'</th><td>'+ estatus +'</td></tr>');
-                }
-            }else{
-                $('#ordenes_pendientes').addClass('d-none');
-                $('#tabla_cont').empty();
-            }
             //pestaña de información
             $('#nombre').text(data.nombre);
             $('#apellido_paterno').text(data.apellido_paterno);
@@ -96,8 +79,11 @@ $('#submitForm').on('click', function () {
 
 function submit(){
     var estatus = "";
-    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado"){
+    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado" || $('#inputEstatus').val() == "Bloqueado"){
         estatus = $('#inputEstatus').val();
+    }else{
+        showNotificationDanger('top','right','Por favor, seleccione un estatus válido');
+        return false; //Detiene la función por si el estatus ingresado es inválido
     }
     var id = $('#id_usuario').val();
     //Código ajax que guarda los datos
