@@ -92,25 +92,25 @@
 
     {% if successcode == "200" %}
         <script>
-            showNotification('top','right','Paquete creado exitosamente')
+            showNotificationSuccess('top','right','Paquete creado exitosamente')
         </script>
     {% elif successcode == "404" %}
         <script>
-            showNotification('top','right','Código de rastreo no existe')
+            showNotificationWarning('top','right','Código de rastreo no existe')
         </script>
     {% elif successcode == "204" %}
         <script>
-            showNotification('top','right','No se encontró la Orden Interna')
+            showNotificationWarning('top','right','No se encontró la Orden Interna')
         </script>
     {% endif %}
 
     {% if success_sent == 1 %}
         <script>
-            showNotification('top','right','Resultados enviados exitósamente')
+            showNotificationSuccess('top','right','Resultados enviados exitósamente')
         </script>
     {% elif success_sent == -1 %}
          <script>
-            showNotification('top','right','Hubo un error en el envío')
+            showNotificationDanger('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
 
