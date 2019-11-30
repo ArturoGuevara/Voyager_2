@@ -13,7 +13,7 @@ import os
 import json
 from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
 from django.http import Http404
 import datetime
 from datetime import date
@@ -45,7 +45,7 @@ def ingreso_cliente(request):
                 'titulo': "Usted no puede realizar ingreso de muestras en este momento",
                 'mensaje': "Contacte al administrador para volver a despegar con nosotros",
             }
-            return render(request, 'reportes/bloqueado.html')
+            return render(request, 'reportes/bloqueado.html', context)
         else:
             cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
             if not cotizaciones:
@@ -327,7 +327,6 @@ def ordenes_internas(request):
                 arr_muestras.append(muestra)
 
             if muestras_orden:
-                print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
@@ -536,8 +535,6 @@ def actualizar_orden(request):
                 oi.fecha_llegada_lab = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
-
-            oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
             oi.observaciones = request.POST['observaciones']
@@ -603,10 +600,10 @@ def codigo_repetido(codigo_DHL):
 
 
 def guardar_paquete(codigo_DHL, ids_OrdI):
-    #Guarda codigo en BD y relaciona a O.I
+    #Guarda codigo en BD y relaciona a Muestras
 
 
-    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de O.I
+    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de Muestras
         return 204
 
     if not codigo_repetido(codigo_DHL): #Verifica si el codigo no existe
@@ -615,11 +612,11 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
     for id in ids_OrdI: #Asignar codigo DHL
         try:
-            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de O.I
+            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de muestra
         except:
             referencia = None
 
-        if(referencia != None): #Valida si existe la O.I
+        if(referencia != None): #Valida si existe la Muestra
             cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
             referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
             referencia.save()
@@ -897,9 +894,9 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        #print(response.status_code)
+        #print(response.body)
+        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
@@ -928,6 +925,10 @@ def visualizar_facturacion(request):
 
         if not consulta_factura:
             new_factura_oi = FacturaOI(oi=oi_requested)
+            usuario = IFCUsuario.objects.get(user = oi_requested.usuario.user)
+            empresa = Empresa.objects.get(empresa = usuario.empresa)
+            new_factura_oi.resp_pago = empresa.responsable_pagos
+            new_factura_oi.correos = empresa.correo_pagos
             new_factura_oi.save()
         else:
             new_factura_oi = consulta_factura.first()
@@ -997,9 +998,14 @@ def editar_facturacion(request):
                 newFacturaOI.complemento_pago = n_complemento_pago
                 newFacturaOI.pago_factura = n_pago_factura
                 newFacturaOI.orden_compra = n_orden_compra
-                newFacturaOI.fecha_factura = n_fecha_factura
-                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
-                newFacturaOI.envio_factura = n_envio_factura
+                if n_fecha_factura == '':
+                    newFacturaOI.fecha_factura = None
+                else:
+                    newFacturaOI.fecha_factura = n_fecha_factura
+                if n_fecha_envio_factura == '':
+                    newFacturaOI.fecha_envio_factura = None
+                else:
+                    newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
                 newFacturaOI.cobrar_envio = n_cobrar_envio
                 newFacturaOI.envio_informes = n_envio_informes
                 newFacturaOI.cantidad_pagada = n_cantidad_pagada
