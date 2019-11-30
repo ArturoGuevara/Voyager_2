@@ -986,9 +986,14 @@ def editar_facturacion(request):
                 newFacturaOI.complemento_pago = n_complemento_pago
                 newFacturaOI.pago_factura = n_pago_factura
                 newFacturaOI.orden_compra = n_orden_compra
-                newFacturaOI.fecha_factura = n_fecha_factura
-                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
-                newFacturaOI.envio_factura = n_envio_factura
+                if n_fecha_factura == '':
+                    newFacturaOI.fecha_factura = None
+                else:
+                    newFacturaOI.fecha_factura = n_fecha_factura
+                if n_fecha_envio_factura == '':
+                    newFacturaOI.fecha_envio_factura = None
+                else:
+                    newFacturaOI.fecha_envio_factura = fecha_envio_factura
                 newFacturaOI.cobrar_envio = n_cobrar_envio
                 newFacturaOI.envio_informes = n_envio_informes
                 newFacturaOI.cantidad_pagada = n_cantidad_pagada
@@ -998,6 +1003,7 @@ def editar_facturacion(request):
                 return redirect('ordenes_internas')
             else:
                 request.session['success_code_fact'] = -1
+                print(form.errors)
                 return redirect('ordenes_internas')
         else:
             request.session['success_code_fact'] = -1
