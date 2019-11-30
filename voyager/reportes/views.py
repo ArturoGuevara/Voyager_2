@@ -11,7 +11,7 @@ import requests
 import json
 from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
 from django.http import Http404
 import datetime
 from datetime import date
@@ -325,7 +325,6 @@ def ordenes_internas(request):
                 arr_muestras.append(muestra)
 
             if muestras_orden:
-                print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
@@ -890,9 +889,9 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        #print(response.status_code)
+        #print(response.body)
+        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
@@ -914,6 +913,10 @@ def visualizar_facturacion(request):
 
         if not consulta_factura:
             new_factura_oi = FacturaOI(oi=oi_requested)
+            usuario = IFCUsuario.objects.get(user = oi_requested.usuario.user)
+            empresa = Empresa.objects.get(empresa = usuario.empresa)
+            new_factura_oi.resp_pago = empresa.responsable_pagos
+            new_factura_oi.correos = empresa.correo_pagos
             new_factura_oi.save()
         else:
             new_factura_oi = consulta_factura.first()
