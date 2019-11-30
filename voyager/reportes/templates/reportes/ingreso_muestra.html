@@ -15,7 +15,7 @@
         <i class="fa fa-question-circle fa-lg"></i>
     </button>
 </h2>
-<form id="ingreso-cliente-form" method="post">
+<form id="ingreso-cliente-form" method="post" autocomplete="on">
     {% csrf_token %}
     <div id="info-solicitante" class="d-block container-fluid px-0">
         <div class="row mx-0">
@@ -128,7 +128,7 @@
                     <div class="row mt-2">
                         {% csrf_token %}
                         <div class="col-12">
-                            <div class="collapse" id="containerProductoAgricola">
+                            <div class="collapse formato-container-collapse" id="containerProductoAgricola">
                                 <div class="card card-body">
                                     <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-agricola">
@@ -162,7 +162,7 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    <div class="text-right">
+                                    <div class="text-right pt-2">
                                         <button class="btn btn-info" type="button" onclick="agregar_fila_agricola()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="bottom" data-content="Agregar fila para ingreso de muestra">
                                             <i class="fa fa-plus"></i>
                                         </button>
@@ -171,7 +171,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="collapse" id="containerProductoProcesado">
+                            <div class="collapse formato-container-collapse" id="containerProductoProcesado">
                                 <div class="card card-body">
                                     <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-procesado">
@@ -203,7 +203,7 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <div class="collapse" id="containerProductoMicrobiologia">
+                            <div class="collapse formato-container-collapse" id="containerProductoMicrobiologia">
                                 <div class="card card-body">
                                     <div class="table-responsive table-full-width" style="overflow-y: auto;">
                                         <table class="table table-striped" id="tabla-micro">

@@ -58,30 +58,49 @@ function continuar_parte_muestras(){
     $('#info-solicitante').removeClass('d-block').addClass('d-none');
     $('#info-muestras').addClass('d-block').removeClass('d-none');
 }
+
+$(document).ready(function(){
+    agregar_fila_agricola();
+    agregar_fila_micro();
+    agregar_fila_procesado();
+});
+
 $('.btn-plantilla').click(function(){
     // Obtenemos el target del contenedor que se tiene que desplegar
     var target = $(this).data('target');
-    // Si ha sido clickeado antes, escondemos todos los contenedores
-    if($(this).hasClass('clicked')){
-        $(this).removeClass('clicked');
-        $('#containerProductoAgricola').collapse('hide');
-        $('#containerProductoProcesado').collapse('hide');
-        $('#containerProductoMicrobiologia').collapse('hide');
-    }else{ // Si es la primera vez que se clickea, le agregamos la clase nada más
-        $(this).addClass('clicked');
-    }
     if(target === 'agricola'){
-        $('#containerProductoAgricola').collapse('show');
-        $('#containerProductoProcesado').collapse('hide');
-        $('#containerProductoMicrobiologia').collapse('hide');
+        // Si es el que actualmente está clickeado
+        if($(this).hasClass('clicked')){
+            $('#containerProductoAgricola').collapse('hide');
+            $(this).removeClass('clicked text-white bg-warning');
+        }else{ // Si es la primera vez que se clickea
+            $('.btn-plantilla').removeClass('clicked text-white bg-warning bg-success bg-secondary');
+            $('.formato-container-collapse').collapse('hide');
+            $('#containerProductoAgricola').collapse('show');
+            $(this).addClass('clicked text-white bg-warning');
+        }
     }else if(target === 'procesado'){
-        $('#containerProductoProcesado').collapse('show');
-        $('#containerProductoAgricola').collapse('hide');
-        $('#containerProductoMicrobiologia').collapse('hide');
+        // Si es el que actualmente está clickeado
+        if($(this).hasClass('clicked')){
+            $('#containerProductoProcesado').collapse('hide');
+            $(this).removeClass('clicked text-white bg-success');
+        }else{ // Si es la primera vez que se clickea
+            $('.btn-plantilla').removeClass('clicked text-white bg-warning bg-success bg-secondary');
+            $('.formato-container-collapse').collapse('hide');
+            $('#containerProductoProcesado').collapse('show');
+            $(this).addClass('clicked text-white bg-success');
+        }
     }else if(target === 'microbiologia'){
-        $('#containerProductoMicrobiologia').collapse('show');
-        $('#containerProductoAgricola').collapse('hide');
-        $('#containerProductoProcesado').collapse('hide');
+        // Si es el que actualmente está clickeado
+        if($(this).hasClass('clicked')){
+            $('#containerProductoMicrobiologia').collapse('hide');
+            $(this).removeClass('clicked text-white bg-secondary');
+        }else{ // Si es la primera vez que se clickea
+            $('.btn-plantilla').removeClass('clicked text-white bg-warning bg-success bg-secondary');
+            $('.formato-container-collapse').collapse('hide');
+            $('#containerProductoMicrobiologia').collapse('show');
+            $(this).addClass('clicked text-white bg-secondary');
+        }
     }
 });
 
