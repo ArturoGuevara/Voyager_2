@@ -54,7 +54,7 @@ def ver_catalogo(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
         if flag_enabled('Modulo_Catalogo', request=request):
-            analisis = Analisis.objects.all()
+            analisis = Analisis.objects.all().exclude(nombre="Otro")
             paises = Pais.objects.all()
             context = {
                 'analisis': analisis,
