@@ -19,7 +19,6 @@ class OrdenInterna(models.Model):
     fecha_envio = models.DateField(null=True, blank=True)
     fecha_llegada_lab = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
-    guia_envio = models.CharField(max_length=50, blank=True)
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
     #Opciones de sí/no e idioma

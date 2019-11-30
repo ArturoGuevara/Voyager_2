@@ -63,7 +63,6 @@ function cargar_info_oi(){
             $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
@@ -210,7 +209,6 @@ function submit(){
     var fecha_envio = $('#editar_fecha_envio').val();
     var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
     var fecha_llegada_lab = $('#editar_fecha_llegada_lab').val();
-    var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
     var pagado = $('#editar_pagado').val();
 
@@ -237,7 +235,6 @@ function submit(){
             'fecha_envio': fecha_envio,
             'fecha_recepcion_m': fecha_recepcion_m,
             'fecha_llegada_lab': fecha_llegada_lab,
-            'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
@@ -399,7 +396,6 @@ function visualizar_info_oi(id) {
             $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
             $('#visualizar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);

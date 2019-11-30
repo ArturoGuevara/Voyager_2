@@ -534,8 +534,6 @@ def actualizar_orden(request):
                 oi.fecha_llegada_lab = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
-
-            oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
             oi.observaciones = request.POST['observaciones']
