@@ -96,7 +96,7 @@ def consultar_usuario(request, id):
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if 'visualizar_clientes' in request.session['permissions'] or 'visualizar_usuarios' in request['permissions']:
                 usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
                 rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
                 if usuario:
@@ -108,7 +108,7 @@ def consultar_usuario(request, id):
                     nombre_empresa = ""
                     if empresa:
                         nombre_empresa = empresa.first().empresa
-                    
+
             else:
                 raise Http404
 
@@ -159,7 +159,7 @@ def actualizar_usuario(request):
     datos = {}
 
     user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"): #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('bloquear_usuarios' in request.session['permissions']): #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
          usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()

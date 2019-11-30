@@ -371,7 +371,7 @@ def oi_guardar(request, form, template_name):
 def consultar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
-    if (user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas"):
+    if ('visualizar_orden_interna' in request.session['permissions']):
         data = {}
         vector_muestras = None
         user_serialize = None
@@ -511,7 +511,7 @@ def actualizar_muestra(request):
 @login_required
 def actualizar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('visualizar_orden_interna' in request.session['permissions']):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI = request.POST['idOI'])
@@ -778,7 +778,7 @@ def muestra_enviar(request): #guia para guardar muestras
 
 def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas":
+    if 'eliminar_orden_interna' in request.session['permissions']:
         if request.method == 'POST':
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
@@ -833,10 +833,7 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
-    if not (user_logged.rol.nombre == "Soporte"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre == "SuperUser"
-        ):
+    if not ('notificar_resultados_correo' in request.session['permissions']):
         raise Http404
     mail_code = 0
     if request.method == 'POST':
