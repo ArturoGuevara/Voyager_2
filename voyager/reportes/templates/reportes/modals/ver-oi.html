@@ -15,9 +15,11 @@
                             <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones" onclick="restaurar_editar()">Observaciones</a>
                         </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
-                        </li>
+                        {% if 'consultar_informacion_factura' in request.session.permissions %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
+                            </li>
+                        {% endif %}
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="visualizar_info">

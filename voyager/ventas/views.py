@@ -175,7 +175,8 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if 'registrar_analisis_catalogo' in request.session['permissions']:
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
@@ -243,7 +244,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente

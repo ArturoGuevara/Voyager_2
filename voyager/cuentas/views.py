@@ -388,7 +388,8 @@ def notificar_error_perfil(request):         # Funcion que se llama con un ajax 
 @login_required
 def borrar_usuario(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'eliminar_usuario' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
