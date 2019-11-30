@@ -887,11 +887,9 @@ class TestEditaOrdenesInternas(TestCase):
                                             localidad = "loc1",
                                             fecha_envio = "2019-03-02",
                                             link_resultados = "www.lol.com",
-                                            guia_envio = "lololo"
                                         )
 
         self.assertEqual(orden.localidad,"loc1")
-        self.assertEqual(orden.guia_envio,"lololo")
 
     def test_url_resuelta(self):
         #URL testing.
