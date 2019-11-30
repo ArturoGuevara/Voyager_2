@@ -55,7 +55,7 @@ def ver_catalogo(request):
     #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
     if 'consultar_catalogo_analisis' in request.session['permissions']:
         if flag_enabled('Modulo_Catalogo', request=request):
-            analisis = Analisis.objects.all()
+            analisis = Analisis.objects.all().exclude(nombre="Otro")
             paises = Pais.objects.all()
             context = {
                 'analisis': analisis,
@@ -191,7 +191,6 @@ def agregar_analisis(request):
                 n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
-                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
