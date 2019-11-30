@@ -601,10 +601,10 @@ def codigo_repetido(codigo_DHL):
 
 
 def guardar_paquete(codigo_DHL, ids_OrdI):
-    #Guarda codigo en BD y relaciona a O.I
+    #Guarda codigo en BD y relaciona a Muestras
 
 
-    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de O.I
+    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de Muestras
         return 204
 
     if not codigo_repetido(codigo_DHL): #Verifica si el codigo no existe
@@ -613,11 +613,11 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
     for id in ids_OrdI: #Asignar codigo DHL
         try:
-            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de O.I
+            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de muestra
         except:
             referencia = None
 
-        if(referencia != None): #Valida si existe la O.I
+        if(referencia != None): #Valida si existe la Muestra
             cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
             referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
             referencia.save()

@@ -445,15 +445,6 @@ class TestCuentasUsuarios(TestCase):
         #Revisa que no puede ver al usuario de facturacion, ya que solo debe ver clientes
         self.assertNotContains(response, "facturacion")
 
-    def test_template(self):
-        #Test de creacion de ordenes internas para cliente
-        self.set_up_Users() #Set up de datos
-        self.client.login(username='direc',password='testpassword')
-        rol = Rol.objects.get(nombre="Cliente")
-        cliente = IFCUsuario.objects.filter(rol=rol).first()
-        dir = "/cuentas/consultar_usuario/" + str(cliente.user.id)
-        response = self.client.post(dir)
-        self.assertContains(response, "Estatus Prueba")
 
     def test_model(self):
         #Test del model de Cotizaciones
