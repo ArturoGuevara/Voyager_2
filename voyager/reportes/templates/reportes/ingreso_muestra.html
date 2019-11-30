@@ -10,7 +10,7 @@
         <i class="fa fa-question-circle fa-lg"></i>
     </button>
 </h2>
-<h2 class="mb-3 mt-3 d-none" id="title-2">Información de muestra
+<h2 class="mb-3 mt-3 d-none" id="title-2">Información de muestras
     <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-placement="right" data-content="Proporcione información detallada de las muestras" data-trigger="hover">
         <i class="fa fa-question-circle fa-lg"></i>
     </button>
@@ -33,7 +33,7 @@
                         <div class="col-md-6 col-sm-12">
                             <div class="form-group">
                                 <label for="nombre">Nombre del Solicitante</label>
-                                <input type="text" class="form-control" value="{{ user.nombre }}" placeholder="Pedro Perez Lopez" id="nombre" name="nombre" minlength="1">
+                                <input type="text" class="form-control" value="{{ user.empresa.empresa }}" placeholder="Pedro Perez Lopez" id="nombre" name="nombre" minlength="1">
                                 <div class="invalid-feedback">
                                     El nombre del solicitante no puede estar vacío
                                 </div>
@@ -265,6 +265,7 @@
         ]
         analisis.push(individual);
     {% endfor %}
+    var nombre_usuario = '{{ user.nombre }}';
 </script>
 <script src="{% static 'reportes/js/muestras.js' %}" type="text/javascript"></script>
 {% endblock %}
