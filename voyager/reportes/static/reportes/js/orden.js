@@ -63,7 +63,6 @@ function cargar_info_oi(){
             $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
@@ -210,7 +209,6 @@ function submit(){
     var fecha_envio = $('#editar_fecha_envio').val();
     var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
     var fecha_llegada_lab = $('#editar_fecha_llegada_lab').val();
-    var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
     var pagado = $('#editar_pagado').val();
 
@@ -237,7 +235,6 @@ function submit(){
             'fecha_envio': fecha_envio,
             'fecha_recepcion_m': fecha_recepcion_m,
             'fecha_llegada_lab': fecha_llegada_lab,
-            'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
@@ -270,11 +267,19 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         var fei = muestra.fecha_esperada_recibo;
         var fri = muestra.fecha_recibo_informe;
         var informe = muestra.num_interno_informe;
+        var producto = muestra.producto;
+        var codigo_muestra = muestra.codigo_muestra;
         if(muestra.enviado){
             siono = "Sí";
         }
         if(muestra.link_resultados != ""){
             pdf = "Ir a PDF";
+        }
+        if(muestra.producto == null){
+            producto = "-";
+        }
+        if(muestra.codigo_muestra == null){
+            codigo_muestra = "-";
         }
         if(muestra.fecha_esperada_recibo == null){
             fei = "-";
@@ -288,8 +293,8 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         html = html + `
                 <tr name="ver_muestra_`+ id_muestra +`[]">
                     <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
-                    <td id="producto_`+ id_muestra +`">` + muestra.producto + `</td>
-                    <td id="codigo_`+ id_muestra +`">` + muestra.codigo_muestra + `</td>
+                    <td id="producto_`+ id_muestra +`">` + producto + `</td>
+                    <td id="codigo_`+ id_muestra +`">` + codigo_muestra + `</td>
                     <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
                     <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
                     <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
@@ -305,14 +310,6 @@ function build_muestras(id_muestra, muestra, analisis, factura){
 }
 
 function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
-    // //Eliminar el formato de fecha dado por Django para poder leerla
-    // if (muestra.fechah_recibo != null){
-    //     fecha_r = muestra.fechah_recibo.replace('T', ' ');
-    //     fecha_r = fecha_r.replace('Z', '');
-    // }
-    // else{
-    //     fecha_r = '';
-    // }
     var html = ``;
     var i = 0;
     for(let a in analisis){
@@ -399,7 +396,6 @@ function visualizar_info_oi(id) {
             $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
             $('#visualizar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);
