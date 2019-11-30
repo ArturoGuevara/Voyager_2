@@ -146,7 +146,7 @@ def editar_analisis(request, id):
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'eliminar_analisis_catalogo' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -520,7 +520,7 @@ def visualizar_cotizacion(request, id):
 @login_required
 def borrar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'borrar_cotizacion' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -574,12 +574,6 @@ def aceptar_cotizacion(request, id):
 @login_required
 def exportar_datos(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    """if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
-        raise Http404"""
     if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.session.get('success_code',None) == None:
@@ -682,7 +676,7 @@ def importar_csv(request): #Importa datos de análisis
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
-    if not (user_logged.rol.nombre == "Director"):
+    if not ('importar_csv' in request.session['permissions']):
         raise Http404
     response_code = 0
     if request.method == 'POST':

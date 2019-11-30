@@ -468,7 +468,7 @@ def consultar_orden(request):
 @login_required
 def actualizar_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('modificar_muestra' in request.session['permissions']):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()

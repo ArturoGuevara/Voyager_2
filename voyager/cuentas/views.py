@@ -240,7 +240,7 @@ def verificar_correo(request):
 @login_required
 def crear_staff(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_usuario' in request.session['permissions']):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
     roles = Rol.objects.all()
     return render(request, 'cuentas/crear_staff.html', {'roles' : roles})
