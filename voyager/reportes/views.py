@@ -993,7 +993,7 @@ def editar_facturacion(request):
                 if n_fecha_envio_factura == '':
                     newFacturaOI.fecha_envio_factura = None
                 else:
-                    newFacturaOI.fecha_envio_factura = fecha_envio_factura
+                    newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
                 newFacturaOI.cobrar_envio = n_cobrar_envio
                 newFacturaOI.envio_informes = n_envio_informes
                 newFacturaOI.cantidad_pagada = n_cantidad_pagada
@@ -1003,7 +1003,6 @@ def editar_facturacion(request):
                 return redirect('ordenes_internas')
             else:
                 request.session['success_code_fact'] = -1
-                print(form.errors)
                 return redirect('ordenes_internas')
         else:
             request.session['success_code_fact'] = -1

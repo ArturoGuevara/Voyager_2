@@ -189,7 +189,6 @@ def agregar_analisis(request):
                 n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
-                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
