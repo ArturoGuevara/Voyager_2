@@ -110,20 +110,20 @@
                         data-container="body"
                         data-toggle="popover"
                         data-trigger="hover"
-                        data-placement="top"
-                        data-img="http://placehold.it/400x200">Producto Agrícola</button>
+                        data-placement="top"                        
+                        data-img="{% static 'reportes/img/agricola.jfif' %}">Producto Agrícola</button>
                         <button class="btn btn-success btn-plantilla" type="button" data-target="procesado"
                         data-container="body"
                         data-toggle="popover"
                         data-trigger="hover"
                         data-placement="top"
-                        data-img="http://placehold.it/400x200">Producto Procesado</button>
+                        data-img="{% static 'reportes/img/procesado.jfif' %}">Producto Procesado</button>
                         <button class="btn btn-default btn-plantilla" type="button" data-target="microbiologia"
                         data-container="body"
                         data-toggle="popover"
                         data-trigger="hover"
                         data-placement="top"
-                        data-img="http://placehold.it/400x200">Producto Microbiología</button>
+                        data-img="{% static 'reportes/img/micro.jpg' %}">Producto Microbiología</button>
                     </div>
                     <div class="row mt-2">
                         {% csrf_token %}
