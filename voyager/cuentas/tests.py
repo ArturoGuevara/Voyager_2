@@ -346,6 +346,10 @@ class TestCuentasUsuarios(TestCase):
         permiso2.nombre = 'visualizar_clientes'
         permiso2.save()
 
+        permiso3 = Permiso()
+        permiso3.nombre = 'crear_usuario'
+        permiso3.save()
+
         #Crea usuarios Clientes
         rol_clientes = Rol.objects.create(nombre='Cliente')
         usuario_clientes = User.objects.create_user('client', 'clienttest@testuser.com', 'testpassword')
@@ -442,6 +446,11 @@ class TestCuentasUsuarios(TestCase):
         permiso_rol2.rol = rol_facturacion
         permiso_rol2.save()
 
+        permiso_rol3 = PermisoRol()
+        permiso_rol3.permiso = permiso3
+        permiso_rol3.rol = rol_dir
+        permiso_rol3.save()
+
     def login_IFC(self,mail,password):
         response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
@@ -498,14 +507,14 @@ class TestCuentasUsuarios(TestCase):
     def test_acceso_permitido_crear_staff(self):
         # Test de acceso con director loggeado
         self.set_up_Users()
-        self.client.login(username='direc', password='testpassword')
+        self.login_IFC('test@testuser.com','testpassword')
         response = self.client.get('/cuentas/crear_staff/')
         self.assertEqual(response.status_code, 200)
 
     def test_acceso_denegado_no_director_crear_staff(self):
         # Test de acceso con alguien que no es director
         self.set_up_Users()
-        self.client.login(username='client', password='testpassword')
+        self.login_IFC('clienttest@testuser.com','testpassword')
         response = self.client.get('/cuentas/crear_staff/')
         self.assertEqual(response.status_code, 404)
 

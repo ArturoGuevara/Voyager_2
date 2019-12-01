@@ -760,6 +760,15 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         muestra.save()
         self.client.logout()
 
+        permiso1 = Permiso()
+        permiso1.nombre = 'visualizar_orden_interna'
+        permiso1.save()
+
+        permiso_rol1 = PermisoRol()
+        permiso_rol1.permiso = permiso1
+        permiso_rol1.rol = Rol.objects.get(nombre="Soporte")
+        permiso_rol1.save()
+
     def test_id_incorrecto(self):   #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.setup2()
@@ -769,31 +778,31 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         self.assertEqual(response.status_code, 404)   #Mostrar 404
 
     #Prueba si la oi tiene 2 muestras, una con factura y otra sin factura
-    # def test_dos_muestras(self):
-    #     self.create_IFCUsuario()
-    #     self.setup2()
-    #     self.login_IFC('soporte@lalocura.com', 'soporte')
-    #     oi_id = OrdenInterna.objects.all().first().idOI
-    #     #El post va vacío
-    #     response = self.client.post(reverse('consultar_orden'),{'id': oi_id})
-    #     orden = OrdenInterna.objects.get(idOI = oi_id)
-    #     # Sacar la oi y las muestras para comparar con el response
-    #     import json
-    #     muestras = response.json()['muestras']
-    #     f = response.json()['facturas']
-    #     muestras_json = json.loads(muestras)
-    #     num_muestras = 0
-    #     #Checar cada muestra y comparar que corresponden con la oi y sus facturas
-    #     for ind in muestras_json:
-    #         muestra = Muestra.objects.get(id_muestra = ind['pk'])
-    #         if muestra.factura:
-    #             self.assertEqual(f[str(ind['pk'])] , muestra.factura.idFactura)
-    #         self.assertEqual(ind['fields']['oi'] , oi_id)
-    #         num_muestras+=1
-    #
-    #     #Checar que el núm de muestras del response sea igual al de la oi asociada
-    #     self.assertEqual(num_muestras, Muestra.objects.filter(oi = orden).count())
-    #     self.assertEqual(response.status_code, 200)   #Mostrar 200
+    def test_dos_muestras(self):
+        self.create_IFCUsuario()
+        self.setup2()
+        self.login_IFC('soporte@phantom.com', 'soporte')
+        oi_id = OrdenInterna.objects.all().first().idOI
+        #El post va vacío
+        response = self.client.post(reverse('consultar_orden'),{'id': oi_id})
+        orden = OrdenInterna.objects.get(idOI = oi_id)
+        # Sacar la oi y las muestras para comparar con el response
+        import json
+        muestras = response.json()['muestras']
+        f = response.json()['facturas']
+        muestras_json = json.loads(muestras)
+        num_muestras = 0
+        #Checar cada muestra y comparar que corresponden con la oi y sus facturas
+        for ind in muestras_json:
+            muestra = Muestra.objects.get(id_muestra = ind['pk'])
+            if muestra.factura:
+                self.assertEqual(f[str(ind['pk'])] , muestra.factura.idFactura)
+            self.assertEqual(ind['fields']['oi'] , oi_id)
+            num_muestras+=1
+
+        #Checar que el núm de muestras del response sea igual al de la oi asociada
+        self.assertEqual(num_muestras, Muestra.objects.filter(oi = orden).count())
+        self.assertEqual(response.status_code, 200)   #Mostrar 200
 
 
 
