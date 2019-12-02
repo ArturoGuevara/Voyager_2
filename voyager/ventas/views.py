@@ -718,7 +718,7 @@ def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
 @login_required
 def bloquear_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if('aceptar_cotizacion' in request.session['permissions']):
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
