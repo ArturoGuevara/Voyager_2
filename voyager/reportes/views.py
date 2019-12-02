@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
@@ -8,10 +9,11 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from urllib.parse import urlencode
 import requests
+import os
 import json
 from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
 from django.http import Http404
 import datetime
 from datetime import date
@@ -326,7 +328,6 @@ def ordenes_internas(request):
                 arr_muestras.append(muestra)
 
             if muestras_orden:
-                print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
@@ -852,9 +853,11 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
     return redirect('/reportes/ordenes_internas')
 
 def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
-    path = './archivos-reportes/resultados'
+    path = 'resultados'
+    #path = 'resultados'
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    path += ".pdf"
     muestras = Muestra.objects.filter(id_muestra=muestra)
     if muestras:
         muestra_object = muestras.first()
@@ -863,6 +866,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
         muestra_object.save()
     else:
         return 404
+    path = './archivos-reportes/' + path
     with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
         for chunk in file.chunks():
             destination.write(chunk)
@@ -891,20 +895,27 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        #print(response.status_code)
+        #print(response.body)
+        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
 
-def ver_pdf(request,id_mue):
-    path_server = Muestra.objects.get(id_muestra=id_mue)
-    with open(path_server, 'r') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        return response
+def ver_pdf(request, file):
+    path_file = "/archivos-reportes/"+file
+    path = settings.BASE_DIR + path_file
+    print(path)
+        
+    if os.path.exists(path):
+        with open(path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/pdf")
+            response['Content-Disposition'] = 'inline; filename="archivo"'
+            return response
+    raise Http404
+    
 
+    
 def visualizar_facturacion(request):
     if request.method == 'POST':
 
@@ -915,6 +926,10 @@ def visualizar_facturacion(request):
 
         if not consulta_factura:
             new_factura_oi = FacturaOI(oi=oi_requested)
+            usuario = IFCUsuario.objects.get(user = oi_requested.usuario.user)
+            empresa = Empresa.objects.get(empresa = usuario.empresa)
+            new_factura_oi.resp_pago = empresa.responsable_pagos
+            new_factura_oi.correos = empresa.correo_pagos
             new_factura_oi.save()
         else:
             new_factura_oi = consulta_factura.first()
@@ -984,9 +999,14 @@ def editar_facturacion(request):
                 newFacturaOI.complemento_pago = n_complemento_pago
                 newFacturaOI.pago_factura = n_pago_factura
                 newFacturaOI.orden_compra = n_orden_compra
-                newFacturaOI.fecha_factura = n_fecha_factura
-                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
-                newFacturaOI.envio_factura = n_envio_factura
+                if n_fecha_factura == '':
+                    newFacturaOI.fecha_factura = None
+                else:
+                    newFacturaOI.fecha_factura = n_fecha_factura
+                if n_fecha_envio_factura == '':
+                    newFacturaOI.fecha_envio_factura = None
+                else:
+                    newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
                 newFacturaOI.cobrar_envio = n_cobrar_envio
                 newFacturaOI.envio_informes = n_envio_informes
                 newFacturaOI.cantidad_pagada = n_cantidad_pagada

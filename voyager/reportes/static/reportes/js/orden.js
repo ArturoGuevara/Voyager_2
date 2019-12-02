@@ -301,7 +301,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
                     <td id="fei_`+ id_muestra +`">` + fei + `</td>
                     <td id="fri_`+ id_muestra +`">` + fri + `</td>
                     <td id="siono_`+ id_muestra +`">` + siono + `</td>
-                    <td id="link_`+ id_muestra +`"><a href="` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
+                    <td id="link_`+ id_muestra +`"><a href="resultados/` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
                     <td id="muestreador_`+ id_muestra +`">` + muestra.muestreador + `</td>
                 </tr>
                 `;
@@ -659,16 +659,6 @@ function validar_factura(){
   var dict = {
           1 : check_is_not_empty(responsable_pago, '#responsable_pago_fact'),
           3 : check_is_not_empty(correo, '#correo_fact'),
-          4 : check_is_not_empty(num_fact, '#numero_fact'),
-          5 : check_is_not_empty(fecha_fact, '#fecha_fact'),
-          6 : check_is_not_empty(complemento_pago, '#complemento_pago'),
-          7 : check_is_not_empty(cobro_envio, '#cobro_envio'),
-          8 : check_is_not_empty(envio_fact, '#envio_fact'),
-          9 : check_is_not_empty(fecha_envio_fact,'#fecha_envio_fact'),
-          10 : check_is_not_empty(pago_fact,'#pago_fact'),
-          11 : check_is_not_empty(envio_informes,'#envio_informes'),
-          12 : check_is_not_empty(orden_compra,'#orden_compra'),
-          13 : check_is_not_empty(cantidad_pagada,'#cantidad_pagada')
       }
   for(var key in dict) {
     var value = dict[key];
