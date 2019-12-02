@@ -485,9 +485,6 @@ function cargar_enviar(id){
             var html_drop = dropdown_muestras(muestras);
             $('#muestra').html(html_drop);
         },
-        error: function(data){
-            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
-        }
     });
 }
 

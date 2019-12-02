@@ -1,0 +1,786 @@
+[
+{
+  "model": "cuentas.permisorol",
+  "pk": 1,
+  "fields": {
+    "permiso": 1,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 2,
+  "fields": {
+    "permiso": 1,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 3,
+  "fields": {
+    "permiso": 1,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 4,
+  "fields": {
+    "permiso": 1,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 5,
+  "fields": {
+    "permiso": 2,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 6,
+  "fields": {
+    "permiso": 2,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 7,
+  "fields": {
+    "permiso": 2,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 8,
+  "fields": {
+    "permiso": 2,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 9,
+  "fields": {
+    "permiso": 2,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 10,
+  "fields": {
+    "permiso": 2,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 11,
+  "fields": {
+    "permiso": 3,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 12,
+  "fields": {
+    "permiso": 3,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 13,
+  "fields": {
+    "permiso": 4,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 14,
+  "fields": {
+    "permiso": 4,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 15,
+  "fields": {
+    "permiso": 4,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 16,
+  "fields": {
+    "permiso": 5,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 17,
+  "fields": {
+    "permiso": 5,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 18,
+  "fields": {
+    "permiso": 5,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 19,
+  "fields": {
+    "permiso": 5,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 20,
+  "fields": {
+    "permiso": 5,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 21,
+  "fields": {
+    "permiso": 5,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 22,
+  "fields": {
+    "permiso": 6,
+    "rol": 3
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 23,
+  "fields": {
+    "permiso": 6,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 24,
+  "fields": {
+    "permiso": 7,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 25,
+  "fields": {
+    "permiso": 7,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 26,
+  "fields": {
+    "permiso": 7,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 27,
+  "fields": {
+    "permiso": 7,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 28,
+  "fields": {
+    "permiso": 8,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 29,
+  "fields": {
+    "permiso": 8,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 30,
+  "fields": {
+    "permiso": 9,
+    "rol": 3
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 31,
+  "fields": {
+    "permiso": 9,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 32,
+  "fields": {
+    "permiso": 10,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 33,
+  "fields": {
+    "permiso": 10,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 34,
+  "fields": {
+    "permiso": 10,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 35,
+  "fields": {
+    "permiso": 10,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 36,
+  "fields": {
+    "permiso": 10,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 37,
+  "fields": {
+    "permiso": 11,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 38,
+  "fields": {
+    "permiso": 11,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 39,
+  "fields": {
+    "permiso": 11,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 40,
+  "fields": {
+    "permiso": 11,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 41,
+  "fields": {
+    "permiso": 11,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 42,
+  "fields": {
+    "permiso": 12,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 43,
+  "fields": {
+    "permiso": 12,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 44,
+  "fields": {
+    "permiso": 12,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 45,
+  "fields": {
+    "permiso": 12,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 46,
+  "fields": {
+    "permiso": 12,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 47,
+  "fields": {
+    "permiso": 13,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 48,
+  "fields": {
+    "permiso": 13,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 49,
+  "fields": {
+    "permiso": 13,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 50,
+  "fields": {
+    "permiso": 13,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 51,
+  "fields": {
+    "permiso": 13,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 52,
+  "fields": {
+    "permiso": 14,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 53,
+  "fields": {
+    "permiso": 14,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 54,
+  "fields": {
+    "permiso": 14,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 55,
+  "fields": {
+    "permiso": 15,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 56,
+  "fields": {
+    "permiso": 15,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 57,
+  "fields": {
+    "permiso": 15,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 58,
+  "fields": {
+    "permiso": 15,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 59,
+  "fields": {
+    "permiso": 15,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 60,
+  "fields": {
+    "permiso": 16,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 61,
+  "fields": {
+    "permiso": 16,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 62,
+  "fields": {
+    "permiso": 16,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 63,
+  "fields": {
+    "permiso": 16,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 64,
+  "fields": {
+    "permiso": 16,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 65,
+  "fields": {
+    "permiso": 16,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 66,
+  "fields": {
+    "permiso": 17,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 67,
+  "fields": {
+    "permiso": 17,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 68,
+  "fields": {
+    "permiso": 17,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 69,
+  "fields": {
+    "permiso": 18,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 70,
+  "fields": {
+    "permiso": 18,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 71,
+  "fields": {
+    "permiso": 19,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 72,
+  "fields": {
+    "permiso": 19,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 73,
+  "fields": {
+    "permiso": 20,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 74,
+  "fields": {
+    "permiso": 20,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 75,
+  "fields": {
+    "permiso": 20,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 76,
+  "fields": {
+    "permiso": 20,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 77,
+  "fields": {
+    "permiso": 21,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 81,
+  "fields": {
+    "permiso": 21,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 82,
+  "fields": {
+    "permiso": 22,
+    "rol": 5
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 83,
+  "fields": {
+    "permiso": 22,
+    "rol": 3
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 84,
+  "fields": {
+    "permiso": 22,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 85,
+  "fields": {
+    "permiso": 23,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 86,
+  "fields": {
+    "permiso": 23,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 87,
+  "fields": {
+    "permiso": 23,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 88,
+  "fields": {
+    "permiso": 23,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 89,
+  "fields": {
+    "permiso": 24,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 90,
+  "fields": {
+    "permiso": 24,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 91,
+  "fields": {
+    "permiso": 24,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 92,
+  "fields": {
+    "permiso": 25,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 93,
+  "fields": {
+    "permiso": 25,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 94,
+  "fields": {
+    "permiso": 25,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 95,
+  "fields": {
+    "permiso": 25,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 96,
+  "fields": {
+    "permiso": 26,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 97,
+  "fields": {
+    "permiso": 26,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 98,
+  "fields": {
+    "permiso": 26,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 99,
+  "fields": {
+    "permiso": 26,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 100,
+  "fields": {
+    "permiso": 27,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 101,
+  "fields": {
+    "permiso": 27,
+    "rol": 6
+  }
+}
+]

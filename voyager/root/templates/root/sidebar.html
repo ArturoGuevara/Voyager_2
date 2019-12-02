@@ -16,16 +16,18 @@
                 </a>
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
-                        <li>
-                            <a class="nav-link" href="/cuentas/empresas">
-                                <span>Lista de Empresas</span>
-                            </a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link" href="/cuentas/usuarios">
-                                <span>Lista de Usuarios</span>
-                            </a>
-                        </li>
+                        {% if 'visualizar_usuarios' in request.session.permissions or 'visualizar_clientes' in request.session.permissions %}
+                            <li>
+                                <a class="nav-link" href="/cuentas/empresas">
+                                    <span>Lista de Empresas</span>
+                                </a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link" href="/cuentas/usuarios">
+                                    <span>Lista de Usuarios</span>
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </li>
@@ -59,14 +61,14 @@
                   </a>
                   <div class="collapse" id="procesamientoDropdown">
                       <ul class="nav">
-                          {% if request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser' %}
+                          {% if 'ingresar_muestra' in request.session.permissions %}
                               <li class="nav-item">
                                   <a class="nav-link" href="/reportes/ingreso_cliente">
                                       <span>Ingresar muestra</span>
                                   </a>
                               </li>
                           {% endif %}
-                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
+                          {%  if 'visualizar_orden_interna' in request.session.permissions  %}
                           <li class="nav-item">
                               <a class="nav-link" href="/reportes/ordenes_internas">
                                   <span>Órdenes internas</span>
@@ -77,7 +79,7 @@
                   </div>
               </li>
             {% endif %}
-            {% if request.session.userrole == 'Ventas' or request.session.userrole == 'Cliente' or request.session.userrole == 'SuperUser'  or request.session.userrole == 'Director' %}
+            {% if 'consultar_catalogo_analisis' in request.session.permissions %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#ventasDropdown">
                     <i class="nc-icon nc-cart-simple"></i>
@@ -85,19 +87,21 @@
                 </a>
                 <div class="collapse" id="ventasDropdown">
                     <ul class="nav">
-                        {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' %}
+                        {% if 'consultar_catalogo_analisis' in request.session.permissions %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/ver_catalogo">
                                     <span>Catálogo de análisis</span>
                                 </a>
                             </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="/ventas/cotizaciones">
-                                <span>Cotizaciones</span>
-                            </a>
-                        </li>
-                        {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Soporte' %}
+                        {% if 'visualizar_cotizacion' in request.session.permissions or 'consultar_cotizacion' in request.session.permissions %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/ventas/cotizaciones">
+                                    <span>Cotizaciones</span>
+                                </a>
+                            </li>
+                        {% endif %}
+                        {% if 'descargar_csv' in request.session.permissions %}
                             <li class="nav-item">
                                 <a class="nav-link" href="/ventas/exportar_datos">
                                     <span>Exportar datos</span>

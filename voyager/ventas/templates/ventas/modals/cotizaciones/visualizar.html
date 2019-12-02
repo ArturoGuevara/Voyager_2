@@ -174,10 +174,12 @@
             <div id="btn-espacio" class="modal-footer">
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
-                <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
-                {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
-                <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
-                <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                {% if 'descargar_cotizacion_pdf' in request.session.permissions %}
+                    <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
+                {% endif %}
+                {% if 'actualizar_cotizacion' in request.session.permissions %}
+                    <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
+                    <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
                 {% endif %}
             </div>
             <div class="container" id="terminos" style="font-size: 10px;">
