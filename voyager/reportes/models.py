@@ -32,6 +32,10 @@ class OrdenInterna(models.Model):
     ESTADOS = (
         ('Invisible', 'Invisible'),
         ('Fantasma', 'Fantasma'),
+        ('No recibido', 'No recibido'),
+        ('Recibido', 'Recibido'),
+        ('Envio parcial', 'Envio parcial'),
+        ('Envio total', 'Envio total'),
         ('Creada', 'Creada'),
         ('Enviada', 'Enviada'),
         ('En laboratorio', 'En laboratorio'),
