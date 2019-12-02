@@ -356,7 +356,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'No recibido') #verificar que el estado de la orden interna sea el correcto
         ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
         self.assertEqual(ac.restante,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -389,7 +389,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'No recibido') #verificar que el estado de la orden interna sea el correcto
         ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
         number_analysis = AnalisisCotizacion.objects.first().cantidad #Buscar la cantidad de análisis que se cotizaron originalmente
         self.assertEqual(ac.restante,number_analysis-5) #verificar que se disminuyó la cantidad de análisis disponibles
@@ -839,7 +839,7 @@ class TestEditaOrdenesInternas(TestCase):
 
         #Crear orden interna para cliente
         oi = OrdenInterna.objects.create(usuario = clientes1,
-                                            estatus = "Fantasma",
+                                            estatus = "No recibido",
                                             localidad = "mexico",
                                         )
         oi.save()
@@ -873,10 +873,10 @@ class TestEditaOrdenesInternas(TestCase):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
         self.client.login(username='soport',password='testpassword')
-        orden = OrdenInterna.objects.filter(estatus="Fantasma").first()
+        orden = OrdenInterna.objects.filter(estatus="No recibido").first()
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
-        self.assertContains(response, "Fantasma")
+        self.assertContains(response, "No recibido")
 
 
     def test_model(self):

@@ -83,7 +83,7 @@ def registrar_ingreso_muestra(request):
                 matrixMB = request.POST.getlist('matrixMB[]')
                 oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
                 oi.usuario = user_logged
-                oi.estatus = "Creada"
+                oi.estatus = "No recibido"
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
@@ -308,6 +308,7 @@ def ordenes_internas(request):
     ordenes_activas = {}
     dict_clientes = {}
     dict_muestras = {}
+    dict_analisis = {}
     form = None
     response = None
 
@@ -320,9 +321,26 @@ def ordenes_internas(request):
     if flag_enabled('Modulo_Ordenes_Internas', request=request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
+        ordenes_faltantes = OrdenInterna.objects.filter(estatus="No recibido").order_by('idOI')
+
+        for orden_no_recibida in ordenes_faltantes:
+            arr_analisis = []
+
+            muestras_an = AnalisisMuestra.objects.filter(id_oi=orden_no_recibida)
+            for m in muestras_an:
+                arr_analisis.append(m) 
+            
+            if muestras_an:
+                print(arr_analisis)
+                dict_analisis[orden_no_recibida] = arr_analisis.copy()
+            arr_analisis.clear()
+
         for orden in ordenes_activas:
             arr_muestras = []
+            
             muestras_orden = Muestra.objects.filter(oi=orden)
+                          
+
             for muestra in muestras_orden:
                 arr_muestras.append(muestra)
 
@@ -342,6 +360,7 @@ def ordenes_internas(request):
         'success_sent': request.session['success_sent'],
         'ordenes_clientes': dict_clientes,
         'muestras': dict_muestras,
+        'analisis': dict_analisis,
     }
     request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
