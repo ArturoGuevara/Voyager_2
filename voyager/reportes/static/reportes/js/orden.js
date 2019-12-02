@@ -301,7 +301,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
                     <td id="fei_`+ id_muestra +`">` + fei + `</td>
                     <td id="fri_`+ id_muestra +`">` + fri + `</td>
                     <td id="siono_`+ id_muestra +`">` + siono + `</td>
-                    <td id="link_`+ id_muestra +`"><a href="` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
+                    <td id="link_`+ id_muestra +`"><a href="resultados/` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
                     <td id="muestreador_`+ id_muestra +`">` + muestra.muestreador + `</td>
                 </tr>
                 `;
