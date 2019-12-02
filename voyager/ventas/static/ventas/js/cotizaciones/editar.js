@@ -26,7 +26,7 @@ function restaurar_modal_ver_cot(){
     $('#nav-info').removeClass().addClass('tab-pane fade show active');
     $('#nav-analisis').removeClass().addClass('tab-pane fade');
 
-    $('#imprimir-pdf').show(); 
+    $('#imprimir-pdf').show();
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
@@ -232,6 +232,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -243,6 +255,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
