@@ -4,7 +4,7 @@ from .views import validacion_dhl, validacion_codigo
 from .models import Paquete
 from django.test import TestCase,TransactionTestCase
 from django.contrib.auth.models import User
-from cuentas.models import IFCUsuario,Rol
+from cuentas.models import IFCUsuario,Rol,Permiso,PermisoRol
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,OrdenInterna,Pais
 from django.http import HttpResponse
 from cuentas.models import Empresa
@@ -77,9 +77,16 @@ class DHLTests(TestCase):
 # Create your tests here.
 class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso_cliente
     def create_role_client(self):   #Crear rol en base de datos de tests
+        permiso = Permiso()
+        permiso.nombre = 'ingresar_muestra'
+        permiso.save()
         role = Rol()
         role.nombre = "Cliente"
         role.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         return role
 
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
@@ -98,6 +105,9 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
         i_user.estado = True
         i_user.save()   #Guardar usuario de IFC
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()   #Llamar función para crear rol
         response = self.client.get(reverse('ingreso_cliente'))   #Ir a página de ingreso de cliente
@@ -105,7 +115,8 @@ class IngresoClienteTests(TestCase):   #Casos de prueba para la vista de ingreso
 
     def test_login(self):   #Pruena si el usuario ya inició sesión
         self.create_IFCUsuario()   #Llamar la función para crear usuario de IFC
-        self.client.login(username='hockey',password='lalocura')   #Hacer inicio de sesión
+        #self.client.login(username='hockey',password='lalocura')   #Hacer inicio de sesión
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,200)   #Todo debe de salir correctamente
 
@@ -114,6 +125,13 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         role = Rol()
         role.nombre = "Cliente"
         role.save()
+        permiso = Permiso()
+        permiso.nombre = 'ingresar_muestra'
+        permiso.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         return role
 
     def create_user_django(self):   #Crear usuario en tabla usuario de Django
@@ -131,7 +149,10 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
         i_user.telefono = "9114364"
         i_user.estado = True
         i_user.save() #Guardar usuario de IFC
-    
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login(self):   #Prueba si el usuario no ha iniciado sesión
         self.create_role_client()
         response = self.client.get(reverse('ingreso_cliente'))
@@ -139,13 +160,15 @@ class IngresoMuestrasTests(TestCase):   #Casos de prueba para la vista de ingres
 
     def test_login(self):   #Prueba cuando el usuario ha iniciado sesión
         self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
+        #self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ingreso_cliente'))
         self.assertEqual(response.status_code,200)
 
     def test_post_complete(self):   #Prueba si el post es correcto
         self.create_IFCUsuario()
-        self.client.login(username='hockey',password='lalocura')
+        #self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         response = self.client.post(reverse('ingreso_cliente'), {'nombre': "Impulse",   #Las variables del post están completas y con valores
                                                                    'direccion': "impulsadin",
                                                                    'pais': "Antigua y Barbuda",
@@ -293,7 +316,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
                 'matrixMB[]': matrixMB,
             })
         self.assertEqual(response.status_code,500)
-    
+
     def test_post_incorrect(self):   #Prueba si el post no lleva todo lo que necesita en info generak
         self.create_IFCUsuario()
         self.client.login(username='hockey',password='lalocura')
@@ -356,7 +379,7 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'No recibido') #verificar que el estado de la orden interna sea el correcto
         ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
         self.assertEqual(ac.restante,number_analysis-1) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
@@ -389,13 +412,13 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
         self.assertEqual(all_analysis_samples.first().estado,True) #verificar que la muestra está activa
         all_internal_orders = OrdenInterna.objects.all()
         self.assertEqual(all_internal_orders.count(),1) #verificar que hay un registro en la tabla orden interna
-        self.assertEqual(all_internal_orders.first().estatus,'Creada') #verificar que el estado de la orden interna sea el correcto
+        self.assertEqual(all_internal_orders.first().estatus,'No recibido') #verificar que el estado de la orden interna sea el correcto
         ac = AnalisisCotizacion.objects.get(analisis = Analisis.objects.get(id_analisis = analysis_id))#Obtener el analisis que se registró
         number_analysis = AnalisisCotizacion.objects.first().cantidad #Buscar la cantidad de análisis que se cotizaron originalmente
         self.assertEqual(ac.restante,number_analysis-5) #verificar que se disminuyó la cantidad de análisis disponibles
         all_samples = Muestra.objects.all()
         self.assertEqual(all_samples.count(),3) #verificar que hay tres registro en la tabla muestras
-    
+
     def test_incorrect_data(self): #si hubo datos inválidos que pasaron la validación en front, el controlador debe impedir que se guarde cualquier cosa
         self.create_IFCUsuario()
         self.setup()
@@ -428,6 +451,9 @@ class MuestraEnviarTests(TestCase):   #Casos de prueba para la vista de enviar_m
 #Casos de prueba para view una orden interna
 class OrdenesInternasViewTests(TestCase):
     def setup(self): #registrar la información necesaria para ejecutar los test
+        permiso = Permiso()
+        permiso.nombre = 'visualizar_orden_interna'
+        permiso.save()
         role = Rol()
         role.nombre = "Soporte"
         role.save()
@@ -458,6 +484,13 @@ class OrdenesInternasViewTests(TestCase):
         i_user2.telefono = "9114454364"
         i_user2.estado = True
         i_user2.save()   #Guardar usuario de IFC
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
     def test_no_login_form(self):
@@ -469,7 +502,8 @@ class OrdenesInternasViewTests(TestCase):
     def test_no_login_different_role(self):
         self.setup()
         #ingresar como un usuario cliente
-        self.client.login(username='padrino', password='padrino')
+        #self.client.login(username='padrino', password='padrino')
+        self.login_IFC('padrino@lalocura.com', 'padrino')
         response = self.client.get(reverse('ordenes_internas'))
         self.assertEqual(response.status_code, 404)
 
@@ -477,7 +511,8 @@ class OrdenesInternasViewTests(TestCase):
     def test_login_correcto(self):
         self.setup()
         #ingresar como un usuario soporte
-        self.client.login(username='hockey', password='lalocura')
+        #self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         response = self.client.get(reverse('ordenes_internas'))
         self.assertEqual(response.status_code, 200)
 
@@ -515,6 +550,9 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         i_user2.estado = True
         i_user2.save()   #Guardar usuario de IFC
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
     def test_no_login_form(self):
         self.setup()
@@ -525,7 +563,7 @@ class ConsultarOrdenesInternasViewTests(TestCase):
     def test_no_login_different_role(self):
         self.setup()
         #ingresar como un usuario cliente
-        self.client.login(username='padrino', password='padrino')
+        self.login_IFC('padrino@lalocura.com', 'padrino')
         response = self.client.get(reverse('consultar_orden'))
         self.assertEqual(response.status_code, 404)
 
@@ -533,13 +571,13 @@ class ConsultarOrdenesInternasViewTests(TestCase):
     def test_no_post(self):
         self.setup()
         #ingresar como un usuario soporte
-        self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         response = self.client.get(reverse('consultar_orden'))
-        self.assertEqual(response.status_code, 500)
+        self.assertEqual(response.status_code, 404)
 
     def test_post_empty(self):   #Prueba si no se manda nada en el post
         self.setup()
-        self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         response = self.client.post(reverse('consultar_orden'),{})   #El post va vacío
         self.assertEqual(response.status_code, 404)   #Mostrar 404
 
@@ -682,12 +720,12 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         analysis_id = Analisis.objects.all().get(codigo="A1").id_analisis
         #obtener el id del segundo análisis
         analysis_id2 = Analisis.objects.all().get(codigo="A2").id_analisis
-        self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         factura = Factura()
         factura.save()
         #insertar matrices de muestras, sólo la agrícola tiene una
         matrixAG = ['p', 'v', 'po', 'cm', 'p', 'ct', 'a', 'd', 'p', 'um', '11/01/2019', 'Sí', 'm', '1', '1', '-1', '-1', '-1', '-1', '-1']
-        matrixPR = ['', '', '', '', '', '', '', '', '']
+        matrixPR = ['', '', '', '', '', '', '', '']
         matrixMB = ['', '', '', '', '', '', '', '', '', '', '']
         #enviar la información para guardar para la primera muestra
         response = self.client.post(
@@ -722,10 +760,19 @@ class ConsultarOrdenesInternasViewTests(TestCase):
         muestra.save()
         self.client.logout()
 
+        permiso1 = Permiso()
+        permiso1.nombre = 'visualizar_orden_interna'
+        permiso1.save()
+
+        permiso_rol1 = PermisoRol()
+        permiso_rol1.permiso = permiso1
+        permiso_rol1.rol = Rol.objects.get(nombre="Soporte")
+        permiso_rol1.save()
+
     def test_id_incorrecto(self):   #Prueba si no se manda nada en el post
         self.create_IFCUsuario()
         self.setup2()
-        self.client.login(username='hockey',password='lalocura')
+        self.login_IFC('hockey@lalocura.com', 'lalocura')
         #El post va vacío
         response = self.client.post(reverse('consultar_orden'),{'id': 3456})
         self.assertEqual(response.status_code, 404)   #Mostrar 404
@@ -734,7 +781,7 @@ class ConsultarOrdenesInternasViewTests(TestCase):
     def test_dos_muestras(self):
         self.create_IFCUsuario()
         self.setup2()
-        self.client.login(username='soporte',password='soporte')
+        self.login_IFC('soporte@phantom.com', 'soporte')
         oi_id = OrdenInterna.objects.all().first().idOI
         #El post va vacío
         response = self.client.post(reverse('consultar_orden'),{'id': oi_id})
@@ -762,6 +809,13 @@ class ConsultarOrdenesInternasViewTests(TestCase):
 class TestEditaOrdenesInternas(TestCase):
     #Tests de cuentas de usuarios
     def set_up_Users(self):
+        permiso = Permiso()
+        permiso.nombre = 'actualizar_orden_interna'
+        permiso.save()
+
+        permiso2 = Permiso()
+        permiso2.nombre = 'visualizar_orden_interna'
+        permiso2.save()
 
         #Crea usuarios Clientes
         rol_soporte = Rol.objects.create(nombre='Soporte')
@@ -839,10 +893,21 @@ class TestEditaOrdenesInternas(TestCase):
 
         #Crear orden interna para cliente
         oi = OrdenInterna.objects.create(usuario = clientes1,
-                                            estatus = "Fantasma",
+                                            estatus = "No recibido",
                                             localidad = "mexico",
                                         )
         oi.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = rol_soporte
+        permiso_rol.save()
+        permiso_rol2 = PermisoRol()
+        permiso_rol2.permiso = permiso2
+        permiso_rol2.rol = rol_soporte
+        permiso_rol2.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     #Tests
     def test_acceso_denegado(self):
@@ -858,25 +923,28 @@ class TestEditaOrdenesInternas(TestCase):
     def test_acceso_denegado_rol(self):
         #Test de acceso a url con Log In como Cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='client',password='testpassword')
+        #self.client.login(username='client',password='testpassword')
+        self.login_IFC('client@testuser.com','testpassword')
         response = self.client.get('/reportes/ordenes_internas')
         self.assertEqual(response.status_code,404)
 
     def test_acceso_permitido_total(self):
         #Test de acceso a url con Log In como Director para que vea a todos los usuarios
         self.set_up_Users() #Set up de datos
-        self.client.login(username='soport',password='testpassword')
+        #self.client.login(username='soport',password='testpassword')
+        self.login_IFC('soporttest@testuser.com', 'testpassword')
         response = self.client.get('/reportes/ordenes_internas')
         self.assertEqual(response.status_code,200)
 
     def test_template(self):
         #Test de creacion de ordenes internas para cliente
         self.set_up_Users() #Set up de datos
-        self.client.login(username='soport',password='testpassword')
-        orden = OrdenInterna.objects.filter(estatus="Fantasma").first()
+        #self.client.login(username='soport',password='testpassword')
+        self.login_IFC('soporttest@testuser.com', 'testpassword')
+        orden = OrdenInterna.objects.filter(estatus="No recibido").first()
         dir = "/reportes/ordenes_internas"
         response = self.client.post(dir)
-        self.assertContains(response, "Fantasma")
+        self.assertContains(response, "No recibido")
 
 
     def test_model(self):
@@ -887,11 +955,9 @@ class TestEditaOrdenesInternas(TestCase):
                                             localidad = "loc1",
                                             fecha_envio = "2019-03-02",
                                             link_resultados = "www.lol.com",
-                                            guia_envio = "lololo"
                                         )
 
         self.assertEqual(orden.localidad,"loc1")
-        self.assertEqual(orden.guia_envio,"lololo")
 
     def test_url_resuelta(self):
         #URL testing.
@@ -931,6 +997,9 @@ class EnviarResultados(TestCase):
                                         )
         dir.save()
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login(self):
         response = self.client.get(reverse('enviar_archivo'))   #Ir al url de envío de resultados
         self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
@@ -951,13 +1020,13 @@ class EnviarResultados(TestCase):
 
     def test_post_empty(self):    #Prueba si no se manda nada en el post
         self.setup()
-        self.client.login(username='direc',password='testpassword')
+        self.login_IFC('test@testuser.com', 'testpassword')
         response = self.client.post(reverse('enviar_archivo'),{})
         self.assertEqual(response.status_code,404)
 
     def test_post_incomplete(self):   #Prueba si el post no lleva todo lo que necesita
         self.setup()
-        self.client.login(username='direc',password='testpassword')
+        self.login_IFC('test@testuser.com', 'testpassword')
         response = self.client.post(reverse('enviar_archivo'),{'email_destino':"A01207945@itesm.mx",
                                                                   'body':"Cuerpo del correo",
                                                                   })

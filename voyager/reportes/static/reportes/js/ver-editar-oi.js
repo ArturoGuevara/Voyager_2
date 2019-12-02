@@ -34,7 +34,7 @@ function restaurar_modal_oi() {
 
 $('#modal-visualizar-orden').on('hidden.bs.modal', function () {
     restaurar_modal_oi();
-    $('.registro-tabla-factura-oi').remove();  
+    $('.registro-tabla-factura-oi').remove();
 });
 
 $('#btn-editar-oi').click(function () {
@@ -83,3 +83,13 @@ $('#btn-regresar-oi').click(function () {
     $('#confirmar-cambios-oi').removeClass('d-block').addClass('d-none');
     $('#editar-info-oi').removeClass('d-none').addClass('d-block');
 });
+
+function doble_editar(){
+    $('#btn-editar-oi').removeClass('d-block').addClass('d-none');
+}
+
+function restaurar_editar(){
+    if ($('#btn-editar-oi').hasClass('d-none')){
+        $('#btn-editar-oi').removeClass('d-none').addClass('d-block');
+    }
+}

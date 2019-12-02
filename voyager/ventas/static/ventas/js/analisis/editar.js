@@ -99,10 +99,10 @@ function editar_analisis(){
                 cambiar_valores_analisis_tabla('.analisis-precio', '$'+data.fields.precio, id);
                 cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
                 if(data.fields.acreditacion == 1){
-                  cambiar_valores_analisis_tabla('.analisis-acreditado', "<i class='fas fa-check text-success'></i>", id);
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-success">SI</span>', id);
                 }
                 else{
-                  cambiar_valores_analisis_tabla('.analisis-acreditado', "<i class='fas fa-minus text-secondary'></i>", id);
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-danger">NO</span>', id);
                 }
 
 

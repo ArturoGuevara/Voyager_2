@@ -4,7 +4,6 @@
 
 {% block optionalCSS %}
 <link href="{% static 'root/css/borrar-alerta.css' %}" rel="stylesheet"/>
-
 {% endblock %}
 
 {% block content %}
@@ -18,7 +17,7 @@
         </h2>
     </div>
     {% if my_flag %}
-    {% if request.session.userrole != 'Director' %}
+    {% if 'ingresar_codigo_dhl' in request.session.permissions %}
     <div class="text-center text-md-right">
         <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Despliega modal, seleccione órdenes e ingrese código de rastreo de DHL"><i class="nc-icon nc-email-83"></i> Paquete</button>
     </div>
@@ -56,13 +55,13 @@
                         <button type="button" class="btn btn-primary" onclick="visualizar_info_oi({{ o.idOI }})" data-toggle="modal" data-target="#modal-visualizar-orden">
                             <i class="fas fa-eye"></i>
                         </button>
-                        {% if request.session.userrole == "Soporte" or request.session.userrole == "SuperUser" %}
+                        {% if 'eliminar_orden_interna' in request.session.permissions %}
                         <button type="button" class="btn btn-danger" onclick="borrar_oi({{ o.idOI }})" data-toggle="modal" data-target="#borrar_orden">
                             <i class='fas fa-trash'></i>
                         </button>
                         {% endif %}
                         {% if o.usuario.estatus_pago != "Deudor" %}
-                        {% if request.session.userrole != 'Director' and request.session.userrole != 'Ventas' %}
+                        {% if 'notificar_resultados_correo' in request.session.permissions %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
                                 Enviar resultados
                             </button>
@@ -78,10 +77,10 @@
     {% else %}
     {% include 'root/feature_not_ready.html' %}
     {% endif %}
-    {% include './modals/paquete.html' %}
-    {% include './modals/borrar-orden.html' %}
-    {% include './modals/ver-oi.html' %}
     {% include './modals/enviar-resultados.html' %}
+    {% include './modals/borrar-orden.html' %}
+    {% include './modals/paquete.html' %}
+    {% include './modals/ver-oi.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
@@ -93,25 +92,25 @@
 
     {% if successcode == "200" %}
         <script>
-            showNotification('top','right','Paquete creado exitosamente')
+            showNotificationSuccess('top','right','Paquete creado exitosamente')
         </script>
     {% elif successcode == "404" %}
         <script>
-            showNotification('top','right','Código de rastreo no existe')
+            showNotificationWarning('top','right','Código de rastreo no existe')
         </script>
     {% elif successcode == "204" %}
         <script>
-            showNotification('top','right','No se encontró la Orden Interna')
+            showNotificationWarning('top','right','No se encontró la Orden Interna')
         </script>
     {% endif %}
 
     {% if success_sent == 1 %}
         <script>
-            showNotification('top','right','Resultados enviados exitósamente')
+            showNotificationSuccess('top','right','Resultados enviados exitósamente')
         </script>
     {% elif success_sent == -1 %}
          <script>
-            showNotification('top','right','Hubo un error en el envío')
+            showNotificationDanger('top','right','Hubo un error en el envío')
         </script>
     {% endif %}
 

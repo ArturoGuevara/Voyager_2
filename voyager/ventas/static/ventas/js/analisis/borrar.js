@@ -18,7 +18,7 @@ function confirmar_borrar(){
             type: "POST",
             success: function(){
                 borrar_analisis_tabla('.analisis-row',id);
-                showNotification('top','right','Tu análisis ha sido borrado exitosamente');
+                showNotificationSuccess('top','right','Tu análisis ha sido borrado exitosamente');
                 id_analisis = 0;
                 $('#borrar_analisis').modal('toggle');
             },

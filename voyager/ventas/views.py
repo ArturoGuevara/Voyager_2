@@ -52,9 +52,10 @@ def ver_catalogo(request):
     if request.session.get('success_code', None) == None:
         request.session['success_code'] = 0
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Ventas":
+    if 'consultar_catalogo_analisis' in request.session['permissions']:
         if flag_enabled('Modulo_Catalogo', request=request):
-            analisis = Analisis.objects.all()
+            analisis = Analisis.objects.all().exclude(nombre="Otro")
             paises = Pais.objects.all()
             context = {
                 'analisis': analisis,
@@ -69,7 +70,7 @@ def ver_catalogo(request):
 @login_required
 def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'consultar_catalogo_analisis' in request.session['permissions']:
         if request.method == 'POST':
             data = []
             analisis = Analisis.objects.get(id_analisis = id)
@@ -95,7 +96,7 @@ def cargar_analisis(request, id):
 @login_required
 def editar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'modificar_catalogo_analisis' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -145,7 +146,7 @@ def editar_analisis(request, id):
 @login_required
 def borrar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'eliminar_analisis_catalogo' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -174,7 +175,8 @@ def borrar_analisis(request, id):
 @login_required
 def agregar_analisis(request):
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser": # Validar roles de usuario logeado
+    if 'registrar_analisis_catalogo' in request.session['permissions']:
         if request.method == 'POST':    # Verificar que solo se puede acceder mediante un POST
             form = AnalisisForma(request.POST)
             if form.is_valid():         # Verificar si los datos de la forma son validos
@@ -189,7 +191,6 @@ def agregar_analisis(request):
                 n_acreditacion = request.POST['acreditacion']
 
                 n_pais = Pais.objects.get(id_pais=n_pais)
-                print(n_acreditacion)
                 if n_acreditacion == "0":
                     n_acreditacion = False
                 else:
@@ -223,11 +224,14 @@ def ver_cotizaciones(request):
     context = {}
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
+        #if usuario_log.rol.nombre == "Cliente" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser":
+        if ('consultar_cotizacion' in request.session['permissions']
+                or 'visualizar_cotizacion' in request.session['permissions']
+        ):
             if flag_enabled('Modulo_Cotizaciones', request=request):
                 if usuario_log.rol.nombre == "Ventas":
                     cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
-                    analisis = Analisis.objects.all()
+                    analisis = Analisis.objects.all().exclude(nombre="Otro")
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
                     context = {
                         'analisis': analisis,
@@ -239,7 +243,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
@@ -255,7 +259,7 @@ def ver_cotizaciones(request):
 @login_required
 def cargar_cot(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if 'crear_cotizacion' in request.session['permissions']:
         if request.method == 'POST':
             # Obtenemos el arreglo de análisis seleccionados para crear cotización
             checked = request.POST.getlist('checked[]')
@@ -291,7 +295,7 @@ def cargar_cot(request):
 def crear_cotizacion(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+        if not ('crear_cotizacion' in request.session['permissions']):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de cotización
             if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
@@ -383,7 +387,7 @@ def adjuntar_otro(cotizacion):
 def actualizar_cotizacion(request,id):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
+        if not ('actualizar_cotizacion' in request.session['permissions']):   #Si el rol del usuario no es ventas o super usuario no puede entrar a la página
             raise Http404
         if request.method == 'POST': #Obtención de datos de los cambios en la cotización
             if (request.POST.get('cliente') and request.POST.get('subtotal') and request.POST.get('envio') and request.POST.get('total')):
@@ -457,13 +461,16 @@ def actualizar_cotizacion(request,id):
 def visualizar_cotizacion(request, id):
     # Esta funcion es para cargar la informacion detallada de una sola cotizacion consultada mostrada por la funcion ver_cotizaciones
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Cliente"  or user_logged.rol.nombre == "Director":  # Verificar el tipo de usuario logeado
+    if ('consultar_cotizacion' in request.session['permissions']
+            or 'visualizar_cotizacion' in request.session['permissions']
+        ):
         if request.method == 'POST':
             cotizacion = Cotizacion.objects.get(id_cotizacion = id)    # Cargar cotizacion con id pedido
             empresa = Empresa.objects.get(pk = cotizacion.usuario_c.empresa.pk)
             usuario = User.objects.get(pk = cotizacion.usuario_c.user.pk)
             if cotizacion:  # Verificar si la cotizacion existe
-                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion)  # Cargar registros de tabla analisis_cotizacion
+                analisis_otro = Analisis.objects.filter(nombre = "Otro").first() #Obtiene el análisis Otro para excluirlo en la visualización de cotizaciones
+                analisis_cotizacion = AnalisisCotizacion.objects.filter(cotizacion = cotizacion).exclude(analisis=analisis_otro)# Cargar registros de tabla analisis_cotizacion
                 if analisis_cotizacion:
                     data_analisis = []
                     data_cotizacion_analisis = []
@@ -493,23 +500,27 @@ def visualizar_cotizacion(request, id):
 
                 else:
                     response = JsonResponse({"error": "La cotización no contiene analisis"})
-                    #response.status_code = 500
+                    response.status_code = 501
                     return response
             else:
                 response = JsonResponse({"error": "No existe la cotización"})
-                response.status_code = 500
+                response.status_code = 502
                 return response     # Si se intenta consultar una cotizacion inexistente, regresar un error
         else:
             response = JsonResponse({"error": "No se puede acceder por éste método"})
-            response.status_code = 500
+            response.status_code = 503
             return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
+    else:
+        response = JsonResponse({"error": "No se puede acceder por éste método"})
+        response.status_code = 504
+        return response     # Si se intenta enviar por un medio que no sea POST, regresar un error
 ###############  USV04-04##################
 
 ############### USV02-02###################
 @login_required
 def borrar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'borrar_cotizacion' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -536,7 +547,7 @@ def borrar_cotizacion(request, id):
 @login_required
 def aceptar_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if 'aceptar_cotizacion' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -563,11 +574,7 @@ def aceptar_cotizacion(request, id):
 @login_required
 def exportar_datos(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.session.get('success_code',None) == None:
         request.session['success_code'] = 0
@@ -669,7 +676,7 @@ def importar_csv(request): #Importa datos de análisis
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
-    if not (user_logged.rol.nombre == "Director"):
+    if not ('importar_csv' in request.session['permissions']):
         raise Http404
     response_code = 0
     if request.method == 'POST':
@@ -711,7 +718,7 @@ def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
 @login_required
 def bloquear_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if('aceptar_cotizacion' in request.session['permissions']):
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis

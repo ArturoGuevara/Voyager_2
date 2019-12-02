@@ -45,7 +45,7 @@
                     </div>
                     <div class="row table-responsive border border-dark">
                         <table class="table" id="analisis_tabla">
-                            <thead>
+                            <thead class="tabla-analisis-encabezado">
                                 <tr>
                                     <th scope="col">Código</th>
                                     <th scope="col">Nombre</th>
@@ -71,7 +71,7 @@
                         <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
                     </div>
                     <div class="row border border-success bg-success">
-                        <span>TOTAL: $</span><span class="text-white" id="n_total">212.00</span>
+                        <span >TOTAL: $</span><span class="text-black" id="n_total">212.00</span>
                     </div>
                 </div>
                 <div class="container d-none" id="editar-resumen-cot">
@@ -130,7 +130,7 @@
                                 <div class="form-group col-sm-4">
                                     <label for="total">Total</label>
                                     <input type="number" class="form-control" id="editar-cot-total" readonly>
-                                    <div class="invalid-feedback">
+                                    <div class="invalid-feedback" style="color:black">
                                         El total no puede estar vacío
                                     </div>
                                 </div>
@@ -174,10 +174,12 @@
             <div id="btn-espacio" class="modal-footer">
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
-                <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
-                {% if  request.session.userrole == 'Ventas' or request.session.userrole == 'SuperUser' %}
-                <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
-                <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                {% if 'descargar_cotizacion_pdf' in request.session.permissions %}
+                    <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
+                {% endif %}
+                {% if 'actualizar_cotizacion' in request.session.permissions %}
+                    <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
+                    <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
                 {% endif %}
             </div>
             <div class="container" id="terminos" style="font-size: 10px;">

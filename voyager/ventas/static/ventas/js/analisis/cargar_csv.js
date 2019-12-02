@@ -8,7 +8,8 @@ function importar_csv(){
 function validar_csv(){
 
   if( document.getElementById("csv_analisis").files.length == 0 ){
-      
+      $('#csv_analisis').css("color","red");
+
   }else{
     importar_csv()
   }

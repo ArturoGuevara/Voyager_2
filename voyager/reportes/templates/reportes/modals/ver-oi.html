@@ -5,19 +5,21 @@
                 <div id="ver-resumen-oi" class="d-block">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link active" data-toggle="tab" href="#visualizar_info">Orden Interna</a>
+                            <a class="nav-link active" data-toggle="tab" href="#visualizar_info" onclick="restaurar_editar()">Orden Interna</a>
                         </li>
                         {% if request.session.userrole != 'Facturacion' %}
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_muestras">Muestras</a>
+                            <a class="nav-link" data-toggle="tab" href="#visualizar_muestras" onclick="restaurar_editar()">Muestras</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones">Observaciones</a>
+                            <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones" onclick="restaurar_editar()">Observaciones</a>
                         </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion">Facturación</a>
-                        </li>
+                        {% if 'consultar_informacion_factura' in request.session.permissions %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
+                            </li>
+                        {% endif %}
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="visualizar_info">
@@ -35,7 +37,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Pagado</label>
+                                    <label for="visualizar_pagado">Pagado</label>
                                     <input type="text" class="form-control" id="visualizar_pagado" placeholder="Pagado" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -45,18 +47,12 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="visualizar_guia_envio" placeholder="Guía de envío" disabled>
+                                    <label for="visualizar_localidad">Localidad</label>
+                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
                                     <input type="date" class="form-control" id="visualizar_fecha_llegada_lab" placeholder="Fecha de llegada" disabled>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="visualizar_localidad" placeholder="Localidad" disabled>
                                 </div>
                             </div>
                             <div class="form-row" style="display: none;">
@@ -128,14 +124,14 @@
                                   <label for="visualizar_facturacion">Responsables de pago</label>
                                   <textarea disabled name="responsable_pago_fact" class="form-control" id="responsable_pago_fact" placeholder="Guillermo del Toro, Quentin Tarantino, Stanley Kubrick ..." rows="8" cols="80"></textarea>
                                   <div class="invalid-feedback">
-                                      Por favor introduce un responsable de pago.
+                                      Introduzca un responsable de pago
                                   </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Correos</label>
                                   <textarea disabled name="correo_fact" class="form-control" id="correo_fact" placeholder="sample@sample.com, sample2@sample.com, ..." rows="8" cols="80"></textarea>
                                   <div class="invalid-feedback">
-                                      Por favor introduce un correo.
+                                      Introduzca al menos un correo
                                   </div>
                                 </div>
                               </div>
@@ -144,16 +140,10 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Número de factura</label>
                                   <textarea disabled name="numero_fact" id="numero_fact" class="form-control" placeholder="" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un número de facturación.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Fecha de facturación</label>
                                   <input type="date" class="form-control" id="fecha_fact" placeholder="Fecha de Facturacion" name="fecha_fact" disabled>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce una fecah de facturación.
-                                  </div>
                                 </div>
                               </div>
 
@@ -161,9 +151,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Complemento de pago</label>
                                   <textarea disabled name="complemento_pago" id="complemento_pago" class="form-control" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un complemento de pago.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Cobrar envío</label>
@@ -186,9 +173,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Fecha de envío de factura</label>
                                   <input type="date" class="form-control" id="fecha_envio_fact" placeholder="Fecha de envío de Facturacion" name="fecha_envio_factura" disabled>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce una fecha de envío.
-                                  </div>
                                 </div>
                               </div>
 
@@ -196,9 +180,6 @@
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Pago de factura</label>
                                   <textarea disabled name="pago_fact" id="pago_fact" class="form-control" rows="8" cols="80"></textarea>
-                                  <div class="invalid-feedback">
-                                      Por favor introduce un pago de factura.
-                                  </div>
                                 </div>
                                 <div class="form-group col-md-6">
                                   <label for="visualizar_facturacion">Envío informes</label>
@@ -213,16 +194,10 @@
                                   <div class="form-group col-md-6">
                                     <label for="visualizar_facturacion">Orden de compra</label>
                                     <textarea disabled name="orden_compra" id="orden_compra" class="form-control" rows="8" cols="80"></textarea>
-                                    <div class="invalid-feedback">
-                                        Por favor introduce una orden de compra.
-                                    </div>
                                   </div>
                                   <div class="form-group col-md-6">
                                     <label for="visualizar_facturacion">Cantidad pagada</label>
                                     <input disabled class="form-control" type="number" name="cantidad_pagada" id="cantidad_pagada">
-                                    <div class="invalid-feedback">
-                                        Por favor introduce una cantidad pagada.
-                                    </div>
                                   </div>
                               </div>
                             </form>
@@ -271,7 +246,8 @@
                                   </button>
                               </div>
                           </div>
-
+                      </div>
+                  </div>
                 </div>
                 <div id="editar-info-oi" class="d-none">
                     <ul class="nav nav-tabs">
@@ -284,9 +260,6 @@
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#editar_observaciones">Observaciones</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#editar_facturacion">Facturación</a>
-                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="editar_info">
@@ -296,12 +269,11 @@
                                     <input type="hidden" class="form-control" id="editar_idOI" name="editar_idOI">
                                     <label for="visualizar_estatus">Estatus</label>
                                     <select name="editar_estatus" id="editar_estatus" class="form-control">
-                                        <option name="Fantasma" id="Fantasma" value="Fantasma">Fantasma</option>
-                                        <option name="Invisible" id="Invisible" value="Invisible">Invisible</option>
-                                        <option name="Creada" id="Creada" value="Creada">Creada</option>
-                                        <option name="Enviada" id="Enviada" value="Enviada">Enviada</option>
-                                        <option name="En laboratorio" id="En laboratorio" value="En laboratorio">En laboratorio</option>
-                                        <option name="Resultados" id="Resultados" value="Resultados">Resultados</option>
+                                        <option name="No recibido" id="No recibido" value="No recibido">No recibido</option>
+                                        <option name="Recibido" id="Recibido" value="Recibido">Recibido</option>
+                                        <option name="Envio parcial" id="Envio parcial" value="Envio parcial">Envio parcial</option>
+                                        <option name="Envio total" id="Envio total" value="Envio total">Envio total</option>
+                                        <option name="Facturado" id="Facturado" value="Facturado">Facturado</option>
                                         <!--<option name="Borrado" id="Borrado" value="Borrado">Borrado</option>-->
                                     </select>
                                 </div>
@@ -325,18 +297,12 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-md-6">
-                                    <label for="visualizar_guia_envio">Guía de Rastreo DHL</label>
-                                    <input type="text" class="form-control" id="editar_guia_envio" name="editar_guia_envio" placeholder="Guía de envío">
+                                    <label for="visualizar_localidad">Localidad</label>
+                                    <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <label for="visualizar_fecha_llegada_lab">Fecha de llegada al laboratorio</label>
                                     <input type="date" class="form-control" id="editar_fecha_llegada_lab" name="editar_fecha_llegada_lab" placeholder="Fecha de envío">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <label for="visualizar_localidad">Localidad</label>
-                                    <input type="text" class="form-control" id="editar_localidad" name="editar_localidad" placeholder="Localidad">
                                 </div>
                             </div>
                             <div class="form-row" style="display: none;">
@@ -406,7 +372,7 @@
 
                 </div>
                 <div class="text-right">
-                    {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' and request.session.userrole != 'Facturacion' %}
+                    {% if 'actualizar_orden_interna' in request.session.permissions %}
                     <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
                         Editar
                     </button>

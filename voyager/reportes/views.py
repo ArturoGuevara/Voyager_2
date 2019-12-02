@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.core import serializers
 from .models import OrdenInterna, Paquete
@@ -8,10 +9,11 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from urllib.parse import urlencode
 import requests
+import os
 import json
 from ventas.models import Factura
 from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
-from cuentas.models import IFCUsuario
+from cuentas.models import IFCUsuario, Empresa
 from django.http import Http404
 import datetime
 from datetime import date
@@ -36,14 +38,16 @@ from flags.state import flag_enabled
 def ingreso_cliente(request):
     if request.session._session:   #Revisión de sesión iniciada
         user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-        if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #if not (user_logged.rol.nombre=="Cliente" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+            #raise Http404
+        if not ('ingresar_muestra' in request.session['permissions']):
             raise Http404
         if user_logged.estatus_pago=="Bloqueado":   #Si el estatus del usuario es bloqueado no puede hacer ingreso de muestras
             context = {
                 'titulo': "Usted no puede realizar ingreso de muestras en este momento",
                 'mensaje': "Contacte al administrador para volver a despegar con nosotros",
             }
-            return render(request, 'reportes/bloqueado.html')
+            return render(request, 'reportes/bloqueado.html', context)
         else:
             cotizaciones = Cotizacion.objects.filter(usuario_c = user_logged, status=True, aceptado=True, bloqueado=False)
             if not cotizaciones:
@@ -59,7 +63,8 @@ def ingreso_cliente(request):
                     analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
                     analisis = analisis | analisis_temp
             context = {
-                'analisis': analisis
+                'analisis': analisis,
+                'user': user_logged
             }
             return render(request, 'reportes/ingreso_muestra.html', context)
     else:
@@ -70,7 +75,7 @@ def registrar_ingreso_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
-            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma')):
+            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
                 nombre = request.POST.get('nombre')
                 direccion = request.POST.get('direccion')
                 pais = request.POST.get('pais')
@@ -81,7 +86,7 @@ def registrar_ingreso_muestra(request):
                 matrixMB = request.POST.getlist('matrixMB[]')
                 oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
                 oi.usuario = user_logged
-                oi.estatus = "Creada"
+                oi.estatus = "No recibido"
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
                     if matrixAG[0] != '':
@@ -306,11 +311,14 @@ def ordenes_internas(request):
     ordenes_activas = {}
     dict_clientes = {}
     dict_muestras = {}
+    dict_analisis = {}
     form = None
     response = None
 
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #raise Http404
+    if not ('visualizar_orden_interna' in request.session['permissions']):
         raise Http404
     if request.session.get('success_sent',None) == None:
         request.session['success_sent']=0
@@ -318,14 +326,30 @@ def ordenes_internas(request):
     if flag_enabled('Modulo_Ordenes_Internas', request=request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
+        ordenes_faltantes = OrdenInterna.objects.filter(estatus="No recibido").order_by('idOI')
+
+        for orden_no_recibida in ordenes_faltantes:
+            arr_analisis = []
+
+            muestras_an = AnalisisMuestra.objects.filter(id_oi=orden_no_recibida)
+            for m in muestras_an:
+                arr_analisis.append(m)
+
+            if muestras_an:
+                print(arr_analisis)
+                dict_analisis[orden_no_recibida] = arr_analisis.copy()
+            arr_analisis.clear()
+
         for orden in ordenes_activas:
             arr_muestras = []
+
             muestras_orden = Muestra.objects.filter(oi=orden)
+
+
             for muestra in muestras_orden:
                 arr_muestras.append(muestra)
 
             if muestras_orden:
-                print(arr_muestras)
                 dict_clientes[orden] = muestras_orden.first().usuario
                 dict_muestras[orden] = arr_muestras.copy()
             arr_muestras.clear()
@@ -341,6 +365,7 @@ def ordenes_internas(request):
         'success_sent': request.session['success_sent'],
         'ordenes_clientes': dict_clientes,
         'muestras': dict_muestras,
+        'analisis': dict_analisis,
     }
     request.session['success_sent'] = 0
     return render(request, 'reportes/ordenes_internas.html', context)
@@ -367,7 +392,7 @@ def oi_guardar(request, form, template_name):
 def consultar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
     #Si el rol del usuario no es cliente no puede entrar a la página
-    if (user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "Facturacion" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas"):
+    if ('visualizar_orden_interna' in request.session['permissions']):
         data = {}
         vector_muestras = None
         user_serialize = None
@@ -465,7 +490,7 @@ def consultar_orden(request):
 @login_required
 def actualizar_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('modificar_muestra' in request.session['permissions']):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         muestra = Muestra.objects.filter(id_muestra = request.POST['id_muestra']).first()
@@ -474,11 +499,12 @@ def actualizar_muestra(request):
             ids = request.POST.getlist('ids[]')
             muestra.producto = request.POST['producto']
             am = AnalisisMuestra.objects.filter(muestra = muestra)
+            am_unico = AnalisisMuestra.objects.filter(muestra = muestra).first()
             for a in am:
                 sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
             am.delete()
             for x in ids:
-                restar_analisis(muestra.usuario, x, muestra)
+                restar_analisis(muestra.usuario, x, muestra, am_unico.id_oi)
 
             # if isinstance(request.POST['factura'], int):
             #     factura = Factura.objects.filter(idFactura = request.POST['factura']).first()
@@ -488,7 +514,8 @@ def actualizar_muestra(request):
             #         muestra.factura = None
             muestra.mrl = request.POST['mrl']
             muestra.num_interno_informe = request.POST['num_interno']
-            muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
+            if (request.POST['fecha_esperada'] != ""):
+                muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
             if (request.POST['fecha_recibo'] != ""):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
@@ -505,7 +532,7 @@ def actualizar_muestra(request):
 @login_required
 def actualizar_orden(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="Ventas" or user_logged.rol.nombre=="SuperUser"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('visualizar_orden_interna' in request.session['permissions']):   #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
         oi = OrdenInterna.objects.get(idOI = request.POST['idOI'])
@@ -532,8 +559,6 @@ def actualizar_orden(request):
                 oi.fecha_llegada_lab = None
             else: #falta checar formato incorrecto, se hace en front
                 oi.fecha_llegada_lab = request.POST['fecha_llegada_lab']
-
-            oi.guia_envio = request.POST['guia_envio']
             oi.link_resultados = request.POST['link_resultados']
             oi.idioma_reporte = request.POST['idioma_reporte']
             oi.observaciones = request.POST['observaciones']
@@ -599,10 +624,10 @@ def codigo_repetido(codigo_DHL):
 
 
 def guardar_paquete(codigo_DHL, ids_OrdI):
-    #Guarda codigo en BD y relaciona a O.I
+    #Guarda codigo en BD y relaciona a Muestras
 
 
-    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de O.I
+    if len(ids_OrdI) == 0: #Verifica que haya algo en lista de Muestras
         return 204
 
     if not codigo_repetido(codigo_DHL): #Verifica si el codigo no existe
@@ -611,11 +636,11 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
     for id in ids_OrdI: #Asignar codigo DHL
         try:
-            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de O.I
+            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de muestra
         except:
             referencia = None
 
-        if(referencia != None): #Valida si existe la O.I
+        if(referencia != None): #Valida si existe la Muestra
             cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
             referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
             referencia.save()
@@ -627,7 +652,9 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
 
 def validacion_codigo(request):
     user_logged = IFCUsuario.objects.get(user = request.user)   #Obtener el usuario logeado
-    if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre=="Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
+    #if not (user_logged.rol.nombre=="Soporte" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre=="Ventas"):   #Si el rol del usuario no es cliente no puede entrar a la página
+        #raise Http404
+    if not ('ingresar_codigo_dhl' in request.session['permissions']):
         raise Http404
     #Obtención de codigo y verificación de Form
 
@@ -772,7 +799,7 @@ def muestra_enviar(request): #guia para guardar muestras
 
 def borrar_orden_interna(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Soporte" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre=="Ventas":
+    if 'eliminar_orden_interna' in request.session['permissions']:
         if request.method == 'POST':
             id = request.POST.get('id')
             oi = OrdenInterna.objects.get(idOI = id)
@@ -827,10 +854,7 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
         raise Http404
     user_logged = IFCUsuario.objects.get(user = request.user)  # Obtener el usuario logeado
     #Si el rol del usuario no es servicio al cliente, director o superusuario, el acceso es denegado
-    if not (user_logged.rol.nombre == "Soporte"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre == "SuperUser"
-        ):
+    if not ('notificar_resultados_correo' in request.session['permissions']):
         raise Http404
     mail_code = 0
     if request.method == 'POST':
@@ -851,9 +875,11 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
     return redirect('/reportes/ordenes_internas')
 
 def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
-    path = './archivos-reportes/resultados'
+    path = 'resultados'
+    #path = 'resultados'
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
+    path += ".pdf"
     muestras = Muestra.objects.filter(id_muestra=muestra)
     if muestras:
         muestra_object = muestras.first()
@@ -862,6 +888,7 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
         muestra_object.save()
     else:
         return 404
+    path = './archivos-reportes/' + path
     with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
         for chunk in file.chunks():
             destination.write(chunk)
@@ -890,19 +917,26 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
+        #print(response.status_code)
+        #print(response.body)
+        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
 
-def ver_pdf(request,id_mue):
-    path_server = Muestra.objects.get(id_muestra=id_mue)
-    with open(path_server, 'r') as pdf:
-        response = HttpResponse(pdf.read(), content_type='application/pdf')
-        response['Content-Disposition'] = 'inline;filename=some_file.pdf'
-        return response
+def ver_pdf(request, file):
+    path_file = "/archivos-reportes/"+file
+    path = settings.BASE_DIR + path_file
+    print(path)
+
+    if os.path.exists(path):
+        with open(path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/pdf")
+            response['Content-Disposition'] = 'inline; filename="archivo"'
+            return response
+    raise Http404
+
+
 
 def visualizar_facturacion(request):
     if request.method == 'POST':
@@ -914,6 +948,10 @@ def visualizar_facturacion(request):
 
         if not consulta_factura:
             new_factura_oi = FacturaOI(oi=oi_requested)
+            usuario = IFCUsuario.objects.get(user = oi_requested.usuario.user)
+            empresa = Empresa.objects.get(empresa = usuario.empresa)
+            new_factura_oi.resp_pago = empresa.responsable_pagos
+            new_factura_oi.correos = empresa.correo_pagos
             new_factura_oi.save()
         else:
             new_factura_oi = consulta_factura.first()
@@ -930,7 +968,6 @@ def visualizar_facturacion(request):
             data.append(arr_id_ac_s)
             arr_muestra_s = serializers.serialize("json", [am.muestra], ensure_ascii = False)
             data.append(arr_muestra_s)
-
 
         return JsonResponse({"data": data })
     else:
@@ -983,9 +1020,14 @@ def editar_facturacion(request):
                 newFacturaOI.complemento_pago = n_complemento_pago
                 newFacturaOI.pago_factura = n_pago_factura
                 newFacturaOI.orden_compra = n_orden_compra
-                newFacturaOI.fecha_factura = n_fecha_factura
-                newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
-                newFacturaOI.envio_factura = n_envio_factura
+                if n_fecha_factura == '':
+                    newFacturaOI.fecha_factura = None
+                else:
+                    newFacturaOI.fecha_factura = n_fecha_factura
+                if n_fecha_envio_factura == '':
+                    newFacturaOI.fecha_envio_factura = None
+                else:
+                    newFacturaOI.fecha_envio_factura = n_fecha_envio_factura
                 newFacturaOI.cobrar_envio = n_cobrar_envio
                 newFacturaOI.envio_informes = n_envio_informes
                 newFacturaOI.cantidad_pagada = n_cantidad_pagada
