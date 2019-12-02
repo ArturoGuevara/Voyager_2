@@ -484,10 +484,8 @@ function cargar_enviar(id){
             $('#email_destino').val(data[0].fields.correo_resultados);
             var html_drop = dropdown_muestras(muestras);
             $('#muestra').html(html_drop);
-            console.log("AQUI");
         },
     });
-    console.log("OKK");
 }
 
 function enviar_resultados(){
