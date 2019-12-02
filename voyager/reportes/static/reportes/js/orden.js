@@ -592,7 +592,6 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
         var iva = parseFloat(data_ac[x][0].fields.iva);
         var total_muestra_ind = precio_unit - ( (precio_unit * descuento)/100 ) + ( (precio_unit * iva)/100 )
         total_muestras.push(total_muestra_ind)
-        console.log(data_muestras[x][0].fields);
         $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>'+validar_muestra(data_muestras[x][0].fields)+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
     }
     var subtotal_muestras = 0;
@@ -604,7 +603,6 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
 }
 
 function validar_muestra(data_muestra){
-  console.log(data_muestra);
   if(data_muestra.producto != null){
     return data_muestra.producto;
   }else{
