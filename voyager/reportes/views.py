@@ -61,7 +61,8 @@ def ingreso_cliente(request):
                     analisis_temp = Analisis.objects.filter(id_analisis = a.analisis.id_analisis)#Busca el Analisis que tiene el AnalisisCotizacion
                     analisis = analisis | analisis_temp
             context = {
-                'analisis': analisis
+                'analisis': analisis,
+                'user': user_logged
             }
             return render(request, 'reportes/ingreso_muestra.html', context)
     else:
@@ -72,7 +73,7 @@ def registrar_ingreso_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
-            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('estado') and request.POST.get('idioma')):
+            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
                 nombre = request.POST.get('nombre')
                 direccion = request.POST.get('direccion')
                 pais = request.POST.get('pais')
