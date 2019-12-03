@@ -194,5 +194,12 @@
   "fields": {
     "nombre": "crud_empresa"
   }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 30,
+  "fields": {
+    "nombre": "editar_empresa"
+  }
 }
 ]
