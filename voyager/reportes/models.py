@@ -19,8 +19,6 @@ class OrdenInterna(models.Model):
     fecha_envio = models.DateField(null=True, blank=True)
     fecha_llegada_lab = models.DateField(null=True, blank=True)
     link_resultados = models.CharField(max_length=300, blank=True)
-    guia_envio = models.CharField(max_length=50, blank=True)
-    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
 
     #Opciones de sí/no e idioma
     SN = (
@@ -34,6 +32,10 @@ class OrdenInterna(models.Model):
     ESTADOS = (
         ('Invisible', 'Invisible'),
         ('Fantasma', 'Fantasma'),
+        ('No recibido', 'No recibido'),
+        ('Recibido', 'Recibido'),
+        ('Envio parcial', 'Envio parcial'),
+        ('Envio total', 'Envio total'),
         ('Creada', 'Creada'),
         ('Enviada', 'Enviada'),
         ('En laboratorio', 'En laboratorio'),
@@ -190,10 +192,10 @@ class FacturaOI(models.Model):
     complemento_pago = models.CharField(max_length=10000, blank=True, default='')
     pago_factura = models.CharField(max_length=10000, blank=True, default='')
     orden_compra = models.CharField(max_length=10000, blank=True, default='')
-    fecha_factura = models.DateField(default=timezone.now)
-    fecha_envio_factura = models.DateField(default=timezone.now)
+    fecha_factura = models.DateField(default=timezone.now, blank=True, null=True)
+    fecha_envio_factura = models.DateField(default=timezone.now, blank=True, null=True)
     envio_factura = models.BooleanField(default=False)
     cobrar_envio = models.BooleanField(default=False)
     envio_informes = models.BooleanField(default=False)
-    cantidad_pagada = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    cantidad_pagada = models.DecimalField(max_digits=10, decimal_places=2, default=0, blank=True, null=True)
     oi = models.ForeignKey(OrdenInterna, on_delete=models.CASCADE)

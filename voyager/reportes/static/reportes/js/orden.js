@@ -63,7 +63,6 @@ function cargar_info_oi(){
             $('#editar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#editar_fecha_envio').val(data.fecha_envio);
             $('#editar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#editar_guia_envio').val(data.guia_envio)
             $('#editar_pagado').val(data.pagado)
             $('#editar_link_resultados').val(data.link_resultados);
             //pestaña de observaciones
@@ -122,9 +121,7 @@ function guardar_muestra(id_muestra){
     var dict = {
         1 : check_is_not_empty(producto, '#editar_muestra_producto_' + id_muestra),
         2 : check_is_not_empty(mrl, '#editar_muestra_mrl_' + id_muestra),
-        3 : check_is_not_empty(num_interno, '#editar_muestra_numero_interno_' + id_muestra),
-        4 : check_is_date_js(fecha_esperada, '#editar_muestra_fecha_esperada_informe_' + id_muestra),
-        5 : check_is_not_empty(muestreador, '#editar_muestra_muestreador_' + id_muestra)
+        3 : check_is_not_empty(muestreador, '#editar_muestra_muestreador_' + id_muestra)
     }
 
     var flag = true;
@@ -212,7 +209,6 @@ function submit(){
     var fecha_envio = $('#editar_fecha_envio').val();
     var fecha_recepcion_m = $('#editar_fecha_recepcion_m').val();
     var fecha_llegada_lab = $('#editar_fecha_llegada_lab').val();
-    var guia_envio = $('#editar_guia_envio').val()
     var link_resultados = $('#editar_link_resultados').val();
     var pagado = $('#editar_pagado').val();
 
@@ -239,7 +235,6 @@ function submit(){
             'fecha_envio': fecha_envio,
             'fecha_recepcion_m': fecha_recepcion_m,
             'fecha_llegada_lab': fecha_llegada_lab,
-            'guia_envio': guia_envio,
             'link_resultados': link_resultados,
             'formato_ingreso_muestra': formato_ingreso_muestra,
             'idioma_reporte': idioma_reporte,
@@ -272,11 +267,19 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         var fei = muestra.fecha_esperada_recibo;
         var fri = muestra.fecha_recibo_informe;
         var informe = muestra.num_interno_informe;
+        var producto = muestra.producto;
+        var codigo_muestra = muestra.codigo_muestra;
         if(muestra.enviado){
             siono = "Sí";
         }
         if(muestra.link_resultados != ""){
             pdf = "Ir a PDF";
+        }
+        if(muestra.producto == null){
+            producto = "-";
+        }
+        if(muestra.codigo_muestra == null){
+            codigo_muestra = "-";
         }
         if(muestra.fecha_esperada_recibo == null){
             fei = "-";
@@ -290,15 +293,15 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         html = html + `
                 <tr name="ver_muestra_`+ id_muestra +`[]">
                     <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
-                    <td id="producto_`+ id_muestra +`">` + muestra.producto + `</td>
-                    <td id="codigo_`+ id_muestra +`">` + muestra.codigo_muestra + `</td>
+                    <td id="producto_`+ id_muestra +`">` + producto + `</td>
+                    <td id="codigo_`+ id_muestra +`">` + codigo_muestra + `</td>
                     <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
                     <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
                     <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
                     <td id="fei_`+ id_muestra +`">` + fei + `</td>
                     <td id="fri_`+ id_muestra +`">` + fri + `</td>
                     <td id="siono_`+ id_muestra +`">` + siono + `</td>
-                    <td id="link_`+ id_muestra +`"><a href="` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
+                    <td id="link_`+ id_muestra +`"><a href="resultados/` + muestra.link_resultados + `" target=_blank>` + pdf + `</a></td>
                     <td id="muestreador_`+ id_muestra +`">` + muestra.muestreador + `</td>
                 </tr>
                 `;
@@ -307,14 +310,6 @@ function build_muestras(id_muestra, muestra, analisis, factura){
 }
 
 function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
-    // //Eliminar el formato de fecha dado por Django para poder leerla
-    // if (muestra.fechah_recibo != null){
-    //     fecha_r = muestra.fechah_recibo.replace('T', ' ');
-    //     fecha_r = fecha_r.replace('Z', '');
-    // }
-    // else{
-    //     fecha_r = '';
-    // }
     var html = ``;
     var i = 0;
     for(let a in analisis){
@@ -401,7 +396,6 @@ function visualizar_info_oi(id) {
             $('#visualizar_fecha_recepcion_m').val(data.fecha_recepcion_m);
             $('#visualizar_fecha_envio').val(data.fecha_envio);
             $('#visualizar_fecha_llegada_lab').val(data.fecha_llegada_lab);
-            $('#visualizar_guia_envio').val(data.guia_envio);
             $('#visualizar_pagado').val(data.pagado);
             $('#visualizar_link_resultados').val(data.link_resultados);
             $('#visualizar_usuario_empresa').text(response.empresa);
@@ -491,9 +485,6 @@ function cargar_enviar(id){
             var html_drop = dropdown_muestras(muestras);
             $('#muestra').html(html_drop);
         },
-        error: function(data){
-            $('#modal-enviar-resultados').modal('toggle');// Cerrar el modal de enviar resultados
-        }
     });
 }
 
@@ -601,7 +592,7 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
         var iva = parseFloat(data_ac[x][0].fields.iva);
         var total_muestra_ind = precio_unit - ( (precio_unit * descuento)/100 ) + ( (precio_unit * iva)/100 )
         total_muestras.push(total_muestra_ind)
-        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>'+data_muestras[x][0].fields.descripcion_muestra+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
+        $('#oi-muestra_tabla').append('<tr class="registro-tabla-factura-oi"><td>'+data_analisis[x][0].fields.codigo+'</td><td>'+data_analisis[x][0].fields.nombre+'</td><td>'+data_analisis[x][0].fields.descripcion+'</td><td>'+validar_muestra(data_muestras[x][0].fields)+'</td><td>$ '+precio_unit+'</td><td>'+descuento+' %</td><td>'+iva+' %</td><td> $ '+ total_muestra_ind);
     }
     var subtotal_muestras = 0;
     for (i in total_muestras){
@@ -609,6 +600,14 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
     }
 
     $('#n_subtotal-facturas').html(subtotal_muestras);
+}
+
+function validar_muestra(data_muestra){
+  if(data_muestra.producto != null){
+    return data_muestra.producto;
+  }else{
+    return data_muestra.tipo_muestra;
+  }
 }
 
 function editar_factura(){
@@ -665,16 +664,6 @@ function validar_factura(){
   var dict = {
           1 : check_is_not_empty(responsable_pago, '#responsable_pago_fact'),
           3 : check_is_not_empty(correo, '#correo_fact'),
-          4 : check_is_not_empty(num_fact, '#numero_fact'),
-          5 : check_is_not_empty(fecha_fact, '#fecha_fact'),
-          6 : check_is_not_empty(complemento_pago, '#complemento_pago'),
-          7 : check_is_not_empty(cobro_envio, '#cobro_envio'),
-          8 : check_is_not_empty(envio_fact, '#envio_fact'),
-          9 : check_is_not_empty(fecha_envio_fact,'#fecha_envio_fact'),
-          10 : check_is_not_empty(pago_fact,'#pago_fact'),
-          11 : check_is_not_empty(envio_informes,'#envio_informes'),
-          12 : check_is_not_empty(orden_compra,'#orden_compra'),
-          13 : check_is_not_empty(cantidad_pagada,'#cantidad_pagada')
       }
   for(var key in dict) {
     var value = dict[key];

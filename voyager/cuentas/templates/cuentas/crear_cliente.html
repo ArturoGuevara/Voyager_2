@@ -60,10 +60,12 @@
                     <label for="{{ form.empresa.id_for_label }}">Empresa:</label>
                     {{ form.empresa }}
                     <br>
-                    <a id="btn-agregar-empresa" class="btn btn-success" data-container="body" href="#"
-                       data-toggle="modal" data-target="#modal-crear-empresa">
-                        <i class="nc-icon nc-simple-add"></i> Empresa
-                    </a>
+                    {% if 'crud_empresa' in request.session.permissions %}
+                        <a id="btn-agregar-empresa" class="btn btn-success" data-container="body" href="#"
+                           data-toggle="modal" data-target="#modal-crear-empresa">
+                            <i class="nc-icon nc-simple-add"></i> Empresa
+                        </a>
+                    {% endif %}
                 </div>
             </div>
                 <div class="row mt-1 pt-1 pb-5">
