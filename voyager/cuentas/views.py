@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core import serializers
-from .models import IFCUsuario,Rol,Empresa
+from .models import IFCUsuario,Rol,Empresa,PermisoRol
 from reportes.models import OrdenInterna
 from django.urls import reverse
 from .forms import ClientForm
@@ -14,7 +14,7 @@ from django.http import JsonResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth import update_session_auth_hash
-
+from flags.state import flag_enabled
 # Create your views here.
 
 #Vista del Index
@@ -44,6 +44,11 @@ def verifyLogin(request):
                 ifc_user = IFCUsuario.objects.get(user = request.user)
                 request.session['username'] = ifc_user.nombre
                 request.session['userrole'] = ifc_user.rol.nombre
+                permissions = PermisoRol.objects.all().filter(rol=ifc_user.rol)
+                list_permissions = []
+                for permission in permissions:
+                    list_permissions.append(permission.permiso.nombre)
+                request.session['permissions'] = list_permissions
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -86,14 +91,12 @@ def loggedOut(request):
 def consultar_usuario(request, id):
     #View de consulta de información de usuario
     if request.method == 'POST':
-        datos_ordenes_int = []
-        datos_ordenes = []
         datos = {}
         rol = ""
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if 'visualizar_clientes' in request.session['permissions'] or 'visualizar_usuarios' in request['permissions']:
                 usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
                 rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
                 if usuario:
@@ -106,18 +109,10 @@ def consultar_usuario(request, id):
                     if empresa:
                         nombre_empresa = empresa.first().empresa
 
-                    if rol == "Cliente":
-                        ordenes_int = OrdenInterna.objects.filter(usuario = usuario).order_by('idOI')   #Obtener 0.I de cliente a consultar
-                        for o in ordenes_int:
-                            if o:
-                                datos_ordenes_int.append(o)
-                            else:
-                                print("Not exists")
-                        datos_ordenes = serializers.serialize("json", datos_ordenes_int, ensure_ascii=False)     #Serializar objetos de O.I
             else:
                 raise Http404
 
-        return JsonResponse({"datos": datos, "datos_ordenes":datos_ordenes,"rol":rol,"mail":mail,"nombre_empresa": nombre_empresa})
+        return JsonResponse({"datos": datos,"rol":rol,"mail":mail,"nombre_empresa": nombre_empresa})
 
 @login_required
 def lista_usuarios(request):
@@ -127,12 +122,14 @@ def lista_usuarios(request):
 
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
-            usuarios_dir = IFCUsuario.objects.all().order_by('user')    #Obtener todos los usuarios
-            context = {'usuarios':usuarios_dir}
-        elif not usuario_log.rol.nombre == "Cliente":
+        if 'visualizar_usuarios' in request.session['permissions']: #Verificar que el rol sea válido
+            usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
+            usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
+            usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
+            context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
+        elif 'visualizar_clientes' in request.session['permissions']:
             rol = Rol.objects.get(nombre="Cliente")
-            usuarios_cont = IFCUsuario.objects.filter(rol = rol).order_by('user')  #Obtener usuarios que son clientes
+            usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
         else:
             raise Http404
@@ -162,7 +159,7 @@ def actualizar_usuario(request):
     datos = {}
 
     user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"): #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('bloquear_usuarios' in request.session['permissions']): #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
          usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
@@ -178,7 +175,8 @@ def actualizar_usuario(request):
 def crear_cliente(request):
     form = ClientForm()
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_cliente' in request.session['permissions']):
         raise Http404
     return render(request, 'cuentas/crear_cliente.html', {'form' : form})
 
@@ -200,7 +198,8 @@ def guardar_cliente(request):
         request.session['crear_cliente_status'] = False
         raise Http404
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_cliente' in request.session['permissions']):
         request.session['crear_cliente_status'] = False
         raise Http404
     user_name = request.POST.get('nombre')[0:2] \
@@ -242,7 +241,7 @@ def verificar_correo(request):
 @login_required
 def crear_staff(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_usuario' in request.session['permissions']):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
     roles = Rol.objects.all()
     return render(request, 'cuentas/crear_staff.html', {'roles' : roles})
@@ -383,6 +382,175 @@ def notificar_error_perfil(request):         # Funcion que se llama con un ajax 
     if 'error_perfil_status' in request.session:
         result = request.session['error_perfil_status']
         del request.session['error_perfil_status']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+############### USA03-39###################
+@login_required
+def borrar_usuario(request, id):
+    user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'eliminar_usuario' in request.session['permissions']:
+        # Checamos que el método sea POST
+        if request.method == 'POST':
+            # Obtenemos el objeto de análisis
+            usuario = IFCUsuario.objects.get(user__pk = id)
+            if usuario:
+                usuario.estado = not usuario.estado
+                usuario.save()
+                return HttpResponse('OK')
+            else:
+                response = JsonResponse({"error": "No existe ese usuario"})
+                response.status_code = 500
+                # Regresamos la respuesta de error interno del servidor
+                return response
+        else:
+            response = JsonResponse({"error": "No se mandó por el método correcto"})
+            response.status_code = 500
+            # Regresamos la respuesta de error interno del servidor
+            return response
+    else: # Si el rol del usuario no es ventas no puede entrar a la página
+        raise Http404
+############### USA03-39###################
+
+
+########### CRUD empresa ##################
+@login_required
+def crear_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
+        raise Http404
+    if not (request.POST.get('nombre_empresa')
+            and request.POST.get('telefono_empresa')
+            and request.POST.get('correo_resultados')
+            and request.POST.get('correo_pagos')
+            and request.POST.get('nombre_responsable_resultados')
+            and request.POST.get('nombre_responsable_pagos')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('nombre_empresa')
+    telefono_empresa = request.POST.get('telefono_empresa')
+    correo_resultados = request.POST.get('correo_resultados')
+    correo_pagos = request.POST.get('correo_pagos')
+    nombre_responsable_resultados = request.POST.get('nombre_responsable_resultados')
+    nombre_responsable_pagos = request.POST.get('nombre_responsable_pagos')
+    empresas_nombre = Empresa.objects.filter(empresa = nombre_empresa)
+    if empresas_nombre:
+        raise Http404
+    empresa = Empresa()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.correo_resultados = correo_resultados
+    empresa.correo_pagos = correo_pagos
+    empresa.responsable_resultados = nombre_responsable_resultados
+    empresa.responsable_pagos = nombre_responsable_pagos
+    empresa.save()
+    return JsonResponse({'value':empresa.id,'nombre':empresa.empresa})
+
+@login_required
+def lista_empresas(request):
+    empresas = {}
+    context = {}
+
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
+        raise Http404
+    if flag_enabled('Modulo_Empresas', request=request):
+        empresas = Empresa.objects.all()
+        context = {'empresas':empresas}
+    return render(request, 'cuentas/lista_empresas.html', context)
+
+@login_required
+def consultar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
+        raise Http404
+    if not (request.POST.get('id')):
+        raise Http404
+    id_empresa = request.POST.get('id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    return JsonResponse({'nombre':empresa.empresa,
+                            'telefono':empresa.telefono,
+                            'correo_resultados':empresa.correo_resultados,
+                            'correo_pagos':empresa.correo_pagos,
+                            'id':empresa.id,
+                            'responsable_resultados':empresa.responsable_resultados,
+                            'responsable_pagos':empresa.responsable_pagos,
+                         })
+
+@login_required
+def editar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
+        raise Http404
+    if not (request.POST.get('editar_nombre')
+            and request.POST.get('editar_telefono')
+            and request.POST.get('editar_responsable_resultados')
+            and request.POST.get('editar_correo_resultados')
+            and request.POST.get('editar_responsable_pagos')
+            and request.POST.get('editar_correo_pagos')
+            and request.POST.get('empresa_id')
+        ):
+        raise Http404
+    nombre_empresa = request.POST.get('editar_nombre')
+    telefono_empresa = request.POST.get('editar_telefono')
+    responsable_resultados = request.POST.get('editar_responsable_resultados')
+    correo_resultados = request.POST.get('editar_correo_resultados')
+    responsable_pagos = request.POST.get('editar_responsable_pagos')
+    correo_pagos = request.POST.get('editar_correo_pagos')
+    id_empresa = request.POST.get('empresa_id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    empresa.empresa = nombre_empresa
+    empresa.telefono = telefono_empresa
+    empresa.responsable_resultados = responsable_resultados
+    empresa.correo_resultados = correo_resultados
+    empresa.responsable_pagos = responsable_pagos
+    empresa.correo_pagos = correo_pagos
+    empresa.save()
+    request.session['editar_empresa'] = True
+    return HttpResponseRedirect(reverse('lista_empresas'))
+
+@login_required
+def eliminar_empresa(request):
+    user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
+        raise Http404
+    if not (request.POST.get('eliminar_empresa_id')):
+        raise Http404
+    id_empresa = request.POST.get('eliminar_empresa_id')
+    empresas = Empresa.objects.filter(id=id_empresa)
+    if not empresas:
+        raise Http404
+    empresa = empresas.first()
+    empresa.delete()
+    request.session['borrar_empresa'] = True
+    return HttpResponseRedirect(reverse('lista_empresas'))
+
+@login_required
+def notificar_editar_empresa(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'editar_empresa' in request.session:
+        result = request.session['editar_empresa']
+        del request.session['editar_empresa']
+        return JsonResponse({"result": result})
+    else:
+        return JsonResponse({"result": 'NONE'})
+
+@login_required
+def notificar_borrar_empresa(request):         # Funcion que se llama con un ajax para dar retroalimentacion al usuario al crear staff
+    if 'borrar_empresa' in request.session:
+        result = request.session['borrar_empresa']
+        del request.session['borrar_empresa']
         return JsonResponse({"result": result})
     else:
         return JsonResponse({"result": 'NONE'})

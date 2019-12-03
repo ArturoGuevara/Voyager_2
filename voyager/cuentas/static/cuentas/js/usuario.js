@@ -1,4 +1,5 @@
 var token = csrftoken;
+var id_usuario = 0;
 
 
 // Función que crea y muestra alerta
@@ -16,7 +17,6 @@ function showNotification(from, align, msg){
 	});
 }
 
-
 // boton para abrir modal de actualizar oi y carga los campos
 function cargar_info_usuario(id) {
     $.ajax({
@@ -30,27 +30,10 @@ function cargar_info_usuario(id) {
         success: function (response) {
             var data = JSON.parse(response.datos);
 
-            if(response.datos_ordenes != ""){
-                var ordenes = JSON.parse(response.datos_ordenes);
-            }
+          
             var rol = response.rol;
             data = data.fields;
 
-            if(rol == "Cliente"){
-                
-                $('#ordenes_pendientes').removeClass('d-none');
-
-                $('#tabla_cont').empty();
-                for(var i = 0; i < ordenes.length; i++){
-                    var id = ordenes[i].pk;
-                    var estatus = ordenes[i].fields.estatus;
-
-                    $('#tabla_usuario').append('<tr><th scope="row">'+ id +'</th><td>'+ estatus +'</td></tr>');
-                }
-            }else{
-                $('#ordenes_pendientes').addClass('d-none');
-                $('#tabla_cont').empty();
-            }
             //pestaña de información
             $('#nombre').text(data.nombre);
             $('#apellido_paterno').text(data.apellido_paterno);
@@ -65,16 +48,25 @@ function cargar_info_usuario(id) {
                 $('#inputEstatus').append('<option id="NA" name="NA" selected>NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
             }else if (data.estatus_pago == "Deudor"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor" selected>Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
             }else if (data.estatus_pago == "Pagado"){
                 $('#inputEstatus').empty();
                 $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
                 $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
                 $('#inputEstatus').append('<option id="Pagado" name="Pagado" selected>Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado">Bloqueado</option>');
+            }else if (data.estatus_pago == "Bloqueado"){
+                $('#inputEstatus').empty();
+                $('#inputEstatus').append('<option id="NA" name="NA">NA</option>');
+                $('#inputEstatus').append('<option id="Deudor" name="Deudor">Deudor</option>');
+                $('#inputEstatus').append('<option id="Pagado" name="Pagado">Pagado</option>');
+                $('#inputEstatus').append('<option id="Bloqueado" name="Bloqueado" selected>Bloqueado</option>');
             }
         }
     })
@@ -87,8 +79,11 @@ $('#submitForm').on('click', function () {
 
 function submit(){
     var estatus = "";
-    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado"){
+    if ($('#inputEstatus').val() == "NA" || $('#inputEstatus').val() == "Deudor" || $('#inputEstatus').val() == "Pagado" || $('#inputEstatus').val() == "Bloqueado"){
         estatus = $('#inputEstatus').val();
+    }else{
+        showNotificationDanger('top','right','Por favor, seleccione un estatus válido');
+        return false; //Detiene la función por si el estatus ingresado es inválido
     }
     var id = $('#id_usuario').val();
     //Código ajax que guarda los datos
@@ -106,7 +101,7 @@ function submit(){
             data = data.fields;
             var tr = '#usuario-'+id + " .u_estatus";
             $(tr).text(data.estatus_pago);
-            showNotification('top','right','Se han guardado tus cambios');
+            showNotificationSuccess('top','right','Se han guardado tus cambios');
             $('#actualizar_usuario').modal('toggle');
             $('#modal_info_usuario').modal('toggle');
         }

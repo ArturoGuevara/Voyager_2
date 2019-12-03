@@ -14,21 +14,47 @@
                         <label for="exampleInputEmail1">Código Rastreo DHL:</label>
                         <input type="text" class="form-control" id="codigo_dhl" aria-describedby="codigo_dhl" placeholder="1023456789" name="codigo_dhl" minlength="10" maxlength="10" required>  
                     </div> 
-                    <div id="checkboxes_container" class="py-3">
+                    <div id="oi_container" class="py-3 mx-auto container">
                         <div class="row mx-0">
-                            {% for o in ordenes_activas %}
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input class="form-check-input" type="checkbox" minlength="10" maxlength="10" name="oiselected" id="oiselected" value="{{ o.idOI }}" >
-                                        <span class="form-check-sign"></span>
-                                        {{ o.idOI }}
-                                    </label>
+                            {% for o,value in analisis.items %}
+                            <div id="accordion">
+                                <div class="card mr-3">
+                                    <div class="card-header" id="headingOne">
+                                        <h5 class="mb-0">
+                                            <button class="btn btn-link" data-toggle="collapse" data-target="#collapse{{o.idOI}}" aria-expanded="true" aria-controls="collapseOne">
+                                                OI #{{ o.idOI }}
+                                            </button>
+                                        </h5>
+                                    </div>
+                                    <div id="collapse{{o.idOI}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                                        <div class="card-body">
+                                            <div id="checkboxes_container" class="py-3">
+                                                <div class="row mx-0">
+                                                    <div class="form-check">
+                                                        {% for m in value %}
+                                                        <label class="form-check-label">
+                                                            <input class="form-check-input" type="checkbox" name="mselected" id="mselected{{ m.muestra.id_muestra }}" value="{{ m.muestra.id_muestra }}">
+                                                            {{ m.analisis.codigo }}
+                                                            <span class="form-check-sign" name="mselec" id="mselec{{ m.muestra.id_muestra }}">
+                                                                <span class="check"></span>
+                                                            </span>
+                                                        </label>
+                                                        {% empty %}
+                                                            No hay muestras
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                            </div>
                             {% empty %}
-                            No hay órdenes internas
-                        {% endfor %}
-                        </div>
+                                No hay órdenes internas
+                            {% endfor %}
+                        </div> 
                     </div>
+                           
                 </div>
                 <div class="modal-footer mt-3">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>

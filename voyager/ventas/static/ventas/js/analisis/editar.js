@@ -99,10 +99,10 @@ function editar_analisis(){
                 cambiar_valores_analisis_tabla('.analisis-precio', '$'+data.fields.precio, id);
                 cambiar_valores_analisis_tabla('.analisis-tiempo', data.fields.tiempo, id);
                 if(data.fields.acreditacion == 1){
-                  cambiar_valores_analisis_tabla('.analisis-acreditado', "Q", id);
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-success">SI</span>', id);
                 }
                 else{
-                  cambiar_valores_analisis_tabla('.analisis-acreditado', "-", id);
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-danger">NO</span>', id);
                 }
 
 
@@ -110,7 +110,7 @@ function editar_analisis(){
                 $('#ver_analisis').modal('hide');
 
                 // Damos retroalimentación de que se guardó correctamente
-                showNotification('top','right','Cambios guardados correctamente');
+                showNotificationSuccess('top','right','Cambios guardados correctamente');
 
                 id_analisis = 0;
             },

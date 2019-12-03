@@ -60,7 +60,7 @@ function cargar_cot() {
             }
         });
     } else {
-        showNotification('top', 'right', 'Selecciona al menos un análisis para la cotización');
+        showNotificationWarning('top', 'right', 'Selecciona al menos un análisis para la cotización');
     }
 }
 // Función para guardar la nueva cotización
@@ -125,7 +125,8 @@ function crear_cotizacion() {
             $('#agregar-cot').modal('hide');
 
             // Damos retroalimentación de que se guardó correctamente
-            showNotification('top', 'right', 'Cotización guardada correctamente');
+            showNotificationSuccess('top', 'right', 'Cotización guardada correctamente');
+            showNotificationWarning('top', 'right', 'La página se refrescará en un momento');
 
             setTimeout(function () {
                 location.reload();
@@ -179,6 +180,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -190,6 +203,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }                
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
@@ -213,6 +238,9 @@ function add_calc_total() {
         var val = $(this).val();
         if(val < 1){
             val = val*-1;
+            if((val > 0 && val < 1) || (val > -1 && val < 0)){
+                val = 1;
+            }
             if(val == 0){
                 val = 1;
             }

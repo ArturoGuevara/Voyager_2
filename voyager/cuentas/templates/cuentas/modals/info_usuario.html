@@ -47,31 +47,16 @@
                                 <option name="NA" id="NA">NA</option>
                                 <option name="Deudor" id="Deudor">Deudor</option>
                                 <option name="Pagado" id="Pagado">Pagado</option>
+                                <option name="Bloqueado" id="Bloqueado">Bloqueado</option>
                             </select>
-                            <!-- <b><label for="estatus">Estatus</label></b>
-                            <p id="estatus">Estatus de pago</p> -->
                         </div>
                     </div>
-                    <div class="form-row d-none" id="ordenes_pendientes" name = "ordenes_pendientes">
-                        <div class="table-wrapper-scroll-y my-custom-scrollbar">
-                            <table class="table table-sm table-bordered table-striped mb-0" id="tabla_usuario" name="tabla_usuario">
-                                <thead>
-                                    <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Estatus</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla_cont" name="tabla_cont">
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                </div>  
                 <div class="modal-footer mt-3">
                     <div class="float-left">
                         <button type="button" class="btn btn-secondary ml-auto border-0" data-dismiss="modal">Cerrar</button>
                     </div>
-                    {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'SuperUser' %}
+                    {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Gerente' or request.session.userrole == 'SuperUser' %}
                     <button name="submitForm" id="submitForm" type="button" class="btn btn-success ml-3">Guardar</button>
                     {% endif %}
                 </div>

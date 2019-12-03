@@ -25,9 +25,12 @@ function restaurar_modal_ver_cot(){
     $('#nav-analisis-tab').removeClass().addClass('nav-item nav-link');
     $('#nav-info').removeClass().addClass('tab-pane fade show active');
     $('#nav-analisis').removeClass().addClass('tab-pane fade');
+
+    $('#imprimir-pdf').show();
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
+    $('#imprimir-pdf').hide();
     $("input[name='editar-cot-an[]']:checked").each(function () {
         che.push(parseInt($(this).val()));
     });
@@ -103,8 +106,8 @@ $("input[name='editar-cot-an[]']").click(function (){
             type: "POST",
             success: function(response){
                 // Obtener la info que se regresa del controlador
-                var data = JSON.parse(response.data);
-
+                var data = JSON.parse(response.data[0]);
+                data = data[0];
                 var total_analisis = parseInt(data.fields.precio) + (parseInt(data.fields.precio) * 0.16)
 
                 // Agremoas el análisis seleccionado a la tabla
@@ -195,8 +198,8 @@ function guardar_cambios_cot(){
                     $('#ver_cotizacion').modal('hide');
 
                     // Damos retroalimentación de que se guardó correctamente
-                    showNotification('top', 'right', 'Cambios en la cotización guardados correctamente');
-
+                    showNotificationSuccess('top', 'right', 'Cambios en la cotización guardados correctamente');
+                    showNotificationWarning('top', 'right', 'Se refrescará la página');
                     setTimeout(function () {
                         location.reload();
                     }, 2000);
@@ -229,6 +232,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -240,6 +255,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
