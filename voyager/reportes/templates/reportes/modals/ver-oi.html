@@ -7,7 +7,7 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#visualizar_info" onclick="restaurar_editar()">Orden Interna</a>
                         </li>
-                        {% if request.session.userrole != 'Facturacion' %}
+                        {% if request.session.userrole != 'Facturacion' and request.session.userrole != 'Ventas' %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_muestras" onclick="restaurar_editar()">Muestras</a>
                         </li>

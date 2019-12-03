@@ -40,7 +40,7 @@
                     <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
                     <td class="pt-3 oiData oi_empresa">{{value.empresa}}</td>
-                    <td class="pt-3 oiData oi_usuario">{{value.user}}</td>
+                    <td class="pt-3 oiData oi_usuario">{{value.nombre}} {{value.apellido_paterno}} {{value.apellido_materno}}</td>
                     <td class="pt-3 oiData oi_fecha_envio">
                         {% language 'es-co' %}
                             {% if o.fecha_envio %}

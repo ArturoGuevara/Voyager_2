@@ -589,11 +589,7 @@ def exportar_datos(request):
 @login_required
 def generar_csv_respaldo(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.method != 'POST':
         raise Http404
@@ -632,11 +628,7 @@ def generar_csv_respaldo(request):
 @login_required
 def descargar_paquete(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.method != 'POST':
         raise Http404
