@@ -373,7 +373,7 @@
                 </div>
                 <div class="text-right">
                     {% if 'actualizar_orden_interna' in request.session.permissions %}
-                    <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
+                    <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de la orden interna">
                         Editar
                     </button>
                     {% endif %}

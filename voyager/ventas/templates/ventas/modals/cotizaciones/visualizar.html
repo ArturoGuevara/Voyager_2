@@ -179,7 +179,7 @@
                 {% endif %}
                 {% if 'actualizar_cotizacion' in request.session.permissions %}
                     <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
-                    <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                    <button id="btn-editar-cot" class="btn btn-info d-inline" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de la cotización.">Editar</button>
                 {% endif %}
             </div>
             <div class="container" id="terminos" style="font-size: 10px;">
