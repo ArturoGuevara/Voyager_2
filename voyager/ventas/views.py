@@ -70,7 +70,7 @@ def ver_catalogo(request):
 @login_required
 def cargar_analisis(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'consultar_catalogo_analisis' in request.session['permissions']:
         if request.method == 'POST':
             data = []
             analisis = Analisis.objects.get(id_analisis = id)
@@ -243,7 +243,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
@@ -718,7 +718,7 @@ def carga_datos(path):  # Esta funcion carga los registros del archivo guardado
 @login_required
 def bloquear_cotizacion(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser":
+    if('aceptar_cotizacion' in request.session['permissions']):
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis

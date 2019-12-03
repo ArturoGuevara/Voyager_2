@@ -207,6 +207,13 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
         role2 = Rol()
         role2.nombre = "Cliente"
         role2.save()
+        permiso = Permiso()
+        permiso.nombre = 'crear_cliente'
+        permiso.save()
+        permiso_rol = PermisoRol()
+        permiso_rol.permiso = permiso
+        permiso_rol.rol = role
+        permiso_rol.save()
         user = User.objects.create_user('hockey', 'hockey@lalocura.com', 'lalocura') #crear usuario de Django
         user.save() #guardar usuario de Django
         user2 = User.objects.create_user('padrino', 'padrino@lalocura.com', 'padrino')
@@ -232,6 +239,9 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
         e = Empresa()
         e.empresa = "IFC"
         e.save()
+
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
 
     def test_no_login_form(self): #probar que el usuario no pueda ingresar a la página si no ha iniciado sesión
         self.setup()
@@ -270,7 +280,7 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
 
     def test_different_passwords(self): #Probar que hay un error si hay contraseñas diferentes
         self.setup()
-        self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         empresa = Empresa.objects.get(empresa="IFC") #obtener el id de la empresa
         response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
                                                                 'apellido_paterno':"Impulsado",
@@ -285,7 +295,7 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
 
     def test_repeated_mail(self): #Probar que hay un error si se envia un correo usado anteriormente
         self.setup()
-        self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         empresa = Empresa.objects.get(empresa="IFC")
         response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
                                                                 'apellido_paterno':"Impulsado",
@@ -300,7 +310,7 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
 
     def test_no_company(self): #Probar que hay un error si se envía el código de una empresa que no existe
         self.setup()
-        self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         empresa = Empresa.objects.get(empresa="IFC")
         response = self.client.post(reverse('guardar_cliente'),{'nombre':"Impulse",
                                                                 'apellido_paterno':"Impulsado",
@@ -315,7 +325,8 @@ class testGuardarCliente(TestCase): #test para la view guardar_cliente
 
     def test_all_correct(self): #probar que la funcionalidad sea correcta si se envía la información adecuada
         self.setup()
-        self.client.login(username='hockey', password='lalocura')
+        #self.client.login(username='hockey', password='lalocura')
+        self.login_IFC('hockey@lalocura.com','lalocura')
         empresa = Empresa.objects.get(empresa="IFC") #obtener una empresa válida
         client = Rol.objects.get(nombre="Cliente") #obtener el objeto de tipo rol
         num_clients_before = IFCUsuario.objects.filter(rol=client).count() #obtener todos los usuarios de tipo cliente

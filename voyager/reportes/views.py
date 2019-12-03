@@ -333,8 +333,8 @@ def ordenes_internas(request):
 
             muestras_an = AnalisisMuestra.objects.filter(id_oi=orden_no_recibida)
             for m in muestras_an:
-                arr_analisis.append(m) 
-            
+                arr_analisis.append(m)
+
             if muestras_an:
                 print(arr_analisis)
                 dict_analisis[orden_no_recibida] = arr_analisis.copy()
@@ -342,9 +342,9 @@ def ordenes_internas(request):
 
         for orden in ordenes_activas:
             arr_muestras = []
-            
+
             muestras_orden = Muestra.objects.filter(oi=orden)
-                          
+
 
             for muestra in muestras_orden:
                 arr_muestras.append(muestra)
@@ -928,16 +928,16 @@ def ver_pdf(request, file):
     path_file = "/archivos-reportes/"+file
     path = settings.BASE_DIR + path_file
     print(path)
-        
+
     if os.path.exists(path):
         with open(path, 'rb') as fh:
             response = HttpResponse(fh.read(), content_type="application/pdf")
             response['Content-Disposition'] = 'inline; filename="archivo"'
             return response
     raise Http404
-    
 
-    
+
+
 def visualizar_facturacion(request):
     if request.method == 'POST':
 
@@ -968,7 +968,6 @@ def visualizar_facturacion(request):
             data.append(arr_id_ac_s)
             arr_muestra_s = serializers.serialize("json", [am.muestra], ensure_ascii = False)
             data.append(arr_muestra_s)
-
 
         return JsonResponse({"data": data })
     else:
