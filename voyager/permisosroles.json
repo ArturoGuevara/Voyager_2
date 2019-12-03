@@ -1,22 +1,6 @@
 [
 {
   "model": "cuentas.permisorol",
-  "pk": 1,
-  "fields": {
-    "permiso": 1,
-    "rol": 8
-  }
-},
-{
-  "model": "cuentas.permisorol",
-  "pk": 2,
-  "fields": {
-    "permiso": 1,
-    "rol": 2
-  }
-},
-{
-  "model": "cuentas.permisorol",
   "pk": 3,
   "fields": {
     "permiso": 1,
@@ -61,14 +45,6 @@
   "fields": {
     "permiso": 2,
     "rol": 5
-  }
-},
-{
-  "model": "cuentas.permisorol",
-  "pk": 9,
-  "fields": {
-    "permiso": 2,
-    "rol": 4
   }
 },
 {
@@ -665,14 +641,6 @@
 },
 {
   "model": "cuentas.permisorol",
-  "pk": 87,
-  "fields": {
-    "permiso": 23,
-    "rol": 2
-  }
-},
-{
-  "model": "cuentas.permisorol",
   "pk": 88,
   "fields": {
     "permiso": 23,
@@ -813,6 +781,54 @@
   "fields": {
     "permiso": 29,
     "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 106,
+  "fields": {
+    "permiso": 29,
+    "rol": 4
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 107,
+  "fields": {
+    "permiso": 30,
+    "rol": 1
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 108,
+  "fields": {
+    "permiso": 30,
+    "rol": 8
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 109,
+  "fields": {
+    "permiso": 30,
+    "rol": 2
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 110,
+  "fields": {
+    "permiso": 30,
+    "rol": 6
+  }
+},
+{
+  "model": "cuentas.permisorol",
+  "pk": 111,
+  "fields": {
+    "permiso": 29,
+    "rol": 5
   }
 }
 ]
