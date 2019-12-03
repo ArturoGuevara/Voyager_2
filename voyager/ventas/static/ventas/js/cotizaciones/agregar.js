@@ -180,6 +180,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -191,6 +203,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }                
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
@@ -214,6 +238,9 @@ function add_calc_total() {
         var val = $(this).val();
         if(val < 1){
             val = val*-1;
+            if((val > 0 && val < 1) || (val > -1 && val < 0)){
+                val = 1;
+            }
             if(val == 0){
                 val = 1;
             }
