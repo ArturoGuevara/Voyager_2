@@ -554,6 +554,7 @@ def actualizar_muestra(request):
             #     else:
             #         muestra.factura = None
             muestra.mrl = request.POST['mrl']
+            muestra.temperatura_tat = request.POST['temperatura_tat']
             muestra.num_interno_informe = request.POST['num_interno']
             if (request.POST['fecha_esperada'] != ""):
                 muestra.fecha_esperada_recibo = request.POST['fecha_esperada']
