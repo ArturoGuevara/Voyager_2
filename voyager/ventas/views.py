@@ -586,6 +586,8 @@ def exportar_datos(request):
         context = {}
     return render(request, 'ventas/exportar_datos.html',context)
 
+#######
+
 @login_required
 def generar_csv_respaldo(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
