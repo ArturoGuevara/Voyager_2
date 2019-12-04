@@ -63,7 +63,7 @@
                         {% if o.usuario.estatus_pago != "Deudor" %}
                         {% if 'notificar_resultados_correo' in request.session.permissions %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
-                                Enviar resultados
+                                Subir resultados
                             </button>
                         {% endif %}
                         {% endif %}

@@ -497,7 +497,7 @@ function enviar_resultados(){
     else{
         $("#div-archivo").css("border-color", "grey");
     }
-    if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
+    /*if(!check_is_not_empty($("#email_destino").val(),"#email_destino")){
         valid_form=false;
     }
     if(!check_is_not_empty($("#subject").val(),"#subject")){
@@ -505,7 +505,7 @@ function enviar_resultados(){
     }
     if(!check_is_not_empty($("#body").val(),"#body")){
         valid_form=false;
-    }
+    }*/
     if(valid_form==true){
         document.getElementById("submit_resultados_form").submit();
     }
