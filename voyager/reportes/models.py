@@ -181,6 +181,9 @@ class AnalisisMuestra(models.Model):
     estado = models.BooleanField()
     fecha = models.DateField()
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
+    # Datos de paquete
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+
     def __str__(self):
         return "%s" % (self.fecha)
 
