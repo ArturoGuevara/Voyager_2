@@ -97,6 +97,8 @@ function guardar_muestra(id_muestra){
     var producto = $(mp).val();
     var muestra_mrl = "#editar_muestra_mrl_" + id_muestra;
     var mrl = $(muestra_mrl).val();
+    var temperatura_tat = "#editar_muestra_temperatura_tat_" + id_muestra;
+    var temperatura_tat = $(temperatura_tat).val();
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
     var num_interno = $(ni).val();
     var fei = "#editar_muestra_fecha_esperada_informe_" + id_muestra;
@@ -141,6 +143,7 @@ function guardar_muestra(id_muestra){
             data: {
                 'id_muestra': id_muestra,
                 'producto': producto,
+                'temperatura_tat': temperatura_tat,
                 'mrl': mrl,
                 'num_interno': num_interno,
                 'fecha_esperada': fecha_esperada,
@@ -155,6 +158,7 @@ function guardar_muestra(id_muestra){
                 showNotificationModal('top','right','La muestra se ha guardado correctamente','success');
                 $('tr[name="editar_muestra_'+ id_muestra +'[]"]').each(function (){
                     $(this).find('#editar_muestra_producto_' + id_muestra).val(producto);
+                    $(this).find('#editar_muestra_temperatura_tat_' + id_muestra).val(temperatura_tat);
                     $(this).find('#editar_muestra_mrl_' + id_muestra).val(mrl);
                     $(this).find('#editar_muestra_numero_interno_' + id_muestra).val(num_interno);
                     $(this).find('#editar_muestra_fecha_esperada_informe_' + id_muestra).val(fecha_esperada);
@@ -269,6 +273,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         var informe = muestra.num_interno_informe;
         var producto = muestra.producto;
         var codigo_muestra = muestra.codigo_muestra;
+        var temperatura_tat = muestra.temperatura_tat;
         if(muestra.enviado){
             siono = "Sí";
         }
@@ -280,6 +285,9 @@ function build_muestras(id_muestra, muestra, analisis, factura){
         }
         if(muestra.codigo_muestra == null){
             codigo_muestra = "-";
+        }
+        if(muestra.temperatura_tat == ''){
+            temperatura_tat = "-";
         }
         if(muestra.fecha_esperada_recibo == null){
             fei = "-";
@@ -295,6 +303,7 @@ function build_muestras(id_muestra, muestra, analisis, factura){
                     <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
                     <td id="producto_`+ id_muestra +`">` + producto + `</td>
                     <td id="codigo_`+ id_muestra +`">` + codigo_muestra + `</td>
+                    <td id="codigo_`+ id_muestra +`">` + temperatura_tat + `</td>
                     <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
                     <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
                     <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
@@ -327,6 +336,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal){
                     <td><input type="text" class="form-control" id="editar_muestra_numero_` + id_muestra + `" placeholder="Número" value="` + id_muestra + `" disabled></td>
                     <td><input type="text" class="form-control" style="width: 200px;" id="editar_muestra_producto_` + id_muestra + `" placeholder="Aguacate" value="` + muestra.producto + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el producto</div></td>
                     <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_codigo_` + id_muestra + `" placeholder="A12345" value="` + muestra.codigo_muestra + `" disabled></td>
+                    <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_temperatura_tat_` + id_muestra + `" placeholder="45°C" value="` + muestra.temperatura_tat + `"></td>
                     <td><select class="form-control" style="width: 150px;" id="editar_analisis_` + id_muestra + `">
                 `;
         for(let x in anal){
