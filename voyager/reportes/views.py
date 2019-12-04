@@ -189,6 +189,7 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
+            m.producto = li[i]
             li = list(formato[1].split(","))
             m.descripcion_muestra = li[i]
             li = list(formato[2].split(","))
@@ -219,8 +220,10 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
+            m.producto = li[i]
             li = list(formato[1].split(","))
             m.lote_codigo = li[i]
+            m.codigo_muestra = li[i]
             li = list(formato[2].split(","))
             m.muestreador = li[i]
             li = list(formato[3].split(","))
@@ -278,6 +281,25 @@ def restar_analisis(user, analisis, muestra, oi):
                 am.estado = True
                 am.fecha = date.today()
                 am.save()
+                a.save()
+                return True
+
+def sustraer_analisis(user, analisis, muestra, dhl):
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user)
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c) #Busca los AnalisisCotizacion que pertenecen a la Cotizacion
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                if a.restante > 0: #Revisar que aún le queden análisis
+                    a.restante -= 1
+                    a.save()
+                    return True
+    cotizaciones = Cotizacion.objects.filter(usuario_c = user).order_by('-id_cotizacion')#Si no quedaron análisis cotizados, se restarán de la cotización del cliente más reciente
+    for c in cotizaciones:
+        ac = AnalisisCotizacion.objects.filter(cotizacion = c)
+        for a in ac:
+            if a.analisis.id_analisis == int(analisis): #Revisar que el AnalisisCotizacion tenga el análisis que se va a registrar
+                a.restante -= 1
                 a.save()
                 return True
 
@@ -400,6 +422,7 @@ def consultar_orden(request):
         empresa = {}
         analisis_muestras = {}
         analisis_muestras_ids = {}
+        analisis_muestras_dhl = {}
         facturas_muestras = {}
         if request.method == 'POST':
             if not (request.POST.get('id')):
@@ -438,6 +461,7 @@ def consultar_orden(request):
                     telefono = usuario.empresa.telefono
                     analisis_muestras = {}
                     analisis_muestras_ids = {}
+                    analisis_muestras_dhl = {}
                     facturas_muestras = {}
                     for muestra in muestras:
                         #recuperas todos los analisis de una muestra
@@ -445,6 +469,7 @@ def consultar_orden(request):
                         ana_mue = AnalisisMuestra.objects.filter(muestra = muestra)
                         analisis = []
                         analisis_ids = []
+                        muestra_dhl = []
                         if muestra.factura:
                             facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                         else:
@@ -453,8 +478,13 @@ def consultar_orden(request):
                         for a in ana_mue:
                             analisis.append(a.analisis.codigo)
                             analisis_ids.append(a.analisis.pk)
+                            if a.paquete:
+                                muestra_dhl.append(a.paquete.codigo_dhl)
+                            else:
+                                muestra_dhl.append(0)
                         analisis_muestras[muestra.id_muestra] =  analisis
                         analisis_muestras_ids[muestra.id_muestra] = analisis_ids
+                        analisis_muestras_dhl[muestra.id_muestra] = muestra_dhl
 
                     return JsonResponse(
                             {"data": data,
@@ -468,6 +498,7 @@ def consultar_orden(request):
                             "facturas":facturas_muestras,
                             "solicitante":solicitante,
                             "analisis":anal,
+                            "dict_dhl":analisis_muestras_dhl,
                             }
                         )
                 else:
@@ -500,9 +531,19 @@ def actualizar_muestra(request):
             muestra.producto = request.POST['producto']
             am = AnalisisMuestra.objects.filter(muestra = muestra)
             am_unico = AnalisisMuestra.objects.filter(muestra = muestra).first()
+            i = 0
             for a in am:
-                sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
-            am.delete()
+                if a.paquete:
+                    sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
+                    a.analisis = Analisis.objects.get(pk = ids[i])
+                    sustraer_analisis(muestra.usuario, ids[i], muestra, a.paquete)
+                    ids.remove(ids[i])
+                    i = i - 1
+                    a.save()
+                else:
+                    sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
+                    a.delete()
+                i = i + 1
             for x in ids:
                 restar_analisis(muestra.usuario, x, muestra, am_unico.id_oi)
 
@@ -635,15 +676,15 @@ def guardar_paquete(codigo_DHL, ids_OrdI):
         codigo.save()
 
     for id in ids_OrdI: #Asignar codigo DHL
-        try:
-            referencia = Muestra.objects.get(id_muestra = id) #Obtener objeto de muestra
-        except:
-            referencia = None
+        m_a = id.split('-')
+        referencia = AnalisisMuestra.objects.filter(muestra__pk = int(m_a[0]), analisis__pk = int(m_a[1])) #Obtener objeto de muestra
 
-        if(referencia != None): #Valida si existe la Muestra
+
+        if(referencia.count() > 0): #Valida si existe la Muestra
             cod_dhl = Paquete.objects.filter(codigo_dhl = codigo_DHL).first()
-            referencia.paquete_id = cod_dhl.id_paquete  #Asigna codigo
-            referencia.save()
+            for r in referencia:
+                r.paquete = cod_dhl  #Asigna codigo
+                r.save()
         else:
             return False
 
@@ -666,7 +707,7 @@ def validacion_codigo(request):
             m_seleccionadas = request.POST.getlist('mselected')    #Obtiene datos de la form
 
             resp = validacion_dhl(codigo)   #Valida codigo ingresado en Form
-
+            #resp = 200;
 
             if(resp == 200):    #Guardar codigo si es valido
                 if not guardar_paquete(codigo,m_seleccionadas):
