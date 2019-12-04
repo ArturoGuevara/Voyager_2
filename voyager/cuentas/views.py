@@ -455,7 +455,7 @@ def lista_empresas(request):
 
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
-    if not ('crud_empresa' in request.session['permissions']):
+    if not ('visualizar_empresa' in request.session['permissions']):
         raise Http404
     if flag_enabled('Modulo_Empresas', request=request):
         empresas = Empresa.objects.filter(estado=True)

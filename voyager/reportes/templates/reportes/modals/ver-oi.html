@@ -230,11 +230,13 @@
                           </div>
                           <div class="container">
                               <br>
-                              <div class="text-left">
-                                  <button type="button" class="btn btn-primary float-left" id="button_edit_factura" onclick="editar_factura()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de facturación de la orden interna.">
-                                    Editar
-                                  </button>
-                              </div>
+                              {% if 'editar_informacion_facturacion' in request.session.permissions %}
+                                  <div class="text-left">
+                                      <button type="button" class="btn btn-primary float-left" id="button_edit_factura" onclick="editar_factura()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de facturación de la orden interna.">
+                                        Editar
+                                      </button>
+                                  </div>
+                              {% endif %}
                               <div class="text-left">
                                   <button type="button" hidden class="btn btn-danger float-left" id="button_cancelar_edit" onclick="cancelar_editar_facturacion()">
                                     Cancelar

@@ -243,7 +243,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente" or usuario_log.rol.nombre == "Facturacion":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
