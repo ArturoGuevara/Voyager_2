@@ -264,7 +264,7 @@ function add_calc_total() {
         subtotal = subtotal + tots[i];
         i = i + 1;
     }
-    console.log(subtotal);
+
     var subtotal_2 = 0;
     for (x in precios) {
         subtotal_2 = subtotal_2 + precios[x];

@@ -310,7 +310,7 @@ function calc_total() {
         subtotal = subtotal + tots[i];
         i = i + 1;
     }
-    console.log(subtotal);
+
     var subtotal_2 = 0;
     for (x in precios) {
         subtotal_2 = subtotal_2 + precios[x];
@@ -329,7 +329,7 @@ function calc_total() {
     }
 
     var tipo_envio = $('#tipo-envio-edit option:selected').text();
-    console.log(tipo_envio);
+    
     if (tipo_envio == 'Internacional'){
         total.value = (subtotal + parseInt(envio.value)).toFixed(2);
     }else{
