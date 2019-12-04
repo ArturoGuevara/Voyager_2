@@ -2,7 +2,6 @@ function restaurar_modal_oi() {
     // Organizar botones
     $('#btn-editar-oi').removeClass().addClass('btn btn-primary d-block');
     $('#btn-cancelar-editar-oi').removeClass().addClass('btn btn-danger d-none float-left');
-    //$('#btn-guardar-oi').removeClass().addClass('btn btn-success d-none float-right');
     // Organizar contenedores
     $('#ver-resumen-oi').removeClass().addClass('d-block');
     $('#editar-info-oi').removeClass().addClass('d-none');
@@ -72,7 +71,6 @@ $('#btn-cancelar-editar-oi').click(function () {
 $('#btn-regresar-oi').click(function () {
     // Alternar botones
     $(this).removeClass('d-block').addClass('d-none');
-    //$('#btn-guardar-oi').removeClass('d-block').addClass('d-none');
 
     $('#btn-cancelar-editar-oi').removeClass('d-none').addClass('d-block');
     $('#btn-continuar-oi').removeClass('d-none').addClass('d-block');
