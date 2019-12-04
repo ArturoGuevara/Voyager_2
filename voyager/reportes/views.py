@@ -189,6 +189,7 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
+            m.producto = li[i]
             li = list(formato[1].split(","))
             m.descripcion_muestra = li[i]
             li = list(formato[2].split(","))
@@ -219,8 +220,10 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
+            m.producto = li[i]
             li = list(formato[1].split(","))
             m.lote_codigo = li[i]
+            m.codigo_muestra = li[i]
             li = list(formato[2].split(","))
             m.muestreador = li[i]
             li = list(formato[3].split(","))
