@@ -10,11 +10,19 @@
 {% flag_enabled 'Modulo_Empresas' as my_flag %}
 <div class="text-md-left text-center">
     <h2>Empresas
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre a las empresas registradas.">
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre las empresas registradas.">
                 <i class="fa fa-question-circle fa-lg"></i>
         </button>
     </h2>
     {% if my_flag %}
+    <div class="text-center text-md-right mt-2">
+        {% if 'crear_empresa' in request.session.permissions %}
+            <a id="btn-agregar-empresa" class="btn btn-success" data-container="body" href="#"
+               data-toggle="modal" data-target="#modal-crear-empresa">
+                <i class="nc-icon nc-simple-add"></i> Empresa
+            </a>
+        {% endif %}
+    </div>
     <div id="table" class="table-responsive table-full-width ">
         <table class="table table-hover e-bordered table-responsive-md table-striped" id="tabla_empresas">
         <thead>
@@ -25,7 +33,7 @@
             <th class="text-center">Responsable Pagos <i class="fa fa-sort"></i></th>
             <th class="text-center">Correo Pagos <i class="fa fa-sort"></i></th>
             <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Visualice, modifique o elimine a una empresa">
+                data-content="Visualice, modifique o elimine una empresa">
                 Acciones <i class="fa fa-question-circle fa-lg"></i>
             </th>
         </thead>
@@ -42,9 +50,11 @@
                         <button type="button" class="btn btn-primary" onclick="cargar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal_info_empresa">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button id="btn-trash" type="button" class="btn btn-danger d-inline" onclick="eliminar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal-eliminar-empresa">
-                            <i class='fas fa-trash'></i>
-                        </button>
+                        {% if e.empresa != 'IFC' and 'eliminar_empresa' in request.session.permissions %}
+                            <button id="btn-trash" type="button" class="btn btn-danger d-inline" onclick="eliminar_info_empresa({{e.id}})" data-toggle="modal" data-target="#modal-eliminar-empresa">
+                                <i class='fas fa-trash'></i>
+                            </button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
@@ -58,6 +68,7 @@
 
 {% include '.././modals/modal_info_empresa.html' %}
 {% include '.././modals/eliminar_empresa.html' %}
+{% include '.././modals/crear-empresa.html' %}
 
 {% endblock content %}
 
@@ -65,4 +76,5 @@
     <script src="{% static 'cuentas/js/empresa.js' %}" type="text/javascript"></script>
     <script src="{% static 'cuentas/js/tabla_empresas.js' %}" type="text/javascript"></script>
     <script src="{% static 'cuentas/js/notificar_empresa.js' %}" type="text/javascript"></script>
+    <script src="{% static 'cuentas/js/crear_empresa_lista_empresas.js' %}" type="text/javascript"></script>
 {% endblock %}

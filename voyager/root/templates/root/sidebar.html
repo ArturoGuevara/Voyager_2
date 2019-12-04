@@ -16,7 +16,7 @@
                 </a>
                 <div class="collapse" id="adminUsersDropdown">
                     <ul class="nav">
-                        {% if 'crud_empresa' in request.session.permissions %}
+                        {% if 'visualizar_empresa' in request.session.permissions %}
                             <li>
                                 <a class="nav-link" href="/cuentas/empresas">
                                     <span>Lista de Empresas</span>
