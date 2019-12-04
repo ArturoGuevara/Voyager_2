@@ -61,7 +61,11 @@
               <th class="text-center">Rol <i class="fa fa-sort"></i></th>
               <th class="text-center">Estado Pago <i class="fa fa-sort"></i></th>
               <th class="text-center">Empresa <i class="fa fa-sort"></i></th>
-              <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, restaure o elimine a un usuario.">Acciones <i class="fa fa-question-circle fa-lg"></th>
+              {% if request.session.userrole == 'Director' or request.session.userrole == 'Gerente'  or request.session.userrole == 'SuperUser'%}
+                  <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, restaure o elimine a un usuario.">Acciones <i class="fa fa-question-circle fa-lg"></th>
+              {% else  %}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice la información de un usuario.">Acciones <i class="fa fa-question-circle fa-lg"></th>
+              {% endif %}
           </thead>
           <tbody>
               {% for c in usuarios %}

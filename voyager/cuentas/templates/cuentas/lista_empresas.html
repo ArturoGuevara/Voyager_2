@@ -10,9 +10,15 @@
 {% flag_enabled 'Modulo_Empresas' as my_flag %}
 <div class="text-md-left text-center">
     <h2>Empresas
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre las empresas registradas.">
-                <i class="fa fa-question-circle fa-lg"></i>
-        </button>
+        {% if 'eliminar_empresa' in request.session.permissions %}
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre las empresas registradas.">
+                    <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        {% elif  'crear_empresa' in request.session.permissions %}
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue, visualice y consulte la información de las empresas registradas.">
+                    <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        {% endif %}
     </h2>
     {% if my_flag %}
     <div class="text-center text-md-right mt-2">
@@ -32,10 +38,17 @@
             <th class="text-center">Correo Resultados <i class="fa fa-sort"></i></th>
             <th class="text-center">Responsable Pagos <i class="fa fa-sort"></i></th>
             <th class="text-center">Correo Pagos <i class="fa fa-sort"></i></th>
-            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                data-content="Visualice, modifique o elimine una empresa">
-                Acciones <i class="fa fa-question-circle fa-lg"></i>
-            </th>
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Gerente' %}
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                    data-content="Visualice, modifique o elimine una empresa">
+                    Acciones <i class="fa fa-question-circle fa-lg"></i>
+                </th>
+            {% else %}
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
+                    data-content="Visualice los datos de una empresa">
+                    Acciones <i class="fa fa-question-circle fa-lg"></i>
+                </th>
+            {% endif %}
         </thead>
         <tbody>
             {% for e in empresas %}
