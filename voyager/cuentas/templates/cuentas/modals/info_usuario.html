@@ -25,7 +25,7 @@
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-12">
                             <b><label for="correo">Correo</label></b>
                             <p id="correo">juan@gmail.com</p>
                         </div>
@@ -39,25 +39,31 @@
                             <b><label for="empresa">Empresa</label></b>
                             <p id="empresa">Agrícolas incorporados</p>
                         </div>
-                        <div class="form-group col-md-4">
-                            {% if 'bloquear_usuarios' in request.session.permissions  %}
-                                <b><label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Actualice el estado de un cliente (si ya pagó, si debe dinero o si no aplica)">
-                                    <i class="fa fa-question-circle fa-sm"></i>
-                                </button></label></b>
-                                <select name="inputEstatus" id="inputEstatus" class="form-control">
-                            {% else %}
-                            <b><label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice el estado de un cliente (si ya pagó, si debe dinero o si no aplica)">
-                                <i class="fa fa-question-circle fa-sm"></i>
-                            </button></label></b>
-                            <select name="inputEstatus" id="inputEstatus" class="form-control" disabled>
-                            {% endif %}
-
-                                <option name="NA" id="NA">NA</option>
-                                <option name="Deudor" id="Deudor">Deudor</option>
-                                <option name="Pagado" id="Pagado">Pagado</option>
-                                <option name="Bloqueado" id="Bloqueado">Bloqueado</option>
-                            </select>
-                        </div>
+                        {% if request.session.userrole == 'Soporte'%}
+                          <div class="form-group col-md-4" hidden>
+                              <b><label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Actualice el estado de un cliente, si ya pagó, si debe dinero o si no aplica">
+                                  <i class="fa fa-question-circle fa-sm"></i>
+                              </button></label></b>
+                              <select name="inputEstatus" id="inputEstatus" class="form-control">
+                                  <option name="NA" id="NA">NA</option>
+                                  <option name="Deudor" id="Deudor">Deudor</option>
+                                  <option name="Pagado" id="Pagado">Pagado</option>
+                                  <option name="Bloqueado" id="Bloqueado">Bloqueado</option>
+                              </select>
+                          </div>
+                          {% else %}
+                          <div class="form-group col-md-4">
+                              <b><label for="inputEstatus">Estatus <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Actualice el estado de un cliente, si ya pagó, si debe dinero o si no aplica">
+                                  <i class="fa fa-question-circle fa-sm"></i>
+                              </button></label></b>
+                              <select name="inputEstatus" id="inputEstatus" class="form-control">
+                                  <option name="NA" id="NA">NA</option>
+                                  <option name="Deudor" id="Deudor">Deudor</option>
+                                  <option name="Pagado" id="Pagado">Pagado</option>
+                                  <option name="Bloqueado" id="Bloqueado">Bloqueado</option>
+                              </select>
+                          </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="modal-footer mt-3">

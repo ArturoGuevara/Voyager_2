@@ -214,6 +214,10 @@ function guardar_muestra(id_muestra){
 }
 
 // boton dentro de forma oi que guarda
+function actualizar_oi(){
+    $('#confirmar_actualizar_oi').modal('show');
+}
+
 function submit(){
 
     //Código que guarda todas las variables para mandarlas al server y actuaizar oi
@@ -269,6 +273,7 @@ function submit(){
             track = '#oi-' + idOI + " .oi_fecha_envio";
             $(track).text(fecha_formato);
             $('#modal-visualizar-orden').modal('hide');
+            $('#confirmar_actualizar_oi').modal('hide');
             showNotificationSuccess('top','right','Se han guardado tus cambios');
         }
     });

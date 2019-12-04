@@ -38,15 +38,27 @@
       </div>
       <div class="col-6"></div>
         <div class="col">
-      {% if my_flag %}
-      <div class="text-center text-md-right mt-2">
-          {% if 'crear_usuario' in request.session.permissions %}
-              <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
-          {% endif %}
-          {% if 'crear_cliente' in request.session.permissions %}
-              <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i> Cliente</a>
-          {% endif %}
-      </div>
+      {% if my_flag  %}
+            {% if request.session.userrole == 'Director'%}
+                <div class="text-center text-md-left mb-2">
+                    <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i> Staff</a>
+                </div>
+                <br>
+                <div class="text-center text-md-left mb-2">
+                    <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i>Cliente</a>
+                </div>
+            {% else %}
+                <div class="text-center text-md-right mt-2">
+                  {% if 'crear_usuario' in request.session.permissions %}
+                    <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_staff/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo miembro de IFC."><i class="nc-icon nc-simple-add"></i>
+                      Staff</a>
+                  {% endif %}
+                  {% if 'crear_cliente' in request.session.permissions %}
+                    <a id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" href="/cuentas/crear_cliente/" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Agregue a un nuevo cliente."><i class="nc-icon nc-simple-add"></i>
+                      Cliente</a>
+                  {% endif %}
+                </div>
+            {% endif %}
       {% endif %}
         </div>
     </div>
