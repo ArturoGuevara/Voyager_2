@@ -97,6 +97,7 @@ class Muestra(models.Model):
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
     orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
     link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+    temperatura_tat = models.CharField(max_length=20, default="", null=True, blank=True)
 
     # FORMATO AG y MB
     muestreador = models.CharField(max_length=50, blank=True, null=True)
@@ -180,6 +181,9 @@ class AnalisisMuestra(models.Model):
     estado = models.BooleanField()
     fecha = models.DateField()
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
+    # Datos de paquete
+    paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+
     def __str__(self):
         return "%s" % (self.fecha)
 
