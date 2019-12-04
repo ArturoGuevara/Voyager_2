@@ -201,5 +201,61 @@
   "fields": {
     "nombre": "editar_empresa"
   }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 31,
+  "fields": {
+    "nombre": "exportar_paquete_muestra"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 32,
+  "fields": {
+    "nombre": "exportar_cliente_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 33,
+  "fields": {
+    "nombre": "exportar_analisis_oi"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 34,
+  "fields": {
+    "nombre": "exportar_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 35,
+  "fields": {
+    "nombre": "editar_informacion_facturacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 36,
+  "fields": {
+    "nombre": "crear_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 37,
+  "fields": {
+    "nombre": "visualizar_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 38,
+  "fields": {
+    "nombre": "eliminar_empresa"
+  }
 }
 ]
