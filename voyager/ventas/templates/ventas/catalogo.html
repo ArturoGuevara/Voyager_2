@@ -12,9 +12,15 @@
 {% flag_enabled 'Importar_Analisis' as my_flag_importar %}
 <div class="text-md-left text-center">
     <h2>Catálogo de Análisis
-        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus análisis">
-          <i class="fa fa-question-circle fa-lg"></i>
-        </button>
+        {% if request.session.userrole == 'Director' or request.session.userrole == 'Gerente' or request.session.userrole == 'SuperUser'%}
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus análisis">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice sus análisis">
+              <i class="fa fa-question-circle fa-lg"></i>
+            </button>
+        {% endif %}
     </h2>
 </div>
 {% if my_flag %}
@@ -33,7 +39,11 @@
             <th>Precio <i class="fa fa-sort"></i></th>
             <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
             <th>Acreditado<i class="fa fa-sort"></i></th>
-            <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine un análisis">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+            {% if request.session.userrole == 'Director' or request.session.userrole == 'Gerente' or request.session.userrole == 'SuperUser'%}
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice o elimine un análisis">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+            {% else %}
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice     un análisis">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+            {% endif %}
         </thead>
         <tbody>
         {% for a in analisis %}

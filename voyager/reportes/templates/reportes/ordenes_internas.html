@@ -31,7 +31,11 @@
                 <th>Solicitante <i class="fa fa-sort"></i></th>
                 <th>Fecha envío <i class="fa fa-sort"></i></th>
                 <th>Pagado <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, edite o elimine una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+                {% if request.session.userrole == 'Soporte' or request.session.userrole == 'SuperUser'%}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, edite o elimine una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+                {% else %}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+                {% endif %}
             </thead>
             <tbody>
                 {% for o,value in ordenes_clientes.items %}

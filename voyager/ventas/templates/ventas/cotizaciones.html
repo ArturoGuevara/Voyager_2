@@ -34,7 +34,11 @@
                 <th>Total <i class="fa fa-sort"></i></th>
                 <th>Fecha creada <i class="fa fa-sort"></i></th>
                 <th>Estado <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser'%}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte, bloquee o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% else %}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o bloquee una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% endif %}
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
