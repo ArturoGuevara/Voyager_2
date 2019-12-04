@@ -455,10 +455,10 @@ def lista_empresas(request):
 
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
-    if not ('crud_empresa' in request.session['permissions']):
+    if not ('visualizar_empresa' in request.session['permissions']):
         raise Http404
     if flag_enabled('Modulo_Empresas', request=request):
-        empresas = Empresa.objects.all()
+        empresas = Empresa.objects.filter(estado=True)
         context = {'empresas':empresas}
     return render(request, 'cuentas/lista_empresas.html', context)
 
@@ -533,7 +533,15 @@ def eliminar_empresa(request):
     if not empresas:
         raise Http404
     empresa = empresas.first()
-    empresa.delete()
+    #empresa.delete()
+    empresa.empresa=""
+    empresa.telefono=""
+    empresa.responsable_resultados=""
+    empresa.correo_resultados=""
+    empresa.responsable_pagos=""
+    empresa.correo_pagos=""
+    empresa.estado=False
+    empresa.save()
     request.session['borrar_empresa'] = True
     return HttpResponseRedirect(reverse('lista_empresas'))
 
