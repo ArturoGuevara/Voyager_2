@@ -902,9 +902,9 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
         form = EnviarResultadosForm(request.POST, request.FILES)
         if form.is_valid():
             mail_code = handle_upload_document(request.FILES['archivo_resultados'],
-                                        request.POST.get('email_destino'),
-                                        request.POST.get('subject'),
-                                        request.POST.get('body'),
+                                        #request.POST.get('email_destino'),
+                                        #request.POST.get('subject'),
+                                        #request.POST.get('body'),
                                         request.POST.get('muestra'),
                                    )
         else:
@@ -915,7 +915,7 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
         request.session['success_sent'] = -1
     return redirect('/reportes/ordenes_internas')
 
-def handle_upload_document(file,dest,subject,body,muestra): #Esta función guarda el archivo de resultados a enviar
+def handle_upload_document(file,muestra): #Esta función guarda el archivo de resultados a enviar
     path = 'resultados'
     #path = 'resultados'
     path += str(datetime.date.today())
@@ -933,7 +933,8 @@ def handle_upload_document(file,dest,subject,body,muestra): #Esta función guard
     with open(path, 'wb+') as destination: #Se escribe el archivo en el sistema
         for chunk in file.chunks():
             destination.write(chunk)
-    return send_mail(path,dest,subject,body)
+        #return send_mail(path,dest,subject,body)
+    return 202
 
 def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid para enviar el correo
     message = Mail(
