@@ -368,7 +368,7 @@ def adjuntar_otro(cotizacion):
         a.precio = 0
         a.unidad_min = "Indefinida"
         a.tiempo = "Indefinido"
-        a.pais = "México"
+        a.pais = Pais.objects.get(nombre='México')
         a.save()
     analisis = Analisis.objects.filter(nombre="Otro").first()#Tras el if anterior se garantiza que existe este Analisis
     ac = AnalisisCotizacion()
