@@ -24,11 +24,19 @@
                             </li>
                         {% endif %}
                         {% if 'visualizar_usuarios' in request.session.permissions or 'visualizar_clientes' in request.session.permissions %}
-                            <li class="nav-item ">
-                                <a class="nav-link" href="/cuentas/usuarios">
-                                    <span>Lista de Usuarios</span>
-                                </a>
-                            </li>
+                          {% if request.session.userrole == 'Soporte' or request.session.userrole == 'Ventas' or request.session.userrole == 'Facturacion' %}
+                              <li class="nav-item ">
+                                  <a class="nav-link" href="/cuentas/usuarios">
+                                      <span>Lista de Clientes</span>
+                                  </a>
+                              </li>
+                              {%else%}
+                              <li class="nav-item ">
+                                  <a class="nav-link" href="/cuentas/usuarios">
+                                      <span>Lista de Usuarios</span>
+                                  </a>
+                              </li>
+                          {% endif %}
                         {% endif %}
                     </ul>
                 </div>
