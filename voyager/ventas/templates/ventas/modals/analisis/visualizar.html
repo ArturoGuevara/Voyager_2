@@ -126,7 +126,7 @@
             </div>
             <div class="modal-footer">
                 {% if 'modificar_catalogo_analisis' in request.session.permissions %}
-                    <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
+                    <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información del análisis.">Editar</button>
                 {% endif %}
                 <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Guardar</button>
             </div>

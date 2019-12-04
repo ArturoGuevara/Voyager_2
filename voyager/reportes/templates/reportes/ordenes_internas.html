@@ -11,7 +11,7 @@
 {% flag_enabled 'Modulo_Ordenes_Internas' as my_flag %}
     <div class="text-md-left text-center">
         <h2>Órdenes Internas
-            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus órdenes internas">
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus órdenes internas.">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
         </h2>
@@ -19,7 +19,7 @@
     {% if my_flag %}
     {% if 'ingresar_codigo_dhl' in request.session.permissions %}
     <div class="text-center text-md-right">
-        <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Despliega modal, seleccione órdenes e ingrese código de rastreo de DHL"><i class="nc-icon nc-email-83"></i> Paquete</button>
+        <button id="btn-paquete-dhl" class="btn btn-info" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Seleccione muestras de una orden interna e ingrese código de rastreo de DHL para relacionarlas."><i class="nc-icon nc-email-83"></i> Paquete</button>
     </div>
     {% endif %}
     <div id="table" class="table-responsive table-full-width">
@@ -31,7 +31,7 @@
                 <th>Solicitante <i class="fa fa-sort"></i></th>
                 <th>Fecha envío <i class="fa fa-sort"></i></th>
                 <th>Pagado <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, edite o elimine una orden interna">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Envíe resultados, visualice, edite o elimine una orden interna.">Acciones <i class="fa fa-question-circle fa-lg"></i></th>
             </thead>
             <tbody>
                 {% for o,value in ordenes_clientes.items %}
@@ -40,7 +40,7 @@
                     <td class="pt-3 oiData oi_idOI">{{ o.idOI }}</td>
                     <td class="pt-3 oiData oi_estatus">{{ o.estatus }}</td>
                     <td class="pt-3 oiData oi_empresa">{{value.empresa}}</td>
-                    <td class="pt-3 oiData oi_usuario">{{value.user}}</td>
+                    <td class="pt-3 oiData oi_usuario">{{value.nombre}} {{value.apellido_paterno}} {{value.apellido_materno}}</td>
                     <td class="pt-3 oiData oi_fecha_envio">
                         {% language 'es-co' %}
                             {% if o.fecha_envio %}
@@ -63,7 +63,7 @@
                         {% if o.usuario.estatus_pago != "Deudor" %}
                         {% if 'notificar_resultados_correo' in request.session.permissions %}
                             <button type="button" class="btn btn-success" onclick="cargar_enviar({{ o.idOI }})" data-toggle="modal" data-target="#modal-enviar-resultados">
-                                Enviar resultados
+                                Subir resultados
                             </button>
                         {% endif %}
                         {% endif %}
@@ -81,6 +81,7 @@
     {% include './modals/borrar-orden.html' %}
     {% include './modals/paquete.html' %}
     {% include './modals/ver-oi.html' %}
+    {% include './modals/confirmar-actualizar-oi.html' %}
 {% endblock content %}
 
 {% block optionalJS %}
