@@ -61,7 +61,7 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
     $('#n_envio').html(parseFloat(data_cotizacion[0].fields.envio));
     $('#n_total').html(data_cotizacion[0].fields.total);
-
+    var bloqueado = data_cotizacion[0].fields.bloqueado;
     // Calcular total de descuentos e impuestos
     var tot_descuentos = 0; // Es el total de descuentos
     var aux_descuento = 0;
@@ -76,7 +76,6 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
         tot_descuentos = tot_descuentos + aux_descuento;
         tot_iva = tot_iva + aux_iva;
     }
-
     iva_paquete = parseFloat(data_cotizacion[0].fields.total) - ((parseFloat(data_cotizacion[0].fields.subtotal) + parseFloat(data_cotizacion[0].fields.envio)) - tot_descuentos + tot_iva);
     iva_final = tot_iva + iva_paquete;
     if (iva_paquete == 0){
@@ -157,6 +156,13 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
       });
     }
 
+    //Validar si la cotización está bloqueada o no
+    if(bloqueado == true){
+      $('#imprimir-pdf').hide();
+    }else{
+      bloqueado = true
+    }
+
 }
 
 function error_datos_cotizacion() {
@@ -192,5 +198,5 @@ function check_acreditacion(analisis){
     if (a){
         return "<span class='text-success'>SI</span>"
     }
-    return "<span class='text-danger'>NO</span>"
+    return "<span class='text-secondary'>NO</span>"
 };
