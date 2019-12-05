@@ -250,7 +250,7 @@ function agregar_fila_micro(){
             if(tipo_muestra !== '' && lote_codigo !== '' && fecha !== '' && metodo_referencia !== ''){
                 $('#tipo-muestraMB-init').val(tipo_muestra),
                 $('#lote-codigoMB-init').val(lote_codigo),
-                $('#fecha-muestreoMB-init').val(fecha_muestreo),
+                $('#fecha-muestreoMB-init').val(fecha),
                 $('#metodo-referenciaMB-init').val(metodo_referencia)
                 hidden_flag_mic = 1;
             }
