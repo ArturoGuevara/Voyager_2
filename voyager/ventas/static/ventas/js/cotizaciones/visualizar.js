@@ -1,7 +1,27 @@
+var tabla2_checked = [];
+
 $( document ).ready(function() {
     $('#terminos').hide();          // Ocultar elementos que solo aparecen para el PDF
     $('#terminos-img').hide();
+
 });
+
+function analisis_cot(id){
+    if (tabla2_checked.includes(id)){
+        let i = 0;
+        while(true){
+            if (tabla2_checked[i] == id){
+                tabla2_checked.splice(i, 1);
+                break;
+            }
+            i++;
+        }
+    }
+    else {
+        tabla2_checked.push(id);
+    }
+}
+
 // ######### USV04-04 ########
 function visualizar_cotizacion(id) {
     // Verificar que el analisis existe

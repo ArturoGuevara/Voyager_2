@@ -129,7 +129,7 @@
                         <button type="button" class="btn btn-primary" onclick="cargar_analisis({{ a.id_analisis }})" data-toggle="modal" data-target="#ver_analisis"><i class="fa fa-eye tabla-icon"></i></button>
                     </td>
                     <td>
-                        <input class="form-check-input" name="cot[]" type="checkbox" value="{{ a.id_analisis }}">
+                        <input class="form-check-input" name="cot[]" type="checkbox" id="anal_{{ a.id_analisis }}" value="{{ a.id_analisis }}" onchange="analisis_cot(this.value)">
                     </td>
                 </tr>
                 {% endfor %}
