@@ -12,7 +12,7 @@
 
     <div class="text-md-left text-center">
         <h2>Cotizaciones
-            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus cotizaciones">
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Visualice y administre sus cotizaciones.">
               <i class="fa fa-question-circle fa-lg"></i>
             </button>
         </h2>
@@ -20,9 +20,9 @@
     {% if my_flag %}
     <div class="text-center text-md-right">
         {% if 'crear_cotizacion' in request.session.permissions %}
-            <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione los análisis para crear una nueva cotización"><i class="nc-icon nc-simple-add"></i> Cotización</button>
-            <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Genera resumen para que llene últimos campos">Continuar</button>
-            <button id="btn-cancelar-cot" class="btn btn-danger d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Regresa a la tabla de cotizaciones">Cancelar</button>
+            <button id="btn-agregar-cot" class="btn btn-success d-inline" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Seleccione los análisis para crear una nueva cotización."><i class="nc-icon nc-simple-add"></i> Cotización</button>
+            <button id="btn-continuar-cot" class="btn btn-info d-none" onclick="cargar_cot()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Genere resumen para llenar últimos campos.">Continuar</button>
+            <button id="btn-cancelar-cot" class="btn btn-danger d-none" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Regrese a la tabla de cotizaciones.">Cancelar</button>
         {% endif %}
     </div>
     <div id="container-cotizaciones" class="table-responsive table-full-width d-block">
@@ -34,7 +34,11 @@
                 <th>Total <i class="fa fa-sort"></i></th>
                 <th>Fecha creada <i class="fa fa-sort"></i></th>
                 <th>Estado <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% if request.session.userrole == 'Director'%}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte, bloquee o elimine una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% else %}
+                    <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice, acepte o bloquee una cotización">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                {% endif %}
             </thead>
             <tbody id="row-container-cots">
                 {% for c in cotizaciones %}
@@ -110,8 +114,8 @@
                 <th>Descripción <i class="fa fa-sort"></i></th>
                 <th>Precio <i class="fa fa-sort"></i></th>
                 <th>Tiempo Aprox. <i class="fa fa-sort"></i></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información extra de análisis.">Acciones <i class="fa fa-question-circle fa-lg"></th>
-                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Seleccione análisis para agregar a cotización">Checkbox</th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Visualice información adicional de análisis.">Acciones <i class="fa fa-question-circle fa-lg"></th>
+                <th data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left" data-content="Seleccione análisis para agregar a cotización.">Agregar</th>
             </thead>
             <tbody>
                 {% for a in analisis %}

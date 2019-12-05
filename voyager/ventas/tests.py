@@ -1078,6 +1078,13 @@ class GenerarCSV(TestCase):
         #Crea usuario Ventas
         usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
         rol_ventas = Rol.objects.create(nombre='Ventas')
+        permiso = Permiso()
+        permiso.nombre = 'descargar_csv'
+        permiso.save()
+        permisorol = PermisoRol()
+        permisorol.permiso = permiso
+        permisorol.rol = rol_ventas
+        permisorol.save()
         ventas = IFCUsuario.objects.create(
                                             rol = rol_ventas,
                                             user = usuario_ventas,
@@ -1090,31 +1097,34 @@ class GenerarCSV(TestCase):
                                           )
         ventas.save()
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def test_no_login(self): #Test de acceso a url sin Log In
         response = self.client.post(reverse('generar_csv_respaldo'),{})   #Ir al url de envío de creación del archivo
         self.assertEqual(response.status_code,302)   #La página debe de redireccionar porque no existe sesión
 
     def test_role_incorrect(self):
         self.setup()
-        self.client.login(username='client', password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'),{})
         self.assertEqual(response.status_code,404)
 
     def test_no_post(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.get(reverse('generar_csv_respaldo'))
         self.assertEqual(response.status_code,404)
 
     def test_empty_post(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'),{})
         self.assertEqual(response.status_code,404)
 
     def test_empty_table(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"cotizaciones",})
         file_content = response.content.decode('utf-8')
         self.assertEqual(file_content,'\r\n')
@@ -1122,7 +1132,7 @@ class GenerarCSV(TestCase):
 
     def test_csv_populated(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"usuarios",})
         file_content = response.content.decode('utf-8')
         self.assertIn('ventas', file_content)
@@ -1147,6 +1157,13 @@ class GenerarCSVPaquete(TestCase):
         #Crea usuario Ventas
         usuario_ventas = User.objects.create_user('vent', 'venttest@testuser.com', 'testpassword')
         rol_ventas = Rol.objects.create(nombre='Ventas')
+        permiso = Permiso()
+        permiso.nombre = 'descargar_csv'
+        permiso.save()
+        permisorol = PermisoRol()
+        permisorol.permiso = permiso
+        permisorol.rol = rol_ventas
+        permisorol.save()
         ventas = IFCUsuario.objects.create(
                                             rol = rol_ventas,
                                             user = usuario_ventas,
@@ -1177,6 +1194,9 @@ class GenerarCSVPaquete(TestCase):
                                           )
         soporte.save()
 
+    def login_IFC(self,mail,password):
+        response = self.client.post(reverse('backend_login'),{'mail':mail,'password':password})
+
     def create_samples(self):
         # obtener usuario fantasma (dummy) para crear las ordenes internas
         phantom_user = IFCUsuario.objects.get(apellido_paterno="Phantom", apellido_materno="Phantom")
@@ -1203,25 +1223,25 @@ class GenerarCSVPaquete(TestCase):
 
     def test_role_incorrect(self):
         self.setup()
-        self.client.login(username='client', password='testpassword')
+        self.login_IFC('clienttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('descargar_paquete'),{})
         self.assertEqual(response.status_code,404)
 
     def test_no_post(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.get(reverse('descargar_paquete'))
         self.assertEqual(response.status_code,404)
 
     def test_empty_post(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('descargar_paquete'),{})
         self.assertEqual(response.status_code,404)
 
     def test_empty_table(self):
         self.setup()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
         file_content = response.content.decode('utf-8')
         self.assertEqual(file_content,'\r\n')
@@ -1230,7 +1250,7 @@ class GenerarCSVPaquete(TestCase):
     def test_csv_populated(self):
         self.setup()
         self.create_samples()
-        self.client.login(username='vent', password='testpassword')
+        self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('descargar_paquete'), {"codigo_dhl":"1234567890",})
         file_content = response.content.decode('utf-8')
         self.assertIn("Aguacate", file_content)

@@ -7,84 +7,102 @@
 {% if my_flag %}
     <div class="text-md-left text-center">
         <h2>Exportar datos
-            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="En este módulo se puede descargar en formato csv los contenidos de la base de datos">
+            <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Descargue en formato csv los contenidos de la base de datos.">
                 <i class="fa fa-question-circle fa-lg"></i>
             </button>
         </h2>
     </div>
     <div class="row">
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="cotizaciones">Cotizaciones</label>
-                <input type="text" value="cotizaciones" id="cotizaciones" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="usuarios">Usuarios</label>
-                <input type="text" value="usuarios" id="usuarios" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="muestras">Muestras</label>
-                <input type="text" value="muestras" id="muestras" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="analisis">Análisis</label>
-                <input type="text" value="analisis" id="analisis" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="paquetes">Paquetes</label>
-                <input type="text" value="paquetes" id="paquetes" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="orden">Orden Interna</label>
-                <input type="text" value="ordenes" id="orden" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
+        {% if 'exportar_cliente_cotizacion' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="cotizaciones">Cotizaciones</label>
+                    <input type="text" value="cotizaciones" id="cotizaciones" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if 'exportar_cliente_cotizacion' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="usuarios">Usuarios</label>
+                    <input type="text" value="usuarios" id="usuarios" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if 'exportar_paquete_muestra' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="muestras">Muestras</label>
+                    <input type="text" value="muestras" id="muestras" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if 'exportar_analisis_oi' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="analisis">Análisis</label>
+                    <input type="text" value="analisis" id="analisis" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if 'exportar_paquete_muestra' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="paquetes">Paquetes</label>
+                    <input type="text" value="paquetes" id="paquetes" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
+        {% if 'exportar_analisis_oi' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="orden">Orden Interna</label>
+                    <input type="text" value="ordenes" id="orden" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
     </div>
     <br>
     <div class="row">
-        <div class="col-sm-2">
-            <form action="{% url 'generar_csv_respaldo' %}" method="post">
-                {% csrf_token %}
-                <label for="empresas">Empresas</label>
-                <input type="text" value="empresas" id="empresas" name="table" hidden>
-                <br>
-                <button type="submit" class="btn btn-success">Descargar</button>
-            </form>
-        </div>
+        {% if 'exportar_empresa' in request.session.permissions %}
+            <div class="col-sm-2">
+                <form action="{% url 'generar_csv_respaldo' %}" method="post">
+                    {% csrf_token %}
+                    <label for="empresas">Empresas</label>
+                    <input type="text" value="empresas" id="empresas" name="table" hidden>
+                    <br>
+                    <button type="submit" class="btn btn-success">Descargar</button>
+                </form>
+            </div>
+        {% endif %}
     </div>
     <div class="row">
         <form method="post" action="{% url 'descargar_paquete' %}" >
             {% csrf_token %}
             <div class="modal-body">
-                <label for="codigo_dhl">Código Rastreo DHL:</label>
+                <label for="codigo_dhl">Código Rastreo DHL:
+                    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Descargue en formato csv la información de las muestras relacionadas a un paquete.">
+                        <i class="fa fa-question-circle fa-lg"></i>
+                    </button>
+                </label>
                 <div class="form-group form-row form-inline my-3">
                     <input type="text" class="form-control" id="codigo_dhl" aria-describedby="codigo_dhl" placeholder="1023456789" name="codigo_dhl" minlength="10" maxlength="10" required>
                     <button type="submit" class="btn btn-success" id="alertmss">Descargar</button>

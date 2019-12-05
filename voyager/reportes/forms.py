@@ -20,9 +20,9 @@ ProcesadoFormSet = formset_factory(ProductoProcesadoForm, extra=1)
 
 class EnviarResultadosForm(forms.Form):
     archivo_resultados = forms.FileField()
-    email_destino = forms.EmailField()
-    subject = forms.CharField()
-    body = forms.CharField()
+    #email_destino = forms.EmailField()
+    #subject = forms.CharField()
+    #body = forms.CharField()
     muestra = forms.IntegerField()
 
 class EditarFactura(forms.Form):

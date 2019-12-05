@@ -65,13 +65,19 @@
                         </table>
                     </div>
                     <div class="row">
-                        <span>Subtotal: $</span><span class="text-secondary" id="n_subtotal">200.00</span>
+                        <span>Subtotal: $ </span><span class="text-secondary" id="n_subtotal"> - </span>
                     </div>
                     <div class="row">
-                        <span>Costo de Envío: $</span><span class="text-secondary" id="n_envio">0.00</span>
+                        <span id="envio-span">Costo de Envío: $ </span><span class="text-secondary" id="n_envio"> - </span>
+                    </div>
+                    <div class="row">
+                        <span id="desc-span">Descuento: $ </span><span class="text-secondary" id="n_descuentos"> - </span>
+                    </div>
+                    <div class="row">
+                        <span">IVA: $ </span><span class="text-secondary" id="n_iva"> - </span>
                     </div>
                     <div class="row border border-success bg-success">
-                        <span >TOTAL: $</span><span class="text-black" id="n_total">212.00</span>
+                        <span >TOTAL: $</span><span class="text-black" id="n_total"> - </span>
                     </div>
                 </div>
                 <div class="container d-none" id="editar-resumen-cot">
@@ -120,13 +126,25 @@
                                         El SubTotal no puede estar vacío
                                     </div>
                                 </div>
-                                <div class="form-group col-sm-4">
+                                <div class="form-group">
                                     <label for="envio">Costo de Envío</label>
                                     <input type="number" class="form-control" id="editar-cot-envio" name="editar-cot-envio" value="0" min="0" onchange="calc_total()">
                                     <div class="invalid-feedback">
                                         Por favor introduce un costo de envío
                                     </div>
                                 </div>
+                                <div class="form-group col-sm-4">
+                                    <label data-toggle="popover" data-trigger="hover" data-placement="left" data-content="El envío nacional suma un 16% de IVA" for="envio">Tipo de envío <i class="fa fa-question-circle fa-lg"></i></label>
+                                    <select class="form-control" id="tipo-envio-edit" name="tipo-envio-edit" onchange="calc_total()">
+                                        <option value="internacional">Internacional</option>
+                                        <option value="nacional">Nacional</option>
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Por favor introduce un costo de envío
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="form-group col-sm-4">
                                     <label for="total">Total</label>
                                     <input type="number" class="form-control" id="editar-cot-total" readonly>
@@ -175,11 +193,11 @@
                 <button id="btn-canc-edit-cot" class="btn btn-danger d-none">Cancelar</button>
                 <button id="btn-guar-editar-cot" onclick="guardar_cambios_cot()" class="btn btn-success d-none">Guardar</button>
                 {% if 'descargar_cotizacion_pdf' in request.session.permissions %}
-                    <button id="imprimir-pdf" class="btn btn-success">Imprimir / Descargar PDF</button>
+                    <button id="imprimir-pdf" class="btn btn-success" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Imprima o descargue la información de una cotización en formato PDF.">Imprimir / Descargar PDF</button>
                 {% endif %}
                 {% if 'actualizar_cotizacion' in request.session.permissions %}
                     <button id="btn-space-edit" class="btn btn-danger" style="visibility:hidden"></button>
-                    <button id="btn-editar-cot" class="btn btn-info d-inline">Editar</button>
+                    <button id="btn-editar-cot" class="btn btn-info d-inline" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de la cotización.">Editar</button>
                 {% endif %}
             </div>
             <div class="container" id="terminos" style="font-size: 10px;">
