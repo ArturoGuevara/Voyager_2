@@ -7,3 +7,6 @@ from django.shortcuts import redirect
 @login_required
 def indexView(request):
      return redirect('/cuentas/home')
+
+def godaddy(request):
+    return render(request, 'root/godaddy.html')
