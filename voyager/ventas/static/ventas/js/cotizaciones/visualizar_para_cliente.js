@@ -61,7 +61,6 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
     $('#n_envio').html(parseFloat(data_cotizacion[0].fields.envio));
     $('#n_total').html(data_cotizacion[0].fields.total);
-
     // Calcular total de descuentos e impuestos
     var tot_descuentos = 0; // Es el total de descuentos
     var aux_descuento = 0;
@@ -191,5 +190,5 @@ function check_acreditacion(analisis){
     if (a){
         return "<span class='text-success'>SI</span>"
     }
-    return "<span class='text-danger'>NO</span>"
+    return "<span class='text-secondary'>NO</span>"
 };
