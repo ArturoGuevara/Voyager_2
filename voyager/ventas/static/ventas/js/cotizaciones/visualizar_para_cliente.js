@@ -97,48 +97,33 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
             flag_no_descuento = false;
         }
     }
-    flag_no_iva = true;
-        for (n in analisis){
-            if (analisis_cotizacion[n][0].fields.iva != 16){
-                flag_no_iva = false;
-            }
-        }
-        // Evaluar descuentos y el IVA para el encabezad
-        if (flag_no_descuento && flag_no_iva){ // Si todos los descuentos son igual a 0
-            console.log("1");
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
-            $('#n_descuentos').html('');
-            $('#n_iva').html('');
-            $('#desc-span').hide();
-            $('#iva-span').hide();
-        }else if (flag_no_descuento && !flag_no_iva){
-            console.log("2");
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% IVA</th><th scope='col'><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
-            $('#n_descuentos').html('');
-            $('#desc-span').hide();
-        }else if (!flag_no_descuento && flag_no_iva){
-            console.log("3");
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
-            $('#n_iva').html('');
-            $('#iva-span').hide();
-        }else{
-            console.log("4");              // Si existe al menos un descuento
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
-            $('#n_descuentos').html(parseFloat(tot_descuentos));
-            $('#desc-span').show();
-        }
+    if (flag_no_descuento && flag_no_iva){ // Si todos los descuentos son igual a 0
+        $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+        $('#n_descuentos').html('');
+        $('#desc-span').hide();
+    }else if (flag_no_descuento && !flag_no_iva){
+        $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+        $('#n_descuentos').html('');
+        $('#desc-span').hide();
+    }else if (!flag_no_descuento && flag_no_iva){
+        $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+    }else{                  // Si existe al menos un descuento
+        $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+        $('#n_descuentos').html(parseFloat(tot_descuentos));
+        $('#desc-span').show();
+    }
 
-        for (n in analisis) {
-            // Evaluar descuentos para cada registro
-            if (flag_no_descuento && flag_no_iva){ // Si todos los descuentos son igual a 0
-                $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio +  " %</td><td> " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
-            }else if (flag_no_descuento && !flag_no_iva){
-                $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>+ " + parseInt(analisis_cotizacion[n][0].fields.iva) + " %</td><td>$ " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
-            }else if (!flag_no_descuento && flag_no_iva){
-                $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>- " + parseInt(analisis_cotizacion[n][0].fields.descuento) + " %</td><td>+ " +  analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
-            }else{                  // Si existe al menos un descuento
-                $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>- " + parseInt(analisis_cotizacion[n][0].fields.descuento) + " %</td><td>+ " + parseInt(analisis_cotizacion[n][0].fields.iva) + " %</td><td>$ " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
-            }
+    for (n in analisis) {
+        // Evaluar descuentos para cada registro
+        if (flag_no_descuento && flag_no_iva){ // Si todos los descuentos son igual a 0
+            $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio +  " %</td><td> " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
+        }else if (flag_no_descuento && !flag_no_iva){
+            $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>+ " + parseInt(analisis_cotizacion[n][0].fields.iva) + " %</td><td>$ " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
+        }else if (!flag_no_descuento && flag_no_iva){
+            $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>- " + parseInt(analisis_cotizacion[n][0].fields.descuento) + " %</td><td>" +  analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
+        }else{                  // Si existe al menos un descuento
+            $('#analisis_tabla').append("<tr class='analisis_registro' style='font-size: 10px;'><td>" + analisis[n][0].fields.codigo + "</td><td>" + analisis[n][0].fields.nombre + "</td><td>"+ analisis[n][0].fields.descripcion +"</td><td>"+ analisis[n][0].fields.tiempo +"</td><td>" + analisis_cotizacion[n][0].fields.cantidad + "</td><td>$ " + analisis[n][0].fields.precio + "</td><td>- " + parseInt(analisis_cotizacion[n][0].fields.descuento) + " %</td><td>+ " + parseInt(analisis_cotizacion[n][0].fields.iva) + " %</td><td>$ " + analisis_cotizacion[n][0].fields.total + "</td><td>"+check_acreditacion(analisis[n])+"</td></tr>");
+        }
 
         // Precargamos los inputs de la cotización
         $('#editar-cot-tabla-analisis-resumen').append('<tr class="edit-cot-res-an" data-id="' + analisis[n][0].pk + '"><td>' + analisis[n][0].fields.codigo + '</td><td>' + analisis[n][0].fields.nombre + '</td><td><input id="edit-cot-pr-' + analisis[n][0].pk + '" name="edit-cot-precios[]" value='+ analisis[n][0].fields.precio +' hidden>$' + analisis[n][0].fields.precio + '</td><td><input type="number" class="form-control" id="edit-cot-an-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="editar-cot-cantidades[]" onchange="calc_total()" min=1 value="'+analisis_cotizacion[n][0].fields.cantidad+'"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="edit-cot-de-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-descuentos[]" min=0 value='+parseInt(analisis_cotizacion[n][0].fields.descuento)+' onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-iva-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-ivas[]" min=0 value='+parseInt(analisis_cotizacion[n][0].fields.iva)+' onchange="calc_total()"></td><td><input type="number" class="form-control" id="edit-cot-to-' + analisis[n][0].pk + '" data-id="' + analisis[n][0].pk + '" name="edit-cot-totales[]" value='+ analisis_cotizacion[n][0].fields.total +' readonly></td><td><button type="button" class="btn btn-danger" onclick="editar_cot_eliminar_an(' + analisis[n][0].pk + ')"><i class="fa fa-trash"></i></button></td></tr>');
