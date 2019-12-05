@@ -53,7 +53,19 @@
                         </div>
                     </div>
                     <div class="form-group col-sm-4">
-                        <label for="total">Total</label>
+                        <label data-toggle="popover" data-trigger="hover" data-placement="left" data-content="El envío nacional suma un 16% de IVA" for="envio">Tipo de envío <i class="fa fa-question-circle fa-lg"></i></label>
+                        <select class="form-control" id="tipo-envio" name="tipo-envio" onchange="add_calc_total()">
+                            <option value="internacional">Internacional</option>
+                            <option value="nacional">Nacional</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Por favor introduce un costo de envío
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="total">TOTAL</label>
                         <input type="number" class="form-control" id="total" name="total" readonly>
                         <div class="invalid-feedback">
                             El total no puede estar vacío

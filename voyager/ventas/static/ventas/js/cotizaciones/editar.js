@@ -310,6 +310,11 @@ function calc_total() {
         subtotal = subtotal + tots[i];
         i = i + 1;
     }
+
+    var subtotal_2 = 0;
+    for (x in precios) {
+        subtotal_2 = subtotal_2 + precios[x];
+    }
     i = 0;
     $("input[name='edit-cot-totales[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
@@ -317,9 +322,17 @@ function calc_total() {
         $(this).val(tots[i]);
         i = i + 1;
     });
-    sub.value = subtotal;
+    //sub.value = subtotal;
+    sub.value = subtotal_2;
     if (envio.value < 1) {
         envio.value = envio.value * -1;
     }
-    total.value = subtotal + parseInt(envio.value);
+
+    var tipo_envio = $('#tipo-envio-edit option:selected').text();
+    
+    if (tipo_envio == 'Internacional'){
+        total.value = (subtotal + parseInt(envio.value)).toFixed(2);
+    }else{
+        total.value = (subtotal + (parseFloat(envio.value) * 1.16)).toFixed(2);
+    }
 }
