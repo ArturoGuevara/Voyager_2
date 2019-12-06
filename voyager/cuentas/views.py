@@ -420,6 +420,7 @@ def crear_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
     #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
     if not ('crud_empresa' in request.session['permissions']):
+        return HttpResponseRedirect(reverse('usuarios'))
         raise Http404
     if not (request.POST.get('nombre_empresa')
             and request.POST.get('telefono_empresa')
@@ -430,6 +431,7 @@ def crear_empresa(request):
             and request.POST.get('nombre_responsable_pagos')
             and request.POST.get('nombre_responsable_compras')
         ):
+        return HttpResponseRedirect(reverse('crear_cliente'))
         raise Http404
     nombre_empresa = request.POST.get('nombre_empresa')
     telefono_empresa = request.POST.get('telefono_empresa')
@@ -441,6 +443,7 @@ def crear_empresa(request):
     nombre_responsable_compras = request.POST.get('nombre_responsable_compras')
     empresas_nombre = Empresa.objects.filter(empresa = nombre_empresa)
     if empresas_nombre:
+        return HttpResponseRedirect(reverse('crear_staff'))
         raise Http404
     empresa = Empresa()
     empresa.empresa = nombre_empresa
