@@ -84,7 +84,6 @@ function cargar_info_oi(){
                 for (let mue in muestras){
                     var id_muestra = muestras[mue].pk;
                     var objm = muestras[mue].fields;
-                    console.log(objm);
 
                     html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], analisis_ids[id_muestra], facturas[id_muestra], analisis, dhl);
                 }
