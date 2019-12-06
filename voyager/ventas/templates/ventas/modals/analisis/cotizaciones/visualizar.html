@@ -7,6 +7,9 @@
             <div class="modal-header">
                 <img src="{% static 'ventas/img/logo.jpg' %}" class="w-25" alt="logo" id="terminos-img">
                 <h2 class="modal-title w-100 text-center" id="title-ver-cotizacion">COTIZACIÓN #<span id="ver_id_cot"></span></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body" id="seccion_validacion">
                 <div id="alert-error-edit-cot" class="alert alert-danger d-none">
@@ -40,7 +43,7 @@
                     <div class="text-center">
                         <h3>Análisis</h3>
                     </div>
-                    <div class="row border">
+                    <div class="row table-responsive border border-dark">
                         <table class="table" id="analisis_tabla">
                             <thead class="tabla-analisis-encabezado">
                                 <tr>
@@ -71,7 +74,7 @@
                         <span id="desc-span">Descuento: $ </span><span class="text-secondary" id="n_descuentos"> - </span>
                     </div>
                     <div class="row">
-                        <span">IVA: $ </span><span class="text-secondary" id="n_iva"> - </span>
+                        <span id="iva-span"">IVA: $ </span><span class="text-secondary" id="n_iva"> - </span>
                     </div>
                     <div class="row border border-success bg-success">
                         <span >TOTAL: $</span><span class="text-black" id="n_total"> - </span>
@@ -160,7 +163,7 @@
                                         <th>Precio</th>
                                         <th>Tiempo Aprox.</th>
                                         <th>Acreditación</th>
-                                        <th onclick="edit_refresh_check()" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Si tenía análisis seleccionados y no aparecen haga clic aquí para refrescar.">Agregar <i class="fa fa-question-circle fa-lg"></th>
+                                        <th>Checkbox</th>
                                     </thead>
                                     <tbody>
                                         {% for a in analisis %}
@@ -172,7 +175,7 @@
                                             {% if a.acreditacion %}
                                             <td><span class="text-success">SI</span></td>
                                             {% else %}
-                                            <td><span class="text-secondary">NO</span></td>
+                                            <td><span class="text-danger">NO</span></td>
                                             {% endif %}
                                             <td class="text-center">
                                                 <input class="form-check-input" data-id="{{ a.id_analisis }}" name="editar-cot-an[]" type="checkbox" value="{{ a.id_analisis }}">

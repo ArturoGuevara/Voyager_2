@@ -98,6 +98,8 @@ function guardar_muestra(id_muestra){
     var producto = $(mp).val();
     var muestra_mrl = "#editar_muestra_mrl_" + id_muestra;
     var mrl = $(muestra_mrl).val();
+    var muestra_metodo_referencia = "#editar_muestra_metodo_referencia_" + id_muestra;
+    var metodo_referencia = $(muestra_metodo_referencia).val();
     var temperatura_tat = "#editar_muestra_temperatura_tat_" + id_muestra;
     temperatura_tat = $(temperatura_tat).val();
     var ni = "#editar_muestra_numero_interno_" + id_muestra;
@@ -145,6 +147,7 @@ function guardar_muestra(id_muestra){
                 'id_muestra': id_muestra,
                 'producto': producto,
                 'temperatura_tat': temperatura_tat,
+                'metodo_referencia': metodo_referencia,
                 'mrl': mrl,
                 'num_interno': num_interno,
                 'fecha_esperada': fecha_esperada,
@@ -161,6 +164,7 @@ function guardar_muestra(id_muestra){
                     $(this).find('#editar_muestra_producto_' + id_muestra).val(producto);
                     $(this).find('#editar_muestra_temperatura_tat_' + id_muestra).val(temperatura_tat);
                     $(this).find('#editar_muestra_mrl_' + id_muestra).val(mrl);
+                    $(this).find('#editar_muestra_metodo_referencia_' + id_muestra).val(metodo_referencia);
                     $(this).find('#editar_muestra_numero_interno_' + id_muestra).val(num_interno);
                     $(this).find('#editar_muestra_fecha_esperada_informe_' + id_muestra).val(fecha_esperada);
                     if(fecha_recibo != ""){
@@ -330,6 +334,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl){
                     <td id="codigo_`+ id_muestra +`">` + temperatura_tat + `</td>
                     <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
                     <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
+                    <td id="metodo_referencia_`+ id_muestra +`">` + muestra.metodo_referencia + `</td>
                     <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
                     <td id="fei_`+ id_muestra +`">` + fei + `</td>
                     <td id="fri_`+ id_muestra +`">` + fri + `</td>
@@ -403,6 +408,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
                 </select>
                 </td>
                 <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_mrl_` + id_muestra + `" placeholder="NA" value="` + muestra.mrl + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese un MRL válido o NA</div></td>
+                <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_metodo_referencia_` + id_muestra + `" placeholder="Separadas por -" value="` + muestra.metodo_referencia + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese texto separado por comas</div></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_esperada_recibo + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese la fecha estimada</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_recibo_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
