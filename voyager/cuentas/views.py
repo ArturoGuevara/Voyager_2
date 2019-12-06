@@ -430,7 +430,6 @@ def crear_empresa(request):
             and request.POST.get('nombre_responsable_pagos')
             and request.POST.get('nombre_responsable_compras')
         ):
-        print("ICI")
         raise Http404
     nombre_empresa = request.POST.get('nombre_empresa')
     telefono_empresa = request.POST.get('telefono_empresa')
