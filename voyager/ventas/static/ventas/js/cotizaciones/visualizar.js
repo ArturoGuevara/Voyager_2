@@ -22,6 +22,7 @@ function visualizar_cotizacion(id) {
                 if (response.error == "La cotización no contiene analisis") {
                     error_datos_cotizacion();
                 } else {
+                    
                     var data_cotizacion = JSON.parse(response.info[0]);
                     var data_cliente = JSON.parse(response.info[1]);
                     var data_vendedor = JSON.parse(response.info[2]);
@@ -41,7 +42,6 @@ function visualizar_cotizacion(id) {
 
                     var data_empresa = JSON.parse(response.info[5]);
                     var data_usuario = JSON.parse(response.info[6]);
-
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
