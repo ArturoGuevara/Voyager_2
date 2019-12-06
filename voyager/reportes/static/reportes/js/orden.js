@@ -484,7 +484,12 @@ function visualizar_info_oi(id) {
             }
             $('#muestras-body').html(html_muestras);
             $('#v_observaciones').val(data.observaciones);
-
+            if(!$("#factura-tab").hasClass("active")){
+                restaurar_editar();
+            }
+            else{
+                doble_editar();
+            }
         }
     })
 }
@@ -613,8 +618,8 @@ function visualizar_facturacion(id){
                     }
                 }
             }
-            llenar_tabla_analisis(data_muestras, data_ac, data_analisis);
             llenar_datos_facturacion(data_facturacion);
+            llenar_tabla_analisis(data_muestras, data_ac, data_analisis, data_facturacion[0].fields.cantidad_pagada);
         },
         error: function(data){
         }
@@ -650,7 +655,7 @@ function llenar_datos_facturacion(data_facturacion){
     $('#cantidad_pagada').val(data.fields.cantidad_pagada);
 }
 
-function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
+function llenar_tabla_analisis(data_muestras, data_ac, data_analisis,cantidad_pagada){
     var total_muestras = []
     for(x in data_muestras){
         var precio_unit = parseFloat(data_analisis[x][0].fields.precio);
@@ -664,7 +669,7 @@ function llenar_tabla_analisis(data_muestras, data_ac, data_analisis){
     for (i in total_muestras){
         subtotal_muestras = subtotal_muestras + total_muestras[i];
     }
-
+    subtotal_muestras-=cantidad_pagada;
     $('#n_subtotal-facturas').html(subtotal_muestras);
 }
 
