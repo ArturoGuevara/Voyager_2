@@ -484,7 +484,12 @@ function visualizar_info_oi(id) {
             }
             $('#muestras-body').html(html_muestras);
             $('#v_observaciones').val(data.observaciones);
-
+            if(!$("#factura-tab").hasClass("active")){
+                restaurar_editar();
+            }
+            else{
+                doble_editar();
+            }
         }
     })
 }

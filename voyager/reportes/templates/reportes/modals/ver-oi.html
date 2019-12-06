@@ -17,7 +17,7 @@
                         </li>
                         {% if 'consultar_informacion_factura' in request.session.permissions %}
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
+                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()" id="factura-tab">Facturación</a>
                             </li>
                         {% endif %}
                     </ul>
@@ -227,7 +227,7 @@
                               </div>
                               <br>
                               <div class="row border border-success bg-success">
-                                <span>SUBTOTAL: $</span><span class="text-white" id="n_subtotal-facturas">--</span>
+                                <span>SALDO: $</span><span class="text-white" id="n_subtotal-facturas">--</span>
                               </div>
                         <!-- Fin de facturas -->
                           </div>
