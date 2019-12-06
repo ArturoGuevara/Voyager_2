@@ -31,9 +31,9 @@ function restaurar_modal_ver_cot(){
 $('#btn-editar-cot').click(function(){
     // Alternar botones
     $('#imprimir-pdf').hide();
-    $("input[name='editar-cot-an[]']:checked").each(function () {
-        che.push(parseInt($(this).val()));
-    });
+    // $("input[name='editar-cot-an[]']:checked").each(function () {
+    //     che.push(parseInt($(this).val()));
+    // });
     $(this).removeClass('d-inline').addClass('d-none');
     $('#btn-canc-edit-cot').removeClass('d-none').addClass('d-inline');
     $('#btn-guar-editar-cot').removeClass('d-none').addClass('d-inline');
@@ -68,13 +68,13 @@ function editar_cot_eliminar_an(id){
     $('input[name="editar-cot-an[]"]').each(function (){
         if(id == $(this).data('id')){
             $(this).prop('checked', false);
-            for(var i = 0; i < che.length; i++){
-              if ( che[i] === id) {
-                che.splice(i, 1);
-              }
-            }
         }
     });
+    for(var i = 0; i < che.length; i++){
+      if ( che[i] === id) {
+        che.splice(i, 1);
+      }
+    }
     calc_total();
 }
 // Cuando el usuario clickea en algún checkbox para agregarlo al resumen
@@ -329,7 +329,7 @@ function calc_total() {
     }
 
     var tipo_envio = $('#tipo-envio-edit option:selected').text();
-    
+
     if (tipo_envio == 'Internacional'){
         total.value = (subtotal + parseInt(envio.value)).toFixed(2);
     }else{
