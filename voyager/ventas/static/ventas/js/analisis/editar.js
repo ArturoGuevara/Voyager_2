@@ -102,7 +102,7 @@ function editar_analisis(){
                   cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-success">SI</span>', id);
                 }
                 else{
-                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-danger">NO</span>', id);
+                  cambiar_valores_analisis_tabla('.analisis-acreditado', '<span class="text-secondary">NO</span>', id);
                 }
 
 

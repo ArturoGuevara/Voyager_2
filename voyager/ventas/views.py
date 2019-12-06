@@ -243,7 +243,7 @@ def ver_cotizaciones(request):
                     context = {
                         'cotizaciones': cotizaciones,
                     }
-                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente":
+                elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente" or usuario_log.rol.nombre == "Facturacion":
                     cotizaciones = Cotizacion.objects.all()
                     analisis = Analisis.objects.all()
                     clientes = IFCUsuario.objects.filter(rol__nombre="Cliente") #Obtener usuarios tipo cliente
@@ -368,7 +368,7 @@ def adjuntar_otro(cotizacion):
         a.precio = 0
         a.unidad_min = "Indefinida"
         a.tiempo = "Indefinido"
-        a.pais = "México"
+        a.pais = Pais.objects.get(nombre='México')
         a.save()
     analisis = Analisis.objects.filter(nombre="Otro").first()#Tras el if anterior se garantiza que existe este Analisis
     ac = AnalisisCotizacion()
@@ -589,11 +589,7 @@ def exportar_datos(request):
 @login_required
 def generar_csv_respaldo(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.method != 'POST':
         raise Http404
@@ -632,11 +628,7 @@ def generar_csv_respaldo(request):
 @login_required
 def descargar_paquete(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # Obtener el tipo de usuario logeado
-    if not (user_logged.rol.nombre == "Ventas"
-                or user_logged.rol.nombre == "SuperUser"
-                or user_logged.rol.nombre == "Director"
-                or user_logged.rol.nombre=="Facturacion"
-            ):
+    if not ('descargar_csv' in request.session['permissions']):
         raise Http404
     if request.method != 'POST':
         raise Http404

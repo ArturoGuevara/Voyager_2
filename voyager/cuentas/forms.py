@@ -7,7 +7,7 @@ class ClientForm(ModelForm):
     correo = forms.EmailField(label="Correo electrónico", max_length = 100)
     contraseña = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}),min_length=8)
     contraseña2 = forms.CharField(widget=forms.PasswordInput(attrs={'class':'form-control'}),min_length=8)
-    empresa = forms.ModelChoiceField(queryset=Empresa.objects.all())
+    empresa = forms.ModelChoiceField(queryset=Empresa.objects.filter(estado=True))
 
     def __init__(self, *args, **kwargs):
         super().__init__()

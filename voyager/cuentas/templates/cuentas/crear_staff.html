@@ -3,7 +3,11 @@
 
 {% block content %}
 
-<h1>Crear Staff</h1>
+<h1>Crear Staff
+    <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Cree un nuevo perfil para un usuario de IFC.">
+      <i class="fa fa-question-circle fa-lg"></i>
+    </button>
+</h1>
     <div class="card col-12">
         <form action="/cuentas/guardar_staff/" method="post" id="submit-staff-form">
             {% csrf_token %}
@@ -100,14 +104,14 @@
                 <div class="col-md-2 col-sm-2 col-lg-2">
                     <a href="{% url 'usuarios' %}" class="btn btn-danger btn-block"
                         data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                        data-content="Cancelar la creación de un nuevo usuario">
+                        data-content="Cancele la creación de un nuevo usuario.">
                             Cancelar
                     </a>
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
                     <button type="button" id="submit-staff-button" class="btn btn-success btn-block"
                         data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                        data-content="Crear un nuevo usuario de staff">
+                        data-content="Cree un nuevo usuario de staff.">
                             Crear
                     </button>
                 </div>
