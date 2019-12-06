@@ -14,12 +14,13 @@ class Rol(models.Model):
 
 
 class Empresa (models.Model):
-    empresa = models.CharField(max_length=50)
-    telefono = models.CharField(max_length=15, default="")
-    responsable_resultados = models.CharField(max_length=100, default="")
-    correo_resultados = models.EmailField(default="")
-    responsable_pagos = models.CharField(max_length=100, default="")
-    correo_pagos = models.EmailField(default="")
+    empresa = models.CharField(max_length=50, null = True, blank = True)
+    telefono = models.CharField(max_length=15, default="", null = True, blank = True)
+    responsable_resultados = models.CharField(max_length=100, default="", null = True, blank = True)
+    correo_resultados = models.EmailField(default="", null = True, blank = True)
+    responsable_pagos = models.CharField(max_length=100, default="", null = True, blank = True)
+    correo_pagos = models.EmailField(default="", null = True, blank = True)
+    estado = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Empresa'
@@ -50,3 +51,27 @@ class IFCUsuario(models.Model):
 
     def __str__(self):
         return "%s %s %s" % (self.nombre, self.apellido_paterno, self.apellido_materno)
+
+
+class Permiso(models.Model):
+    idPermiso =  models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length = 50)
+
+    class Meta:
+        verbose_name = 'Permiso'
+        verbose_name_plural = 'Permisos'
+
+    def __str__(self):
+        return "%s" % (self.nombre)
+
+class PermisoRol(models.Model):
+    idPermisoRol = models.AutoField(primary_key=True)
+    permiso = models.ForeignKey(Permiso, on_delete=models.CASCADE)
+    rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = 'Permiso'
+        verbose_name_plural = 'Permiso Roles'
+
+    def __str__(self):
+        return "%s %s" % (self.permiso.nombre, self.rol.nombre)

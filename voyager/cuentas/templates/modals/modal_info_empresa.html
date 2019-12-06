@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <h3 align="center">Crear empresa</h3>
+                <h3 align="center">Empresa</h3>
                 <br>
                 <div class="d-block m-4" id="visualizar-info-empresa">
                     <div class="form-row">
@@ -107,7 +107,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' or request.session.userrole == 'Ventas' %}
+                {% if 'editar_empresa' in request.session.permissions %}
                     <button type="submit" id="btn-editar-empresa" class="btn btn-info d-block" onclick="visualizar_editar()">Editar</button>
                 {% endif %}
                 <button type="submit" id="btn-cancelar-cambios" class="btn btn-danger d-none" onclick="cancelar_editar()">Cancelar</button>

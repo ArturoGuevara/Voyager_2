@@ -11,6 +11,12 @@ function justNumbers(e){   //Solo permite numeros en textbox
    return regexNumber.test(e.originalEvent.key);
 }
 
+function valid_check(num){
+
+   id = "#mselected" + String(num);
+   $(id).addClass('d-none');
+}
+
 
 $(document).ready(function() {   //Esconde alert de retroalimentación de DHL una vez que se muestra
    if($("#success-alert").data("show") == 1){

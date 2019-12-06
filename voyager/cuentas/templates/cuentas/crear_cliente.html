@@ -3,7 +3,11 @@
 
 {% block content %}
 
-<h1>Crear Cliente</h1>
+<h1>Crear Cliente
+        <button type="button" class="btn btn-secondary text-dark border-0" data-container="body" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Cree un nuevo cliente.">
+          <i class="fa fa-question-circle fa-lg"></i>
+        </button>
+</h1>
     <div class="card col-12">
         <form action="../guardar_cliente/" method="post" id="form_client">
             {% csrf_token %}
@@ -60,10 +64,12 @@
                     <label for="{{ form.empresa.id_for_label }}">Empresa:</label>
                     {{ form.empresa }}
                     <br>
-                    <a id="btn-agregar-empresa" class="btn btn-success" data-container="body" href="#"
-                       data-toggle="modal" data-target="#modal-crear-empresa">
-                        <i class="nc-icon nc-simple-add"></i> Empresa
-                    </a>
+                    {% if 'crear_empresa' in request.session.permissions %}
+                        <a id="btn-agregar-empresa" class="btn btn-success" data-container="body" href="#"
+                           data-toggle="modal" data-target="#modal-crear-empresa">
+                            <i class="nc-icon nc-simple-add"></i> Empresa
+                        </a>
+                    {% endif %}
                 </div>
             </div>
                 <div class="row mt-1 pt-1 pb-5">
@@ -72,14 +78,14 @@
                 <div class="col-md-2 col-sm-2 col-lg-2">
                     <a href="{% url 'usuarios' %}" class="btn btn-danger btn-block"
                         data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                        data-content="Cancelar la creación de un nuevo usuario">
+                        data-content="Cancele la creación de un nuevo usuario">
                             Cancelar
                     </a>
                 </div>
                 <div class="col-md-2 col-sm-2 col-lg-2">
                     <button type="submit" id="submit" class="btn btn-success btn-block"
                         data-container="body" data-toggle="popover" data-trigger="hover" data-placement="left"
-                        data-content="Crear un nuevo usuario de cliente">
+                        data-content="Guarde un nuevo usuario de cliente">
                             Crear
                     </button>
                 </div>

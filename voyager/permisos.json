@@ -1,0 +1,261 @@
+[
+{
+  "model": "cuentas.permiso",
+  "pk": 1,
+  "fields": {
+    "nombre": "ingresar_codigo_dhl"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 2,
+  "fields": {
+    "nombre": "consultar_catalogo_analisis"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 3,
+  "fields": {
+    "nombre": "actualizar_orden_interna"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 4,
+  "fields": {
+    "nombre": "modificar_catalogo_analisis"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 5,
+  "fields": {
+    "nombre": "visualizar_orden_interna"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 6,
+  "fields": {
+    "nombre": "ingresar_muestra"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 7,
+  "fields": {
+    "nombre": "bloquear_usuarios"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 8,
+  "fields": {
+    "nombre": "eliminar_orden_interna"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 9,
+  "fields": {
+    "nombre": "consultar_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 10,
+  "fields": {
+    "nombre": "crear_cliente"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 11,
+  "fields": {
+    "nombre": "crear_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 12,
+  "fields": {
+    "nombre": "actualizar_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 13,
+  "fields": {
+    "nombre": "visualizar_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 14,
+  "fields": {
+    "nombre": "consultar_informacion_factura"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 15,
+  "fields": {
+    "nombre": "aceptar_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 16,
+  "fields": {
+    "nombre": "visualizar_clientes"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 17,
+  "fields": {
+    "nombre": "notificar_resultados_correo"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 18,
+  "fields": {
+    "nombre": "crear_usuario"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 19,
+  "fields": {
+    "nombre": "visualizar_usuarios"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 20,
+  "fields": {
+    "nombre": "descargar_cotizacion_pdf"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 21,
+  "fields": {
+    "nombre": "borrar_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 22,
+  "fields": {
+    "nombre": "modificar_muestra"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 23,
+  "fields": {
+    "nombre": "registrar_analisis_catalogo"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 24,
+  "fields": {
+    "nombre": "eliminar_analisis_catalogo"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 25,
+  "fields": {
+    "nombre": "eliminar_usuario"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 26,
+  "fields": {
+    "nombre": "descargar_csv"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 27,
+  "fields": {
+    "nombre": "importar_csv"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 29,
+  "fields": {
+    "nombre": "crud_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 30,
+  "fields": {
+    "nombre": "editar_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 31,
+  "fields": {
+    "nombre": "exportar_paquete_muestra"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 32,
+  "fields": {
+    "nombre": "exportar_cliente_cotizacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 33,
+  "fields": {
+    "nombre": "exportar_analisis_oi"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 34,
+  "fields": {
+    "nombre": "exportar_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 35,
+  "fields": {
+    "nombre": "editar_informacion_facturacion"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 36,
+  "fields": {
+    "nombre": "crear_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 37,
+  "fields": {
+    "nombre": "visualizar_empresa"
+  }
+},
+{
+  "model": "cuentas.permiso",
+  "pk": 38,
+  "fields": {
+    "nombre": "eliminar_empresa"
+  }
+}
+]

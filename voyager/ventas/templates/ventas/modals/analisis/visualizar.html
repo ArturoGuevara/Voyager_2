@@ -97,7 +97,7 @@
                                 <select class="form-control" id="editar_pais" name="pais">
                                     {% for pais in paises %}
                                         <option id="editar_pais_{{pais.id_pais}}" value="{{pais.id_pais}}">{{pais.nombre}}</option>
-                                    {% endfor%}
+                                    {% endfor %}
                                 </select>
                                 <div class="invalid-feedback">
                                     Por favor selecciona el país del análisis
@@ -125,8 +125,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                {% if request.session.userrole == 'Director' or request.session.userrole == 'SuperUser' %}
-                <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block">Editar</button>
+                {% if 'modificar_catalogo_analisis' in request.session.permissions %}
+                    <button type="submit" id="btn-editar-analisis" class="btn btn-info d-block" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información del análisis.">Editar</button>
                 {% endif %}
                 <button type="submit" id="btn-guardar-cambios" class="btn btn-success d-none" onclick="editar_analisis()">Guardar</button>
             </div>

@@ -7,17 +7,19 @@
                         <li class="nav-item">
                             <a class="nav-link active" data-toggle="tab" href="#visualizar_info" onclick="restaurar_editar()">Orden Interna</a>
                         </li>
-                        {% if request.session.userrole != 'Facturacion' %}
+                        {% if request.session.userrole != 'Facturacion' and request.session.userrole != 'Ventas' %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_muestras" onclick="restaurar_editar()">Muestras</a>
                         </li>
+                        {% endif %}
                         <li class="nav-item">
                             <a class="nav-link" data-toggle="tab" href="#visualizar_observaciones" onclick="restaurar_editar()">Observaciones</a>
                         </li>
+                        {% if 'consultar_informacion_factura' in request.session.permissions %}
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
+                            </li>
                         {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#visualizar_facturacion" onclick="doble_editar()">Facturación</a>
-                        </li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane container active" id="visualizar_info">
@@ -83,6 +85,7 @@
                                         <th>Número Muestra</th>
                                         <th>Producto</th>
                                         <th>Código</th>
+                                        <th>Temperatura/TAT</th>
                                         <th>Análisis</th>
                                         <th>MRL</th>
                                         <th>No. interno de informe</th>
@@ -91,6 +94,7 @@
                                         <th>Resultados enviados</th>
                                         <th>Enlace a resultados</th>
                                         <th>Muestreador</th>
+                                        <th>Código Rastreo</th>
                                     </thead>
                                     <tbody id="muestras-body">
                                     </tbody>
@@ -228,11 +232,13 @@
                           </div>
                           <div class="container">
                               <br>
-                              <div class="text-left">
-                                  <button type="button" class="btn btn-primary float-left" id="button_edit_factura" onclick="editar_factura()">
-                                    Editar
-                                  </button>
-                              </div>
+                              {% if 'editar_informacion_facturacion' in request.session.permissions %}
+                                  <div class="text-left">
+                                      <button type="button" class="btn btn-primary float-left" id="button_edit_factura" onclick="editar_factura()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de facturación de la orden interna.">
+                                        Editar
+                                      </button>
+                                  </div>
+                              {% endif %}
                               <div class="text-left">
                                   <button type="button" hidden class="btn btn-danger float-left" id="button_cancelar_edit" onclick="cancelar_editar_facturacion()">
                                     Cancelar
@@ -267,12 +273,11 @@
                                     <input type="hidden" class="form-control" id="editar_idOI" name="editar_idOI">
                                     <label for="visualizar_estatus">Estatus</label>
                                     <select name="editar_estatus" id="editar_estatus" class="form-control">
-                                        <option name="Fantasma" id="Fantasma" value="Fantasma">Fantasma</option>
-                                        <option name="Invisible" id="Invisible" value="Invisible">Invisible</option>
-                                        <option name="Creada" id="Creada" value="Creada">Creada</option>
-                                        <option name="Enviada" id="Enviada" value="Enviada">Enviada</option>
-                                        <option name="En laboratorio" id="En laboratorio" value="En laboratorio">En laboratorio</option>
-                                        <option name="Resultados" id="Resultados" value="Resultados">Resultados</option>
+                                        <option name="No recibido" id="No recibido" value="No recibido">No recibido</option>
+                                        <option name="Recibido" id="Recibido" value="Recibido">Recibido</option>
+                                        <option name="Envio parcial" id="Envio parcial" value="Envio parcial">Envio parcial</option>
+                                        <option name="Envio total" id="Envio total" value="Envio total">Envio total</option>
+                                        <option name="Facturado" id="Facturado" value="Facturado">Facturado</option>
                                         <!--<option name="Borrado" id="Borrado" value="Borrado">Borrado</option>-->
                                     </select>
                                 </div>
@@ -333,6 +338,7 @@
                                   <th>Número Muestra</th>
                                   <th>Producto</th>
                                   <th>Código</th>
+                                  <th>Temperatura/TAT</th>
                                   <th>Análisis</th>
                                   <th>MRL</th>
                                   <th>No. interno de informe</th>
@@ -341,6 +347,7 @@
                                   <th>Resultados enviados</th>
                                   <th>Enlace a resultados</th>
                                   <th>Muestreador</th>
+                                  <th>Código Rastreo</th>
                                   <th>Acción</th>
                               </thead>
                               <tbody id="editar-body">
@@ -371,21 +378,15 @@
 
                 </div>
                 <div class="text-right">
-                    {% if request.session.userrole != 'Ventas' and request.session.userrole != 'Director' and request.session.userrole != 'Facturacion' %}
-                    <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()">
+                    {% if 'actualizar_orden_interna' in request.session.permissions %}
+                    <button type="button" class="btn btn-primary d-block" id="btn-editar-oi" onclick="cargar_info_oi()" data-toggle="popover" data-trigger="hover" data-placement="top" data-content="Edite la información de la orden interna.">
                         Editar
                     </button>
                     {% endif %}
                     <button type="button" class="btn btn-danger d-none float-left" id="btn-cancelar-editar-oi">
                         Cancelar
                     </button>
-                    <button type="button" class="btn btn-primary d-none float-right" id="btn-continuar-oi">
-                        Continuar
-                    </button>
-                    <button type="button" class="btn btn-warning d-none float-left" id="btn-regresar-oi">
-                        Regresar
-                    </button>
-                    <button type="button" class="btn btn-success d-none float-right" id="btn-guardar-oi" onclick="submit()">
+                    <button type="button" class="btn btn-success d-none float-right" id="btn-guardar-oi" onclick="actualizar_oi()">
                         Guardar
                     </button>
                 </div>

@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.core import serializers
-from .models import IFCUsuario,Rol,Empresa
+from .models import IFCUsuario,Rol,Empresa,PermisoRol
 from reportes.models import OrdenInterna
 from django.urls import reverse
 from .forms import ClientForm
@@ -44,6 +44,11 @@ def verifyLogin(request):
                 ifc_user = IFCUsuario.objects.get(user = request.user)
                 request.session['username'] = ifc_user.nombre
                 request.session['userrole'] = ifc_user.rol.nombre
+                permissions = PermisoRol.objects.all().filter(rol=ifc_user.rol)
+                list_permissions = []
+                for permission in permissions:
+                    list_permissions.append(permission.permiso.nombre)
+                request.session['permissions'] = list_permissions
                 return redirect('/cuentas/home/')
             else:
                 return render(request,'cuentas/login.html', {
@@ -91,7 +96,7 @@ def consultar_usuario(request, id):
 
         if request.session._session:
             usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-            if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Facturacion" or usuario_log.rol.nombre == "Ventas" or usuario_log.rol.nombre == "SuperUser":
+            if 'visualizar_clientes' in request.session['permissions'] or 'visualizar_usuarios' in request['permissions']:
                 usuario = IFCUsuario.objects.get(user=id)   #Obtener usuario al que deseas consultar
                 rol = usuario.rol.nombre    #Obtener rol del usuario que deseas consultar
                 if usuario:
@@ -103,7 +108,7 @@ def consultar_usuario(request, id):
                     nombre_empresa = ""
                     if empresa:
                         nombre_empresa = empresa.first().empresa
-                    
+
             else:
                 raise Http404
 
@@ -117,12 +122,12 @@ def lista_usuarios(request):
 
     if request.session._session:
         usuario_log = IFCUsuario.objects.filter(user=request.user).first() #Obtener usuario que inició sesión
-        if usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "SuperUser": #Verificar que el rol sea válido
+        if 'visualizar_usuarios' in request.session['permissions']: #Verificar que el rol sea válido
             usuarios_dir = IFCUsuario.objects.exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los usuarios
             usuarios_act = IFCUsuario.objects.filter(estado=True).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los activos
             usuarios_ina = IFCUsuario.objects.filter(estado=False).exclude(rol__nombre='SuperUser').exclude(rol__nombre='Phantom').order_by('user')    #Obtener todos los inactivos
             context = {'usuarios':usuarios_dir, 'activos':usuarios_act, 'inactivos':usuarios_ina}
-        elif not usuario_log.rol.nombre == "Cliente":
+        elif 'visualizar_clientes' in request.session['permissions']:
             rol = Rol.objects.get(nombre="Cliente")
             usuarios_cont = IFCUsuario.objects.filter(rol = rol).filter(estado=True).order_by('user')  #Obtener usuarios que son clientes
             context = {'usuarios':usuarios_cont}
@@ -154,7 +159,7 @@ def actualizar_usuario(request):
     datos = {}
 
     user_logged = IFCUsuario.objects.get(user = request.user) #Obtener al usuario
-    if not (user_logged.rol.nombre=="Director" or user_logged.rol.nombre=="Facturacion" or user_logged.rol.nombre=="SuperUser"): #Si el rol del usuario no es cliente no puede entrar a la página
+    if not ('bloquear_usuarios' in request.session['permissions']): #Si el rol del usuario no es cliente no puede entrar a la página
         raise Http404
     if request.method == 'POST':
          usuario = IFCUsuario.objects.filter(user = request.POST['id']).first()
@@ -170,7 +175,8 @@ def actualizar_usuario(request):
 def crear_cliente(request):
     form = ClientForm()
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not (user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre == "SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_cliente' in request.session['permissions']):
         raise Http404
     return render(request, 'cuentas/crear_cliente.html', {'form' : form})
 
@@ -192,7 +198,8 @@ def guardar_cliente(request):
         request.session['crear_cliente_status'] = False
         raise Http404
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_cliente' in request.session['permissions']):
         request.session['crear_cliente_status'] = False
         raise Http404
     user_name = request.POST.get('nombre')[0:2] \
@@ -234,7 +241,7 @@ def verificar_correo(request):
 @login_required
 def crear_staff(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not (user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crear_usuario' in request.session['permissions']):  # verificar que el usuario pertenezca al grupo con permisos
         raise Http404
     roles = Rol.objects.all()
     return render(request, 'cuentas/crear_staff.html', {'roles' : roles})
@@ -382,7 +389,8 @@ def notificar_error_perfil(request):         # Funcion que se llama con un ajax 
 @login_required
 def borrar_usuario(request, id):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
-    if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    #if user_logged.rol.nombre == "Director" or user_logged.rol.nombre == "SuperUser":
+    if 'eliminar_usuario' in request.session['permissions']:
         # Checamos que el método sea POST
         if request.method == 'POST':
             # Obtenemos el objeto de análisis
@@ -410,7 +418,8 @@ def borrar_usuario(request, id):
 @login_required
 def crear_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
         raise Http404
     if not (request.POST.get('nombre_empresa')
             and request.POST.get('telefono_empresa')
@@ -445,17 +454,19 @@ def lista_empresas(request):
     context = {}
 
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('visualizar_empresa' in request.session['permissions']):
         raise Http404
     if flag_enabled('Modulo_Empresas', request=request):
-        empresas = Empresa.objects.all()
+        empresas = Empresa.objects.filter(estado=True)
         context = {'empresas':empresas}
     return render(request, 'cuentas/lista_empresas.html', context)
 
 @login_required
 def consultar_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
         raise Http404
     if not (request.POST.get('id')):
         raise Http404
@@ -476,7 +487,8 @@ def consultar_empresa(request):
 @login_required
 def editar_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
         raise Http404
     if not (request.POST.get('editar_nombre')
             and request.POST.get('editar_telefono')
@@ -511,7 +523,8 @@ def editar_empresa(request):
 @login_required
 def eliminar_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
+    if not ('crud_empresa' in request.session['permissions']):
         raise Http404
     if not (request.POST.get('eliminar_empresa_id')):
         raise Http404
@@ -520,7 +533,15 @@ def eliminar_empresa(request):
     if not empresas:
         raise Http404
     empresa = empresas.first()
-    empresa.delete()
+    #empresa.delete()
+    empresa.empresa=""
+    empresa.telefono=""
+    empresa.responsable_resultados=""
+    empresa.correo_resultados=""
+    empresa.responsable_pagos=""
+    empresa.correo_pagos=""
+    empresa.estado=False
+    empresa.save()
     request.session['borrar_empresa'] = True
     return HttpResponseRedirect(reverse('lista_empresas'))
 

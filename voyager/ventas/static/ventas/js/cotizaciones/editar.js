@@ -26,7 +26,7 @@ function restaurar_modal_ver_cot(){
     $('#nav-info').removeClass().addClass('tab-pane fade show active');
     $('#nav-analisis').removeClass().addClass('tab-pane fade');
 
-    $('#imprimir-pdf').show(); 
+    $('#imprimir-pdf').show();
 }
 $('#btn-editar-cot').click(function(){
     // Alternar botones
@@ -232,6 +232,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -243,6 +255,18 @@ function calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
@@ -286,6 +310,11 @@ function calc_total() {
         subtotal = subtotal + tots[i];
         i = i + 1;
     }
+
+    var subtotal_2 = 0;
+    for (x in precios) {
+        subtotal_2 = subtotal_2 + precios[x];
+    }
     i = 0;
     $("input[name='edit-cot-totales[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
@@ -293,9 +322,17 @@ function calc_total() {
         $(this).val(tots[i]);
         i = i + 1;
     });
-    sub.value = subtotal;
+    //sub.value = subtotal;
+    sub.value = subtotal_2;
     if (envio.value < 1) {
         envio.value = envio.value * -1;
     }
-    total.value = subtotal + parseInt(envio.value);
+
+    var tipo_envio = $('#tipo-envio-edit option:selected').text();
+    
+    if (tipo_envio == 'Internacional'){
+        total.value = (subtotal + parseInt(envio.value)).toFixed(2);
+    }else{
+        total.value = (subtotal + (parseFloat(envio.value) * 1.16)).toFixed(2);
+    }
 }

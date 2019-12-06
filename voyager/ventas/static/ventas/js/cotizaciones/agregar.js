@@ -38,6 +38,7 @@ function cargar_cot() {
                 // Obtener la info que se regresa del controlador
                 var data = JSON.parse(response.info);
                 var subtotal = 0;
+                var subtotal_2 = 0;
                 var total = 0;
                 // Agregamos uno por uno los análisis seleccionados
                 for (var i = 0; i < data.length; i++) {
@@ -45,13 +46,15 @@ function cargar_cot() {
                     var codigo = data[i].fields.codigo;
                     var nombre = data[i].fields.nombre;
                     var precio = data[i].fields.precio;
+                    var total_analisis_no_iva = parseFloat(precio).toFixed(2)
                     var total_analisis = parseInt(precio) + (parseInt(precio) * 0.16)
                     $('#tabla-analisis-info').append('<tr><td>' + codigo + '</td><td>' + nombre + '</td><td><input id="res-cot-pr-' + id + '" name="precios[]" value='+precio+' hidden>$' + precio + '</td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="cantidades[]" min=1 value=1 onchange="add_calc_total()"><div class="invalid-feedback">Por favor introduce una cantidad</div></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="descuentos[]" min=0 value=0 onchange="add_calc_total()"></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="ivas[]" min=0 value=16 onchange="add_calc_total()"></td><td><input type="number" class="form-control" id="res-cot-an-' + id + '" data-id="' + id + '" name="totales[]" value='+ total_analisis +' readonly></td></tr>');
+                    subtotal_2 += parseFloat(total_analisis_no_iva);
                     subtotal += parseFloat(total_analisis);
                 }
                 total = subtotal;
                 // Asignar valores al input de subtotal y total
-                $('#subtotal').val(subtotal);
+                $('#subtotal').val(subtotal_2);
                 $('#total').val(total);
             },
             error: function (data) {
@@ -180,6 +183,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         iva.push(val);
@@ -191,6 +206,18 @@ function add_calc_total() {
         var val = parseInt($(this).val());
         if(val < 1){
             val = val*-1;
+            if(val > 100){
+                val = 100;
+                $(this).val(val);
+            }
+            $(this).val(val);
+        }
+        else if(val > 100){
+            val = 100;
+            $(this).val(val);
+        }
+        else if(isNaN(val)){
+            val = 0;
             $(this).val(val);
         }
         desc.push(val);
@@ -214,6 +241,9 @@ function add_calc_total() {
         var val = $(this).val();
         if(val < 1){
             val = val*-1;
+            if((val > 0 && val < 1) || (val > -1 && val < 0)){
+                val = 1;
+            }
             if(val == 0){
                 val = 1;
             }
@@ -234,6 +264,11 @@ function add_calc_total() {
         subtotal = subtotal + tots[i];
         i = i + 1;
     }
+
+    var subtotal_2 = 0;
+    for (x in precios) {
+        subtotal_2 = subtotal_2 + precios[x];
+    }
     i = 0;
     $("input[name='totales[]']").each(function () {
         //cantidades.push(parseInt($(this).val()));
@@ -241,9 +276,16 @@ function add_calc_total() {
         $(this).val(tots[i]);
         i = i + 1;
     });
-    sub.value = subtotal;
+    //sub.value = subtotal;
+    sub.value = subtotal_2;
     if (envio.value < 1) {
         envio.value = envio.value * -1;
     }
-    total.value = subtotal + parseInt(envio.value);
+    var tipo_envio = $('#tipo-envio option:selected').text();
+    if (tipo_envio == 'Internacional'){
+        total.value = (subtotal + parseInt(envio.value)).toFixed(2);
+    }else{
+        total.value = (subtotal + (parseFloat(envio.value) * 1.16)).toFixed(2);
+    }
+
 }
