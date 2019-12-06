@@ -1,6 +1,9 @@
 $( document ).ready(function() {
     $('#terminos').hide();          // Ocultar elementos que solo aparecen para el PDF
     $('#terminos-img').hide();
+    var id= $('#id').val();
+    visualizar_cotizacion(id);
+    imprimir();
 });
 // ######### USV04-04 ########
 function visualizar_cotizacion(id) {
@@ -52,6 +55,7 @@ function visualizar_cotizacion(id) {
 
 function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario) {
     $('.analisis_registro').remove();
+    $('#imprimir_pdf').attr("href", "recursos/" + data_cotizacion[0].pk);
     $('#ver_id_cot').html(data_cotizacion[0].pk);
     $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
@@ -146,6 +150,20 @@ function error_datos_cotizacion() {
     $('#analisis_tabla').append("<tr class='analisis_registro'><td class='text-danger'> ERROR: No existen analisis en la cotizacion </td></tr>")
 }
 
+
+function imprimir(){
+    $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
+    $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#terminos').show();                                              // Mostrar terminos y logo para el PDF
+    $('#terminos-img').show();
+    var printContents = document.getElementById("pdf-content").innerHTML;   // Acciones para detonar la impresion desde el navegador
+    var originalContents = document.body.innerHTML;
+	document.body.innerHTML = printContents;
+	window.print();
+	document.body.innerHTML = originalContents;
+    location.reload();
+}
+
 $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
     $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
     $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
@@ -157,8 +175,8 @@ $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
 	window.print();
 	document.body.innerHTML = originalContents;
     location.reload();
-    //print();
 });
+
 
 function check_acreditacion(analisis){
     a = analisis[0].fields.acreditacion;
@@ -167,18 +185,3 @@ function check_acreditacion(analisis){
     }
     return "<span class='text-danger'>NO</span>"
 };
-
-
-
-/*function print(quality = 3) {
-    const filename  = 'ThisIsYourPDFFilename.pdf';
-
-    html2canvas(document.querySelector('#pdf-content'), 
-                            {scale: quality}
-                     ).then(canvas => {
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 350);
-        pdf.save(filename);
-    });
-}
-*/

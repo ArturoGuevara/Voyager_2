@@ -1,6 +1,12 @@
 $( document ).ready(function() {
+    /*
     $('#terminos').hide();          // Ocultar elementos que solo aparecen para el PDF
     $('#terminos-img').hide();
+    */
+    $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
+    $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
+    $('#terminos').show();                                              // Mostrar terminos y logo para el PDF
+    $('#terminos-img').show();
 });
 // ######### USV04-04 ########
 function visualizar_cotizacion(id) {
@@ -22,7 +28,6 @@ function visualizar_cotizacion(id) {
                 if (response.error == "La cotización no contiene analisis") {
                     error_datos_cotizacion();
                 } else {
-                    
                     var data_cotizacion = JSON.parse(response.info[0]);
                     var data_cliente = JSON.parse(response.info[1]);
                     var data_vendedor = JSON.parse(response.info[2]);
@@ -42,7 +47,7 @@ function visualizar_cotizacion(id) {
 
                     var data_empresa = JSON.parse(response.info[5]);
                     var data_usuario = JSON.parse(response.info[6]);
-                    console.log(data_cotizacion);
+
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
@@ -157,7 +162,6 @@ $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
 	window.print();
 	document.body.innerHTML = originalContents;
     location.reload();
-    //print();
 });
 
 function check_acreditacion(analisis){
@@ -167,18 +171,3 @@ function check_acreditacion(analisis){
     }
     return "<span class='text-danger'>NO</span>"
 };
-
-
-
-/*function print(quality = 3) {
-    const filename  = 'ThisIsYourPDFFilename.pdf';
-
-    html2canvas(document.querySelector('#pdf-content'), 
-                            {scale: quality}
-                     ).then(canvas => {
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 350);
-        pdf.save(filename);
-    });
-}
-*/
