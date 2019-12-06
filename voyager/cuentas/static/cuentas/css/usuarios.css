@@ -14,3 +14,7 @@
 .table-wrapper-scroll-y {
     display: block;
 }
+
+div{
+    word-wrap: break-word;
+}
