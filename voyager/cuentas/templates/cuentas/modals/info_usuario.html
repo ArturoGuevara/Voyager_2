@@ -68,7 +68,7 @@
                 </div>
                 <div class="modal-footer mt-3">
                     <div class="float-left">
-                        <button type="button" class="btn btn-secondary ml-auto border-0" data-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-danger ml-auto" data-dismiss="modal">Cerrar</button>
                     </div>
                     {% if request.session.userrole == 'Director' or request.session.userrole == 'Facturacion' or request.session.userrole == 'Gerente' %}
                     <button name="submitForm" id="submitForm" type="button" class="btn btn-success ml-3">Guardar</button>
