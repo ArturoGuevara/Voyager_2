@@ -22,6 +22,7 @@ function visualizar_cotizacion(id) {
                 if (response.error == "La cotización no contiene analisis") {
                     error_datos_cotizacion();
                 } else {
+                    
                     var data_cotizacion = JSON.parse(response.info[0]);
                     var data_cliente = JSON.parse(response.info[1]);
                     var data_vendedor = JSON.parse(response.info[2]);
@@ -41,7 +42,6 @@ function visualizar_cotizacion(id) {
 
                     var data_empresa = JSON.parse(response.info[5]);
                     var data_usuario = JSON.parse(response.info[6]);
-
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
@@ -105,17 +105,17 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
         }
         // Evaluar descuentos y el IVA para el encabezad
         if (flag_no_descuento && flag_no_iva){ // Si todos los descuentos son igual a 0
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>Total Análisis</th><th scope='col'>Q</th></tr>");
             $('#n_descuentos').html('');
             $('#desc-span').hide();
         }else if (flag_no_descuento && !flag_no_iva){
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Q</th></tr>");
             $('#n_descuentos').html('');
             $('#desc-span').hide();
         }else if (!flag_no_descuento && flag_no_iva){
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>Total Análisis</th><th scope='col'>Q</th></tr>");
         }else{                  // Si existe al menos un descuento
-            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Acred.</th></tr>");
+            $('.tabla-analisis-encabezado').html("<tr><th scope='col'>Código</th><th scope='col'>Nombre</th><th scope='col'>Descripción</th><th scope='col'>Duración</th><th scope='col'>Cantidad</th><th scope='col'>Precio Unitario</th><th scope='col'>% Dto.</th><th scope='col'>% IVA</th><th scope='col'>Total Análisis</th><th scope='col'>Q</th></tr>");
             $('#n_descuentos').html(parseFloat(tot_descuentos));
             $('#desc-span').show();
         }
