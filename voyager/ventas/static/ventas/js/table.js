@@ -44,6 +44,10 @@ $(document).ready(function(){
         }
     });
     $('#tabla_analisis_2').DataTable({
+        "columnDefs": [ {
+            "targets": 6,
+            "orderable": false
+        } ],
         language: {
             "decimal": "",
             "emptyTable": "No hay información",
@@ -65,8 +69,12 @@ $(document).ready(function(){
             }
         }
     });
-    
+
     $('#editar-cot-tabla-analisis').DataTable({
+        "columnDefs": [ {
+            "targets": 5,
+            "orderable": false
+        } ],
         language: {
             "decimal": "",
             "emptyTable": "No hay información",

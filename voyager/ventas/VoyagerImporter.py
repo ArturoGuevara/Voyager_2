@@ -24,7 +24,17 @@ class Uploader():
 
 
     def validate_content(file_name):  # Valida los campos del csv
-        with open(file_name, mode='r', encoding="utf8") as csv_file:
+        paises = {
+            'México' : Pais.objects.get(nombre="México"),
+            'Holanda' : Pais.objects.get(nombre="Holanda"),
+            'Alemania' : Pais.objects.get(nombre="Alemania"),
+            'Estados Unidos' : Pais.objects.get(nombre="Estados Unidos"),
+            'Canadá' : Pais.objects.get(nombre="Canadá"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+        }
+        with open(file_name, mode='r', encoding="ISO-8859-1") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
             error_log = []
@@ -32,44 +42,51 @@ class Uploader():
             for row in csv_reader:
                 error_flag = True
                 line_count += 1
-                print('Evaluando: '+row["﻿CODIGO"]+' ... ', end='')
+                print('Evaluando: '+row["codigo"]+' ... ', end='')
 
-                codigo = row["﻿CODIGO"] #
-                nombre = row["NOMBRE"] #
-                descripcion = row["DESCRIPCION"] #
-                precio = row["PRECIO"] #
-                unidad_min = row["UNIDAD_MIN"] #
-                dias = row["DIAS"] #
-                acreditacion_t = row["ACREDITACION"]
+                codigo = row["codigo"] #
+                nombre = row["nombre"] #
+                descripcion = row["descripcion"] #
+                precio = row["precio"] #
+                unidad_min = row["unidad_min"] #
+                dias = row["tiempo"] #
+                acreditacion_t = row["acreditacion"]
 
 
-                if len(codigo) > 50 or len(codigo) <= 0:        # Validar el campo de CODIGO
+                if len(codigo) > 52 or len(codigo) <= 0:        # Validar el campo de CODIGO
                     error_flag = False
+                    print('Falla el codigo! | ', end='')
 
-                if len(nombre) > 100 or len(nombre) <= 0:       # Validar el campo de NOMBRE
+                if len(nombre) > 102:       # Validar el campo de NOMBRE
                     error_flag = False
+                    print('Falla el nombre! '+str(len(nombre))+' lineas | ', end='')
 
-                if len(descripcion) > 500 or len(descripcion) <= 0: # Validar el campo de DESCRIPCION
+                if len(descripcion) > 502: # Validar el campo de DESCRIPCION
                     error_flag = False
+                    print('Falla descripcion! |', end='')
 
                 try:    # Validar el campo de PRECIO
                     val = float(precio)
                 except ValueError:
                     error_flag = False
+                    print('Falla el precio! | ', end='')
 
-                if len(unidad_min) > 50:                            # Validar el campo de UNIDAD_MIN
+                if len(unidad_min) > 52:                            # Validar el campo de UNIDAD_MIN
                     error_flag = False
+                    print('Falla unidad_min! |', end='')
 
-                if dias.find('-') == -1 or len(dias) > 5:           # Validar el campo de DIAS
+                if len(dias) > 17:           # Validar el campo de DIAS
                     error_flag = False
+                    print('Falla dias! |', end='')
 
-                if acreditacion_t == 'Q' or acreditacion_t == '':   # Valida el campo de ACREDITACION
+                if acreditacion_t == 'True' or acreditacion_t == 'False':   # Valida el campo de ACREDITACION
                     print("", end='')
                 else:
                     error_flag =  False
+                    print('Falla acreditacion! | ', end='')
 
                 if not error_flag:
-                    print("X")
+                    print("")
                     error_log.append("Registro "+str(line_count)+": "+codigo)
                 else:
                     print("PASÓ")
@@ -86,32 +103,32 @@ class Uploader():
 
     def upload_content(file_name):  # Sube todo el contenido del csv a la base de datos
         paises = {
-            'M' : Pais.objects.get(nombre="México"),
-            'H' : Pais.objects.get(nombre="Holanda"),
-            'G' : Pais.objects.get(nombre="Alemania"),
-            'U' : Pais.objects.get(nombre="Estados Unidos"),
-            'C' : Pais.objects.get(nombre="Canadá"),
-            'I' : Pais.objects.get(nombre="IFC"),
-            'O' : Pais.objects.get(nombre="IFC"),
-            'A' : Pais.objects.get(nombre="IFC"),
+            'México' : Pais.objects.get(nombre="México"),
+            'Holanda' : Pais.objects.get(nombre="Holanda"),
+            'Alemania' : Pais.objects.get(nombre="Alemania"),
+            'Estados Unidos' : Pais.objects.get(nombre="Estados Unidos"),
+            'Canadá' : Pais.objects.get(nombre="Canadá"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
         }
-        with open(file_name, mode='r', encoding="utf8") as csv_file:
+        with open(file_name, mode='r', encoding="ISO-8859-1") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
             for row in csv_reader:
-                print('Subiendo: '+row["﻿CODIGO"]+' ... ', end='')
+                print('Subiendo: '+row["codigo"]+' ... ', end='')
                 line_count += 1
-                codigo = row["﻿CODIGO"] #
-                nombre = row["NOMBRE"] #
-                descripcion = row["DESCRIPCION"] #
-                precio = row["PRECIO"] #
-                unidad_min = row["UNIDAD_MIN"] #
-                dias = row["DIAS"] #
-                acreditacion_t = row["ACREDITACION"]
-                p = paises[row["﻿CODIGO"][0]]   # Se obtiene el país del diccionario
+                codigo = row["codigo"] #
+                nombre = row["nombre"] #
+                descripcion = row["descripcion"] #
+                precio = row["precio"] #
+                unidad_min = row["unidad_min"] #
+                dias = row["tiempo"] #
+                acreditacion_t = row["acreditacion"]
+                p = paises[row["pais_id"]]   # Se obtiene el país del diccionario
 
                 acred = False
-                if acreditacion_t == 'Q':  # Se valida la acreditacion
+                if acreditacion_t == 'True':  # Se valida la acreditacion
                     acred = True
 
                 n_dias = dias + " días"

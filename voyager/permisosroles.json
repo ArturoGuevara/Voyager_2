@@ -929,14 +929,6 @@
 },
 {
   "model": "cuentas.permisorol",
-  "pk": 127,
-  "fields": {
-    "permiso": 34,
-    "rol": 2
-  }
-},
-{
-  "model": "cuentas.permisorol",
   "pk": 128,
   "fields": {
     "permiso": 34,
