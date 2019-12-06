@@ -24,6 +24,16 @@ class Uploader():
 
 
     def validate_content(file_name):  # Valida los campos del csv
+        paises = {
+            'México' : Pais.objects.get(nombre="México"),
+            'Holanda' : Pais.objects.get(nombre="Holanda"),
+            'Alemania' : Pais.objects.get(nombre="Alemania"),
+            'Estados Unidos' : Pais.objects.get(nombre="Estados Unidos"),
+            'Canadá' : Pais.objects.get(nombre="Canadá"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+            'IFC' : Pais.objects.get(nombre="IFC"),
+        }
         with open(file_name, mode='r', encoding="ISO-8859-1") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             line_count = 0
@@ -43,15 +53,15 @@ class Uploader():
                 acreditacion_t = row["acreditacion"]
 
 
-                if len(codigo) > 50 or len(codigo) <= 0:        # Validar el campo de CODIGO
+                if len(codigo) > 52 or len(codigo) <= 0:        # Validar el campo de CODIGO
                     error_flag = False
                     print('Falla el codigo! | ', end='')
 
-                if len(nombre) > 100:       # Validar el campo de NOMBRE
+                if len(nombre) > 102:       # Validar el campo de NOMBRE
                     error_flag = False
-                    print('Falla el nombre! '+len(nombre)+' lineas | ', end='')
+                    print('Falla el nombre! '+str(len(nombre))+' lineas | ', end='')
 
-                if len(descripcion) > 500: # Validar el campo de DESCRIPCION
+                if len(descripcion) > 502: # Validar el campo de DESCRIPCION
                     error_flag = False
                     print('Falla descripcion! |', end='')
 
@@ -61,11 +71,11 @@ class Uploader():
                     error_flag = False
                     print('Falla el precio! | ', end='')
 
-                if len(unidad_min) > 50:                            # Validar el campo de UNIDAD_MIN
+                if len(unidad_min) > 52:                            # Validar el campo de UNIDAD_MIN
                     error_flag = False
                     print('Falla unidad_min! |', end='')
 
-                if len(dias) > 15:           # Validar el campo de DIAS
+                if len(dias) > 17:           # Validar el campo de DIAS
                     error_flag = False
                     print('Falla dias! |', end='')
 
