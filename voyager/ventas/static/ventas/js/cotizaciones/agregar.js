@@ -15,11 +15,11 @@ $(document).ready(function () {
 /* FUNCIONES PARA CREAR COTIZACIÓN */
 // Función para cargar el resumen de cotización
 function cargar_cot() {
-    var checked = [];
+    var checked = tabla2_checked;
     // Obtenemos las id de los análisis seleccionados
-    $("input[name='cot[]']:checked").each(function () {
-        checked.push(parseInt($(this).val()));
-    });
+    // $("input[name='cot[]']:checked").each(function () {
+    //     checked.push(parseInt($(this).val()));
+    // });
     if (checked.length > 0) {
         // Abrimos el modal porque seleccionó al menos un análisis
         $('#agregar-cot').modal('toggle');
@@ -68,15 +68,15 @@ function cargar_cot() {
 }
 // Función para guardar la nueva cotización
 function crear_cotizacion() {
-    var checked = [];
+    var checked = tabla2_checked;
     var cantidades = [];
     var descuentos = [];
     var ivas = [];
     var totales = [];
     // Obtenemos las id de los análisis seleccionados
-    $("input[name='cot[]']:checked").each(function () {
-        checked.push(parseInt($(this).val()));
-    });
+    // $("input[name='cot[]']:checked").each(function () {
+    //     checked.push(parseInt($(this).val()));
+    // });
     // Obtenemos las cantidades de los análisis seleccionados
     $("input[name='cantidades[]']").each(function () {
         cantidades.push(parseInt($(this).val()));
