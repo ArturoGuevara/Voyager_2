@@ -74,6 +74,30 @@
                             <p style="color:red">Ingresa un correo válido</p>
                         </div>
                     </div>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="nombre_responsable_compras">Responsable de compras</label>
+                            <input type="text" class="form-control" id="nombre_responsable_compras" name="nombre_responsable_compras"
+                                   placeholder="Responsable de compras" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el nombre del responsable de los pagos
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="correo_compras">Correo pagos</label>
+                            <input type="email" class="form-control" id="correo_compras" name="correo_compras"
+                                   placeholder="compras@compras.com" maxlength="100">
+                            <div class="invalid-feedback">
+                                Por favor ingresa el correo de pagos
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-md-6"></div>
+                        <div class="invalid-mail-compras p-3" hidden>
+                            <p style="color:red">Ingresa un correo válido</p>
+                        </div>
+                    </div>
                     <br>
                     <div class="text-right">
                         <button type="button" class="btn btn-success float-right" id="button_send_empresa" onclick="enviar_empresa()">

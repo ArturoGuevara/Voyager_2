@@ -17,6 +17,8 @@ function cargar_info_empresa(id) {
             var correo_resultados = response.correo_resultados;
             var responsable_pagos = response.responsable_pagos;
             var correo_pagos = response.correo_pagos;
+            var responsable_compras = response.responsable_compras;
+            var correo_compras = response.correo_compras;
             var id = response.id;
             $("#visualizar_nombre").val(nombre_empresa);
             $("#editar_nombre").val(nombre_empresa);
@@ -30,6 +32,10 @@ function cargar_info_empresa(id) {
             $("#editar_responsable_pagos").val(responsable_pagos);
             $("#visualizar_correo_pagos").val(correo_pagos);
             $("#editar_correo_pagos").val(correo_pagos);
+            $("#visualizar_responsable_compras").val(responsable_compras);
+            $("#editar_responsable_compras").val(responsable_compras);
+            $("#visualizar_correo_compras").val(correo_compras);
+            $("#editar_correo_compras").val(correo_compras);
             $("#empresa_id").val(id);
         }
     })
@@ -69,6 +75,12 @@ function editar_empresa(){
         valid_form=false;
     }
     if(!check_is_not_empty($("#editar_correo_pagos").val(),"#editar_correo_pagos")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#editar_responsable_compras").val(),"#editar_responsable_compras")){
+        valid_form=false;
+    }
+    if(!check_is_not_empty($("#editar_correo_compras").val(),"#editar_correo_compras")){
         valid_form=false;
     }
     if(valid_form){

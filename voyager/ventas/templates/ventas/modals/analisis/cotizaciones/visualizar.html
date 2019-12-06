@@ -74,7 +74,7 @@
                         <span id="desc-span">Descuento: $ </span><span class="text-secondary" id="n_descuentos"> - </span>
                     </div>
                     <div class="row">
-                        <span">IVA: $ </span><span class="text-secondary" id="n_iva"> - </span>
+                        <span id="iva-span"">IVA: $ </span><span class="text-secondary" id="n_iva"> - </span>
                     </div>
                     <div class="row border border-success bg-success">
                         <span >TOTAL: $</span><span class="text-black" id="n_total"> - </span>
@@ -175,7 +175,7 @@
                                             {% if a.acreditacion %}
                                             <td><span class="text-success">SI</span></td>
                                             {% else %}
-                                            <td><span class="text-secondary">NO</span></td>
+                                            <td><span class="text-danger">NO</span></td>
                                             {% endif %}
                                             <td class="text-center">
                                                 <input class="form-check-input" data-id="{{ a.id_analisis }}" name="editar-cot-an[]" type="checkbox" value="{{ a.id_analisis }}">
