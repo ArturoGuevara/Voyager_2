@@ -1302,7 +1302,6 @@ class TestImportCSV(TestCase):
             test = Analisis.objects.get(codigo='H-DPL001')
             test = Analisis.objects.get(codigo='H-DPL002')
             test = Analisis.objects.get(codigo='H-DPL003')
-            test = Analisis.objects.get(codigo='H-DPL022')
         except:
             flag = False
         self.assertEqual(flag,True)
@@ -1317,7 +1316,6 @@ class TestImportCSV(TestCase):
             test = Analisis.objects.get(codigo='H-DPL001')
             test = Analisis.objects.get(codigo='H-DPL002')
             test = Analisis.objects.get(codigo='H-DPL003')
-            test = Analisis.objects.get(codigo='H-DPL022')
         except:
             flag = False
         self.assertEqual(flag,False)
@@ -1332,7 +1330,6 @@ class TestImportCSV(TestCase):
             test = Analisis.objects.get(codigo='H-DPL001')
             test = Analisis.objects.get(codigo='H-DPL002')
             test = Analisis.objects.get(codigo='H-DPL003')
-            test = Analisis.objects.get(codigo='H-DPL022')
         except:
             flag = False
         self.assertEqual(flag,False)

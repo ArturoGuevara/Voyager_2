@@ -11,3 +11,8 @@
 .datepicker{
     max-width: 80px !important;
 }
+
+#containerProductoAgricola table th, #containerProductoProcesado table th, #containerProductoMicrobiologia table th{
+    font-size: 8px !important;
+    text-align: center !important;
+}

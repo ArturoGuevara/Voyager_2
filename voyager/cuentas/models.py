@@ -20,6 +20,8 @@ class Empresa (models.Model):
     correo_resultados = models.EmailField(default="", null = True, blank = True)
     responsable_pagos = models.CharField(max_length=100, default="", null = True, blank = True)
     correo_pagos = models.EmailField(default="", null = True, blank = True)
+    responsable_compras = models.CharField(max_length=100, default="", null = True, blank = True)
+    correo_compras = models.EmailField(default="", null = True, blank = True)
     estado = models.BooleanField(default=True)
 
     class Meta:
