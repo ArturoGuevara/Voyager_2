@@ -146,7 +146,7 @@ def guardar_muestras(arreglo, tipo, user, oi):
             li = list(formato[4].split(","))
             m.proveedor = li[i]
             li = list(formato[5].split(","))
-            m.codigo_trazabilidad = li[i]
+            m.codigo_trazabilidad = oi.idOI
             li = list(formato[6].split(","))
             m.agricultor = li[i]
             li = list(formato[7].split(","))
@@ -186,6 +186,7 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m = Muestra()
             # GENERALES
             m.usuario = user
+            m.codigo_trazabilidad = oi.idOI
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
@@ -217,6 +218,7 @@ def guardar_muestras(arreglo, tipo, user, oi):
             m = Muestra()
             # GENERALES
             m.usuario = user
+            m.codigo_trazabilidad = oi.idOI
             m.oi = OrdenInterna.objects.latest('idOI')
             li = list(formato[0].split(","))
             m.tipo_muestra = li[i]
