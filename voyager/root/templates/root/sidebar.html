@@ -60,6 +60,7 @@
                     </div>
                 </li> -->
               {% endif %}
+              {% if 'ingresar_muestra' in request.session.permissions or 'visualizar_orden_interna' in request.session.permissions %}
               <li class="nav-item">
                   <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                       <i class="nc-icon nc-notes"></i>
@@ -88,6 +89,7 @@
                       </ul>
                   </div>
               </li>
+              {% endif %}
             {% endif %}
             {% if 'visualizar_cotizacion' in request.session.permissions or 'consultar_catalogo_analisis' in request.session.permissions or 'descargar_csv' in request.session.permissions %}
             <li class="nav-item">
