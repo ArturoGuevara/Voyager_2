@@ -42,7 +42,6 @@ function visualizar_cotizacion(id) {
 
                     var data_empresa = JSON.parse(response.info[5]);
                     var data_usuario = JSON.parse(response.info[6]);
-                    console.log(data_cotizacion);
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
@@ -157,7 +156,6 @@ $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
 	window.print();
 	document.body.innerHTML = originalContents;
     location.reload();
-    //print();
 });
 
 function check_acreditacion(analisis){
@@ -167,18 +165,3 @@ function check_acreditacion(analisis){
     }
     return "<span class='text-danger'>NO</span>"
 };
-
-
-
-/*function print(quality = 3) {
-    const filename  = 'ThisIsYourPDFFilename.pdf';
-
-    html2canvas(document.querySelector('#pdf-content'), 
-                            {scale: quality}
-                     ).then(canvas => {
-        let pdf = new jsPDF('p', 'mm', 'a4');
-        pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 211, 350);
-        pdf.save(filename);
-    });
-}
-*/
