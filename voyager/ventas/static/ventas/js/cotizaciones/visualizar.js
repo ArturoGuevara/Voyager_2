@@ -126,7 +126,8 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
         $('#envio-span').html('Costo de envío (nacional): $ ')
     }
 
-    $('#n_iva').html(iva_final);
+    var iva_two_dec = iva_final.toFixed(2);
+    $('#n_iva').html(iva_two_dec);
 
     $("#editar-cot-cliente > option").each(function() {
         if($(this).val() == data_cliente[0].pk){
