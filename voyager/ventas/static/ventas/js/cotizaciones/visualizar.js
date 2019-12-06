@@ -1,7 +1,49 @@
+var tabla2_checked = [];
+
 $( document ).ready(function() {
     $('#terminos').hide();          // Ocultar elementos que solo aparecen para el PDF
     $('#terminos-img').hide();
+
 });
+
+function refresh_check(){
+    $("input[name='cot[]']").each(function () {
+        if (tabla2_checked.includes($(this).val())){
+            $(this).prop('checked', true);
+        }
+        else {
+            $(this).prop('checked', false);
+        }
+    });
+}
+
+function edit_refresh_check(){
+    $("input[name='editar-cot-an[]']").each(function () {
+        if (che.includes(parseInt($(this).val()))){
+            $(this).prop('checked', true);
+        }
+        else {
+            $(this).prop('checked', false);
+        }
+    });
+}
+
+function analisis_cot(id){
+    if (tabla2_checked.includes(id)){
+        let i = 0;
+        while(true){
+            if (tabla2_checked[i] == id){
+                tabla2_checked.splice(i, 1);
+                break;
+            }
+            i++;
+        }
+    }
+    else {
+        tabla2_checked.push(id);
+    }
+}
+
 // ######### USV04-04 ########
 function visualizar_cotizacion(id) {
     // Verificar que el analisis existe
@@ -146,6 +188,9 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
                 $(this).prop('checked', true);
             }
         });
+
+        che.push(analisis[n][0].pk);
+
     }
 
     if (data_cotizacion[0].fields.aceptado || data_cotizacion[0].fields.bloqueado){
@@ -156,9 +201,9 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
       $('#btn-espacio').append(boton);
       $('#btn-editar-cot').click(function(){
 
-          $("input[name='editar-cot-an[]']:checked").each(function () {
-              che.push(parseInt($(this).val()));
-          });
+          // $("input[name='editar-cot-an[]']:checked").each(function () {
+          //     che.push(parseInt($(this).val()));
+          // });
 
           // Alternar botones
           $(this).removeClass('d-inline').addClass('d-none');
