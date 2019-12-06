@@ -425,16 +425,21 @@ def crear_empresa(request):
             and request.POST.get('telefono_empresa')
             and request.POST.get('correo_resultados')
             and request.POST.get('correo_pagos')
+            and request.POST.get('correo_compras')
             and request.POST.get('nombre_responsable_resultados')
             and request.POST.get('nombre_responsable_pagos')
+            and request.POST.get('nombre_responsable_compras')
         ):
+        print("ICI")
         raise Http404
     nombre_empresa = request.POST.get('nombre_empresa')
     telefono_empresa = request.POST.get('telefono_empresa')
     correo_resultados = request.POST.get('correo_resultados')
     correo_pagos = request.POST.get('correo_pagos')
+    correo_compras = request.POST.get('correo_compras')
     nombre_responsable_resultados = request.POST.get('nombre_responsable_resultados')
     nombre_responsable_pagos = request.POST.get('nombre_responsable_pagos')
+    nombre_responsable_compras = request.POST.get('nombre_responsable_compras')
     empresas_nombre = Empresa.objects.filter(empresa = nombre_empresa)
     if empresas_nombre:
         raise Http404
@@ -443,8 +448,10 @@ def crear_empresa(request):
     empresa.telefono = telefono_empresa
     empresa.correo_resultados = correo_resultados
     empresa.correo_pagos = correo_pagos
+    empresa.correo_compras = correo_compras
     empresa.responsable_resultados = nombre_responsable_resultados
     empresa.responsable_pagos = nombre_responsable_pagos
+    empresa.responsable_compras = nombre_responsable_compras
     empresa.save()
     return JsonResponse({'value':empresa.id,'nombre':empresa.empresa})
 
@@ -465,8 +472,7 @@ def lista_empresas(request):
 @login_required
 def consultar_empresa(request):
     user_logged = IFCUsuario.objects.get(user=request.user)  # obtener usuario que inició sesión
-    #if not(user_logged.rol.nombre == "Ventas" or user_logged.rol.nombre=="SuperUser" or user_logged.rol.nombre == "Director"):  # verificar que el usuario pertenezca al grupo con permisos
-    if not ('crud_empresa' in request.session['permissions']):
+    if not ('visualizar_empresa' in request.session['permissions']):
         raise Http404
     if not (request.POST.get('id')):
         raise Http404
@@ -479,9 +485,11 @@ def consultar_empresa(request):
                             'telefono':empresa.telefono,
                             'correo_resultados':empresa.correo_resultados,
                             'correo_pagos':empresa.correo_pagos,
+                            'correo_compras':empresa.correo_compras,
                             'id':empresa.id,
                             'responsable_resultados':empresa.responsable_resultados,
                             'responsable_pagos':empresa.responsable_pagos,
+                            'responsable_compras':empresa.responsable_compras,
                          })
 
 @login_required
@@ -496,6 +504,8 @@ def editar_empresa(request):
             and request.POST.get('editar_correo_resultados')
             and request.POST.get('editar_responsable_pagos')
             and request.POST.get('editar_correo_pagos')
+            and request.POST.get('editar_responsable_compras')
+            and request.POST.get('editar_correo_compras')
             and request.POST.get('empresa_id')
         ):
         raise Http404
@@ -505,6 +515,8 @@ def editar_empresa(request):
     correo_resultados = request.POST.get('editar_correo_resultados')
     responsable_pagos = request.POST.get('editar_responsable_pagos')
     correo_pagos = request.POST.get('editar_correo_pagos')
+    responsable_compras = request.POST.get('editar_responsable_compras')
+    correo_compras = request.POST.get('editar_correo_compras')
     id_empresa = request.POST.get('empresa_id')
     empresas = Empresa.objects.filter(id=id_empresa)
     if not empresas:
@@ -516,6 +528,8 @@ def editar_empresa(request):
     empresa.correo_resultados = correo_resultados
     empresa.responsable_pagos = responsable_pagos
     empresa.correo_pagos = correo_pagos
+    empresa.responsable_compras = responsable_compras
+    empresa.correo_compras = correo_compras
     empresa.save()
     request.session['editar_empresa'] = True
     return HttpResponseRedirect(reverse('lista_empresas'))
@@ -540,6 +554,8 @@ def eliminar_empresa(request):
     empresa.correo_resultados=""
     empresa.responsable_pagos=""
     empresa.correo_pagos=""
+    empresa.responsable_compras=""
+    empresa.correo_compras=""
     empresa.estado=False
     empresa.save()
     request.session['borrar_empresa'] = True
