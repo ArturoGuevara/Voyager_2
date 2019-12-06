@@ -61,7 +61,6 @@
                 </li> -->
               {% endif %}
               {% if 'ingresar_muestra' in request.session.permissions or 'visualizar_orden_interna' in request.session.permissions %}
-                {% if request.session.userrole == 'Director' or request.session.userrole == 'Gerente' or request.session.userrole == 'Soporte'  or request.session.userrole == 'SuperUser' or request.session.userrole == 'Facturacion' %}
               <li class="nav-item">
                   <a class="nav-link" data-toggle="collapse" href="#procesamientoDropdown">
                       <i class="nc-icon nc-notes"></i>
@@ -90,7 +89,6 @@
                   </div>
               </li>
               {% endif %}
-            {% endif %}
             {% if 'visualizar_cotizacion' in request.session.permissions or 'consultar_catalogo_analisis' in request.session.permissions or 'descargar_csv' in request.session.permissions %}
             <li class="nav-item">
                 <a class="nav-link" data-toggle="collapse" href="#ventasDropdown">
