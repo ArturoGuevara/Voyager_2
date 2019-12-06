@@ -562,6 +562,7 @@ def actualizar_muestra(request):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
             muestra.muestreador = request.POST['muestreador']
+            muestra.metodo_referencia = request.POST['metodo_referencia']
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
