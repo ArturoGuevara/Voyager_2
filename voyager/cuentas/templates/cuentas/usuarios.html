@@ -85,7 +85,15 @@
                 <tr id="usuario-{{c.user.id}}" class="user-row" data-id="{{c.user.id}}"">
                     <td class="pt-3 u_id">{{ c.user.id }}</td>
                     <td class="pt-3 u_nombre">{{ c.nombre}} {{ c.apellido_paterno }} {{ c.apellido_materno }}</td>
+
+                    {% if c.rol.nombre == 'Soporte' %}
+                    <td class="pt-3 u_nombre">Servicio a Cliente</td>
+                    {% else %}
                     <td class="pt-3 u_nombre">{{ c.rol.nombre }}</td>
+                    {% endif %}
+
+
+
                     <td class="pt-3 u_estatus">{{ c.estatus_pago }}</td>
                     <td class="pt-3 u_empresa">{{ c.empresa }}</td>
                     <td id="td-acciones">
