@@ -93,12 +93,12 @@ function cargar_info_oi(){
     })
 }
 
-function guardar_muestra(id_muestra){
+function guardar_muestra(id_muestra, a){
     var mp = "#editar_muestra_producto_" + id_muestra;
     var producto = $(mp).val();
     var muestra_mrl = "#editar_muestra_mrl_" + id_muestra;
     var mrl = $(muestra_mrl).val();
-    var muestra_metodo_referencia = "#editar_muestra_metodo_referencia_" + id_muestra;
+    var muestra_metodo_referencia = "#editar_muestra_metodo_referencia_" + id_muestra + a;
     var metodo_referencia = $(muestra_metodo_referencia).val();
     var temperatura_tat = "#editar_muestra_temperatura_tat_" + id_muestra;
     temperatura_tat = $(temperatura_tat).val();
@@ -144,6 +144,7 @@ function guardar_muestra(id_muestra){
             url: 'actualizar_muestra/',
             type: "POST",
             data: {
+                'a': a,
                 'id_muestra': id_muestra,
                 'producto': producto,
                 'temperatura_tat': temperatura_tat,
@@ -326,6 +327,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl){
         if(muestra.muestreador == null || muestra.muestreador == "null"){
             muestreador = "-";
         }
+        split_mr = muestra.metodo_referencia.split("|°|");
         html = html + `
                 <tr name="ver_muestra_`+ id_muestra +`[]">
                     <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
@@ -334,7 +336,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl){
                     <td id="codigo_`+ id_muestra +`">` + temperatura_tat + `</td>
                     <td id="analisis_`+ id_muestra +`">`+ analisis[a] +`</td>
                     <td id="mrl_`+ id_muestra +`">` + muestra.mrl + `</td>
-                    <td id="metodo_referencia_`+ id_muestra +`">` + muestra.metodo_referencia + `</td>
+                    <td id="metodo_referencia_`+ id_muestra +`">` + split_mr[a] + `</td>
                     <td id="num_interno_`+ id_muestra +`">` + informe + `</td>
                     <td id="fei_`+ id_muestra +`">` + fei + `</td>
                     <td id="fri_`+ id_muestra +`">` + fri + `</td>
@@ -404,11 +406,12 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
             }
 
         }
+        split_mr = muestra.metodo_referencia.split("|°|");
         html = html + `
                 </select>
                 </td>
                 <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_mrl_` + id_muestra + `" placeholder="NA" value="` + muestra.mrl + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese un MRL válido o NA</div></td>
-                <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_metodo_referencia_` + id_muestra + `" placeholder="Separadas por -" value="` + muestra.metodo_referencia + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese texto separado por comas</div></td>
+                <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_metodo_referencia_` + id_muestra + a + `" placeholder="Separadas por -" value="` + split_mr[a] + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese texto separado por comas</div></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_esperada_recibo + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese la fecha estimada</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_recibo_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
@@ -416,7 +419,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_link_` + id_muestra + `" value="` + pdf + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)" disabled></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_muestreador_` + id_muestra + `" placeholder="John Cena" value="` + muestreador + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese al muestreador</div></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_dhl_` + id_muestra + `" value="` + dhl + `" disabled></td>
-                <td><input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `)" value="Guardar" /></td>
+                <td><input class="btn btn-success ml-3 ml-auto" type="button" onclick="guardar_muestra(` + id_muestra + `,` + a + `)" value="Guardar" /></td>
             </tr>`;
           i++;
           }
@@ -478,7 +481,6 @@ function visualizar_info_oi(id) {
                 for (let mue in muestras){
                     var id_muestra = muestras[mue].pk;
                     var objm = muestras[mue].fields;
-
                     html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra], dhl);
                 }
             }

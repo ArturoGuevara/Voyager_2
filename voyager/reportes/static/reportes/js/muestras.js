@@ -590,7 +590,7 @@ function iterar_input(name, type){
 function iterar_input_coma(name, type){
     var aux = [];
     $(type+"[name='"+name+"[]']").each(function () {
-        aux.push($(this).val().replace(/,/g, '-'));
+        aux.push($(this).val().replace(/,/g, '|°|')); //|°| sirve como un separador para cada uno de los métodos de referencia
     });
     return aux;
 }
