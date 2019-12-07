@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from reportes.models import Analisis, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
+from reportes.models import Analisis,AnalisisMuestra, Cotizacion, AnalisisCotizacion, Pais, Muestra, Paquete, OrdenInterna
 from cuentas.models import IFCUsuario, Empresa
 from django.contrib.auth.models import User
 import requests
@@ -599,29 +599,139 @@ def generar_csv_respaldo(request):
     all_rows = None
     field_names = []
     if table == "cotizaciones":
-        all_rows = Cotizacion.objects.all()
+        cotis = Cotizacion.objects.all()
+        field_names = [
+            'ID Cotización',
+            'Nombre Cliente',
+            'Nombre Vendedor',
+            'Subtotal',
+            'Descuento',
+            'IVA',
+            'Tipo de envío',
+            'Envío',
+            'Total',
+            'Borrado',
+            'Aceptado',
+            'Fecha Creación',
+            'Bloqueado'
+        ]
+        all_rows = []
+        for coti in cotis:
+            an_coti = AnalisisCotizacion.objects.filter(cotizacion = coti)
+            desc=0.0
+            iva = 0.0
+            total_for = 0.0
+            for anc in an_coti:
+                desc += float(anc.analisis.precio) * ( float(anc.descuento)/100.0) * float(anc.cantidad)
+                iva += float(anc.analisis.precio) * (1-( float(anc.descuento)/100.0)) * float(anc.cantidad) * (float(anc.iva)/100.0)
+                total_for += float(anc.total)
+            total_for += float(coti.envio)
+            if total_for == coti.total:
+                envio_tipo = 'Internacional'
+            else:
+                envio_tipo = 'Nacional'
+                iva += float(coti.total) - float(total_for)
+            row = {
+                'ID Cotización': coti.id_cotizacion,
+                'Nombre Cliente': coti.usuario_c.nombre + " " +coti.usuario_c.apellido_paterno + " " + coti.usuario_c.apellido_materno,
+                'Nombre Vendedor': coti.usuario_v.nombre + " " +coti.usuario_v.apellido_paterno + " " +coti.usuario_v.apellido_materno,
+                'Subtotal':coti.subtotal,
+                'Descuento': desc,
+                'IVA': iva,
+                'Tipo de envío': envio_tipo,
+                'Envío': coti.envio,
+                'Total': coti.total,
+                'Borrado': "Sí" if coti.status else "No",
+                'Aceptado': "Sí" if coti.aceptado else "No",
+                'Fecha Creación': coti.fecha_creada,
+                'Bloqueado': "Sí" if coti.bloqueado else "No",
+            }
+            all_rows.append(row.copy())
     elif table == "usuarios":
         all_rows = IFCUsuario.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "muestras":
         all_rows = Muestra.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "analisis":
         all_rows = Analisis.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "paquetes":
-        all_rows = Paquete.objects.all()
+        paqs = Paquete.objects.all()
+        field_names = [
+            'ID Paquete',
+            'Código DHL',
+            'País',
+        ]
+        all_rows = []
+        for p in paqs:
+            am = AnalisisMuestra.objects.filter(paquete = p)
+            pais = 'IFC'
+            for i in am:
+                if i.analisis.nombre == 'Otro':
+                    continue
+                else:
+                    pais = i.analisis.pais.nombre
+            row = {
+                'ID Paquete': p.id_paquete,
+                'Código DHL': p.codigo_dhl,
+                'País': pais,
+            }
+            all_rows.append(row.copy())
     elif table == "ordenes":
-        all_rows = OrdenInterna.objects.all()
+        ords = OrdenInterna.objects.all()
+        field_names = [
+            'ID OI',
+            'Nombre del cliente',
+            'Nombre del usuario',
+            'Localidad',
+            'Fecha de recepción de muestra',
+            'Fecha envío',
+            'Fecha de llegada lab',
+            'Pagado',
+            'Estado',
+            'Observaciones'
+        ]
+        all_rows = []
+        for o in ords:
+            cliente = Muestra.objects.filter(oi = o).first().usuario
+            row = {
+                'ID OI': o.idOI,
+                'Nombre del cliente': cliente.nombre +" " +cliente.apellido_paterno +" "+cliente.apellido_materno,
+                'Nombre del usuario': o.usuario.nombre + " " + o.usuario.apellido_paterno + " " + o.usuario.apellido_materno,
+                'Localidad': o.localidad,
+                'Fecha de recepción de muestra': o.fecha_recepcion_m,
+                'Fecha envío': o.fecha_envio,
+                'Fecha de llegada lab': o.fecha_llegada_lab,
+                'Pagado': "Sí" if o.pagado else "No",
+                'Estado': "Sí" if o.estatus else "No",
+                'Observaciones': o.observaciones
+            }
+            all_rows.append(row.copy())
     elif table == "empresas":
         all_rows = Empresa.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     else:
         raise Http404
-    for dicts in all_rows.values():
-        field_names = dicts.keys()
-        break
+    
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="'+table+'.csv"'
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.DictWriter(response,fieldnames=field_names)
     writer.writeheader()
-    for row in all_rows.values():
+    for row in all_rows:
         writer.writerow(row)
     return response
 
