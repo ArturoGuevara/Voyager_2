@@ -24,9 +24,7 @@
 }
 .back_image{
     /* The image used */
-    background-image: url("../img/login/ifc_placeholder2.jpg");
-
-    height: 200vmin;
+    background-image: url("../img/login/login.jpeg");
 
    background-position: center;
    background-repeat: no-repeat;
