@@ -1121,21 +1121,21 @@ class GenerarCSV(TestCase):
         self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'),{})
         self.assertEqual(response.status_code,404)
-
+    
     def test_empty_table(self):
         self.setup()
         self.login_IFC('venttest@testuser.com', 'testpassword')
         response = self.client.post(reverse('generar_csv_respaldo'), {"table":"cotizaciones",})
         file_content = response.content.decode('utf-8')
-        self.assertEqual(file_content,'\r\n')
+        self.assertNotEquals(404,response.status_code)
         self.assertEqual(response.get('Content-Disposition'), 'attachment; filename="'+"cotizaciones"+'.csv"')
-
+    
     def test_csv_populated(self):
         self.setup()
         self.login_IFC('venttest@testuser.com', 'testpassword')
-        response = self.client.post(reverse('generar_csv_respaldo'), {"table":"usuarios",})
+        response = self.client.post(reverse('generar_csv_respaldo'), {"table":"empresas",})
         file_content = response.content.decode('utf-8')
-        self.assertIn('ventas', file_content)
+        self.assertIn('TestInc', file_content)
 
 class GenerarCSVPaquete(TestCase):
     def setup(self):
