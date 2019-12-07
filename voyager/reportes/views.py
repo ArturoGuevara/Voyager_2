@@ -355,7 +355,7 @@ def ordenes_internas(request):
     if flag_enabled('Modulo_Ordenes_Internas', request=request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
-        ordenes_faltantes = OrdenInterna.objects.exclude(estatus="Envio total").exclude(estatus="Borrado").order_by('idOI')
+        ordenes_faltantes = OrdenInterna.objects.exclude(estatus="Envio total").exclude(estatus="Borrado").exclude(estatus="Facturado").order_by('idOI')
 
         for orden_no_recibida in ordenes_faltantes:
             arr_analisis = []
