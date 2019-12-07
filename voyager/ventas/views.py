@@ -649,10 +649,22 @@ def generar_csv_respaldo(request):
             all_rows.append(row.copy())
     elif table == "usuarios":
         all_rows = IFCUsuario.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "muestras":
         all_rows = Muestra.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "analisis":
         all_rows = Analisis.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     elif table == "paquetes":
         paqs = Paquete.objects.all()
         field_names = [
@@ -707,15 +719,13 @@ def generar_csv_respaldo(request):
             all_rows.append(row.copy())
     elif table == "empresas":
         all_rows = Empresa.objects.all()
+        for dicts in all_rows.values():
+            field_names = dicts.keys()
+            break
+        all_rows = all_rows.values()
     else:
         raise Http404
     
-    """
-    for dicts in all_rows.values():
-        field_names = dicts.keys()
-        print(field_names)
-        break
-    """
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="'+table+'.csv"'
     response.write(u'\ufeff'.encode('utf8'))
