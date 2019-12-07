@@ -14,7 +14,7 @@ class Paquete(models.Model):
 class OrdenInterna(models.Model):
     idOI = models.AutoField(primary_key=True)
     usuario = models.ForeignKey(IFCUsuario,on_delete=models.CASCADE, default='')
-    localidad = models.CharField(max_length=50, blank=True)
+    localidad = models.CharField(max_length=300, blank=True)
     fecha_recepcion_m = models.DateField(null=True, blank=True)
     fecha_envio = models.DateField(null=True, blank=True)
     fecha_llegada_lab = models.DateField(null=True, blank=True)
@@ -46,7 +46,7 @@ class OrdenInterna(models.Model):
 
     pagado = models.CharField(max_length=2, choices=SN, default="No")
     formato_ingreso_muestra = models.CharField(max_length=2, choices=SN, blank=True)
-    estatus = models.CharField(max_length=15, choices=ESTADOS, blank=True)
+    estatus = models.CharField(max_length=20, choices=ESTADOS, blank=True)
     #Observaciones
     idioma_reporte = models.CharField(max_length=20, choices=IDIOMA, blank=True)
     observaciones = models.TextField(blank=True)
@@ -60,7 +60,7 @@ class OrdenInterna(models.Model):
 
 class Pais(models.Model):
     id_pais = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=100)
 
     def __str__(self):
         return "%s" % (self.nombre)
@@ -97,7 +97,7 @@ class Muestra(models.Model):
     oi = models.ForeignKey(OrdenInterna,on_delete=models.CASCADE)
     factura = models.ForeignKey(Factura,on_delete=models.CASCADE, null=True, blank=True)
     orden_compra = models.CharField(max_length=50, null=True, blank=True, default="")
-    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+    link_resultados =  models.CharField(max_length=300, default="", null=True, blank=True)
     temperatura_tat = models.CharField(max_length=20, default="", null=True, blank=True)
 
     # FORMATO AG y MB
@@ -107,25 +107,25 @@ class Muestra(models.Model):
     # FORMATO PR y MB
     tipo_muestra = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO AG
-    producto = models.CharField(max_length=50, blank=True, null=True)
-    variedad = models.CharField(max_length=50, blank=True, null=True)
-    pais_origen = models.CharField(max_length=50, blank=True, null=True)
-    codigo_muestra = models.CharField(max_length=50, blank=True, null=True)
-    proveedor = models.CharField(max_length=50, blank=True, null=True)
-    nombre_empresa = models.CharField(max_length=50, blank=True, null=True)
-    codigo_trazabilidad = models.CharField(max_length=50, blank=True, null=True)
-    agricultor = models.CharField(max_length=50, blank=True, null=True)
-    direccion = models.CharField(max_length=50, blank=True, null=True)
-    parcela = models.CharField(max_length=50, blank=True, null=True)
-    ubicacion_muestreo = models.CharField(max_length=50, blank=True, null=True)
-    urgente = models.CharField(max_length=50, blank=True, null=True)
+    producto = models.CharField(max_length=1000, blank=True, null=True)
+    variedad = models.CharField(max_length=1000, blank=True, null=True)
+    pais_origen = models.CharField(max_length=1000, blank=True, null=True)
+    codigo_muestra = models.CharField(max_length=1000, blank=True, null=True)
+    proveedor = models.CharField(max_length=1000, blank=True, null=True)
+    nombre_empresa = models.CharField(max_length=1000, blank=True, null=True)
+    codigo_trazabilidad = models.CharField(max_length=1000, blank=True, null=True)
+    agricultor = models.CharField(max_length=1000, blank=True, null=True)
+    direccion = models.CharField(max_length=1000, blank=True, null=True)
+    parcela = models.CharField(max_length=1000, blank=True, null=True)
+    ubicacion_muestreo = models.CharField(max_length=1000, blank=True, null=True)
+    urgente = models.CharField(max_length=1000, blank=True, null=True)
     idioma = models.CharField(max_length=20, blank=True, null=True)
     pais_destino = models.CharField(max_length=50, blank=True, null=True)
     # FORMATO PR
-    descripcion_muestra = models.CharField(max_length=50, blank=True, null=True)
+    descripcion_muestra = models.CharField(max_length=1000, blank=True, null=True)
     # FORMATO MB
     lote_codigo = models.CharField(max_length=50, blank=True, null=True)
-    metodo_referencia = models.CharField(max_length=50, blank=True, null=True)
+    metodo_referencia = models.CharField(max_length=1000, blank=True, null=True)
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
     #Datos para OrdenInterna
