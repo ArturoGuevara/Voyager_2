@@ -61,7 +61,12 @@
                     </div>
                     <div class="col-4">
                         <b><label for="pago">Rol:</label></b>
+                        {% if ifc.rol.nombre == 'Soporte' %}
+                        <p id="pago">Servicio a Cliente</p>
+                        {% else %}
                         <p id="pago">{{ifc.rol.nombre}}</p>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>
