@@ -359,6 +359,7 @@ def guardar_perfil(request):
             request.session['guardar_perfil_status'] = False
             return redirect('/cuentas/home/') #redirigir a home
     user.save()
+    request.session['username'] = request.POST.get('nombre')
     update_session_auth_hash(request, user)
     user_logged.nombre = request.POST.get('nombre')
     user_logged.apellido_paterno = request.POST.get('a_p')
