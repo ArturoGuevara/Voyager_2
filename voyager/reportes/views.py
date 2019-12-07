@@ -350,7 +350,7 @@ def ordenes_internas(request):
     if flag_enabled('Modulo_Ordenes_Internas', request=request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
-        ordenes_faltantes = OrdenInterna.objects.filter(estatus="No recibido").order_by('idOI')
+        ordenes_faltantes = OrdenInterna.objects.exclude(estatus="Envio total").exclude(estatus="Borrado").order_by('idOI')
 
         for orden_no_recibida in ordenes_faltantes:
             arr_analisis = []
@@ -482,7 +482,7 @@ def consultar_orden(request):
                             facturas_muestras[muestra.id_muestra] = "no hay"
 
                         for a in ana_mue:
-                            
+
                             analisis.append(a.analisis.codigo)
                             analisis_ids.append(a.analisis.pk)
                             if a.paquete:
