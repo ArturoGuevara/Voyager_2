@@ -360,7 +360,6 @@ def ordenes_internas(request):
                 arr_analisis.append(m)
 
             if muestras_an:
-                print(arr_analisis)
                 dict_analisis[orden_no_recibida] = arr_analisis.copy()
             arr_analisis.clear()
 
@@ -576,7 +575,20 @@ def actualizar_muestra(request):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
             muestra.muestreador = request.POST['muestreador']
-            muestra.metodo_referencia = request.POST['metodo_referencia']
+            analisis_seleccionado = int(request.POST['a']) #Si la muestra tiene 6 análisis, 'a' es un número del 0 al 5
+            metodo_nuevo = request.POST['metodo_referencia'] #Obtiene el nuevo método de referencia
+            metodos = muestra.metodo_referencia.split("|°|") #Separa todos los métodos en un arreglo
+            metodos[analisis_seleccionado] = metodo_nuevo #Reemplaza el método de referencia en la posición que le corresponde
+            primer_metodo = True
+            metodos_referencia = ""
+            for m in metodos: #Se adjuntan todos los métodos en un nuevo string
+                if primer_metodo:
+                    metodos_referencia += m
+                    primer_metodo = False
+                else:
+                    metodos_referencia += "|°|"
+                    metodos_referencia += m
+            muestra.metodo_referencia = metodos_referencia
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
@@ -984,9 +996,6 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        #print(response.status_code)
-        #print(response.body)
-        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
@@ -994,7 +1003,6 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
 def ver_pdf(request, file):
     path_file = "/archivos-reportes/"+file
     path = settings.BASE_DIR + path_file
-    print(path)
 
     if os.path.exists(path):
         with open(path, 'rb') as fh:
