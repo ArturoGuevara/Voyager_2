@@ -464,6 +464,7 @@ def consultar_orden(request):
                     analisis_muestras_ids = {}
                     analisis_muestras_dhl = {}
                     analisis_muestras_link = {}
+                    analisis_muestras_fechas = {}
                     facturas_muestras = {}
 
                     for muestra in muestras:
@@ -474,6 +475,7 @@ def consultar_orden(request):
                         analisis_ids = []
                         muestra_dhl = []
                         links = []
+                        fechas = []
                         if muestra.factura:
                             facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                         else:
@@ -488,6 +490,8 @@ def consultar_orden(request):
                             else:
                                 muestra_dhl.append(0)
                             links.append(a.link_resultados)
+                            fechas.append(a.fecha_recibo_informe)
+                        analisis_muestras_fechas[muestra.id_muestra] = fechas
                         analisis_muestras_link[muestra.id_muestra] = links
                         analisis_muestras[muestra.id_muestra] =  analisis
                         analisis_muestras_ids[muestra.id_muestra] = analisis_ids
@@ -507,6 +511,7 @@ def consultar_orden(request):
                             "analisis":anal,
                             "dict_dhl":analisis_muestras_dhl,
                             "links": analisis_muestras_link,
+                            "fechas": analisis_muestras_fechas,
                             }
                         )
                 else:
@@ -541,7 +546,7 @@ def actualizar_muestra(request):
             am_unico = AnalisisMuestra.objects.filter(muestra = muestra).first()
             i = 0
             for a in am:
-                if a.paquete:
+                if a.paquete or a.fecha_recibo_informe or a.link_resultados:
                     sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
                     a.analisis = Analisis.objects.get(pk = ids[i])
                     sustraer_analisis(muestra.usuario, ids[i], muestra, a.paquete)
@@ -957,6 +962,7 @@ def handle_upload_document(file,ana_muestra): #Esta función guarda el archivo d
         print(ana_muestra)
         ana_muestra_object = ana_muestras.first()
         ana_muestra_object.link_resultados = path
+        ana_muestra_object.fecha_recibo_informe = datetime.date.today()
         ana_muestra_object.save()
     else:
         return 404

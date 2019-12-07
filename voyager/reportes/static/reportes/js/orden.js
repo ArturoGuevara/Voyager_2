@@ -51,6 +51,7 @@ function cargar_info_oi(){
             var analisis = JSON.parse(response.analisis);
             var dhl = response.dict_dhl;
             var links = response.links;
+            var fechas = response.fechas;
 
             $('#editar_usuario_empresa').text(response.empresa);
             var n = usuario.nombre + " " + usuario.apellido_paterno + " " + usuario.apellido_materno;
@@ -86,7 +87,7 @@ function cargar_info_oi(){
                     var id_muestra = muestras[mue].pk;
                     var objm = muestras[mue].fields;
 
-                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], analisis_ids[id_muestra], facturas[id_muestra], analisis, dhl, links);
+                    html_muestras+= editar_muestras(id_muestra, objm,analisis_muestras[id_muestra], analisis_ids[id_muestra], facturas[id_muestra], analisis, dhl, links, fechas);
                 }
             }
             $('#editar-body').html(html_muestras);
@@ -169,12 +170,14 @@ function guardar_muestra(id_muestra, a){
                     $(this).find('#editar_muestra_metodo_referencia_' + id_muestra).val(metodo_referencia);
                     $(this).find('#editar_muestra_numero_interno_' + id_muestra).val(num_interno);
                     $(this).find('#editar_muestra_fecha_esperada_informe_' + id_muestra).val(fecha_esperada);
+                    /*
                     if(fecha_recibo != ""){
                       $(this).find('#editar_muestra_fecha_recibo_informe_' + id_muestra).val(fecha_recibo);
                     }
                     if(link != ""){
                       $(this).find('#editar_muestra_link_' + id_muestra).val(link);
                     }
+                    */
                     $(this).find('#editar_muestra_muestreador_' + id_muestra).val(muestreador);
                 });
                 $('tr[name="ver_muestra_'+ id_muestra +'[]"]').each(function (){
@@ -192,18 +195,22 @@ function guardar_muestra(id_muestra, a){
                     else{
                       $(this).find('#fei_' + id_muestra).html("-");
                     }
+                    /*
                     if(fecha_recibo != ""){
                       $(this).find('#fri_' + id_muestra).html(fecha_recibo);
                     }
+
                     else{
                       $(this).find('#fri_' + id_muestra).html("-");
                     }
+                    
                     if(link != ""){
                       $(this).find('#link_' + id_muestra).html('<a href="'+ link +'" target=_blank>Ir a PDF</a>');
                     }
                     else{
                       $(this).find('#link_' + id_muestra).html("");
                     }
+                    */
                     $(this).find('#muestreador_' + id_muestra).html(muestreador);
                 });
                 i = 0;
@@ -285,13 +292,13 @@ function submit(){
     });
 }
 
-function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links){
+function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links, fechas){
     var html = ``;
     for(let a in analisis){
         var siono = "No";
         var pdf = "";
         var fei = muestra.fecha_esperada_recibo;
-        var fri = muestra.fecha_recibo_informe;
+        var fri = fechas[id_muestra][a];
         var informe = muestra.num_interno_informe;
         var producto = muestra.producto;
         var codigo_muestra = muestra.codigo_muestra;
@@ -318,7 +325,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links){
         if(muestra.fecha_esperada_recibo == null){
             fei = "-";
         }
-        if(muestra.fecha_recibo_informe == null){
+        if(fri == null){
             fri = "-";
         }
         if(muestra.num_interno_informe == null || muestra.num_interno_informe == "null" || muestra.num_interno_informe == ""){
@@ -353,7 +360,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links){
     return html;
 }
 
-function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dhl, links){
+function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dhl, links, fechas){
     var html = ``;
     var i = 0;
     for(let a in analisis){
@@ -361,7 +368,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
         var pdf = "";
         var informe = muestra.num_interno_informe;
         var fei = muestra.fecha_esperada_recibo;
-        var fri = muestra.fecha_recibo_informe;
+        var fri = fechas[id_muestra][a];
         var informe = muestra.num_interno_informe;
         var producto = muestra.producto;
         var codigo_muestra = muestra.codigo_muestra;
@@ -419,7 +426,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
                 <td><input type="text" class="form-control" style="width: 100px;" id="editar_muestra_metodo_referencia_` + id_muestra + a + `" placeholder="Separadas por -" value="` + split_mr[a] + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese texto separado por comas</div></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_numero_interno_` + id_muestra + `" placeholder="A1B34C" value="` + informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese el número interno</div></td>
                 <td><input type="date" class="form-control" id="editar_muestra_fecha_esperada_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_esperada_recibo + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese la fecha estimada</div></td>
-                <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + muestra.fecha_recibo_informe + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"></td>
+                <td><input type="date" class="form-control" id="editar_muestra_fecha_recibo_informe_` + id_muestra + `" placeholder="01-01-2019" value="` + fri + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)" readonly></td>
                 <td><input type="text" class="form-control" id="editar_muestra_resultados_enviados_` + id_muestra + `" placeholder="No" value="` + siono + `" disabled></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_link_` + id_muestra + `" value="` + link + `" disabled></td>
                 <td><input type="text" class="form-control" style="width: 150px;" id="editar_muestra_muestreador_` + id_muestra + `" placeholder="John Cena" value="` + muestreador + `" onchange="sincronizar(`+ id_muestra +`, this.value, this.id)"><div class="invalid-feedback">Ingrese al muestreador</div></td>
@@ -462,7 +469,7 @@ function visualizar_info_oi(id) {
             var facturas = response.facturas;
             var dhl = response.dict_dhl;
             var links = response.links;
-
+            var fechas = response.fechas;
             //pestaña de información
             $('#titulov_idOI').text("Orden Interna #" + id);
             $('#visualizar_idOI').val(id);
@@ -487,7 +494,8 @@ function visualizar_info_oi(id) {
                 for (let mue in muestras){
                     var id_muestra = muestras[mue].pk;
                     var objm = muestras[mue].fields;
-                    html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra], dhl, links);
+
+                    html_muestras+= build_muestras(id_muestra, objm,analisis_muestras[id_muestra], facturas[id_muestra], dhl, links, fechas);
                 }
             }
             $('#muestras-body').html(html_muestras);
