@@ -298,6 +298,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links){
         var dhl = m_dhl[id_muestra][a];
         var muestreador = muestra.muestreador;
         var link = links[id_muestra][a];
+
         if(muestra.enviado){
             siono = "Sí";
         }
@@ -365,6 +366,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
         var dhl = m_dhl[id_muestra][a];
         var link = links[id_muestra][a];
         var muestreador = muestra.muestreador;
+
         if(muestra.enviado){
             siono = "Sí";
         }
@@ -552,10 +554,11 @@ function cargar_enviar(id){
             var data = JSON.parse(response.data);
             var muestras = JSON.parse(response.muestras);
             var anal_mue = JSON.parse(response.analisis_mue);
+            var an_codigo = response.analisis_codigo;
 
             $('#email_destino').val(data[0].fields.correo_resultados);
-            var html_drop = dropdown_muestras(anal_mue);
-            $('#muestra').html(html_drop);
+            var html_drop = dropdown_muestras(anal_mue, an_codigo);
+            $('#ana_muestra').html(html_drop);
         },
     });
 }
@@ -583,11 +586,11 @@ function enviar_resultados(){
     }
 }
 
-function dropdown_muestras(an_mue){
+function dropdown_muestras(an_mue, an_codigo){
     var ans="";
     for(an in an_mue){
         console.log(an_mue[an]);
-        ans+="<option value='"+an_mue[an].pk+"'>Muestra "+an_mue[an].fields.muestra+"-"+ an_mue[an].fields.analisis +"</option>"
+        ans+="<option value='"+an_mue[an].pk+"'>Muestra "+an_mue[an].fields.muestra+"-"+ an_codigo[an_mue[an].fields.analisis] +"</option>"
     }
     return ans;
 }

@@ -489,6 +489,7 @@ def consultar_orden(request):
                             else:
                                 muestra_dhl.append(0)
                             links.append(a.link_resultados)
+                        analisis_muestras_link[muestra.id_muestra] = links
                         analisis_muestras[muestra.id_muestra] =  analisis
                         analisis_muestras_ids[muestra.id_muestra] = analisis_ids
                         analisis_muestras_dhl[muestra.id_muestra] = muestra_dhl
@@ -506,7 +507,7 @@ def consultar_orden(request):
                             "solicitante":solicitante,
                             "analisis":anal,
                             "dict_dhl":analisis_muestras_dhl,
-                            "links": links,
+                            "links": analisis_muestras_link,
                             }
                         )
                 else:
@@ -892,17 +893,19 @@ def consultar_empresa_muestras(request): #devuelve la empresa de un usurio a par
     empresa = None
     data_muestras = []
     data_muestras_anal = []
+    dict_anal = {}
     if muestras:  # A partir de una muestra, se obtiene la información del usuario y de su empresa
         empresa = muestras.first().usuario.empresa
         for muestra in muestras:
             anal_mue = AnalisisMuestra.objects.filter(muestra=muestra)
             for an in anal_mue:
+                dict_anal[an.analisis.id_analisis] = an.analisis.codigo
                 data_muestras_anal.append(an)
             data_muestras.append(muestra)
     vector_analisis_muestras = serializers.serialize("json", data_muestras_anal, ensure_ascii=False)
     vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
     data = serializers.serialize("json", [empresa], ensure_ascii = False) #El objeto de tipo empresa se encapsula en un formato JSON
-    return JsonResponse({"data": data,"muestras":vector_muestras, "analisis_mue":vector_analisis_muestras})  # Se envía el JSON con la empresa
+    return JsonResponse({"data": data,"muestras":vector_muestras, "analisis_mue":vector_analisis_muestras, 'analisis_codigo':dict_anal})  # Se envía el JSON con la empresa
 
 @login_required
 def enviar_archivo(request): #envía un archivo de resultados por correo
@@ -936,8 +939,10 @@ def handle_upload_document(file,ana_muestra): #Esta función guarda el archivo d
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
     path += ".pdf"
-    ana_muestras = Muestra.objects.filter(id=ana_muestra)
+    ana_muestras = AnalisisMuestra.objects.filter(id_analisis_muestra=ana_muestra)
     if ana_muestras:
+        print(ana_muestras.first().id_analisis_muestra)
+        print(ana_muestra)
         ana_muestra_object = ana_muestras.first()
         ana_muestra_object.link_resultados = path
         ana_muestra_object.save()
