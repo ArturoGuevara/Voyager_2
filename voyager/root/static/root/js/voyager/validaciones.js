@@ -100,3 +100,17 @@ var check_not_commas_empty = function(value, id){
         return true;
     }
 }
+
+// Función que revisa que los campos no estén vacíos y tengan tantas comas como análisis ingresados, de lo contrario muestran retroalmientación
+var check_commas_number = function(value, id, number){
+    if(value == '' || value == null){
+        $(id).addClass('is-invalid');
+        return false;
+    }else if((value.match(/,/g) || []).length != number){
+        $(id).addClass('is-invalid');
+        return false;
+    }else{
+        $(id).removeClass('is-invalid');
+        return true;
+    }
+}

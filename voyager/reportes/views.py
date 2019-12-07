@@ -360,7 +360,6 @@ def ordenes_internas(request):
                 arr_analisis.append(m)
 
             if muestras_an:
-                print(arr_analisis)
                 dict_analisis[orden_no_recibida] = arr_analisis.copy()
             arr_analisis.clear()
 
@@ -464,7 +463,10 @@ def consultar_orden(request):
                     analisis_muestras = {}
                     analisis_muestras_ids = {}
                     analisis_muestras_dhl = {}
+                    analisis_muestras_link = {}
+                    analisis_muestras_fechas = {}
                     facturas_muestras = {}
+
                     for muestra in muestras:
                         #recuperas todos los analisis de una muestra
                         #ana_mue es objeto de tabla AnalisisMuestra
@@ -472,18 +474,25 @@ def consultar_orden(request):
                         analisis = []
                         analisis_ids = []
                         muestra_dhl = []
+                        links = []
+                        fechas = []
                         if muestra.factura:
                             facturas_muestras[muestra.id_muestra] = muestra.factura.idFactura
                         else:
                             facturas_muestras[muestra.id_muestra] = "no hay"
 
                         for a in ana_mue:
+                            
                             analisis.append(a.analisis.codigo)
                             analisis_ids.append(a.analisis.pk)
                             if a.paquete:
                                 muestra_dhl.append(a.paquete.codigo_dhl)
                             else:
                                 muestra_dhl.append(0)
+                            links.append(a.link_resultados)
+                            fechas.append(a.fecha_recibo_informe)
+                        analisis_muestras_fechas[muestra.id_muestra] = fechas
+                        analisis_muestras_link[muestra.id_muestra] = links
                         analisis_muestras[muestra.id_muestra] =  analisis
                         analisis_muestras_ids[muestra.id_muestra] = analisis_ids
                         analisis_muestras_dhl[muestra.id_muestra] = muestra_dhl
@@ -501,6 +510,8 @@ def consultar_orden(request):
                             "solicitante":solicitante,
                             "analisis":anal,
                             "dict_dhl":analisis_muestras_dhl,
+                            "links": analisis_muestras_link,
+                            "fechas": analisis_muestras_fechas,
                             }
                         )
                 else:
@@ -535,7 +546,7 @@ def actualizar_muestra(request):
             am_unico = AnalisisMuestra.objects.filter(muestra = muestra).first()
             i = 0
             for a in am:
-                if a.paquete:
+                if a.paquete or a.fecha_recibo_informe or a.link_resultados:
                     sumar_analisis(muestra.usuario, str(a.analisis.pk), muestra)
                     a.analisis = Analisis.objects.get(pk = ids[i])
                     sustraer_analisis(muestra.usuario, ids[i], muestra, a.paquete)
@@ -564,7 +575,20 @@ def actualizar_muestra(request):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
             muestra.muestreador = request.POST['muestreador']
-            muestra.metodo_referencia = request.POST['metodo_referencia']
+            analisis_seleccionado = int(request.POST['a']) #Si la muestra tiene 6 análisis, 'a' es un número del 0 al 5
+            metodo_nuevo = request.POST['metodo_referencia'] #Obtiene el nuevo método de referencia
+            metodos = muestra.metodo_referencia.split("|°|") #Separa todos los métodos en un arreglo
+            metodos[analisis_seleccionado] = metodo_nuevo #Reemplaza el método de referencia en la posición que le corresponde
+            primer_metodo = True
+            metodos_referencia = ""
+            for m in metodos: #Se adjuntan todos los métodos en un nuevo string
+                if primer_metodo:
+                    metodos_referencia += m
+                    primer_metodo = False
+                else:
+                    metodos_referencia += "|°|"
+                    metodos_referencia += m
+            muestra.metodo_referencia = metodos_referencia
             muestra.save()
             # Cargar de nuevo la muestra
             muestra_actualizada = Muestra.objects.get(id_muestra = request.POST['id_muestra'])
@@ -885,13 +909,20 @@ def consultar_empresa_muestras(request): #devuelve la empresa de un usurio a par
     muestras = Muestra.objects.filter(oi=oi)  # Se obtienen todas las muestras de una orden interna
     empresa = None
     data_muestras = []
+    data_muestras_anal = []
+    dict_anal = {}
     if muestras:  # A partir de una muestra, se obtiene la información del usuario y de su empresa
         empresa = muestras.first().usuario.empresa
         for muestra in muestras:
+            anal_mue = AnalisisMuestra.objects.filter(muestra=muestra)
+            for an in anal_mue:
+                dict_anal[an.analisis.id_analisis] = an.analisis.codigo
+                data_muestras_anal.append(an)
             data_muestras.append(muestra)
+    vector_analisis_muestras = serializers.serialize("json", data_muestras_anal, ensure_ascii=False)
     vector_muestras = serializers.serialize("json", data_muestras, ensure_ascii=False)
     data = serializers.serialize("json", [empresa], ensure_ascii = False) #El objeto de tipo empresa se encapsula en un formato JSON
-    return JsonResponse({"data": data,"muestras":vector_muestras})  # Se envía el JSON con la empresa
+    return JsonResponse({"data": data,"muestras":vector_muestras, "analisis_mue":vector_analisis_muestras, 'analisis_codigo':dict_anal})  # Se envía el JSON con la empresa
 
 @login_required
 def enviar_archivo(request): #envía un archivo de resultados por correo
@@ -909,7 +940,7 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
                                         #request.POST.get('email_destino'),
                                         #request.POST.get('subject'),
                                         #request.POST.get('body'),
-                                        request.POST.get('muestra'),
+                                        request.POST.get('ana_muestra'),
                                    )
         else:
             raise Http404
@@ -919,18 +950,20 @@ def enviar_archivo(request): #envía un archivo de resultados por correo
         request.session['success_sent'] = -1
     return redirect('/reportes/ordenes_internas')
 
-def handle_upload_document(file,muestra): #Esta función guarda el archivo de resultados a enviar
+def handle_upload_document(file,ana_muestra): #Esta función guarda el archivo de resultados a enviar
     path = 'resultados'
     #path = 'resultados'
     path += str(datetime.date.today())
     path += str(int(random.uniform(1,100000))) #Se escribe un nombre de archivo único con la fecha y un número aleatorio
     path += ".pdf"
-    muestras = Muestra.objects.filter(id_muestra=muestra)
-    if muestras:
-        muestra_object = muestras.first()
-        muestra_object.link_resultados = path
-        muestra_object.enviado = True
-        muestra_object.save()
+    ana_muestras = AnalisisMuestra.objects.filter(id_analisis_muestra=ana_muestra)
+    if ana_muestras:
+        print(ana_muestras.first().id_analisis_muestra)
+        print(ana_muestra)
+        ana_muestra_object = ana_muestras.first()
+        ana_muestra_object.link_resultados = path
+        ana_muestra_object.fecha_recibo_informe = datetime.date.today()
+        ana_muestra_object.save()
     else:
         return 404
     path = './archivos-reportes/' + path
@@ -963,9 +996,6 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
         key_decoded = key.decode('ascii')
         sendgrid_client = SendGridAPIClient(key_decoded) #Se envía el correo
         response = sendgrid_client.send(message)
-        #print(response.status_code)
-        #print(response.body)
-        #print(response.headers)
         return response.status_code #Se regresa el código de la API
     except Exception as e:
         print(e)
@@ -973,7 +1003,6 @@ def send_mail(path,dest,subject,body): #Esta función utiliza la API sendgrid pa
 def ver_pdf(request, file):
     path_file = "/archivos-reportes/"+file
     path = settings.BASE_DIR + path_file
-    print(path)
 
     if os.path.exists(path):
         with open(path, 'rb') as fh:

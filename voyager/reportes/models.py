@@ -183,6 +183,9 @@ class AnalisisMuestra(models.Model):
     metodo_referencia = models.CharField(max_length=50, blank=True, null=True) # FORMATO MB
     # Datos de paquete
     paquete = models.ForeignKey(Paquete, blank=True, on_delete=models.DO_NOTHING, null=True)
+    link_resultados =  models.CharField(max_length=100, default="", null=True, blank=True)
+    fecha_recibo_informe = models.DateField(blank=True, null=True)
+
 
     def __str__(self):
         return "%s" % (self.fecha)
