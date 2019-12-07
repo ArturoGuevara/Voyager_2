@@ -34,10 +34,9 @@
                                                         {% for m in value %}
                                                         <div class="row">
                                                           <label class="form-check-label">
-                                                              <input class="form-check-input" type="checkbox" name="mselected" id="mselected{{ m.muestra.id_muestra }}" value="{{ m.muestra.id_muestra }}-{{ m.analisis.pk }}">
-                                                              <span class="form-check-sign" name="mselec" id="mselec{{ m.muestra.id_muestra }}">
-                                                                  <span class="check">{{ m.muestra.id_muestra }}--{{ m.muestra.producto }}--{{ m.muestra.codigo_muestra }}--{{ m.analisis.codigo }}</span>
-                                                              </span>
+                                                            <input class="form-check-input" type="checkbox" name="mselected" id="mselected{{ m.muestra.id_muestra }}" value="{{ m.muestra.id_muestra }}-{{ m.analisis.pk }}">
+                                                              <span class="form-check-sign" name="mselec" id="mselec{{ m.muestra.id_muestra }}"></span>
+                                                              {{ m.muestra.id_muestra }}--{{ m.muestra.producto }}--{{ m.muestra.codigo_muestra }}--{{ m.analisis.codigo }}
                                                           </label>
                                                         </div>
                                                         {% empty %}
