@@ -95,7 +95,7 @@
                                     <label>Cliente</label>
                                     <select class="form-control" id="editar-cot-cliente">
                                         {% for cl in clientes %}
-                                            <option value="{{ cl.id }}">{{ cl.nombre }}</option>
+                                            <option value="{{ cl.id }}">{{ cl.nombre }} {{ cl.apellido_paterno }} {{ cl.apellido_materno }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

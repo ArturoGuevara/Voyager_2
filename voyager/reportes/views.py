@@ -75,8 +75,7 @@ def registrar_ingreso_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
-            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
-                nombre = request.POST.get('nombre')
+            if(request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
                 direccion = request.POST.get('direccion')
                 pais = request.POST.get('pais')
                 estado = request.POST.get('estado')
@@ -86,6 +85,12 @@ def registrar_ingreso_muestra(request):
                 matrixMB = request.POST.getlist('matrixMB[]')
                 oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
                 oi.usuario = user_logged
+                localidad = direccion
+                if estado != "":
+                    localidad += ", " + estado
+                localidad += ", " + pais
+                oi.localidad = localidad
+                oi.idioma = idioma
                 oi.estatus = "No recibido"
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
