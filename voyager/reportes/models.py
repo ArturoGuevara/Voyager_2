@@ -41,6 +41,7 @@ class OrdenInterna(models.Model):
         ('En laboratorio', 'En laboratorio'),
         ('Resultados', 'Resultados'),
         ('Borrado', 'Borrado'),
+        ('Facturado', 'Facturado'),
     )
 
     pagado = models.CharField(max_length=2, choices=SN, default="No")

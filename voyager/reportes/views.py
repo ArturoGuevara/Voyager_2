@@ -75,8 +75,7 @@ def registrar_ingreso_muestra(request):
     user_logged = IFCUsuario.objects.get(user = request.user) # Obtener el tipo de usuario logeado
     if user_logged.rol.nombre == "Cliente" or user_logged.rol.nombre == "SuperUser":
         if request.method == 'POST':
-            if(request.POST.get('nombre') and request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
-                nombre = request.POST.get('nombre')
+            if(request.POST.get('direccion') and request.POST.get('pais') and request.POST.get('idioma')):
                 direccion = request.POST.get('direccion')
                 pais = request.POST.get('pais')
                 estado = request.POST.get('estado')
@@ -86,6 +85,12 @@ def registrar_ingreso_muestra(request):
                 matrixMB = request.POST.getlist('matrixMB[]')
                 oi = OrdenInterna() #Crear orden Interna a la que se asignarán todas las muestras
                 oi.usuario = user_logged
+                localidad = direccion
+                if estado != "":
+                    localidad += ", " + estado
+                localidad += ", " + pais
+                oi.localidad = localidad
+                oi.idioma = idioma
                 oi.estatus = "No recibido"
                 oi.save()
                 if matrixAG[0] != '' or matrixPR[0] != '' or matrixMB[0] != '':
@@ -350,7 +355,7 @@ def ordenes_internas(request):
     if flag_enabled('Modulo_Ordenes_Internas', request=request):
         ordenes = OrdenInterna.objects.all()
         ordenes_activas = OrdenInterna.objects.exclude(estatus=estatus_OI_paquetes).order_by('idOI')
-        ordenes_faltantes = OrdenInterna.objects.filter(estatus="No recibido").order_by('idOI')
+        ordenes_faltantes = OrdenInterna.objects.exclude(estatus="Envio total").exclude(estatus="Borrado").exclude(estatus="Facturado").order_by('idOI')
 
         for orden_no_recibida in ordenes_faltantes:
             arr_analisis = []
@@ -482,7 +487,7 @@ def consultar_orden(request):
                             facturas_muestras[muestra.id_muestra] = "no hay"
 
                         for a in ana_mue:
-                            
+
                             analisis.append(a.analisis.codigo)
                             analisis_ids.append(a.analisis.pk)
                             if a.paquete:

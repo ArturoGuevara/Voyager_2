@@ -131,7 +131,7 @@ class Uploader():
                 if acreditacion_t == 'True':  # Se valida la acreditacion
                     acred = True
 
-                n_dias = dias + " días"
+                n_dias = dias
 
                 a = Analisis(              # Se crea el registro
                         nombre=nombre,
