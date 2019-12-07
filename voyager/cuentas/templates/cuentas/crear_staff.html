@@ -87,7 +87,11 @@
                         <option value=""> -- </option>
                         {% for rol in roles %}
                         {% if rol.nombre != "Director" and rol.nombre != "Cliente" and rol.nombre != "SuperUser" and rol.nombre != "Phantom" %}
+                        {% if rol.nombre == 'Soporte' %}
+                        <option value="{{ rol.id }}">Servicio a Cliente</option>
+                        {% else %}
                         <option value="{{ rol.id }}">{{ rol.nombre }}</option>
+                        {% endif %}
                         {% endif %}
                         {% endfor %}
                     </select>
