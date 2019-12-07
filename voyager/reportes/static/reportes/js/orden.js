@@ -203,7 +203,7 @@ function guardar_muestra(id_muestra, a){
                     else{
                       $(this).find('#fri_' + id_muestra).html("-");
                     }
-                    
+
                     if(link != ""){
                       $(this).find('#link_' + id_muestra).html('<a href="'+ link +'" target=_blank>Ir a PDF</a>');
                     }
@@ -306,6 +306,7 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links, fe
         var dhl = m_dhl[id_muestra][a];
         var muestreador = muestra.muestreador;
         var link = links[id_muestra][a];
+        var split_mr = ["-", "-", "-", "-", "-", "-"];
 
         if(muestra.enviado){
             siono = "Sí";
@@ -337,7 +338,9 @@ function build_muestras(id_muestra, muestra, analisis, factura, m_dhl, links, fe
         if(muestra.muestreador == null || muestra.muestreador == "null"){
             muestreador = "-";
         }
-        split_mr = muestra.metodo_referencia.split("|°|");
+        if(muestra.metodo_referencia != null){
+            split_mr = muestra.metodo_referencia.split("|°|");
+        }
         html = html + `
                 <tr name="ver_muestra_`+ id_muestra +`[]">
                     <td id="numero_`+ id_muestra +`">` + id_muestra + `</td>
@@ -375,6 +378,7 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
         var dhl = m_dhl[id_muestra][a];
         var link = links[id_muestra][a];
         var muestreador = muestra.muestreador;
+        var split_mr = ["-", "-", "-", "-", "-", "-"];
 
         if(muestra.enviado){
             siono = "Sí";
@@ -397,6 +401,10 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
         if(m_dhl[id_muestra][a] == 0){
             dhl = "";
         }
+        if(muestra.metodo_referencia != null){
+            split_mr = muestra.metodo_referencia.split("|°|");
+        }
+
         html = html + `
 
                 <tr name="editar_muestra_`+ id_muestra +`[]" id=editar_`+ i +`>
@@ -418,7 +426,6 @@ function editar_muestras(id_muestra, muestra, analisis, ids, factura, anal, m_dh
             }
 
         }
-        split_mr = muestra.metodo_referencia.split("|°|");
         html = html + `
                 </select>
                 </td>
