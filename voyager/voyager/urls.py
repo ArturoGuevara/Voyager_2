@@ -26,4 +26,5 @@ urlpatterns = [
     path('tracking/', include('tracking.urls')),
     path('reportes/', include('reportes.urls')),
     path('', views.indexView, name=''),
+    path('.well-known/pki-validation/godaddy.html', views.godaddy, name='godaddy')
 ]
