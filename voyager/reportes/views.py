@@ -964,12 +964,20 @@ def handle_upload_document(file,ana_muestra): #Esta función guarda el archivo d
     path += ".pdf"
     ana_muestras = AnalisisMuestra.objects.filter(id_analisis_muestra=ana_muestra)
     if ana_muestras:
-        print(ana_muestras.first().id_analisis_muestra)
-        print(ana_muestra)
         ana_muestra_object = ana_muestras.first()
         ana_muestra_object.link_resultados = path
         ana_muestra_object.fecha_recibo_informe = datetime.date.today()
         ana_muestra_object.save()
+        
+        oi = ana_muestra_object.muestra.oi
+        ana_muestras_oi = AnalisisMuestra.objects.filter(muestra__oi = oi)
+        all_sent = True
+        for alberto in ana_muestras_oi:
+            if alberto.link_resultados == "":
+                all_sent = False
+        if all_sent:
+            oi.estatus = 'Envio total'
+            oi.save()
     else:
         return 404
     path = './archivos-reportes/' + path
