@@ -23,7 +23,7 @@ class EnviarResultadosForm(forms.Form):
     #email_destino = forms.EmailField()
     #subject = forms.CharField()
     #body = forms.CharField()
-    muestra = forms.IntegerField()
+    ana_muestra = forms.IntegerField()
 
 class EditarFactura(forms.Form):
     responsable_pago_fact = forms.CharField(max_length=10000)
