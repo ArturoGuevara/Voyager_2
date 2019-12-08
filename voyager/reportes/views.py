@@ -580,7 +580,6 @@ def actualizar_muestra(request):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
             muestra.muestreador = request.POST['muestreador']
-            print(muestra.metodo_referencia)
             if (muestra.metodo_referencia != "" and muestra.metodo_referencia is not None):
                 analisis_seleccionado = int(request.POST['a']) #Si la muestra tiene 6 análisis, 'a' es un número del 0 al 5
                 metodo_nuevo = request.POST['metodo_referencia'] #Obtiene el nuevo método de referencia
