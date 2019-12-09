@@ -580,7 +580,7 @@ def actualizar_muestra(request):
                 muestra.fecha_recibo_informe = request.POST['fecha_recibo']
             muestra.link_resultados = request.POST['link']
             muestra.muestreador = request.POST['muestreador']
-            if (muestra.metodo_referencia != ""):
+            if (muestra.metodo_referencia != "" and muestra.metodo_referencia is not None):
                 analisis_seleccionado = int(request.POST['a']) #Si la muestra tiene 6 análisis, 'a' es un número del 0 al 5
                 metodo_nuevo = request.POST['metodo_referencia'] #Obtiene el nuevo método de referencia
                 metodos = muestra.metodo_referencia.split("|°|") #Separa todos los métodos en un arreglo
@@ -968,7 +968,7 @@ def handle_upload_document(file,ana_muestra): #Esta función guarda el archivo d
         ana_muestra_object.link_resultados = path
         ana_muestra_object.fecha_recibo_informe = datetime.date.today()
         ana_muestra_object.save()
-        
+
         oi = ana_muestra_object.muestra.oi
         ana_muestras_oi = AnalisisMuestra.objects.filter(muestra__oi = oi)
         all_sent = True
