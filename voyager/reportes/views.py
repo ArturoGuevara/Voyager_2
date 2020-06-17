@@ -12,7 +12,7 @@ import requests
 import os
 import json
 from ventas.models import Factura
-from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI
+from .models import AnalisisCotizacion,Cotizacion,AnalisisMuestra,Muestra,Analisis,FacturaOI, TerminosCondiciones
 from cuentas.models import IFCUsuario, Empresa
 from django.http import Http404
 import datetime
@@ -32,6 +32,7 @@ import urllib.request as urllib
 import base64
 import locale
 from flags.state import flag_enabled
+from .forms import TerminosForm
 
 # Create your views here.
 @login_required   #Redireccionar a login si no ha iniciado sesión
@@ -130,6 +131,25 @@ def registrar_ingreso_muestra(request):
             return response
     else: # Si el rol del usuario no es ventas no puede entrar a la página
         raise Http404
+
+def terminosCondiciones(request):
+    terminos = TerminosCondiciones.objects.first()
+    context = { 
+        'terminos': terminos
+    }
+    return render(request, 'reportes/terminos/ver.html', context)
+    
+def editarTerminosCondiciones(request):
+    if request.method == 'POST':
+        form = TerminosForm(request.POST)
+        if form.is_valid():
+            return redirect('/reportes/terminosCondiciones')
+    else:
+        form = TerminosForm()
+        context = { 
+            'form': form
+        }
+        return render(request, 'reportes/terminos/editar.html', context)
 
 def guardar_muestras(arreglo, tipo, user, oi):
     formato = arreglo
