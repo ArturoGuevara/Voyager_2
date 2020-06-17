@@ -55,6 +55,7 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
     $('#vendedor').html(data_vendedor[0].fields.nombre + ' ' + data_vendedor[0].fields.apellido_paterno + ' ' + data_vendedor[0].fields.apellido_materno);
+    $('#telefono_vendedor').html(data_vendedor[0].fields.telefono);
     $('#cliente_empresa').html(data_empresa[0].fields.empresa);
     $('#cliente_correo').html(data_usuario[0].fields.email);
     $('#cliente_telefono').html(data_cliente[0].fields.telefono);

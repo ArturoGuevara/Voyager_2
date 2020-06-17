@@ -63,14 +63,13 @@ function visualizar_cotizacion(id) {
             success: function (response) {
                 if (response.error == "La cotización no contiene analisis") {
                     error_datos_cotizacion();
-                } else {
-
+                } else {                    
                     var data_cotizacion = JSON.parse(response.info[0]);
                     var data_cliente = JSON.parse(response.info[1]);
                     var data_vendedor = JSON.parse(response.info[2]);
                     var aux_analisis = response.info[3]
                     var aux_analisis_cotizacion = response.info[4];
-
+                    
                     analisis = []
                     for (registro in aux_analisis) {
                         n_analisis = JSON.parse(aux_analisis[registro]);
@@ -84,6 +83,7 @@ function visualizar_cotizacion(id) {
 
                     var data_empresa = JSON.parse(response.info[5]);
                     var data_usuario = JSON.parse(response.info[6]);
+                                       
                     cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario)
                 }
             }
@@ -92,11 +92,13 @@ function visualizar_cotizacion(id) {
 }
 
 function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario) {
+        
     $('.analisis_registro').remove();
     $('#ver_id_cot').html(data_cotizacion[0].pk);
     $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
     $('#vendedor').html(data_vendedor[0].fields.nombre + ' ' + data_vendedor[0].fields.apellido_paterno + ' ' + data_vendedor[0].fields.apellido_materno);
+    $('#telefono_vendedor').html(data_vendedor[0].fields.telefono);
     $('#cliente_empresa').html(data_empresa[0].fields.empresa);
     $('#cliente_correo').html(data_usuario[0].fields.email);
     $('#cliente_telefono').html(data_cliente[0].fields.telefono);
