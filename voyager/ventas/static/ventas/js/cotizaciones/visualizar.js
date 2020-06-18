@@ -222,6 +222,7 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     //Validar si la cotización está bloqueada o no
     if(bloqueado == true){
       $('#imprimir-pdf').hide();
+      $('#pdf').hide();
     }else{
       bloqueado = true
     }
@@ -244,6 +245,12 @@ function error_datos_cotizacion() {
 }
 
 $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
+    //Nombre para el documento
+	var fecha = document.getElementById('fecha').innerHTML;
+	var num_cotizacion = document.getElementById('ver_id_cot').innerHTML;
+	var usuario = document.getElementById('cliente_nombre').innerHTML;
+	var nombre = fecha + "_" + num_cotizacion + "_" + usuario;
+
     $('#imprimir-pdf').hide();                                          // Ocultar botones que no son necesarios para el PDF
     $('#btn-editar-cot').removeClass('d-inline').addClass('d-none');
     $('#terminos').show();                                              // Mostrar terminos y logo para el PDF
@@ -251,6 +258,7 @@ $('#imprimir-pdf').click(function (){   // Funcion para imprimir / descargar PDF
     var printContents = document.getElementById("pdf-content").innerHTML;   // Acciones para detonar la impresion desde el navegador
     var originalContents = document.body.innerHTML;
 	document.body.innerHTML = printContents;
+	document.title = nombre; // Asignar nombre del documento a imprimir (no funciona en Firefox)
 	window.print();
 	document.body.innerHTML = originalContents;
     location.reload();
