@@ -94,7 +94,13 @@ function visualizar_cotizacion(id) {
 function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, analisis, analisis_cotizacion, data_empresa, data_usuario) {
     $('.analisis_registro').remove();
     $('#ver_id_cot').html(data_cotizacion[0].pk);
-    $('#fecha').html(data_cotizacion[0].fields.fecha_creada);
+    var fecha = data_cotizacion[0].fields.fecha_creada;
+    var parts = fecha.split('-');
+    $('#fecha').html(parts[2]+"/"+parts[1]+"/"+parts[0]);
+    var mydate = new Date(parts[0], parts[1] - 1, parts[2]);
+    mydate.setMonth(mydate.getMonth()+1);
+    var newMonth = mydate.getMonth() +1;
+    $('#fecha_vigencia').html(mydate.getDate()+"/"+newMonth+"/"+mydate.getFullYear());
     $('#cliente_nombre').html(data_cliente[0].fields.nombre + ' ' + data_cliente[0].fields.apellido_paterno + ' ' + data_cliente[0].fields.apellido_materno);
     $('#vendedor').html(data_vendedor[0].fields.nombre + ' ' + data_vendedor[0].fields.apellido_paterno + ' ' + data_vendedor[0].fields.apellido_materno);
     $('#cliente_empresa').html(data_empresa[0].fields.empresa);
@@ -233,6 +239,7 @@ function error_datos_cotizacion() {
     $('.analisis_registro').remove();
     $('#ver_id_cot').html("");
     $('#fecha').html("");
+    $('#fecha_vigencia').html("");
     $('#cliente_nombre').html("");
     $('#cliente_empresa').html("");
     $('#cliente_correo').html("");
