@@ -2,6 +2,11 @@ from django import forms
 from .models import OrdenInterna, FacturaOI
 from django.forms import formset_factory
 from django.utils.translation import ugettext_lazy as _
+from ckeditor.widgets import CKEditorWidget
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
+
+class TerminosForm(forms.Form):
+    content = forms.CharField(widget=CKEditorWidget())
 
 #Form de crear paquete DHL
 class codigoDHL(forms.Form):

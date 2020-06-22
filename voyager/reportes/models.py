@@ -1,8 +1,12 @@
 from django.db import models
 from cuentas.models import IFCUsuario
 from ventas.models import Factura
-from datetime import datetime, date
+#from datetime import datetime, date
+import datetime
 from django.utils import timezone
+
+class TerminosCondiciones(models.Model):
+    content = models.CharField(max_length=10000, blank=True)
 
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
@@ -134,6 +138,9 @@ class Muestra(models.Model):
     fecha_recibo_informe = models.DateField(blank=True, null=True)
     fecha_esperada_recibo = models.DateField(blank=True, null=True)
     enviado = models.BooleanField(default=False)
+
+def vigencia():
+    return timezone.now()+ datetime.timedelta(30)
 
 class Cotizacion(models.Model):
     id_cotizacion = models.AutoField(primary_key=True)

@@ -59,9 +59,9 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
     $('#cliente_empresa').html(data_empresa[0].fields.empresa);
     $('#cliente_correo').html(data_usuario[0].fields.email);
     $('#cliente_telefono').html(data_cliente[0].fields.telefono);
-    $('#n_subtotal').html(data_cotizacion[0].fields.subtotal);
-    $('#n_envio').html(parseFloat(data_cotizacion[0].fields.envio));
-    $('#n_total').html(data_cotizacion[0].fields.total);
+    $('#n_subtotal').html(numberWithCommas(data_cotizacion[0].fields.subtotal));
+    $('#n_envio').html(numberWithCommas(parseFloat(data_cotizacion[0].fields.envio)));
+    $('#n_total').html(numberWithCommas(data_cotizacion[0].fields.total));
     // Calcular total de descuentos e impuestos
     var tot_descuentos = 0; // Es el total de descuentos
     var aux_descuento = 0;
@@ -85,7 +85,7 @@ function cargar_datos_cotizacion(data_cotizacion, data_cliente, data_vendedor, a
         $('#envio-span').html('Costo de envío (nacional): $ ')
     }
     var iva_two_dec = iva_final.toFixed(2);
-    $('#n_iva').html(iva_two_dec);
+    $('#n_iva').html(numberWithCommas(iva_two_dec));
 
     $("#editar-cot-cliente > option").each(function() {
         if($(this).val() == data_cliente[0].pk){

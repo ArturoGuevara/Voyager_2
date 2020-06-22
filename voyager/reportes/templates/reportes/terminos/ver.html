@@ -1,0 +1,22 @@
+{% extends 'root/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block optionalCSS %}
+{% endblock %}
+
+{% block content %}
+<div class="text-center display-4">
+    <strong>Términos y Condiciones</strong>
+    <a class="btn btn-primary btn-sm"
+    href="{% url 'editarTerminosCondiciones' %}">
+        <i class="fas fa-edit"></i>
+    </a>
+</div>
+<div class="container mt-5">
+    {{ terminos.content|safe }}
+</div>
+{% endblock content %}
+
+{% block optionalJS %}
+{% endblock %}

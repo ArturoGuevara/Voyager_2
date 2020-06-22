@@ -30,6 +30,7 @@ import csv
 from reportes.forms import codigoDHL
 from flags.state import flag_enabled
 from ventas.VoyagerImporter import Uploader
+from reportes.models import TerminosCondiciones
 
 #Esta clase sirve para serializar los objetos de los modelos.
 class LazyEncoder(DjangoJSONEncoder):
@@ -229,6 +230,7 @@ def ver_cotizaciones(request):
                 or 'visualizar_cotizacion' in request.session['permissions']
         ):
             if flag_enabled('Modulo_Cotizaciones', request=request):
+                terminos = TerminosCondiciones.objects.first()
                 if usuario_log.rol.nombre == "Ventas":
                     cotizaciones = Cotizacion.objects.filter(usuario_v=usuario_log) #Obtener cotizaciones de usuario ventas
                     analisis = Analisis.objects.all().exclude(nombre="Otro")
@@ -236,12 +238,14 @@ def ver_cotizaciones(request):
                     context = {
                         'analisis': analisis,
                         'cotizaciones': cotizaciones,
-                        'clientes': clientes
+                        'clientes': clientes,
+                        'terminos': terminos
                     }
                 elif usuario_log.rol.nombre == "Cliente":
                     cotizaciones = Cotizacion.objects.filter(usuario_c=usuario_log) #Obtener cotizaciones de usuario cliente
                     context = {
                         'cotizaciones': cotizaciones,
+                        'terminos': terminos
                     }
                 elif usuario_log.rol.nombre == "SuperUser" or usuario_log.rol.nombre == "Director" or usuario_log.rol.nombre == "Soporte" or usuario_log.rol.nombre == "Gerente" or usuario_log.rol.nombre == "Facturacion":
                     cotizaciones = Cotizacion.objects.all()
@@ -250,7 +254,8 @@ def ver_cotizaciones(request):
                     context = {
                         'analisis': analisis,
                         'cotizaciones': cotizaciones,
-                        'clientes': clientes
+                        'clientes': clientes,
+                        'terminos': terminos
                     }
             return render(request, 'ventas/cotizaciones.html', context)
         else:
