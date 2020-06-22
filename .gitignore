@@ -137,3 +137,4 @@ voyager/voyager/settings.py
 
 /voyager/API_KEY.txt
 /voyager/API_KEY_recover_password.txt
+voyager/voyager/settings.py
