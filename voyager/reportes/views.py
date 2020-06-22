@@ -143,9 +143,21 @@ def editarTerminosCondiciones(request):
     if request.method == 'POST':
         form = TerminosForm(request.POST)
         if form.is_valid():
+            terminos = TerminosCondiciones.objects.first()
+            terminos.content = request.POST.get('content')
+            terminos.save()
             return redirect('/reportes/terminosCondiciones')
+        else:
+            terminos = TerminosCondiciones.objects.first()
+            terminos.content = ''
+            terminos.save()
+        return redirect('/reportes/terminosCondiciones')
     else:
-        form = TerminosForm()
+        terminos = TerminosCondiciones.objects.first()
+        initial_dict = {
+            "content": terminos.content
+        }
+        form = TerminosForm(request.POST or None, initial = initial_dict) 
         context = { 
             'form': form
         }
