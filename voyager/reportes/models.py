@@ -4,6 +4,9 @@ from ventas.models import Factura
 from datetime import datetime, date
 from django.utils import timezone
 
+class TerminosCondiciones(models.Model):
+    content = models.CharField(max_length=10000, blank=True)
+
 class Paquete(models.Model):
     id_paquete = models.AutoField(primary_key=True)
     codigo_dhl = models.CharField(max_length=10,blank=True,null=True)

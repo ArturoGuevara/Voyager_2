@@ -48,8 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'flags',
-
-
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -114,6 +114,51 @@ FLAGS = {
 }
 #
 WSGI_APPLICATION = 'voyager.wsgi.application'
+
+# CKEDITOR CONFIGURATION
+
+CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+
+CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ],
+        'height': 300,
+        'width': 1130,
+    },
+}
+
+# CUSTOM SETTINGS CKEDITOR
+#'default': {
+#    'toolbar': 'full',
+#    'height': 300,
+#    'width': 1180,
+#},
+
+#'default': {
+#    'toolbar': 'Custom',
+#    'toolbar_Custom': [
+#        ['Bold', 'Italic', 'Underline'],
+#        ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+#        ['Link', 'Unlink'],
+#        ['RemoveFormat', 'Source']
+#    ],
+#    'height': 300,
+#    'width': 1130,
+#},
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
 LOGIN_REDIRECT_URL = '/cuentas/home/'
 LOGOUT_REDIRECT_URL = '/cuentas/login/'
 LOGIN_URL = '/cuentas/login'
